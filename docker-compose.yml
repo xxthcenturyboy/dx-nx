@@ -1,0 +1,23 @@
+services:
+  monorepo-node-20:
+    extends:
+        file: ./docker-compose.base.yml
+        service: base
+    container_name: 'monorepo'
+    tty: true
+    stdin_open: true
+    build:
+        context: .
+        dockerfile: ./_devops/docker/Dockerfile.local
+    command: "/bin/bash"
+    volumes:
+        - $PWD/:/app
+    ports:
+        - "4000:4000"
+    environment:
+        - ROOT_DIR=/app
+secrets:
+  npmrc:
+    file: $HOME/.npmrc
+  gitconfig:
+    file: $HOME/.gitconfig

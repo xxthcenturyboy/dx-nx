@@ -1,0 +1,9 @@
+import { <%= stringToTitleCase(name) %>ResponseType } from "../model/<%= name %>.types";
+
+export class <%= stringToTitleCase(name) %>Service {
+  public getData(): <%= stringToTitleCase(name) %>ResponseType {
+    return { message: '<%= name %>' };
+  }
+}
+
+export type <%= stringToTitleCase(name) %>ServiceType = typeof <%= stringToTitleCase(name) %>Service.prototype;

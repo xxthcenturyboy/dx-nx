@@ -1,0 +1,19 @@
+import { <%= stringToTitleCase(name) %>Controller } from './<%= name %>.controller';
+
+describe('<%= stringToTitleCase(name) %>Controller', () => {
+  // arrange
+  const <%= name %>Controller = new <%= stringToTitleCase(name) %>Controller();
+  // act
+  // assert
+  it ('should exist when imported', () => {
+    expect(<%= stringToTitleCase(name) %>Controller).toBeDefined();
+  });
+
+  it ('should exist when instantiated', () => {
+    expect(<%= name %>Controller).toBeDefined();
+  });
+
+  it ('should have getData method when instantiated', () => {
+    expect(<%= name %>Controller.getData).toBeDefined();
+  });
+});

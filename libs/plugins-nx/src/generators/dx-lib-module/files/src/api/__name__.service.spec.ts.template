@@ -1,0 +1,35 @@
+import { <%= stringToTitleCase(name) %>ResponseType  } from "../model/<%= name %>.types";
+import { <%= stringToTitleCase(name) %>Service } from './<%= name %>.service';
+
+describe('<%= stringToTitleCase(name) %>Service', () => {
+  // arrange
+  const <%= name %>Service = new <%= stringToTitleCase(name) %>Service();
+  // act
+  // assert
+  it ('should exist when imported', () => {
+    expect(<%= stringToTitleCase(name) %>Service).toBeDefined();
+  });
+
+  it ('should exist when instantiated', () => {
+    expect(<%= name %>Service).toBeDefined();
+  });
+
+  describe('getData', () => {
+    // arrange
+    const <%= name %>Service = new <%= stringToTitleCase(name) %>Service();
+    let response: null | <%= stringToTitleCase(name) %>ResponseType = null;
+    const expectedResult: <%= stringToTitleCase(name) %>ResponseType = { message: '<%= name %>' }
+
+    // act
+    response = <%= name %>Service.getData();
+
+    // assert
+    it ('should be the public method getData in the class when instantiated', () => {
+      expect(<%= name %>Service.getData).toBeDefined();
+    });
+
+    it('should return the correct response object when called', () => {
+      expect(response).toEqual(expectedResult);
+    });
+  });
+});

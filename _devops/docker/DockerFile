@@ -1,0 +1,18 @@
+FROM node:20.12.2-alpine AS build
+
+WORKDIR /dx-api
+COPY . /dx-api
+ARG NODE_ENV
+ARG GITHUB_TOKEN
+
+ENV NODE_ENV=$NODE_ENV
+ENV GITHUB_TOKEN=$GITHUB_TOKEN
+
+RUN echo "//npm.pkg.github.com/:_authToken=$GITHUB_TOKEN" > ~/.npmrc && npm config set @umg:registry https://npm.pkg.github.com
+
+RUN yarn ci && rm -rf ~/.npmrc
+RUN yarn build
+
+COPY _devops /opt/devops
+
+CMD ["yarn", "serve"]

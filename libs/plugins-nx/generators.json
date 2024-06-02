@@ -1,0 +1,9 @@
+{
+  "generators": {
+    "dx-lib-module": {
+      "factory": "./src/generators/dx-lib-module/generator",
+      "schema": "./src/generators/dx-lib-module/schema.json",
+      "description": "dx-lib-module generator"
+    }
+  }
+}

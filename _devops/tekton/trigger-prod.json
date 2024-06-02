@@ -1,0 +1,26 @@
+{
+  "API": {
+    "APIVersion": "v1",
+    "Pipeline": "buildx-deploy"
+  },
+  "Git": {
+    "Ref": "",
+    "Revision": "",
+    "URL": "https://github.com/dx.git"
+  },
+  "Image": {
+    "URL": "",
+    "Tag": "",
+    "Dockerfile": "dx/devops/docker/DockerFile",
+    "Context": "dx",
+    "Cache": "",
+    "Platforms": "linux/amd64,linux/arm64",
+    "UserData": ""
+  },
+  "K8S": {
+    "ClusterName": "awsa4-hybrid-prod-v2",
+    "YamlPath": "dx/devops/app.yaml",
+    "YamlDir": "dx/devops/k8s",
+    "Namespace": "dx-prod"
+  }
+}

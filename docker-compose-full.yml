@@ -1,0 +1,56 @@
+services:
+  redis:
+    image: redis:7-alpine
+    restart: always
+    container_name: 'Redis-Cache'
+    ports:
+        - "6379:6379"
+    volumes:
+      - redis:/data
+  postgres:
+    image: postgres:16-alpine
+    restart: always
+    volumes:
+        - "db-data:/var/lib/postgresql/data/pgdata"
+        - $PWD/scripts/db:/host-db
+    environment:
+        PGDATA: "/var/lib/postgresql/data/pgdata"
+        POSTGRES_USER: "pguser"
+        POSTGRES_PASSWORD: "password"
+        POSTGRES_DB: "app"
+    ports:
+        - "5433:5432"
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+        - "db-data:/var/lib/mongo/data/mongodata"
+  monorepo-node-20:
+    extends:
+        file: ./docker-compose.base.yml
+        service: base
+    container_name: 'monorepo'
+    tty: true
+    stdin_open: true
+    build:
+        context: .
+        dockerfile: ./_devops/docker/Dockerfile.local
+    command: "/bin/bash"
+    volumes:
+        - $PWD/:/app
+    ports:
+        - "4000:4000"
+    environment:
+        - ROOT_DIR=/app
+secrets:
+  npmrc:
+    file: $HOME/.npmrc
+  gitconfig:
+    file: $HOME/.gitconfig
+volumes:
+  redis:
+    driver: local
+  db-data:

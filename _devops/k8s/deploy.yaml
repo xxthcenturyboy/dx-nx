@@ -1,0 +1,93 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dx-api-v1
+  namespace: dx-dev
+  labels:
+    app: dx-api
+    version: v1
+    Application-Code: "APP91015"
+    Cost-Center: "US1C0168"
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dx-api
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: dx-api
+        version: v1
+        Application-Code: "APP01"
+        Cost-Center: ""
+    spec:
+      serviceAccountName: dx-api
+      # https://cloud.google.com/kubernetes-engine/docs/how-to/prepare-arm-workloads-for-deployment
+      # to _force_ the app to deploy to arm, set the nodeSelector below
+      nodeSelector:
+        kubernetes.io/arch: arm64
+      containers:
+      - name: dx-api
+        image: node:20-alpine
+        ports:
+        - containerPort: 80
+        envFrom:
+          - secretRef:
+              name: dx-monorepo
+          - secretRef:
+              name: dx-monorepo-build-version
+        env:
+        - name: VAULT_KV_PATH
+          value: VAULT_KV_PATH
+        - name: VERSION
+          value: VERSION
+        securityContext:
+          capabilities:
+            add: ["IPC_LOCK"]
+        resources:
+          requests:
+            cpu: 500m
+            memory: 2000Mi
+          limits:
+            cpu: 500m
+            memory: 4000Mi
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 80
+          initialDelaySeconds: 30
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 80
+          initialDelaySeconds: 30
+          failureThreshold: 3
+      imagePullSecrets:
+      - name: regcred
+      tolerations:
+      - key: "kubernetes.io/arch"
+        operator: "Equal"
+        value: "arm64"
+        effect: "NoSchedule"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dx-api
+  namespace: dx-dev
+  labels:
+    app: dx-api
+spec:
+  type: ClusterIP
+  selector:
+    app: dx-api
+  ports:
+  - protocol: TCP
+    port: 80
+    name: http
+    targetPort: 80

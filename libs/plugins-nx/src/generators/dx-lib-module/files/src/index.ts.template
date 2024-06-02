@@ -1,0 +1,4 @@
+export {
+  <%= stringToTitleCase(name) %>Routes,
+  <%= stringToTitleCase(name) %>RoutesType
+} from './api/<%= name %>.routes';

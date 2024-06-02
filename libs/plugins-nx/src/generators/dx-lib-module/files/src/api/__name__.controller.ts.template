@@ -1,0 +1,15 @@
+import {
+  Request,
+  Response
+} from "express";
+
+import { <%= stringToTitleCase(name) %>Service } from "./<%= name %>.service";
+
+export class <%= stringToTitleCase(name) %>Controller {
+  public getData(req: Request, res: Response) {
+    const service = new <%= stringToTitleCase(name) %>Service();
+    return res.send(service.getData());
+  }
+}
+
+export type <%= stringToTitleCase(name) %>ControllerType = typeof <%= stringToTitleCase(name) %>Controller.prototype;
