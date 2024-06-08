@@ -12,6 +12,16 @@
         "index": 0
       },
       "x-prompt": "What name would you like to use?"
+    },
+    "directory": {
+      "type": "string",
+      "description": "",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "default": "libs",
+      "x-prompt": "In what directory do you want this created?"
     }
   },
   "required": ["name"]
