@@ -1,23 +1,23 @@
 import { Router } from "express";
 import {
-  <%= stringToTitleCase(name) %>Controller,
-  <%= stringToTitleCase(name) %>ControllerType
+  <%= hyphenatedToTilteCaseConcatenated(name) %>Controller,
+  <%= hyphenatedToTilteCaseConcatenated(name) %>ControllerType
 } from "./<%= name %>.controller";
 
-export class <%= stringToTitleCase(name) %>Routes {
-  <%= name %>Controller: <%= stringToTitleCase(name) %>ControllerType;
+export class <%= hyphenatedToTilteCaseConcatenated(name) %>Routes {
+  <%= stripHyphens(name) %>Controller: <%= hyphenatedToTilteCaseConcatenated(name) %>ControllerType;
   router: Router;
   routes: Router[];
 
   constructor() {
-    this.<%= name %>Controller = new <%= stringToTitleCase(name) %>Controller();
+    this.<%= stripHyphens(name) %>Controller = new <%= hyphenatedToTilteCaseConcatenated(name) %>Controller();
     this.router = Router();
     this.routes = [];
   }
 
   private loadRoutes() {
     this.routes.push(
-      this.router.get('/', this.<%= name %>Controller.getData)
+      this.router.get('/', this.<%= stripHyphens(name) %>Controller.getData)
     );
   }
 
@@ -28,14 +28,14 @@ export class <%= stringToTitleCase(name) %>Routes {
   }
 
   static configure() {
-    const <%= name %>Controller = new <%= stringToTitleCase(name) %>Controller();
+    const <%= stripHyphens(name) %>Controller = new <%= hyphenatedToTilteCaseConcatenated(name) %>Controller();
     const router = Router();
     const routes: Router[] = [];
 
-    routes.push(router.get('/', <%= name %>Controller.getData));
+    routes.push(router.get('/', <%= stripHyphens(name) %>Controller.getData));
 
     return routes;
   }
 }
 
-export type <%= stringToTitleCase(name) %>RoutesType = typeof <%= stringToTitleCase(name) %>Routes.prototype;
+export type <%= hyphenatedToTilteCaseConcatenated(name) %>RoutesType = typeof <%= hyphenatedToTilteCaseConcatenated(name) %>Routes.prototype;

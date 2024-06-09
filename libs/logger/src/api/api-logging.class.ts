@@ -1,5 +1,5 @@
-import * as winston from 'winston';
-import * as DailyRotateFile from 'winston-daily-rotate-file';
+import winston from 'winston';
+import DailyRotateFile from 'winston-daily-rotate-file';
 
 import { LOG_LEVEL } from '../model/logger.consts';
 
@@ -61,11 +61,13 @@ export class ApiLoggingClass {
         info =>
           `[${info.timestamp}] [${info.level.toUpperCase()}]: ${
             info.message
-          } [CONTEXT] -> ${
-            info.context ? '\n' + JSON.stringify(info.context, null, 2) : '{}' // Including the context
+          } ${
+            info.context
+              ? ' [CONTEXT] -> \n ' + JSON.stringify(info.context, null, 2)
+              : ''
           }`
       ),
-      winston.format.colorize({all: true})
+      winston.format.colorize({ all: true })
     );
   }
 
