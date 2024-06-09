@@ -15,7 +15,7 @@ import {
 async function updateTsConfig(tree: Tree, schema: DxLibModuleGeneratorSchema) {
   updateJson(tree, 'tsconfig.base.json', (tsconfig) => {
     tsconfig.compilerOptions.paths = tsconfig.compilerOptions.paths ?? {};
-    tsconfig.compilerOptions.paths[`@dx/${schema.name}`] = [`libs/${schema.name}/src/index.ts`];
+    tsconfig.compilerOptions.paths[`@dx/${schema.name}`] = [`${schema.directory}/${schema.name}/src/index.ts`];
     return tsconfig;
   });
 }
@@ -24,7 +24,7 @@ export async function dxLibModuleGenerator(
   tree: Tree,
   options: DxLibModuleGeneratorSchema
 ) {
-  const projectRoot = `libs/${options.name}`;
+  const projectRoot = `${options.directory}/${options.name}`;
   addProjectConfiguration(tree, options.name, {
     root: projectRoot,
     projectType: 'library',

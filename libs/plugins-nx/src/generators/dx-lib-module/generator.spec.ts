@@ -6,7 +6,7 @@ import { DxLibModuleGeneratorSchema } from './schema';
 
 describe('dx-lib-module generator', () => {
   let tree: Tree;
-  const options: DxLibModuleGeneratorSchema = { name: 'test' };
+  const options: DxLibModuleGeneratorSchema = { name: 'test', directory: 'libs' };
 
   beforeEach(() => {
     tree = createTreeWithEmptyWorkspace();
