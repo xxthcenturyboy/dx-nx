@@ -1,7 +1,7 @@
 import {
   getPostgresModels,
   logLoadedPostgresModels
-} from './postgres.models';
+} from './dx-postgres.models';
 import { POSTGRES_URI } from '@dx/config';
 import { ApiLoggingClassType } from '@dx/logger';
 import { PostgresDbConnection } from '@dx/postgres';
