@@ -6,6 +6,7 @@ import {
   POSTGRES_URI
 } from '@dx/config';
 import { ApiLoggingClass } from '@dx/logger';
+import { getPostgresModels } from './data/postgres.models';
 import { PostgresDbConnection } from '@dx/postgres';
 import { RoutesV1 } from './routes/v1.routes';
 
@@ -18,7 +19,7 @@ async function run() {
   try {
     postgres = new PostgresDbConnection({
       logger,
-      models: [],
+      models: getPostgresModels(),
       postgresUri: POSTGRES_URI
     });
     await postgres.initialize();

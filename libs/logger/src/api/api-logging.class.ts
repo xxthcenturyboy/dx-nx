@@ -1,5 +1,5 @@
-import * as winston from 'winston';
-import * as DailyRotateFile from 'winston-daily-rotate-file';
+import winston from 'winston';
+import DailyRotateFile from 'winston-daily-rotate-file';
 
 import { LOG_LEVEL } from '../model/logger.consts';
 
