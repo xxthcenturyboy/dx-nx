@@ -1,28 +1,30 @@
 import { Redis } from 'ioredis';
 
-import { ApiConfigType } from '@dx/config';
 import { ApiLoggingClassType } from '@dx/logger';
 import { REDIS_DELIMITER } from './redis.consts';
-import { RedisExpireOptions } from './redis.types';
+import {
+  RedisConstructorType,
+  RedisExpireOptions
+} from './redis.types';
 import {
   isNumber,
   parseJson
 } from '@dx/utils';
 
 export class RedisService {
-  cache: typeof Redis.Cluster.prototype | typeof Redis.prototype;
+  cacheHandle: typeof Redis.Cluster.prototype | typeof Redis.prototype;
   logger: ApiLoggingClassType;
 
-  constructor(params: ApiConfigType) {
+  constructor(params: RedisConstructorType) {
     if (params.isLocal) {
       const url = `${params.redis.url}:${params.redis.port}/0`;
-      this.cache = new Redis(url, {
+      this.cacheHandle = new Redis(url, {
         keyPrefix: `${params.redis.prefix}${REDIS_DELIMITER}`
       });
     } else {
       const hosts = params.redis.url.split('|');
       console.log(`trying to connect to: Redis Cluster ${JSON.stringify(hosts)}`);
-      this.cache = new Redis.Cluster(hosts, {
+      this.cacheHandle = new Redis.Cluster(hosts, {
         redisOptions: {
           tls: {
             checkServerIdentity: () => undefined
@@ -48,7 +50,7 @@ export class RedisService {
     }
 
     try {
-      const save = await this.cache.set(key, data);
+      const save = await this.cacheHandle.set(key, data);
       return save === 'OK';
     } catch (error) {
       this.logger.logError((error as Error).message, error);
@@ -70,7 +72,7 @@ export class RedisService {
 
     try {
       // @ts-expect-error - types are ok here
-      const save = await this.cache.set(key, data, expireOptions.token, expireOptions.time);
+      const save = await this.cacheHandle.set(key, data, expireOptions.token, expireOptions.time);
       return save === 'OK';
     } catch (error) {
       this.logger.logError((error as Error).message, error);
@@ -84,7 +86,7 @@ export class RedisService {
     }
 
     try {
-      const data = await this.cache.get(key);
+      const data = await this.cacheHandle.get(key);
       if (data) {
         return parseJson<TData>(data) as TData;
       }
@@ -102,7 +104,7 @@ export class RedisService {
     }
 
     try {
-      const data = await this.cache.del(key);
+      const data = await this.cacheHandle.del(key);
       return isNumber(data);
     } catch (error) {
       this.logger.logError((error as Error).message, error);
@@ -111,7 +113,7 @@ export class RedisService {
   }
 
   public async getKeys() {
-    return await this.cache.keys('*');
+    return await this.cacheHandle.keys('*');
   }
 }
 

@@ -2,33 +2,32 @@ import express from 'express';
 
 import {
   API_APP_NAME,
-  getApiConfig,
-  POSTGRES_URI
+  getApiConfig
 } from '@dx/config';
 import { ApiLoggingClass } from '@dx/logger';
-import { getPostgresModels } from './data/postgres.models';
-import { PostgresDbConnection } from '@dx/postgres';
+import { DxPostgresDb } from './data/dx-postgres.db';
+import { DxRedisCache } from './data/dx-redis.cache';
 import { RoutesV1 } from './routes/v1.routes';
 
 const app = express();
 
 async function run() {
   const logger = new ApiLoggingClass({ appName: API_APP_NAME });
-  let postgres: typeof PostgresDbConnection.prototype;
 
-  try {
-    postgres = new PostgresDbConnection({
-      logger,
-      models: getPostgresModels(),
-      postgresUri: POSTGRES_URI
-    });
-    await postgres.initialize();
-  } catch (err) {
-    logger.logError((err as Error).message, err);
-    throw err;
+  const postgres = await DxPostgresDb.getPostgresConnection(logger);
+  if (!postgres) {
+    logger.logInfo('Failed to instantiate the Postgres DB. Exiting');
+    return;
   }
 
-  const config = getApiConfig(logger, postgres.dbHandle);
+  const redis = await DxRedisCache.getRedisConnection(logger);
+  if (!redis) {
+    logger.logInfo('Failed to connect to Redis. Exiting');
+    return;
+  }
+
+
+  const config = getApiConfig(logger, postgres.dbHandle, redis);
 
   const v1Routes = new RoutesV1(app);
   v1Routes.loadRoutes();

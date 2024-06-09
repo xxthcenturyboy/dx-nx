@@ -1,28 +1,31 @@
-import { RedisService } from './redis.service';
-
-import { ApiConfigType } from '@dx/config';
+import { ApiLoggingClassType } from '@dx/logger';
+import { RedisServiceType } from './redis.service';
+import { RedisHealthzConstructorType } from './redis.types';
 import { parseJson } from '@dx/utils';
 
-export class RedisHealthzService extends RedisService {
+export class RedisHealthzService {
+  logger: ApiLoggingClassType;
+  redis: RedisServiceType;
   testKey = 'test';
   testData = { test: true };
 
-  constructor(params: ApiConfigType) {
-    super(params);
+  constructor(params: RedisHealthzConstructorType) {
+    this.redis = params.cacheService;
+    this.logger = params.logger;
   }
 
   private async testConnection() {
-    const response = await this.cache.ping();
+    const response = await this.redis.cacheHandle.ping();
     this.logger.logInfo(`Redis PING: ${response}`);
     return response === 'PONG';
   }
 
   private async testWrite() {
-    return await this.setCacheItem(this.testKey, JSON.stringify(this.testData));
+    return await this.redis.setCacheItem(this.testKey, JSON.stringify(this.testData));
   }
 
   private async testRead() {
-    const result = await this.getCacheItem<string>(this.testKey);
+    const result = await this.redis.getCacheItem<string>(this.testKey);
     if (result) {
       return parseJson<typeof this.testData>(result) as typeof this.testData;
     }

@@ -1,11 +1,6 @@
 import { Sequelize } from 'sequelize-typescript';
 import { ApiLoggingClassType } from "@dx/logger";
-
-export type ApiRedisConfigType = {
-  port: number;
-  prefix: string;
-  url: string;
-};
+import { RedisServiceType } from '@dx/redis';
 
 export type ApiConfigType = {
   appName: string;
@@ -16,5 +11,5 @@ export type ApiConfigType = {
   nodeEnv: string;
   port: number;
   postgresDbh: typeof Sequelize.prototype;
-  redis: ApiRedisConfigType;
+  redis: RedisServiceType;
 };

@@ -6,4 +6,8 @@ export {
 export {
   RedisHealthzService,
   RedisHealthzServiceType
-} from './redis.healthz'
+} from './redis.healthz';
+export {
+  RedisConfigType,
+  RedisConstructorType
+} from './redis.types';
