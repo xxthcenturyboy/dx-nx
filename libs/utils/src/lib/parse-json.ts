@@ -11,5 +11,5 @@ export function parseJson<TData>(stringToParseToJson: string): TData | null {
     }
   }
 
-  return null;
+  return stringToParseToJson as TData;
 };

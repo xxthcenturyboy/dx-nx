@@ -25,9 +25,9 @@ export class RedisHealthzService {
   }
 
   private async testRead() {
-    const result = await this.redis.getCacheItem<string>(this.testKey);
+    const result = await this.redis.getCacheItem<typeof this.testData>(this.testKey);
     if (result) {
-      return parseJson<typeof this.testData>(result) as typeof this.testData;
+      return result;
     }
 
     return null;
@@ -35,7 +35,7 @@ export class RedisHealthzService {
 
   public async testReadAndWrite() {
     const write = await this.testWrite();
-    this.logger.logInfo(`write result: ${write ? 'OK' : ''}`);
+    this.logger.logInfo(`write result: ${write ? 'OK' : 'FAIL'}`);
 
     if (write) {
       const read = await this.testRead();
@@ -52,6 +52,8 @@ export class RedisHealthzService {
     const connection = await this.testConnection();
     if (connection) {
       const readAndWrite = await this.testReadAndWrite();
+      // const keys = await this.redis.getKeys();
+      // this.logger.logInfo('redis keys', keys);
       if (readAndWrite) {
         this.logger.logInfo('Redis Connection Healthy');
         this.logger.logInfo('***************************************');

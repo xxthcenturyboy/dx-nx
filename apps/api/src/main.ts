@@ -17,13 +17,13 @@ async function run() {
   const postgres = await DxPostgresDb.getPostgresConnection(logger);
   if (!postgres) {
     logger.logInfo('Failed to instantiate the Postgres DB. Exiting');
-    return;
+    return 1;
   }
 
   const redis = await DxRedisCache.getRedisConnection(logger);
   if (!redis) {
     logger.logInfo('Failed to connect to Redis. Exiting');
-    return;
+    return 1;
   }
 
 
@@ -35,16 +35,18 @@ async function run() {
   app.listen(config.port, config.host, () => {
     logger.logInfo(
       `
-      ============================================================================
-      ${config.appName}
-      ============================================================================
-      Environment variables:
-      Node Env:  ${config.nodeEnv}
-      __dirname: ${__dirname}
-      cwd:       ${process.cwd()}
-      Settings:
-      Port: ${config.port}
-      Debug:     ${config.debug}
+============================================================================
+                                ${config.appName}
+============================================================================
+Environment variables:
+  Node Env:   ${config.nodeEnv}
+  __dirname:  ${__dirname}
+  cwd:        ${process.cwd()}
+
+Settings:
+  Host:       ${config.host}
+  Port:       ${config.port}
+  Debug:      ${config.debug}
     `
     );
     logger.logInfo(`[ ready ] http://${config.host}:${config.port}`);

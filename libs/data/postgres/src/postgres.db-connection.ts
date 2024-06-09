@@ -66,7 +66,7 @@ export class PostgresDbConnection {
 
     while (this.retries) {
       try {
-        this.logger.logInfo('Establishing Postgres Connection.');
+        this.logger.logInfo('Establishing Postgres Connection.', { yourMom: 'blows hard', yourDad: 'eats poo' });
         await this.sequelize.authenticate();
         this.logger.logInfo('Successfully Connected to Postgres');
         this.logger.logInfo('Loading Sequelize models.');

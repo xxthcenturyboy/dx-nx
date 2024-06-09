@@ -44,7 +44,7 @@ import { APP_DOMAIN } from '@dx/config';
 import { usernameValidator } from '../api/username.validator';
 
 @Table({
-  tableName: USER_ENTITY_POSTGRES_DB_NAME,
+  modelName: USER_ENTITY_POSTGRES_DB_NAME,
   indexes: [],
   underscored: true,
 })
@@ -82,11 +82,11 @@ export class UserModel extends Model<UserModel> {
   token: string | null;
 
   @AllowNull(true)
-  @Column({ field: 'token_exp', type: DataType.NUMBER })
+  @Column({ field: 'token_exp', type: DataType.INTEGER })
   tokenExp: number | null;
 
   @AllowNull(true)
-  @Column({ field: 'otp_code', type: DataType.NUMBER })
+  @Column({ field: 'otp_code', type: DataType.INTEGER })
   otpCode: number | null;
 
   @Column(DataType.STRING)
@@ -107,7 +107,7 @@ export class UserModel extends Model<UserModel> {
 
   @AllowNull(false)
   @Column({
-    type: 'user_role[]',
+    type: DataType.ARRAY(DataType.STRING),
     // KLUDGE: Sequelize complains about setting enum arrays, so we're using a workaround!
     set (userRoles: string[] = []): void {
       this.setDataValue(
@@ -120,7 +120,7 @@ export class UserModel extends Model<UserModel> {
   roles: string[];
 
   @Column({
-    type: 'account_restriction[]',
+    type: DataType.ARRAY(DataType.STRING),
     // KLUDGE: Sequelize complains about setting enum arrays, so we're using a workaround!
     set (restrictions: string[] = []): void {
       this.setDataValue(

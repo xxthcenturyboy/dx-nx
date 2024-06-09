@@ -19,6 +19,14 @@ export class DxPostgresDb {
 
       await postgres.initialize();
 
+      logger.logInfo(
+        `
+Postgres:
+  DB Name:   ${postgres.dbHandle.getDatabaseName()}
+  version:   ${await postgres.dbHandle.databaseVersion()}
+      `
+      );
+
       logLoadedPostgresModels();
 
       return postgres;

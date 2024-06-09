@@ -16,11 +16,12 @@ export function getPostgresModels(): ModelCtor[] {
 }
 
 export function logLoadedPostgresModels(): void {
+  const TABLE_PROP_NAME = 'Table Name';
   const models = [
-    { tablelName: USER_ENTITY_POSTGRES_DB_NAME },
-    { tablelName: USER_EMAIL_POSTGRES_DB_NAME },
-    { tablelName: USER_PHONE_POSTGRES_DB_NAME },
-    { tablelName: USER_PRIVILEGES_POSTGRES_DB_NAME },
+    { [TABLE_PROP_NAME]: USER_ENTITY_POSTGRES_DB_NAME },
+    { [TABLE_PROP_NAME]: USER_EMAIL_POSTGRES_DB_NAME },
+    { [TABLE_PROP_NAME]: USER_PHONE_POSTGRES_DB_NAME },
+    { [TABLE_PROP_NAME]: USER_PRIVILEGES_POSTGRES_DB_NAME },
   ];
 
   console.table(models);
