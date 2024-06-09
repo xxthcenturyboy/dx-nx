@@ -1,23 +1,23 @@
-import { <%= stringToTitleCase(name) %>Routes } from './<%= name %>.routes';
+import { <%= hyphenatedToTilteCaseConcatenated(name) %>Routes } from './<%= name %>.routes';
 
-describe('<%= stringToTitleCase(name) %>Routes', () => {
+describe('<%= hyphenatedToTilteCaseConcatenated(name) %>Routes', () => {
   // arrange
-  const <%= name %>Routes = new <%= stringToTitleCase(name) %>Routes();
+  const <%= stripHyphens(name) %>Routes = new <%= hyphenatedToTilteCaseConcatenated(name) %>Routes();
   // act
   // assert
   it ('should exist when imported', () => {
-    expect(<%= stringToTitleCase(name) %>Routes).toBeDefined();
+    expect(<%= hyphenatedToTilteCaseConcatenated(name) %>Routes).toBeDefined();
   });
 
   it ('should have static configure method without being instantiated', () => {
-    expect(<%= stringToTitleCase(name) %>Routes.configure).toBeDefined();
+    expect(<%= hyphenatedToTilteCaseConcatenated(name) %>Routes.configure).toBeDefined();
   });
 
   it ('should exist when instantiated', () => {
-    expect(<%= name %>Routes).toBeDefined();
+    expect(<%= stripHyphens(name) %>Routes).toBeDefined();
   });
 
   it ('should have getRoutes method when instantiated', () => {
-    expect(<%= name %>Routes.getRoutes).toBeDefined();
+    expect(<%= stripHyphens(name) %>Routes.getRoutes).toBeDefined();
   });
 });

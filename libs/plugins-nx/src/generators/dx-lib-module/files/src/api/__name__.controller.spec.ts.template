@@ -1,19 +1,19 @@
-import { <%= stringToTitleCase(name) %>Controller } from './<%= name %>.controller';
+import { <%= hyphenatedToTilteCaseConcatenated(name) %>Controller } from './<%= name %>.controller';
 
-describe('<%= stringToTitleCase(name) %>Controller', () => {
+describe('<%= hyphenatedToTilteCaseConcatenated(name) %>Controller', () => {
   // arrange
-  const <%= name %>Controller = new <%= stringToTitleCase(name) %>Controller();
+  const <%= stripHyphens(name) %>Controller = new <%= hyphenatedToTilteCaseConcatenated(name) %>Controller();
   // act
   // assert
   it ('should exist when imported', () => {
-    expect(<%= stringToTitleCase(name) %>Controller).toBeDefined();
+    expect(<%= hyphenatedToTilteCaseConcatenated(name) %>Controller).toBeDefined();
   });
 
   it ('should exist when instantiated', () => {
-    expect(<%= name %>Controller).toBeDefined();
+    expect(<%= stripHyphens(name) %>Controller).toBeDefined();
   });
 
   it ('should have getData method when instantiated', () => {
-    expect(<%= name %>Controller.getData).toBeDefined();
+    expect(<%= stripHyphens(name) %>Controller.getData).toBeDefined();
   });
 });

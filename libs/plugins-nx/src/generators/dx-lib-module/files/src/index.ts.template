@@ -1,4 +1,4 @@
 export {
-  <%= stringToTitleCase(name) %>Routes,
-  <%= stringToTitleCase(name) %>RoutesType
+  <%= hyphenatedToTilteCaseConcatenated(name) %>Routes,
+  <%= hyphenatedToTilteCaseConcatenated(name) %>RoutesType
 } from './api/<%= name %>.routes';

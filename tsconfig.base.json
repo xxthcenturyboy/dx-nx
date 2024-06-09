@@ -18,6 +18,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@dx/config": [
+        "libs/config/src/index.ts"
+      ],
       "@dx/healthz": [
         "libs/healthz/src/index.ts"
       ],
@@ -30,6 +33,9 @@
       "@dx/postgres": [
         "libs/data/postgres/src/index.ts"
       ],
+      "@dx/redis": [
+        "libs/data/redis/src/index.ts"
+      ],
       "@dx/server": [
         "libs/server/src/index.ts"
       ],
@@ -39,8 +45,8 @@
       "@dx/utils": [
         "libs/utils/src/index.ts"
       ],
-      "@dx/config": [
-        "libs/config/src/index.ts"
+      "@dx/user-privileges": [
+        "libs/user-privileges/src/index.ts"
       ]
     }
   },

@@ -1,1 +1,1 @@
-export const <%= uppercase(name) %>_ENTITY_NAME = '<%= name %>';
+export const <%= uppercase(convertpHyphensToUnderscores(name)) %>_ENTITY_NAME = '<%= name %>';

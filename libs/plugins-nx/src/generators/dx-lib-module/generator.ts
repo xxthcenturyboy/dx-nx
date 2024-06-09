@@ -8,7 +8,9 @@ import {
 import * as path from 'path';
 import { DxLibModuleGeneratorSchema } from './schema';
 import {
-  stringToTitleCase,
+  convertpHyphensToUnderscores,
+  hyphenatedToTilteCaseConcatenated,
+  stripHyphens,
   uppercase
 } from '@dx/utils';
 
@@ -32,7 +34,9 @@ export async function dxLibModuleGenerator(
     targets: {},
   });
   generateFiles(tree, path.join(__dirname, 'files'), projectRoot, {
-    stringToTitleCase,
+    convertpHyphensToUnderscores,
+    hyphenatedToTilteCaseConcatenated,
+    stripHyphens,
     uppercase,
     ...options
 });

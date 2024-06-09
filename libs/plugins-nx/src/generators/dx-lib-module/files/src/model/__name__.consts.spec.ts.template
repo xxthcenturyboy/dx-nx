@@ -1,14 +1,14 @@
-import { <%= uppercase(name) %>_ENTITY_NAME } from './<%= name %>.consts';
+import { <%= uppercase(convertpHyphensToUnderscores(name)) %>_ENTITY_NAME } from './<%= name %>.consts';
 
-describe('<%= uppercase(name) %>_ENTITY_NAME ', () => {
+describe('<%= uppercase(convertpHyphensToUnderscores(name)) %>_ENTITY_NAME ', () => {
   // arrange
   // act
   // assert
   it ('should exist when imported', () => {
-    expect(<%= uppercase(name) %>_ENTITY_NAME).toBeDefined();
+    expect(<%= uppercase(convertpHyphensToUnderscores(name)) %>_ENTITY_NAME).toBeDefined();
   });
 
   it ('should have correct value', () => {
-    expect(<%= uppercase(name) %>_ENTITY_NAME).toEqual('<%= name %>');
+    expect(<%= uppercase(convertpHyphensToUnderscores(name)) %>_ENTITY_NAME).toEqual('<%= name %>');
   });
 });
