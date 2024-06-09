@@ -66,12 +66,17 @@ export class PostgresDbConnection {
 
     while (this.retries) {
       try {
-        this.logger.logInfo('Establishing Postgres Connection.', { yourMom: 'blows hard', yourDad: 'eats poo' });
+        this.logger.logInfo('Establishing Postgres Connection.');
         await this.sequelize.authenticate();
-        this.logger.logInfo('Successfully Connected to Postgres');
+        this.logger.logInfo(
+          `
+  Postgres:
+    DB Name:   ${this.dbHandle.getDatabaseName()}
+    version:   ${await this.dbHandle.databaseVersion()}
+        `
+        );
         this.logger.logInfo('Loading Sequelize models.');
         await this.sequelize.sync();
-        this.logger.logInfo('successfully loaded Sequelize Models.');
         break;
       } catch (err) {
         this.logger.logError((err as Error).message, err);

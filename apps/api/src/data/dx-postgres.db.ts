@@ -19,16 +19,9 @@ export class DxPostgresDb {
 
       await postgres.initialize();
 
-      logger.logInfo(
-        `
-Postgres:
-  DB Name:   ${postgres.dbHandle.getDatabaseName()}
-  version:   ${await postgres.dbHandle.databaseVersion()}
-      `
-      );
-
       logLoadedPostgresModels();
 
+      logger.logInfo('Successfully Connected to Postgres');
       return postgres;
     } catch (err) {
       logger.logError((err as Error).message, err);
