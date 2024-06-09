@@ -20,4 +20,17 @@ export { parseJson } from './lib/parse-json';
 
 export { isNumber } from './lib/number.util';
 
+export { DISPOSABLE_EMAIL_DOMAINS } from './lib/disposable-email-providers';
+
+export { getTimeFromUuid } from './lib/uuid.util';
+
 export { JSONObject } from './lib/types';
+
+export {
+  dxEncryptionGenerateRandomValue,
+  dxEncryptionHashAnyToString,
+  dxEncryptionHashString,
+  dxEncryptionVerifyHash,
+} from './lib/dx-encryption';
+
+export { DxDateUtilClass } from './lib/dx-dates.util';

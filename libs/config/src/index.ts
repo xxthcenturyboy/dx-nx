@@ -4,3 +4,4 @@ export {
   POSTGRES_URI
 } from './api/api-config.consts';
 export { ApiConfigType } from './api/api-config.type';
+export { APP_DOMAIN } from './common/common-config.consts';

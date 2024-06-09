@@ -1,4 +1,4 @@
 export {
-  UserPrivilegesRoutes,
-  UserPrivilegesRoutesType,
-} from './api/user-privileges.routes';
+  UserPrivilegeSetModel,
+  UserPrivilegeSetModelType,
+} from './model/user-privilege.postgres-model';
