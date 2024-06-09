@@ -1,3 +1,5 @@
+import { LOCAL_ENV_NAME } from "./common-config.consts";
+
 export function getEnvironment() {
   return {
     ...process.env
@@ -19,3 +21,8 @@ export function isDebug() {
 
   return true;
 };
+
+export function isLocal() {
+  const env = getEnvironment();
+  return env.NODE_ENV === LOCAL_ENV_NAME;
+}

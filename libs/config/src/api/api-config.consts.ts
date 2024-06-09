@@ -4,5 +4,5 @@ import { getEnvironment } from "../common/common-config.service";
 const env = getEnvironment();
 
 export const API_APP_NAME = `${APP_NAME.toLowerCase()}-api`;
-
+export const APP_PREFIX = 'dx';
 export const POSTGRES_URI = env.POSTGRES_URI || '';

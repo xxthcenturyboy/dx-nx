@@ -1,9 +1,9 @@
-import { <%= stringToTitleCase(name) %>ResponseType } from "../model/<%= name %>.types";
+import { <%= hyphenatedToTilteCaseConcatenated(name) %>ResponseType } from "../model/<%= name %>.types";
 
-export class <%= stringToTitleCase(name) %>Service {
-  public getData(): <%= stringToTitleCase(name) %>ResponseType {
+export class <%= hyphenatedToTilteCaseConcatenated(name) %>Service {
+  public getData(): <%= hyphenatedToTilteCaseConcatenated(name) %>ResponseType {
     return { message: '<%= name %>' };
   }
 }
 
-export type <%= stringToTitleCase(name) %>ServiceType = typeof <%= stringToTitleCase(name) %>Service.prototype;
+export type <%= hyphenatedToTilteCaseConcatenated(name) %>ServiceType = typeof <%= hyphenatedToTilteCaseConcatenated(name) %>Service.prototype;
