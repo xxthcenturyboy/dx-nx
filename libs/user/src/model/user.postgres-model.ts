@@ -48,8 +48,8 @@ import { usernameValidator } from '../api/username.validator';
   indexes: [],
   underscored: true,
 })
-export class UserModel extends Model<UserModel> {
 
+export class UserModel extends Model<UserModel> {
   @PrimaryKey
   @Default(fn('uuid_generate_v4'))
   @AllowNull(false)
