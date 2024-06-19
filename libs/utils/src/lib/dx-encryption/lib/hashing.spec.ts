@@ -3,36 +3,32 @@ import {
   dxEncryptionVerifyHash
 } from './hashing';
 
-describe('dxEncryptionHashString', async () => {
-  // arrange
-  // act
-  const hashString = await dxEncryptionHashString('stringToHash')
-  // assert
-  it('should exist when imported', () => {
+describe('dxEncryptionHashString', () => {
+  test('hashing a string', async () => {
+    // arrange
+    // act
+    const hashString = await dxEncryptionHashString('stringToHash')
+    // assert
     expect(dxEncryptionHashString).toBeDefined();
-  });
-
-  it('should hash a string when invoked', () => {
     expect(hashString).toBeDefined();
     expect(typeof hashString === 'string').toBeTruthy();
   });
+
 });
 
-describe('dxEncryptionVerifyHash', async () => {
-  // arrange
-  const stringToHash = 'string-test-value';
-  // act
-  const hashString = await dxEncryptionHashString(stringToHash)
-  const verified = await dxEncryptionVerifyHash(hashString, stringToHash);
-  const notVerified = await dxEncryptionVerifyHash(hashString, 'incorrect-value');
-  // assert
-  it('should exist when imported', () => {
+describe('dxEncryptionVerifyHash', () => {
+  test('validating a hash string', async () => {
+    // arrange
+    const stringToHash = 'string-test-value';
+    // act
+    const hashString = await dxEncryptionHashString(stringToHash)
+    const verified = await dxEncryptionVerifyHash(hashString, stringToHash);
+    const notVerified = await dxEncryptionVerifyHash(hashString, 'incorrect-value');
+    // assert
     expect(dxEncryptionVerifyHash).toBeDefined();
-  });
-
-  it('should verify a hashed string when invoked', () => {
     expect(hashString).toBeDefined();
     expect(verified).toBeTruthy();
     expect(notVerified).toBeFalsy();
   });
+
 });
