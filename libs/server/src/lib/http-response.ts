@@ -21,7 +21,7 @@ export class HttpResponse {
   private destroySession(req: Request, res: Response) {
     const token = new TokenService(req, res);
     token.invalidateTokens(res);
-    req.session!.destroy(() => null);
+    req.session?.destroy(() => null);
   }
 
   private send400(res: Response, data: any): void {

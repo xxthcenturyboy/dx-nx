@@ -4,6 +4,7 @@ import express,
   Express,
   Request
 } from 'express';
+import { NextFunction } from 'express-serve-static-core';
 import session from 'express-session';
 import RedisStore from 'connect-redis';
 import { Logger as WinstonLogger } from 'winston';
@@ -16,63 +17,20 @@ import {
   RedisService,
   REDIS_DELIMITER
 } from '@dx/redis';
-import { HttpResponse } from '@dx/server';
-import { ApiLoggingClass } from '@dx/logger';
 import {
   API_ROOT,
   APP_PREFIX
 } from '@dx/config';
-import { NextFunction } from 'express-serve-static-core';
 
-export {
-  configureExpress
-};
+import { handleError } from '@dx/server';
 
 type DxApiSettingsType = {
   DEBUG: boolean;
   SESSION_SECRET: string;
 };
 
-/////////////////////////////////////
 
-function handleError(
-  req: Request,
-  res: Response,
-  err: any,
-  message: string,
-  code?: number
-) {
-  if (code) {
-    res.status(code);
-  } else {
-    res.status(400);
-  }
-  const logger = ApiLoggingClass.instance;
-  const response = new HttpResponse;
-
-  logger.logError(JSON.stringify(err), err);
-  if (message) {
-    return response.sendBadRequest(req, res, message);
-  }
-
-  if (
-    typeof err === 'object'
-    && err !== null
-  ) {
-    if (
-      err.hasOwnProperty('code')
-      && err.code === 'FORBIDDEN_CONTENT'
-    ) {
-      return response.sendBadRequest(req, res, err.message);
-    }
-
-    return response.sendBadRequest(req, res, err);
-  }
-
-  response.sendBadRequest(req, res, err.message || err);
-}
-
-async function configureExpress(
+export async function configureExpress(
   app: Express,
   settings: DxApiSettingsType
 ) {
@@ -102,7 +60,7 @@ async function configureExpress(
    * Must be before Rate Limiters for Express Middleware to have attached Session to req
    */
   const redisStore = new RedisStore({
-    client: RedisService.instance,
+    client: RedisService.instance.cacheHandle,
     prefix: `session${REDIS_DELIMITER}`
   });
   app.use(session({
