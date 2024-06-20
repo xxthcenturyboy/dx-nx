@@ -1,4 +1,7 @@
-import { isNumber } from './number.util';
+import {
+  isNumber,
+  randomId
+} from './number.util';
 
 describe('isNumber', () => {
   // arrange
@@ -14,5 +17,16 @@ describe('isNumber', () => {
     expect(isNumber(Infinity)).toBeFalsy();
     expect(isNumber(NaN)).toBeFalsy();
     expect(isNumber(null)).toBeFalsy();
+  });
+});
+
+describe('randomId', () => {
+  it('should return a randomId when invoked', () => {
+    // arrange
+    // act
+    const random = randomId()
+    // assert
+    expect(random).toBeDefined();
+    expect(typeof random === 'number').toBeTruthy();
   });
 });

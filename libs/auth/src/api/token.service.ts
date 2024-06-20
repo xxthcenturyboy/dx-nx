@@ -10,7 +10,10 @@ import {
   RefreshCacheType
 } from '../model/token.types';
 import { AUTH_TOKEN_NAMES } from '../model/auth.consts';
-import { DxDateUtilClass } from '@dx/utils';
+import {
+  DxDateUtilClass,
+  randomId
+} from '@dx/utils';
 import {
   ApiLoggingClass,
   ApiLoggingClassType
@@ -52,6 +55,7 @@ export class TokenService {
       const tokenOptions = this.getTokenOptions(exp);
 
       this.res.cookie(AUTH_TOKEN_NAMES.AUTH, token, tokenOptions);
+      this.token = token;
       refresh && this.res.cookie(AUTH_TOKEN_NAMES.REFRESH, refresh, { httpOnly: true, secure: true });
       this.res.cookie(AUTH_TOKEN_NAMES.EXP, exp);
       return true;
@@ -63,7 +67,7 @@ export class TokenService {
 
   public async reissueFromRefresh(refreshToken: string): Promise<boolean> {
     const consumed = await this.consumeRefreshToken(refreshToken);
-    if (!consumed) {
+    if (consumed === false) {
       return false;
     }
 
@@ -189,7 +193,7 @@ export class TokenService {
   }
 
   private async createRefreshToken(): Promise<string | false> {
-    const refreshToken = `${new Date().getTime()}-${Math.random}`;
+    const refreshToken = `${new Date().getTime()}-${randomId()}`;
     const added = await this.addRefreshToHistory(refreshToken);
     return added && refreshToken;
   }

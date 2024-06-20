@@ -18,7 +18,10 @@ export {
 
 export { parseJson } from './lib/parse-json';
 
-export { isNumber } from './lib/number.util';
+export {
+  isNumber,
+  randomId
+} from './lib/number.util';
 
 export { DISPOSABLE_EMAIL_DOMAINS } from './lib/disposable-email-providers';
 

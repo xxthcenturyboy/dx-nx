@@ -34,3 +34,27 @@ export class TokenService {
     });
   }
 }
+
+export type TokenServiceType = typeof TokenService.prototype;
+
+export class TokenCache {
+  setCache(userId: string, keyArray: any) {
+    console.log('tryna set cache');
+    return new Promise((resolve) => {
+      resolve(true);
+    });
+  }
+
+  getCache(userId: string) {
+    console.log('tryna get cache');
+    return new Promise((resolve) => {
+      resolve({ data: userId });
+    });
+  }
+
+  deleteCache(userId: string) {
+    return new Promise((resolve) => {
+      resolve(true);
+    });
+  }
+}
