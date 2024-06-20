@@ -60,3 +60,12 @@ export class RedisService {
 }
 
 type RedisServiceType = typeof RedisService.prototype;
+
+
+export class RedisHealthzService {
+  public async healthCheck() {
+    return new Promise((resolve) => {
+      resolve(true);
+    });
+  }
+}

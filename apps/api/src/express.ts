@@ -45,14 +45,13 @@ export async function configureExpress(
    */
   app.use(cookieParser());
   app.use(morgan((tokens: TokenIndexer<Request, Response>, req: Request, res: Response) => [
-    tokens.method(req, res),
-    tokens.url(req, res),
-    tokens.status(req, res),
-    tokens.res(req, res, 'content-length'), '-',
-    tokens['response-time'](req, res), 'ms',
-    settings.DEBUG && `- user.id: ${req.session && req.session.userId || 'NONE'}`
-  ].join(' ')
-
+      tokens.method(req, res),
+      tokens.url(req, res),
+      tokens.status(req, res),
+      tokens.res(req, res, 'content-length'), '-',
+      tokens['response-time'](req, res), 'ms',
+      settings.DEBUG && `- user.id: ${req.session && req.session.userId || 'NONE'}`
+    ].join(' ')
   ));
 
   /**
@@ -84,8 +83,8 @@ export async function configureExpress(
   /**
    * Serve files in the /public directory as static files.
    */
-  app.use('/bundles', express.static(`${API_ROOT}/public/bundles`));
-  app.use(express.static(`${API_ROOT}/public`));
+  // app.use('/bundles', express.static(`${API_ROOT}/dist/bundles`));
+  // app.use(express.static(`${API_ROOT}/dist`));
 
   /**
    * Setup CSRF

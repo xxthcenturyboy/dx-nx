@@ -37,3 +37,13 @@ export class HttpResponse {
     return;
   }
 }
+
+export function handleError(
+  req: Request,
+  res: Response,
+  err: any,
+  message?: string,
+  code?: number
+) {
+  return;
+}
