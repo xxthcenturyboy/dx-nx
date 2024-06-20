@@ -39,7 +39,6 @@ export class TokenService {
     this.tokenCache = new TokenCache();
     this.refreshHistory = null;
     this.token = this.req?.cookies?.token || '';
-    // @ts-expect-error - will have session
     this.userId = this.req?.session?.userId;
     this.audience = this.userId || 'user';
     this.logger = ApiLoggingClass.instance;

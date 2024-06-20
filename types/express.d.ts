@@ -8,7 +8,7 @@ interface SessionData {
   referralToken?: string;
   oauthRequestToken?: undefined;
   oauthRequestTokenSecret?: undefined;
-  destroy?: (function);
+  destroy?: (any) => void;
 }
 
 declare module 'express-session' {

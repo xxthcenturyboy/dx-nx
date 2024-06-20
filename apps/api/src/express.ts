@@ -21,7 +21,7 @@ import { ApiLoggingClass } from '@dx/logger';
 import {
   API_ROOT,
   APP_PREFIX
-} from 'libs/config/src/api/api-config.consts';
+} from '@dx/config';
 import { NextFunction } from 'express-serve-static-core';
 
 export {
