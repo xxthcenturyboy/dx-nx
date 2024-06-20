@@ -1,4 +1,7 @@
-import { ApiLoggingClass, ApiLoggingClassType } from "@dx/logger";
+import {
+  ApiLoggingClass,
+  ApiLoggingClassType
+} from "@dx/logger";
 import {
   RedisService,
   RedisServiceType,
@@ -17,7 +20,7 @@ export class TokenCache {
     this.redis = RedisService.instance;
   }
 
-  private _getFormattedKeyName(keyValue: string) {
+  private getFormattedKeyName(keyValue: string) {
     return `${this.keyPrefix}${REDIS_DELIMITER}${keyValue}`;
   }
 
@@ -29,7 +32,7 @@ export class TokenCache {
       return false;
     }
 
-    const key = this._getFormattedKeyName(userId);
+    const key = this.getFormattedKeyName(userId);
     const data = JSON.stringify(keyArray);
 
     try {
@@ -45,7 +48,7 @@ export class TokenCache {
       return null;
     }
 
-    const key = this._getFormattedKeyName(userId);
+    const key = this.getFormattedKeyName(userId);
     try {
       const data = await this.redis.getCacheItem<string>(key);
       if (data) {
@@ -64,7 +67,7 @@ export class TokenCache {
       return false;
     }
 
-    const key = this._getFormattedKeyName(userId);
+    const key = this.getFormattedKeyName(userId);
     try {
       return await this.redis.deleteCacheItem(key);
     } catch (err) {

@@ -10,7 +10,6 @@ import { ApiLoggingClass } from '@dx/logger';
 import { HttpResponse } from './http-response';
 import { handleError } from './error-handler';
 
-// jest.mock('@dx/auth');
 jest.mock('@dx/logger');
 
 describe('handleError', () => {
@@ -32,7 +31,7 @@ describe('handleError', () => {
 
   afterAll(() => {
     jest.clearAllMocks();
-  })
+  });
 
   it('should exist', () => {
     expect(handleError).toBeDefined();
