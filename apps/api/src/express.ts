@@ -25,7 +25,7 @@ import {
 import { NextFunction } from 'express-serve-static-core';
 
 export {
-  expressConfig
+  configureExpress
 };
 
 type DxApiSettingsType = {
@@ -72,7 +72,7 @@ function handleError(
   response.sendBadRequest(req, res, err.message || err);
 }
 
-async function expressConfig(
+async function configureExpress(
   app: Express,
   settings: DxApiSettingsType
 ) {

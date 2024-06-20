@@ -8,7 +8,7 @@ import { ApiLoggingClass } from '@dx/logger';
 import { DxPostgresDb } from './data/dx-postgres.db';
 import { DxRedisCache } from './data/dx-redis.cache';
 import { RoutesV1 } from './routes/v1.routes';
-import { expressConfig } from'./express';
+import { configureExpress } from'./express';
 
 const app = express();
 
@@ -29,7 +29,7 @@ async function run() {
 
   const config = getApiConfig(logger, postgres, redis);
 
-  await expressConfig(app, {
+  await configureExpress(app, {
     DEBUG: config.debug,
     SESSION_SECRET: config.sessionSecret
   })
