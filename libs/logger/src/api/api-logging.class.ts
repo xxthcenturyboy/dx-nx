@@ -1,14 +1,23 @@
 import winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 
-import { LOG_LEVEL } from '../model/logger.consts';
+import {
+  API_LOGGER_COLORS,
+  LOG_LEVEL
+} from '../model/logger.consts';
 
 export class ApiLoggingClass {
   appName: string;
+  static #instance: ApiLoggingClassType;
   logger: typeof winston.Logger.prototype;
 
   constructor(params: { appName: string }) {
     this.logger = this.initializeWinston(params.appName);
+    ApiLoggingClass.#instance = this;
+  }
+
+  public static get instance() {
+    return this.#instance;
   }
 
   public logInfo(msg: string, context?: object) {
@@ -67,7 +76,15 @@ export class ApiLoggingClass {
               : ''
           }`
       ),
-      winston.format.colorize({ all: true })
+      winston.format.colorize({
+        all: true,
+        colors: {
+          info: API_LOGGER_COLORS.cyan,
+          warn: API_LOGGER_COLORS.yellow,
+          debug: API_LOGGER_COLORS.greenBright,
+          error: API_LOGGER_COLORS.magenta
+        }
+      })
     );
   }
 

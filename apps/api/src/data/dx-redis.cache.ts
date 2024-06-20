@@ -1,4 +1,4 @@
-import { ApiLoggingClassType } from '@dx/logger';
+import { ApiLoggingClass } from '@dx/logger';
 import {
   RedisHealthzService,
   RedisService,
@@ -10,24 +10,21 @@ import {
 } from '@dx/config';
 
 export class DxRedisCache {
-  public static async getRedisConnection(logger: ApiLoggingClassType): Promise<RedisServiceType | null> {
+  public static async getRedisConnection(): Promise<RedisServiceType | null> {
+    const logger = ApiLoggingClass.instance;
     const redisConfig = getRedisConfig();
 
     try {
-      const redisService = new RedisService({
+      new RedisService({
         isLocal: isLocal(),
-        logger: logger,
         redis: redisConfig
       });
 
-      const healthz = new RedisHealthzService({
-        logger,
-        cacheService: redisService
-      });
+      const healthz = new RedisHealthzService();
 
       await healthz.healthCheck();
 
-      return redisService;
+      return RedisService.instance;
     } catch (err) {
       logger.logError((err as Error).message, err);
       return null

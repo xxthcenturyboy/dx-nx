@@ -1,7 +1,6 @@
 import { ApiLoggingClassType } from '@dx/logger';
-import { RedisServiceType } from './redis.service';
-import { RedisHealthzConstructorType } from './redis.types';
-import { parseJson } from '@dx/utils';
+import { RedisService, RedisServiceType } from './redis.service';
+import { ApiLoggingClass } from '@dx/logger';
 
 export class RedisHealthzService {
   logger: ApiLoggingClassType;
@@ -9,9 +8,9 @@ export class RedisHealthzService {
   testKey = 'test';
   testData = { test: true };
 
-  constructor(params: RedisHealthzConstructorType) {
-    this.redis = params.cacheService;
-    this.logger = params.logger;
+  constructor() {
+    this.redis = RedisService.instance;
+    this.logger = ApiLoggingClass.instance;
   }
 
   private async testConnection() {

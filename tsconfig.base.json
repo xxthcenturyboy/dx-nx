@@ -46,19 +46,23 @@
       "@dx/user-email": [
         "libs/user-email/src/index.ts"
       ],
+      "@dx/user-phone": [
+        "libs/user-phone/src/index.ts"
+      ],
       "@dx/user-privileges": [
         "libs/user-privileges/src/index.ts"
       ],
       "@dx/utils": [
         "libs/utils/src/index.ts"
       ],
-      "@dx/user-phone": [
-        "libs/user-phone/src/index.ts"
+      "@dx/auth": [
+        "libs/auth/src/index.ts"
       ]
     }
   },
   "exclude": [
     "node_modules",
     "tmp"
-  ]
+  ],
+  "include": ["./types/**/*.d.ts"]
 }

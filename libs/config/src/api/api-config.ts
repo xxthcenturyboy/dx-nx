@@ -39,6 +39,9 @@ export function getApiConfig(
 
   return {
     appName: API_APP_NAME,
+    auth: {
+      jwtSecret: env.JWT_SECRET || ''
+    },
     debug: isDebug(),
     host: env.API_HOST || '0.0.0.0',
     isLocal: nodeEnv === LOCAL_ENV_NAME,
@@ -46,6 +49,7 @@ export function getApiConfig(
     nodeEnv: nodeEnv,
     port: Number(env.API_PORT) || 80,
     postgresDbh: postgresDbh,
-    redis: redisService
+    redis: redisService,
+    sessionSecret: env.SESSION_SECRET || ''
   };
 }

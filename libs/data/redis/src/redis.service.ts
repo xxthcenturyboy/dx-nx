@@ -1,6 +1,9 @@
 import { Redis } from 'ioredis';
 
-import { ApiLoggingClassType } from '@dx/logger';
+import {
+  ApiLoggingClass,
+  ApiLoggingClassType
+} from '@dx/logger';
 import { REDIS_DELIMITER } from './redis.consts';
 import {
   RedisConstructorType,
@@ -13,6 +16,7 @@ import {
 
 export class RedisService {
   cacheHandle: typeof Redis.Cluster.prototype | typeof Redis.prototype;
+  static #instance: RedisServiceType;
   logger: ApiLoggingClassType;
 
   constructor(params: RedisConstructorType) {
@@ -35,7 +39,12 @@ export class RedisService {
       });
     }
 
-    this.logger = params.logger;
+    this.logger = ApiLoggingClass.instance;
+    RedisService.#instance = this;
+  }
+
+  public static get instance() {
+    return this.#instance;
   }
 
   public async setCacheItem(

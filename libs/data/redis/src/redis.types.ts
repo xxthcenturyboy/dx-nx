@@ -1,6 +1,3 @@
-import { ApiLoggingClassType } from "@dx/logger";
-import { RedisServiceType } from "./redis.service";
-
 export type RedisExpireOptions = {
   token: 'EX' | 'PX' | 'EXAT' | 'PXAT' | 'KEEPTTL';
   time: number;
@@ -14,11 +11,11 @@ export type RedisConfigType = {
 
 export type RedisConstructorType = {
   isLocal: boolean;
-  logger: ApiLoggingClassType;
+  // logger: ApiLoggingClassType;
   redis: RedisConfigType;
 };
 
-export type RedisHealthzConstructorType = {
-  logger: ApiLoggingClassType;
-  cacheService: RedisServiceType;
-};
+// export type RedisHealthzConstructorType = {
+//   logger: ApiLoggingClassType;
+//   cacheService: RedisServiceType;
+// };

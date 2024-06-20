@@ -8,26 +8,31 @@ import { ApiLoggingClass } from '@dx/logger';
 import { DxPostgresDb } from './data/dx-postgres.db';
 import { DxRedisCache } from './data/dx-redis.cache';
 import { RoutesV1 } from './routes/v1.routes';
+import { expressConfig } from'./express';
 
 const app = express();
 
 async function run() {
   const logger = new ApiLoggingClass({ appName: API_APP_NAME });
 
-  const postgres = await DxPostgresDb.getPostgresConnection(logger);
+  const postgres = await DxPostgresDb.getPostgresConnection();
   if (!postgres) {
     logger.logInfo('Failed to instantiate the Postgres DB. Exiting');
     return 1;
   }
 
-  const redis = await DxRedisCache.getRedisConnection(logger);
+  const redis = await DxRedisCache.getRedisConnection();
   if (!redis) {
     logger.logInfo('Failed to connect to Redis. Exiting');
     return 1;
   }
 
+  const config = getApiConfig(logger, postgres, redis);
 
-  const config = getApiConfig(logger, postgres.dbHandle, redis);
+  await expressConfig(app, {
+    DEBUG: config.debug,
+    SESSION_SECRET: config.sessionSecret
+  })
 
   const v1Routes = new RoutesV1(app);
   v1Routes.loadRoutes();

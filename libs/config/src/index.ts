@@ -5,6 +5,7 @@ export {
 export {
   API_APP_NAME,
   CRYPT_KEY,
+  JWT_SECRET,
   POSTGRES_URI
 } from './api/api-config.consts';
 export { ApiConfigType } from './api/api-config.type';

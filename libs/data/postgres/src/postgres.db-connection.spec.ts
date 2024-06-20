@@ -7,11 +7,11 @@ describe('PostgresDbConnection', () => {
   const logger = new ApiLoggingClass({ appName: API_APP_NAME })
   const postgresUri = 'postgres://pguser:password@postgres:5432/app';
   // act
-  const postgres = new PostgresDbConnection({
-    logger,
+  const dbConnection = new PostgresDbConnection({
     models: [],
     postgresUri
   });
+  const postgres = PostgresDbConnection.dbHandle;
   // assert
   it('should exist when imported', () => {
     expect(PostgresDbConnection).toBeDefined();
@@ -19,11 +19,11 @@ describe('PostgresDbConnection', () => {
   it('should have values when instantiated but prior to initializaiton', () => {
     expect(postgres).toBeDefined();
     expect(postgres.config).toBeDefined();
-    expect(postgres.initialize).toBeDefined();
-    expect(postgres.logger).toBeDefined();
+    expect(dbConnection.initialize).toBeDefined();
+    expect(dbConnection.logger).toBeDefined();
     expect(postgres.models).toBeDefined();
-    expect(postgres.retries).toBeDefined();
-    expect(postgres.retries).toEqual(5);
-    expect(postgres.sequelize).toBeDefined();
+    expect(dbConnection.retries).toBeDefined();
+    expect(dbConnection.retries).toEqual(5);
+    expect(PostgresDbConnection.sequelize).toBeDefined();
   });
 });

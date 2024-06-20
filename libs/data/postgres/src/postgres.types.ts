@@ -13,7 +13,7 @@ export type PostgresUrlObject = {
 };
 
 export type PostgresConnectionParamsType = {
-  logger: ApiLoggingClassType;
+  // logger: ApiLoggingClassType;
   models: ModelCtor[],
   postgresUri: string;
 };

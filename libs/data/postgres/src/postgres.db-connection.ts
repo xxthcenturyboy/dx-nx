@@ -1,6 +1,12 @@
-import { ModelCtor, Sequelize } from 'sequelize-typescript';
-import { ApiLoggingClassType } from '@dx/logger';
+import {
+  ModelCtor,
+  Sequelize
+} from 'sequelize-typescript';
 
+import {
+  ApiLoggingClass,
+  ApiLoggingClassType
+} from '@dx/logger';
 import {
   PostgresConnectionParamsType,
   PostgresUrlObject
@@ -12,17 +18,17 @@ export class PostgresDbConnection {
   logger: ApiLoggingClassType;
   retries = 5;
   models: ModelCtor[] = [];
-  sequelize: typeof Sequelize.prototype;
+  static sequelize: typeof Sequelize.prototype;
 
   constructor(params: PostgresConnectionParamsType) {
-    this.logger = params.logger;
+    this.logger = ApiLoggingClass.instance;
     this.config = parsePostgresConnectionUrl(params.postgresUri);
     if (!this.config) {
       this.logger.logError('Postgres URL could not be parsed successfully.', this.config);
     }
     this.models = params.models;
 
-    this.sequelize = new Sequelize({
+    PostgresDbConnection.sequelize = new Sequelize({
       database: this.config.segments && this.config.segments[0],
       dialect: 'postgres',
       username: this.config.user,
@@ -40,12 +46,12 @@ export class PostgresDbConnection {
     });
   }
 
-  get dbHandle(): Sequelize | null {
-    return this.sequelize || null;
+  public static get dbHandle(): typeof Sequelize.prototype | null {
+    return PostgresDbConnection.sequelize || null;
   }
 
   async initialize(): Promise<void> {
-    if (!this.sequelize) {
+    if (!PostgresDbConnection.sequelize) {
       throw new Error('Sequelize failed to instantiate');
     }
 
@@ -58,25 +64,25 @@ export class PostgresDbConnection {
       throw new Error('No models!');
     }
 
-    await this.sequelize.query('CREATE EXTENSION IF NOT EXISTS "pgcrypto";');
-    await this.sequelize.query('CREATE EXTENSION IF NOT EXISTS "fuzzystrmatch";');
-    await this.sequelize.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
+    await PostgresDbConnection.sequelize.query('CREATE EXTENSION IF NOT EXISTS "pgcrypto";');
+    await PostgresDbConnection.sequelize.query('CREATE EXTENSION IF NOT EXISTS "fuzzystrmatch";');
+    await PostgresDbConnection.sequelize.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
 
-    this.sequelize.addModels(this.models);
+    PostgresDbConnection.sequelize.addModels(this.models);
 
     while (this.retries) {
       try {
         this.logger.logInfo('Establishing Postgres Connection.');
-        await this.sequelize.authenticate();
+        await PostgresDbConnection.sequelize.authenticate();
         this.logger.logInfo(
           `
   Postgres:
-    DB Name:   ${this.dbHandle.getDatabaseName()}
-    version:   ${await this.dbHandle.databaseVersion()}
+    DB Name:   ${PostgresDbConnection.dbHandle.getDatabaseName()}
+    version:   ${await PostgresDbConnection.dbHandle.databaseVersion()}
         `
         );
         this.logger.logInfo('Loading Sequelize models.');
-        await this.sequelize.sync();
+        await PostgresDbConnection.sequelize.sync();
         break;
       } catch (err) {
         this.logger.logError((err as Error).message, err);
