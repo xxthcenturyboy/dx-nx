@@ -11,8 +11,8 @@ export type RedisConfigType = {
 
 export type RedisConstructorType = {
   isLocal: boolean;
-  // logger: ApiLoggingClassType;
   redis: RedisConfigType;
+  isTest?: boolean;
 };
 
 // export type RedisHealthzConstructorType = {

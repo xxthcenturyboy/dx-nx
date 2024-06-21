@@ -34,16 +34,14 @@ export async function configureExpress(
   app: Express,
   settings: DxApiSettingsType
 ) {
-  /**
-   * Support json & urlencoded requests.
-   */
+  // Support json & urlencoded requests.
   app.use(express.json({ limit: '10mb', type: 'application/json' }));
   app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-  /**
-   * Parse Cookies
-   */
+  // Parse Cookies
   app.use(cookieParser());
+
+  // Log HTTP requests
   app.use(morgan((tokens: TokenIndexer<Request, Response>, req: Request, res: Response) => [
       tokens.method(req, res),
       tokens.url(req, res),
@@ -54,10 +52,9 @@ export async function configureExpress(
     ].join(' ')
   ));
 
-  /**
-   * Session support
-   * Must be before Rate Limiters for Express Middleware to have attached Session to req
-   */
+
+  // Session support
+  // Must be before Rate Limiters for Express Middleware to have attached Session to req
   const redisStore = new RedisStore({
     client: RedisService.instance.cacheHandle,
     prefix: `session${REDIS_DELIMITER}`
@@ -71,30 +68,23 @@ export async function configureExpress(
     cookie: { httpOnly: true, secure: false, maxAge: undefined, sameSite: false }
   }));
 
-  /**
-   * Setup logging
-   */
+  // Setup logging
   if (!settings.DEBUG) {
     app.use(expressWinston({
       winstonInstance: new WinstonLogger()
     }));
   }
 
-  /**
-   * Serve files in the /public directory as static files.
-   */
+  // Serve files in the /public directory as static files.
   // app.use('/bundles', express.static(`${API_ROOT}/dist/bundles`));
   // app.use(express.static(`${API_ROOT}/dist`));
 
-  /**
-   * Setup CSRF
-   * any resource after this utilizes
-   */
+  // Setup CSRF
+  // any resource after this utilizes
   // app.use(csurf);
 
-  /**
-   * Redirect HTTP to HTTPS (if enabled)
-   */
+
+  // Redirect HTTP to HTTPS (if enabled)
   // if (settings.REDIRECT_HTTPS) {
   //   app.use('*', (req, res, next) => {
   //     if (req.protocol !== 'https') {
@@ -104,9 +94,7 @@ export async function configureExpress(
   //   });
   // }
 
-  /**
-   * Check basic auth if enabled
-   */
+  // Check basic auth if enabled
   // app.use('*', (req, res, next) => {
   //   // redirect www to non-www
   //   if (/^www\.advancedbasics\.com/.test(req.hostname)) {
@@ -132,9 +120,7 @@ export async function configureExpress(
   //   }
   // });
 
-  /**
-   * By default, serve our index.html file
-   */
+  // By default, serve our index.html file
   // app.get('*', csurf, async (req, res) => {
   //   try {
   //     const csrfToken = (req as any).csrfToken();
@@ -160,9 +146,7 @@ export async function configureExpress(
   //   }
   // });
 
-  /**
-   * Handle errors
-   */
+  // General Error Handling
   app.use((err: Error, req: Request, res: Response, next: NextFunction) => handleError(req, res, err, ''));
 
 }

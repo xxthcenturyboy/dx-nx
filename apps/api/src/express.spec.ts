@@ -1,9 +1,13 @@
-import { Express as IExpress} from 'express';
+import express, { Express as IExpress} from 'express';
 import { Express } from 'jest-express/lib/express';
+import cookieParser from 'cookie-parser';
+import morgan from 'morgan';
+import session from 'express-session';
 
 import { configureExpress } from './express';
 import { ApiLoggingClass } from '@dx/logger';
 import { RedisService } from '@dx/redis';
+import { handleError } from '@dx/server';
 
 let app: IExpress;
 
@@ -24,12 +28,13 @@ describe('configureExpress', () => {
         prefix: 'app',
         url: 'redis://redis'
       }
-    })
+    });
+    app = new Express() as unknown as IExpress;
   });
 
-  beforeEach(() => {
-    app = new Express() as unknown as IExpress;
-  })
+  // beforeEach(() => {
+  //   app = new Express() as unknown as IExpress;
+  // });
 
   it('should exist', () => {
     // arrange
@@ -43,6 +48,19 @@ describe('configureExpress', () => {
     // act
     await configureExpress(app, { DEBUG: true, SESSION_SECRET: 'test-secret' });
     // assert
+    // @ts-expect-error -ok
+    expect(JSON.stringify(app.use.mock.calls)).toEqual(JSON.stringify([
+      [express.json({ limit: '10mb', type: 'application/json' })],
+      [express.urlencoded({ extended: true, limit: '10mb' })],
+      [cookieParser()],
+      [morgan(() => 'string')],
+      [session({
+        resave: false,
+        saveUninitialized: false,
+        secret: 'test-secret'
+      })],
+      [() => handleError]
+    ]));
     expect(app.use).toHaveBeenCalledTimes(6);
   });
 });

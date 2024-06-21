@@ -61,7 +61,9 @@ export class PostgresDbConnection {
         || this.models.length === 0
       )
     ) {
-      throw new Error('No models!');
+      const errorMessage = 'No Models for Postgres DB!';
+      this.logger.logError(errorMessage);
+      throw new Error(errorMessage);
     }
 
     await PostgresDbConnection.sequelize.query('CREATE EXTENSION IF NOT EXISTS "pgcrypto";');

@@ -1,12 +1,21 @@
-import { ApiLoggingClassType } from '@dx/logger';
-import { RedisService, RedisServiceType } from './redis.service';
-import { ApiLoggingClass } from '@dx/logger';
+import {
+  RedisService,
+  RedisServiceType
+} from './redis.service';
+import {
+  REDIS_HEALTHZ_DATA,
+  REDIS_HEALTHZ_KEY
+} from './redis.consts';
+import {
+  ApiLoggingClass,
+  ApiLoggingClassType
+} from '@dx/logger';
 
 export class RedisHealthzService {
   logger: ApiLoggingClassType;
   redis: RedisServiceType;
-  testKey = 'test';
-  testData = { test: true };
+  testKey = REDIS_HEALTHZ_KEY;
+  testData = REDIS_HEALTHZ_DATA;
 
   constructor() {
     this.redis = RedisService.instance;

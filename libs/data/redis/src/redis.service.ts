@@ -1,10 +1,13 @@
 import { Redis } from 'ioredis';
+import ioRedisMock from 'ioredis-mock';
 
 import {
   ApiLoggingClass,
   ApiLoggingClassType
 } from '@dx/logger';
-import { REDIS_DELIMITER } from './redis.consts';
+import {
+  REDIS_DELIMITER
+} from './redis.consts';
 import {
   RedisConstructorType,
   RedisExpireOptions
@@ -20,27 +23,33 @@ export class RedisService {
   logger: ApiLoggingClassType;
 
   constructor(params: RedisConstructorType) {
+    this.logger = ApiLoggingClass.instance;
+    RedisService.#instance = this;
+
+    if (params.isTest) {
+      this.cacheHandle = new ioRedisMock();
+      return;
+    }
+
     if (params.isLocal) {
       const url = `${params.redis.url}:${params.redis.port}/0`;
       this.cacheHandle = new Redis(url, {
         keyPrefix: `${params.redis.prefix}${REDIS_DELIMITER}`
       });
-    } else {
-      const hosts = params.redis.url.split('|');
-      console.log(`trying to connect to: Redis Cluster ${JSON.stringify(hosts)}`);
-      this.cacheHandle = new Redis.Cluster(hosts, {
-        redisOptions: {
-          tls: {
-            checkServerIdentity: () => undefined
-          }
-        },
-        scaleReads: 'slave',
-        keyPrefix: `${params.redis.prefix}${REDIS_DELIMITER}`
-      });
+      return;
     }
 
-    this.logger = ApiLoggingClass.instance;
-    RedisService.#instance = this;
+    const hosts = params.redis.url.split('|');
+    console.log(`trying to connect to: Redis Cluster ${JSON.stringify(hosts)}`);
+    this.cacheHandle = new Redis.Cluster(hosts, {
+      redisOptions: {
+        tls: {
+          checkServerIdentity: () => undefined
+        }
+      },
+      scaleReads: 'slave',
+      keyPrefix: `${params.redis.prefix}${REDIS_DELIMITER}`
+    });
   }
 
   public static get instance() {
