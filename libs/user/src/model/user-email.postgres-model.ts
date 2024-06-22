@@ -15,14 +15,15 @@ import {
   Unique,
   BelongsTo,
   IsEmail,
-  DeletedAt
+  DeletedAt,
+  Index
 } from 'sequelize-typescript';
 import { DISPOSABLE_EMAIL_DOMAINS } from '@dx/utils';
 import {
   USER_EMAIL_LABEL,
   USER_EMAIL_POSTGRES_DB_NAME
-} from './user-email.consts';
-import { UserModel } from '@dx/user';
+} from './user.consts';
+import { UserModel } from './user.postgres-model';
 
 @Table({
   modelName: USER_EMAIL_POSTGRES_DB_NAME,
@@ -38,6 +39,7 @@ export class UserEmailModel extends Model<UserEmailModel> {
   id: string;
 
   @ForeignKey(() => UserModel)
+  @Index('user-id-index')
   @AllowNull(false)
   @Column({ field: 'user_id', type: DataType.UUID })
   userId: string;

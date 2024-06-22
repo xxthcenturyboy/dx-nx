@@ -11,57 +11,22 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": [
-      "es2020",
-      "dom"
-    ],
+    "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@dx/config": [
-        "libs/config/src/index.ts"
-      ],
-      "@dx/healthz": [
-        "libs/healthz/src/index.ts"
-      ],
-      "@dx/logger": [
-        "libs/logger/src/index.ts"
-      ],
-      "@dx/plugins-nx": [
-        "libs/plugins-nx/src/index.ts"
-      ],
-      "@dx/postgres": [
-        "libs/data/postgres/src/index.ts"
-      ],
-      "@dx/redis": [
-        "libs/data/redis/src/index.ts"
-      ],
-      "@dx/server": [
-        "libs/server/src/index.ts"
-      ],
-      "@dx/user": [
-        "libs/user/src/index.ts"
-      ],
-      "@dx/user-email": [
-        "libs/user-email/src/index.ts"
-      ],
-      "@dx/user-phone": [
-        "libs/user-phone/src/index.ts"
-      ],
-      "@dx/user-privileges": [
-        "libs/user-privileges/src/index.ts"
-      ],
-      "@dx/utils": [
-        "libs/utils/src/index.ts"
-      ],
-      "@dx/auth": [
-        "libs/auth/src/index.ts"
-      ]
+      "@dx/auth": ["libs/auth/src/index.ts"],
+      "@dx/config": ["libs/config/src/index.ts"],
+      "@dx/healthz": ["libs/healthz/src/index.ts"],
+      "@dx/logger": ["libs/logger/src/index.ts"],
+      "@dx/plugins-nx": ["libs/plugins-nx/src/index.ts"],
+      "@dx/postgres": ["libs/data/postgres/src/index.ts"],
+      "@dx/redis": ["libs/data/redis/src/index.ts"],
+      "@dx/server": ["libs/server/src/index.ts"],
+      "@dx/user": ["libs/user/src/index.ts"],
+      "@dx/utils": ["libs/utils/src/index.ts"]
     }
   },
-  "exclude": [
-    "node_modules",
-    "tmp"
-  ]
+  "exclude": ["node_modules", "tmp"]
 }

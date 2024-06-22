@@ -12,10 +12,12 @@ import {
   UpdatedAt,
 } from 'sequelize-typescript';
 
-import { USER_ROLE } from '@dx/user';
-import { UserPrivilegestMenuType } from '../model/user-privileges.types';
-import { parseJson } from '@dx/utils';
-import { USER_PRIVILEGES_POSTGRES_DB_NAME } from './user-privileges.consts';
+import {
+  USER_PRIVILEGES_POSTGRES_DB_NAME,
+  USER_ROLE
+} from './user.consts';
+// import { UserPrivilegestMenuType } from './user.types';
+// import { parseJson } from '@dx/utils';
 
 @Table({
   modelName: USER_PRIVILEGES_POSTGRES_DB_NAME,
@@ -36,8 +38,8 @@ export class UserPrivilegeSetModel extends Model<UserPrivilegeSetModel> {
   @Column(DataType.STRING)
   description: string;
 
-  @Column({ field: 'menus', type: DataType.JSONB })
-  menus: any;
+  // @Column({ field: 'menus', type: DataType.JSONB })
+  // menus: any;
 
   @Column(DataType.INTEGER)
   order: number;
@@ -54,11 +56,11 @@ export class UserPrivilegeSetModel extends Model<UserPrivilegeSetModel> {
   @Column({ field: 'updated_at', type: DataType.DATE })
   updatedAt: Date;
 
-  parseMenus(): void {
-    if (this.menus) {
-      this.menus = parseJson<UserPrivilegestMenuType[]>(this.menus);
-    }
-  }
+  // parseMenus(): void {
+  //   if (this.menus) {
+  //     this.menus = parseJson<UserPrivilegestMenuType[]>(this.menus);
+  //   }
+  // }
 }
 
 export type UserPrivilegeSetModelType = typeof UserPrivilegeSetModel.prototype;

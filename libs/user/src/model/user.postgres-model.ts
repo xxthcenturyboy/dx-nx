@@ -26,15 +26,15 @@ import {
 import {
   UserEmailModel,
   UserEmailModelType
-} from '@dx/user-email';
+} from './user-email.postgres-model';
 import {
   UserPhoneModel,
   UserPhoneModelType
-} from '@dx/user-phone';
+} from './user-phone.postgres-model';
 import {
   UserPrivilegeSetModel,
   UserPrivilegeSetModelType
-} from '@dx/user-privileges';
+} from './user-privilege.postgres-model';
 import {
   ACCOUNT_RESTRICTIONS,
   USER_ENTITY_POSTGRES_DB_NAME,
@@ -98,9 +98,6 @@ export class UserModel extends Model<UserModel> {
   @Default(false)
   @Column({ field: 'opt_in_beta', type: DataType.BOOLEAN })
   optInBeta: boolean;
-
-  @Column({ field: 'menu_sets', type: DataType.JSONB })
-  menuSets: any;
 
   @Column({ field: 'deleted_at', type: DataType.DATE })
   deletedAt: Date | null;

@@ -1,8 +1,11 @@
-import { UserEmailModel, USER_EMAIL_POSTGRES_DB_NAME } from "@dx/user-email";
-import { UserPhoneModel, USER_PHONE_POSTGRES_DB_NAME } from "@dx/user-phone";
-import { UserPrivilegeSetModel, USER_PRIVILEGES_POSTGRES_DB_NAME } from "@dx/user-privileges";
-import { UserModel, USER_ENTITY_POSTGRES_DB_NAME } from "@dx/user";
 import { ModelCtor } from "sequelize-typescript";
+
+import {
+  UserModel, USER_ENTITY_POSTGRES_DB_NAME,
+  UserEmailModel, USER_EMAIL_POSTGRES_DB_NAME,
+  UserPhoneModel, USER_PHONE_POSTGRES_DB_NAME,
+  UserPrivilegeSetModel, USER_PRIVILEGES_POSTGRES_DB_NAME
+} from "@dx/user";
 
 export function getPostgresModels(): ModelCtor[] {
   const models: ModelCtor[] = [];

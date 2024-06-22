@@ -35,7 +35,6 @@ export class PostgresDbConnection {
       password: this.config.password,
       host: this.config.hostname,
       port: this.config.port,
-      // storage: ':memory:',
       dialectOptions: {
         ssl: false,
       },

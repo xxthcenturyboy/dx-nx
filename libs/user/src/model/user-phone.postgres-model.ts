@@ -9,11 +9,12 @@ import {
   PrimaryKey,
   AllowNull,
   BelongsTo,
+  Index,
 } from 'sequelize-typescript';
 
 import { getTimeFromUuid } from '@dx/utils';
-import { USER_PHONE_POSTGRES_DB_NAME } from './user-phone.consts';
-import { UserModel } from '@dx/user';
+import { USER_PHONE_POSTGRES_DB_NAME } from './user.consts';
+import { UserModel } from './user.postgres-model';
 
 @Table({
   modelName: USER_PHONE_POSTGRES_DB_NAME,
@@ -29,6 +30,7 @@ export class UserPhoneModel extends Model<UserPhoneModel> {
   id: string;
 
   @ForeignKey(() => UserModel)
+  @Index('user-id-index')
   @AllowNull(false)
   @Column({ field: 'user_id', type: DataType.UUID })
   userId: string;
