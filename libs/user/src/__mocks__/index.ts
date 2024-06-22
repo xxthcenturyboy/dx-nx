@@ -22,6 +22,8 @@ const mockUsers = {
   }
 };
 
+export { USER_ROLE } from '../model/user.consts';
+
 export class UserModel extends Model<UserModel> {
   id: string;
 
@@ -29,10 +31,10 @@ export class UserModel extends Model<UserModel> {
     return new Promise((resolve, reject) => {
       const user = mockUsers[id];
       if (!user) {
-        reject('no user with this id');
+        return reject('no user with this id');
       }
 
-      return user.roles.indexOf(role) > -1;
+      return resolve(user.roles.indexOf(role) > -1);
     });
   }
 }
