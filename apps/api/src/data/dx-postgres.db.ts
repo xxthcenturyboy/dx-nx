@@ -1,4 +1,8 @@
-import { Sequelize } from 'sequelize-typescript';
+import {
+  Model,
+  ModelCtor,
+  Sequelize
+} from 'sequelize-typescript';
 
 import {
   getPostgresModels,
@@ -19,7 +23,7 @@ export class DxPostgresDb {
 
       await postgres.initialize();
 
-      logLoadedPostgresModels();
+      logLoadedPostgresModels(PostgresDbConnection.dbHandle.models as { [key: string]: ModelCtor<Model> });
 
       logger.logInfo('Successfully Connected to Postgres');
       return PostgresDbConnection.dbHandle;

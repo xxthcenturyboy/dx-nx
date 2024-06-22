@@ -37,3 +37,5 @@ export {
 } from './lib/dx-encryption';
 
 export { DxDateUtilClass } from './lib/dx-dates.util';
+
+export { logTable } from './lib/console-table-transformer';

@@ -179,7 +179,7 @@ export class TokenService {
   }
 
   private createToken(): { token: string, exp: number} {
-    const exp = DxDateUtilClass.getTimestamp(1, 'hour', 'ADD');
+    const exp = DxDateUtilClass.getTimestamp(4, 'hour', 'ADD');
     const payload: JwtPayloadType = {
       exp,
       audience: this.audience,

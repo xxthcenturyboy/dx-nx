@@ -57,7 +57,7 @@ export class HttpResponse {
   }
 
   public sendUnauthorized(req: Request, res: Response, message: string) {
-    this.logger.logWarn(`Unauthorized: ${req.url}, sessionID: ${req.sessionId}`);
+    this.logger.logWarn(`Unauthorized: ${req.url}, sessionId: ${req.sessionId}`);
     this.destroySession(req, res);
     this.send400(res, {
       description: getReasonPhrase(StatusCodes.UNAUTHORIZED),
