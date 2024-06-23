@@ -12,7 +12,6 @@ import { endpointNotFound } from '@dx/server';
 
 export class ApiRoutes {
   app: Express;
-  healthzRoutes: HealthzRoutesType;
   router: Router;
 
   constructor(app: Express) {
