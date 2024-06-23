@@ -1,34 +1,41 @@
+import { STATUS_OK } from '../model/healthz.const';
 import { HttpHealthzResponseType } from '../model/healthz.types';
-import { HttpHealthzService } from './http-healthz.service';
+import {
+  HttpHealthzService,
+  HttpHealthzServiceType
+} from './http-healthz.service';
 
 describe('HttpHealthzService', () => {
-  // arrange
-  const httpHealthzService = new HttpHealthzService();
-  // act
-  // assert
+  let httpHealthzService: HttpHealthzServiceType;
+
+  beforeEach(() => {
+    httpHealthzService = new HttpHealthzService();
+  });
+
   it ('should exist when imported', () => {
+    // arrange
+    // act
+    // assert
     expect(HttpHealthzService).toBeDefined();
   });
 
   it ('should exist when instantiated', () => {
+    // arrange
+    // act
+    // assert
     expect(httpHealthzService).toBeDefined();
   });
 
-  describe('getMessage', () => {
+  test('should return the correct response when invoked', async () => {
     // arrange
-    const httpHealthzService = new HttpHealthzService();
-    let httpResponse: null | HttpHealthzResponseType = null;
-    const expectedResult: HttpHealthzResponseType = { message: 'Welcome to the api.' }
+    let httpResponse: string | number = '';
+    const expectedResult = STATUS_OK;
 
     // act
-    httpResponse = httpHealthzService.getMessage();
+    httpResponse = await httpHealthzService.healthCheck();
 
     // assert
-    it ('should be a public method in the class when instantiated', () => {
-      expect(httpHealthzService.getMessage).toBeDefined();
-    });
-    it('should return the correct response object when called', () => {
-      expect(httpResponse).toEqual(expectedResult);
-    });
+    expect(httpHealthzService.healthCheck).toBeDefined();
+    expect(httpResponse).toEqual(expectedResult);
   });
 });
