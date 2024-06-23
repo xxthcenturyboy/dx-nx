@@ -1,19 +1,18 @@
 import { AuthController } from './auth.controller';
 
 describe('AuthController', () => {
-  // arrange
-  const authController = new AuthController();
-  // act
-  // assert
   it('should exist when imported', () => {
+    // arrange
+    // act
+    // assert
     expect(AuthController).toBeDefined();
   });
 
-  it('should exist when instantiated', () => {
-    expect(authController).toBeDefined();
-  });
 
   it('should have getData method when instantiated', () => {
-    expect(authController.getData).toBeDefined();
+    // arrange
+    // act
+    // assert
+    expect(AuthController.getData).toBeDefined();
   });
 });

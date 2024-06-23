@@ -32,7 +32,7 @@ async function run() {
   await configureExpress(app, {
     DEBUG: config.debug,
     SESSION_SECRET: config.sessionSecret
-  })
+  });
 
   const apiRoutes = new ApiRoutes(app);
   apiRoutes.loadRoutes();

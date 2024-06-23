@@ -15,6 +15,12 @@ export type RedisConstructorType = {
   isTest?: boolean;
 };
 
+export type RedisHealthzResponse = {
+  ping: boolean;
+  read: boolean;
+  write: boolean;
+};
+
 // export type RedisHealthzConstructorType = {
 //   logger: ApiLoggingClassType;
 //   cacheService: RedisServiceType;

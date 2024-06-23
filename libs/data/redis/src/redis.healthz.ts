@@ -10,6 +10,7 @@ import {
   ApiLoggingClass,
   ApiLoggingClassType
 } from '@dx/logger';
+import { RedisHealthzResponse } from './redis.types';
 
 export class RedisHealthzService {
   logger: ApiLoggingClassType;
@@ -74,6 +75,17 @@ export class RedisHealthzService {
     this.logger.logInfo('***************************************');
     this.logger.logInfo(' ');
     return false;
+  }
+
+  public async healthz(): Promise<RedisHealthzResponse> {
+    const ping = await this.testConnection();
+    const write = await this.testWrite();
+    const read = await this.testRead();
+    return {
+      ping,
+      read: read.test,
+      write
+    };
   }
 }
 
