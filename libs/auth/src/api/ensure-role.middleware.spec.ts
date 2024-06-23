@@ -13,10 +13,13 @@ import {
   userHasRole
 } from './ensure-role.middleware';
 import { ApiLoggingClass } from '@dx/logger';
-import { HttpResponse } from '@dx/server';
-import { USER_ROLE, UserModel } from '@dx/user';
+import { sendUnauthorized } from '@dx/server';
+import { USER_ROLE } from '@dx/user';
 
 jest.mock('@dx/logger');
+jest.mock('@dx/server', () => ({
+  sendUnauthorized: jest.fn()
+}));
 jest.mock('@dx/user');
 
 describe('ensureLoggedIn', () => {
@@ -24,8 +27,6 @@ describe('ensureLoggedIn', () => {
   let res: IResponse;
 
   const logErrorSpy = jest.spyOn(ApiLoggingClass.prototype, 'logError');
-  const logWarnSpy = jest.spyOn(ApiLoggingClass.prototype, 'logWarn');
-  const sendUnauthorizedSpy = jest.spyOn(HttpResponse.prototype, 'sendUnauthorized');
 
   beforeAll(() => {
     new ApiLoggingClass({ appName: 'Unit-Test' });
@@ -59,8 +60,7 @@ describe('ensureLoggedIn', () => {
       await hasAdminRole(req, res, next);
       // assert
       expect(logErrorSpy).toHaveBeenCalled();
-      expect(logWarnSpy).toHaveBeenCalled();
-      expect(sendUnauthorizedSpy).toHaveBeenCalled();
+      expect(sendUnauthorized).toHaveBeenCalled();
       expect(logErrorSpy).toHaveBeenCalledWith('No user ID');
     });
 
@@ -71,8 +71,7 @@ describe('ensureLoggedIn', () => {
       await hasAdminRole(req, res, next);
       // assert
       expect(logErrorSpy).toHaveBeenCalled();
-      expect(logWarnSpy).toHaveBeenCalled();
-      expect(sendUnauthorizedSpy).toHaveBeenCalled();
+      expect(sendUnauthorized).toHaveBeenCalled();
       expect(logErrorSpy).toHaveBeenCalledWith('no user with this id');
     });
 
@@ -84,8 +83,7 @@ describe('ensureLoggedIn', () => {
       // assert
       expect(logErrorSpy).toHaveBeenCalled();
       expect(logErrorSpy).toHaveBeenCalledWith('User is not authorized for this activity.');
-      expect(logWarnSpy).toHaveBeenCalled();
-      expect(sendUnauthorizedSpy).toHaveBeenCalled();
+      expect(sendUnauthorized).toHaveBeenCalled();
     });
 
     test('should call next when user does have admin role.', async () => {
@@ -110,8 +108,7 @@ describe('ensureLoggedIn', () => {
       await hasSuperAdminRole(req, res, next);
       // assert
       expect(logErrorSpy).toHaveBeenCalled();
-      expect(logWarnSpy).toHaveBeenCalled();
-      expect(sendUnauthorizedSpy).toHaveBeenCalled();
+      expect(sendUnauthorized).toHaveBeenCalled();
       expect(logErrorSpy).toHaveBeenCalledWith('No user ID');
     });
 
@@ -122,8 +119,7 @@ describe('ensureLoggedIn', () => {
       await hasSuperAdminRole(req, res, next);
       // assert
       expect(logErrorSpy).toHaveBeenCalled();
-      expect(logWarnSpy).toHaveBeenCalled();
-      expect(sendUnauthorizedSpy).toHaveBeenCalled();
+      expect(sendUnauthorized).toHaveBeenCalled();
       expect(logErrorSpy).toHaveBeenCalledWith('no user with this id');
     });
 
@@ -135,8 +131,7 @@ describe('ensureLoggedIn', () => {
       // assert
       expect(logErrorSpy).toHaveBeenCalled();
       expect(logErrorSpy).toHaveBeenCalledWith('User is not authorized for this activity.');
-      expect(logWarnSpy).toHaveBeenCalled();
-      expect(sendUnauthorizedSpy).toHaveBeenCalled();
+      expect(sendUnauthorized).toHaveBeenCalled();
     });
 
     test('should call next when user does have super admin role.', async () => {

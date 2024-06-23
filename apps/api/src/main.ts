@@ -7,7 +7,7 @@ import {
 import { ApiLoggingClass } from '@dx/logger';
 import { DxPostgresDb } from './data/dx-postgres.db';
 import { DxRedisCache } from './data/dx-redis.cache';
-import { RoutesV1 } from './routes/v1.routes';
+import { ApiRoutes } from './routes/api.routes';
 import { configureExpress } from'./express';
 
 const app = express();
@@ -34,8 +34,8 @@ async function run() {
     SESSION_SECRET: config.sessionSecret
   })
 
-  const v1Routes = new RoutesV1(app);
-  v1Routes.loadRoutes();
+  const apiRoutes = new ApiRoutes(app);
+  apiRoutes.loadRoutes();
 
   app.listen(config.port, config.host, () => {
     logger.logInfo(

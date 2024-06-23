@@ -1,30 +1,16 @@
-import { Express } from 'express';
+import { Router } from 'express';
 
 import {
-  HealthzRoutes,
-  HealthzRoutesType
-} from '@dx/healthz';
-import {
-  UserRoutes,
-  UserRoutesType
+  UserRoutes
 } from '@dx/user';
 
 export class RoutesV1 {
-  app: Express;
-  healthzRoutes: HealthzRoutesType;
-  userRoutes: UserRoutesType;
+  static configure() {
+    const router = Router();
+    router.use('/user', UserRoutes.configure());
 
-  constructor(app: Express) {
-    this.app = app;
-    this.healthzRoutes = new HealthzRoutes();
-    this.userRoutes = new UserRoutes();
-  }
-
-  public loadRoutes() {
-    if (this.app) {
-      this.app.use('/', HealthzRoutes.configure());
-      this.app.use('/v1', this.healthzRoutes.getRoutes());
-      this.app.use('/v1', this.userRoutes.getRoutes());
-    }
+    return router;
   }
 }
+
+export type RoutesV1Type = typeof RoutesV1.prototype;

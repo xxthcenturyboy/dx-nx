@@ -4,38 +4,56 @@ import {
   Response
 } from "express";
 
-export class HttpResponse {
-  public sendOk(req: Request, res: Response) {
-    return;
-  }
+export function destroySession(req: Request, res: Response) {
+  return;
+}
 
-  public sendFile(req: Request, res: Response, pathToFile: string, fileName: string) {
-    return;
-  }
+export function send400(req: Request, res: Response) {
+  res.send(400);
+  res.end();
+}
 
-  public endpointNotFound(req: Request, res: Response, next: NextFunction) {
-    return;
-  }
+export function sendOK(req: Request, res: Response) {
+  res.send(200);
+  res.end();
+  return;
+}
 
-  public sendBadRequest(req: Request, res: Response, err: Error | string) {
-    return;
-  }
+export function sendFile(req: Request, res: Response, pathToFile: string, fileName: string) {
+  res.download(pathToFile);
+  return;
+}
 
-  public sendUnauthorized(req: Request, res: Response, message: string) {
-    return;
-  }
+export function endpointNotFound(req: Request, res: Response, next: NextFunction) {
+  send400(req, res);
+  return;
+}
 
-  public sendForbidden(req: Request, res: Response, message: string) {
-    return;
-  }
+export function sendBadRequest(req: Request, res: Response, err: Error | string) {
+  send400(req, res);
+  return;
+}
 
-  public sendNotFound(req: Request, res: Response, message: string) {
-    return;
-  }
+export function sendUnauthorized(req: Request, res: Response, message: string) {
+  destroySession(req, res);
+  send400(req, res);
+  return;
+}
 
-  public sendMethodNotAllowed(req: Request, res: Response, message: string) {
-    return;
-  }
+export function sendForbidden(req: Request, res: Response, message: string) {
+  destroySession(req, res);
+  send400(req, res);
+  return;
+}
+
+export function sendNotFound(req: Request, res: Response, message: string) {
+  send400(req, res);
+  return;
+}
+
+export function sendMethodNotAllowed(req: Request, res: Response, message: string) {
+  send400(req, res);
+  return;
 }
 
 export function handleError(

@@ -4,7 +4,7 @@ import {
   NextFunction
 } from 'express';
 import { ApiLoggingClass } from '@dx/logger';
-import { HttpResponse } from '@dx/server';
+import { sendUnauthorized } from '@dx/server';
 import {
   UserModel,
   USER_ROLE
@@ -48,8 +48,7 @@ export async function hasAdminRole(
   } catch (err) {
     const msg = err.message || err;
     ApiLoggingClass.instance.logError(msg);
-    const httpResponse = new HttpResponse();
-    httpResponse.sendUnauthorized(req, res, msg);
+    sendUnauthorized(req, res, msg);
   }
 };
 
@@ -74,7 +73,6 @@ export async function hasSuperAdminRole(
     const msg = err.message || err;
     ApiLoggingClass.instance.logError(msg);
     ApiLoggingClass.instance.logError(err);
-    const httpResponse = new HttpResponse();
-    httpResponse.sendUnauthorized(req, res, msg);
+    sendUnauthorized(req, res, msg);
   }
 };

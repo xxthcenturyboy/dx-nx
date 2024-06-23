@@ -7,18 +7,20 @@ import { Response } from 'jest-express/lib/response';
 import { StatusCodes } from 'http-status-codes';
 
 import { ApiLoggingClass } from '@dx/logger';
-import { HttpResponse } from './http-response';
+import {
+  sendBadRequest,
+  sendForbidden
+} from './http-responses';
 import { handleError } from './error-handler';
 
 jest.mock('@dx/logger');
+jest.mock('./http-responses.ts');
 
 describe('handleError', () => {
   let req: IRequest;
   let res: IResponse;
 
   const logErrorSpy = jest.spyOn(ApiLoggingClass.prototype, 'logError');
-  const sendBadRequestSpy = jest.spyOn(HttpResponse.prototype, 'sendBadRequest');
-  const sendForbiddenSpy = jest.spyOn(HttpResponse.prototype, 'sendForbidden');
 
   beforeAll(() => {
     new ApiLoggingClass({ appName: 'Unit-Test' });
@@ -44,7 +46,7 @@ describe('handleError', () => {
     handleError(req, res, { message }, message);
     // assert
     expect(logErrorSpy).toHaveBeenCalled();
-    expect(sendBadRequestSpy).toHaveBeenCalled();
+    expect(sendBadRequest).toHaveBeenCalled();
   });
 
   it('should log error and send forbidden when error code is FORBIDDEN', () => {
@@ -58,7 +60,7 @@ describe('handleError', () => {
     handleError(req, res, error);
     // assert
     expect(logErrorSpy).toHaveBeenCalled();
-    expect(sendForbiddenSpy).toHaveBeenCalled();
+    expect(sendForbidden).toHaveBeenCalled();
   });
 
   it('should log error and send bad request when no message is present', () => {
@@ -72,6 +74,6 @@ describe('handleError', () => {
     handleError(req, res, error);
     // assert
     expect(logErrorSpy).toHaveBeenCalled();
-    expect(sendBadRequestSpy).toHaveBeenCalled();
+    expect(sendBadRequest).toHaveBeenCalled();
   });
 });

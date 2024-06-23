@@ -5,7 +5,7 @@ import {
 import { StatusCodes } from 'http-status-codes';
 
 import { ApiLoggingClass } from '@dx/logger';
-import { HttpResponse } from './http-response';
+import { sendBadRequest, sendForbidden } from './http-responses';
 
 export function handleError(
   req: Request,
@@ -20,11 +20,10 @@ export function handleError(
     res.status(400);
   }
   const logger = ApiLoggingClass.instance;
-  const response = new HttpResponse;
 
   logger.logError(JSON.stringify(err), err);
   if (message) {
-    return response.sendBadRequest(req, res, message);
+    return sendBadRequest(req, res, message);
   }
 
   if (
@@ -35,11 +34,11 @@ export function handleError(
       err.hasOwnProperty('code')
       && err.code === StatusCodes.FORBIDDEN
     ) {
-      return response.sendForbidden(req, res, err.message);
+      return sendForbidden(req, res, err.message);
     }
 
-    return response.sendBadRequest(req, res, err);
+    return sendBadRequest(req, res, err);
   }
 
-  response.sendBadRequest(req, res, err.message || err);
+  sendBadRequest(req, res, err.message || err);
 }

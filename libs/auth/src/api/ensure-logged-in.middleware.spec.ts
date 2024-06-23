@@ -9,18 +9,19 @@ import { next } from 'jest-express/lib/next';
 
 import { ensureLoggedIn } from './ensure-logged-in.middleware';
 import { ApiLoggingClass } from '@dx/logger';
-import { HttpResponse } from '@dx/server';
+import { sendUnauthorized } from '@dx/server';
 import { TokenService } from './token.service';
 
 jest.mock('@dx/logger');
+jest.mock('@dx/server', () => ({
+  sendUnauthorized: jest.fn()
+}));
 
 describe('ensureLoggedIn', () => {
   let req: IRequest;
   let res: IResponse;
 
   const logErrorSpy = jest.spyOn(ApiLoggingClass.prototype, 'logError');
-  const logWarnSpy = jest.spyOn(ApiLoggingClass.prototype, 'logWarn');
-  const sendUnauthorizedSpy = jest.spyOn(HttpResponse.prototype, 'sendUnauthorized');
 
   beforeAll(() => {
     new ApiLoggingClass({ appName: 'Unit-Test' });
@@ -59,8 +60,7 @@ describe('ensureLoggedIn', () => {
     await ensureLoggedIn(req, res, next);
     // assert
     expect(logErrorSpy).toHaveBeenCalled();
-    expect(logWarnSpy).toHaveBeenCalled();
-    expect(sendUnauthorizedSpy).toHaveBeenCalled();
+    expect(sendUnauthorized).toHaveBeenCalled();
   });
 
   test('should sendUnauthorized when no token is present on the request', async () => {
@@ -72,8 +72,7 @@ describe('ensureLoggedIn', () => {
     await ensureLoggedIn(req, res, next);
     // assert
     expect(logErrorSpy).toHaveBeenCalled();
-    expect(logWarnSpy).toHaveBeenCalled();
-    expect(sendUnauthorizedSpy).toHaveBeenCalled();
+    expect(sendUnauthorized).toHaveBeenCalled();
     expect(logErrorSpy).toHaveBeenCalledWith('Failed to authenticate tokens: No token MOFO');
   });
 
@@ -83,8 +82,7 @@ describe('ensureLoggedIn', () => {
     await ensureLoggedIn(req, res, next);
     // assert
     expect(logErrorSpy).toHaveBeenCalled();
-    expect(logWarnSpy).toHaveBeenCalled();
-    expect(sendUnauthorizedSpy).toHaveBeenCalled();
+    expect(sendUnauthorized).toHaveBeenCalled();
     expect(logErrorSpy).toHaveBeenCalledWith('Failed to authenticate tokens: Refresh token is invalid');
   });
 
@@ -100,8 +98,7 @@ describe('ensureLoggedIn', () => {
     await ensureLoggedIn(req, res, next);
     // assert
     expect(logErrorSpy).toHaveBeenCalled();
-    expect(logWarnSpy).toHaveBeenCalled();
-    expect(sendUnauthorizedSpy).toHaveBeenCalled();
+    expect(sendUnauthorized).toHaveBeenCalled();
     expect(logErrorSpy).toHaveBeenCalledWith('Failed to authenticate tokens: Auth Token Invalid');
   });
 });

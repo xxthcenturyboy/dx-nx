@@ -5,7 +5,7 @@ import {
 } from 'express';
 import { ApiLoggingClass } from '@dx/logger';
 import { TokenService } from './token.service';
-import { HttpResponse } from '@dx/server';
+import { sendUnauthorized } from '@dx/server';
 
 export async function ensureLoggedIn(
   req: Request,
@@ -45,7 +45,6 @@ export async function ensureLoggedIn(
     const token = new TokenService(req, res);
     token.invalidateTokens(res);
     ApiLoggingClass.instance.logError(`Failed to authenticate tokens: ${msg}`);
-    const httpResponse = new HttpResponse();
-    httpResponse.sendUnauthorized(req, res, msg);
+    sendUnauthorized(req, res, msg);
   }
 }

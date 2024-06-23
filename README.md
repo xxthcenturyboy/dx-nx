@@ -10,6 +10,10 @@ Enhance your Nx experience by installing [Nx Console](https://nx.dev/nx-console)
 provides an interactive UI to view your projects, run tasks, generate code, and more! Available for VSCode, IntelliJ and
 comes with a LSP for Vim users.
 
+## Initial setup
+Run `docker compose up -d` <-- starts the Docker dev environment
+Run `make initialize-pg` <-- creates the db and initial seed of data. Only run once!
+
 ## Start the application
 
 Run `npx nx serve api` to start the development server. Happy coding!

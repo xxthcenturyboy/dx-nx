@@ -1,23 +1,25 @@
 import { HealthzRoutes } from './healthz.routes';
 
 describe('HealthzRoutes', () => {
-  // arrange
-  const healthzRoutes = new HealthzRoutes();
-  // act
-  // assert
   it ('should exist when imported', () => {
+    // arrange
+    // act
+    // assert
     expect(HealthzRoutes).toBeDefined();
   });
 
   it ('should have static configure method without being instantiated', () => {
+    // arrange
+    // act
+    // assert
     expect(HealthzRoutes.configure).toBeDefined();
   });
 
-  it ('should exist when instantiated', () => {
-    expect(healthzRoutes).toBeDefined();
-  });
-
-  it ('should have getRoutes method when instantiated', () => {
-    expect(healthzRoutes.getRoutes).toBeDefined();
+  it('should get routes when invoked', () => {
+    // arrange
+    // act
+    const routes = HealthzRoutes.configure();
+    // assert
+    expect(routes).toBeDefined();
   });
 });
