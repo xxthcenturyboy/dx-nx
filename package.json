@@ -2,7 +2,10 @@
   "name": "@dx/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "migrate": "sequelize db:migrate",
+    "unmigrate": "sequelize db:migrate:undo"
+  },
   "private": true,
   "dependencies": {
     "axios": "^1.6.0",
