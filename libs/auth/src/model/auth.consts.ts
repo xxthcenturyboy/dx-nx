@@ -5,3 +5,9 @@ export const AUTH_TOKEN_NAMES = {
   EXP: 'exp',
   REFRESH:  'refresh'
 };
+
+export const USER_LOOKUPS = {
+  EMAIL: 'email',
+  PHONE: 'phone',
+  USERNAME: 'username'
+};

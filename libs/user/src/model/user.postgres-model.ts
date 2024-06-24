@@ -42,6 +42,8 @@ import {
 } from './user.consts';
 import { APP_DOMAIN } from '@dx/config';
 import { usernameValidator } from '../api/username.validator';
+import { UserEmailType } from './user.types';
+import { ApiLoggingClass } from '@dx/logger';
 
 @Table({
   modelName: USER_ENTITY_POSTGRES_DB_NAME,
@@ -73,7 +75,7 @@ export class UserModel extends Model<UserModel> {
 
   @Unique
   @Is('username', usernameValidator)
-  @AllowNull(false)
+  @AllowNull(true)
   @Column({ field: 'username', type: DataType.STRING(32), validate: { len: [0, 32] } })
   username: string;
 
@@ -181,6 +183,29 @@ export class UserModel extends Model<UserModel> {
       || this.emails
       || await UserEmailModel.findAllByUserId(this.id);
     return this.emails;
+  }
+
+  async getEmailData (): Promise<UserEmailType[]> {
+    if (
+      !Array.isArray(this.emails)
+      || this.emails.length
+    ) {
+      await this.getEmails();
+    }
+
+    const emailData = [];
+    for (const email of this.emails) {
+      emailData.push({
+        id: email.id,
+        email: email.email,
+        label: email.label,
+        default: email.default,
+        isDeleted: email.isDeleted,
+        isVerified: email.isVerified
+      });
+    }
+
+    return emailData;
   }
 
   async getEmail (email: string): Promise<UserEmailModelType | null> {
@@ -569,6 +594,35 @@ export class UserModel extends Model<UserModel> {
     user.setDataValue('otpCode', null);
 
     await user.save();
+  }
+
+  static async removeUser (id: string): Promise<boolean> {
+    try {
+      const emailDeleted = await UserEmailModel.destroy({
+        where: {
+          userId: id
+        },
+        force: true
+      });
+      const phoneDeleted = await UserPhoneModel.destroy({
+        where: {
+          userId: id
+        },
+        force: true
+      });
+      const userDeleted = await UserModel.destroy({
+        where: {
+          id
+        },
+        force: true
+      });
+
+      return !!userDeleted;
+    } catch (err) {
+      ApiLoggingClass.instance.logError(err);
+    }
+
+    return false;
   }
 }
 

@@ -1,12 +1,12 @@
 import { Router } from 'express';
 
-import {
-  UserRoutes
-} from '@dx/user';
+import { AuthRoutes } from '@dx/auth';
+import { UserRoutes } from '@dx/user';
 
 export class RoutesV1 {
   static configure() {
     const router = Router();
+    router.use('/auth', AuthRoutes.configure());
     router.use('/user', UserRoutes.configure());
 
     return router;

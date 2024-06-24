@@ -5,7 +5,9 @@ export class AuthRoutes {
   static configure() {
     const router = Router();
 
-    router.get('/', AuthController.getData);
+    router.get('/lookup', AuthController.userLookup);
+    router.get('/token-invite', AuthController.getByToken);
+    router.post('/signup', AuthController.signup);
 
     return router;
   }

@@ -149,6 +149,12 @@ export class UserEmailModel extends Model<UserEmailModel> {
     // Disallow dots and plus
     const emailParts = cleanedEmail.split('@');
     const [prefix, domain] = emailParts;
+    if (
+      !prefix
+      || !domain
+    ) {
+      throw new Error('The email you provided is not valid.');
+    }
 
     const hasInvalidCharsInPrefix = /\+/.test(prefix);
     const badGmail = domain === 'gmail.com' && /[\+]/.test(prefix);

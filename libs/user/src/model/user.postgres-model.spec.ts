@@ -40,6 +40,7 @@ describe('User Models', () => {
     });
 
     afterAll(async () => {
+
       await db.close();
     });
 

@@ -2,6 +2,7 @@ export {
   UserRoutes,
   UserRoutesType
 } from './api/user.routes';
+export { getUserProfileState } from './api/user-profile';
 export {
   USER_ENTITY_POSTGRES_DB_NAME,
   USER_ROLE,
@@ -15,7 +16,8 @@ export {
 } from './model/user.postgres-model';
 export {
   UserEmailType,
-  UserPhoneType
+  UserPhoneType,
+  UserProfileStateType
 } from './model/user.types';
 
 /// email

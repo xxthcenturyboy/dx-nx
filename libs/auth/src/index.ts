@@ -12,3 +12,12 @@ export {
   hasSuperAdminRole,
   userHasRole
 } from './api/ensure-role.middleware';
+export {
+  GetByTokenQueryType,
+  TokenConfirmationResponseType,
+  UserLookupQueryType,
+  UserLookupResponseType
+} from './model/auth.types';
+export {
+  USER_LOOKUPS
+} from './model/auth.consts';

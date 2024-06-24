@@ -35,7 +35,7 @@ export function sendFile(req: Request, res: Response, pathToFile: string, fileNa
 }
 
 export function sendMethodNotAllowed(req: Request, res: Response, message: string): void {
-  ApiLoggingClass.instance.logWarn(`No Method: ${req.url}`);
+  ApiLoggingClass.instance.logWarn(`No Method: ${req.method} ${req.url}`);
   send400(res, {
     description: getReasonPhrase(StatusCodes.METHOD_NOT_ALLOWED),
     status: StatusCodes.METHOD_NOT_ALLOWED,
@@ -45,7 +45,7 @@ export function sendMethodNotAllowed(req: Request, res: Response, message: strin
 }
 
 export function endpointNotFound(req: Request, res: Response, next: NextFunction): void {
-  ApiLoggingClass.instance.logError(`Endpoint not found: ${req.url}`);
+  ApiLoggingClass.instance.logError(`Endpoint not found: ${req.method} ${req.url}`);
   sendMethodNotAllowed(req, res, 'API endpoint not found');
 }
 
