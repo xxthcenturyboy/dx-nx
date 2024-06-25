@@ -8,7 +8,8 @@ import {
   UserLookupResponseType,
   USER_LOOKUPS
 } from '@dx/auth';
-import { SignupPayloadType } from 'libs/auth/src/model/auth.types';
+import { LoginPaylodType, SetupPasswordsPaylodType, SignupPayloadType } from 'libs/auth/src/model/auth.types';
+import { UserProfileStateType } from '@dx/user';
 
 describe('v1 Auth Routes', () => {
   describe('GET /api/v1/auth/lookup', () => {
@@ -99,6 +100,185 @@ describe('v1 Auth Routes', () => {
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
         expect(typedError.response.data.message).toEqual('Error in auth get user by token handler: Token has expired.');
+      }
+    });
+  });
+
+  describe('POST /api/v1/auth/login', () => {
+    test('should return an error when email does not exist', async () => {
+      const paylod: LoginPaylodType = {
+        email: 'not-in-this-system@useless.com',
+        password: 'password'
+      };
+
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/auth/login',
+        method: 'POST',
+        data: paylod
+      };
+
+      try {
+        expect(await axios.request(request)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // assert
+        expect(typedError.response.status).toBe(400);
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toEqual('This is not a valid username.');
+      }
+    });
+
+    test('should return an error when password is incorrect', async () => {
+      const paylod: LoginPaylodType = {
+        email: 'du.dx.software@gmail.com',
+        password: 'password'
+      };
+
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/auth/login',
+        method: 'POST',
+        data: paylod
+      };
+
+      try {
+        expect(await axios.request(request)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // assert
+        expect(typedError.response.status).toBe(400);
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toEqual('Incorrect username or password.');
+      }
+    });
+
+    test('should return user profile when login is successful', async () => {
+      const paylod: LoginPaylodType = {
+        email: 'du.dx.software@gmail.com',
+        password: 'advancedbasics1'
+      };
+
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/auth/login',
+        method: 'POST',
+        data: paylod
+      };
+
+      const response = await axios.request<UserProfileStateType>(request);
+
+      expect(response.status).toEqual(200);
+      expect(response.data).toBeDefined();
+      expect(response.data.emails).toHaveLength(1);
+      expect(response.data.phones).toHaveLength(1);
+    });
+  });
+
+  describe('POST /api/v1/auth/logout', () => {
+    test('should return true on successful logout', async () => {
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/auth/logout',
+        method: 'POST'
+      };
+
+      const response = await axios.request<{ loggedOut: boolean }>(request);
+
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual({ loggedOut: true });
+    });
+  });
+
+  describe('POST /api/v1/auth/otp-lockout', () => {
+    test('should return an error when no id is sent', async () => {
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/auth/otp-lockout',
+        method: 'POST',
+        data: { id: '' }
+      };
+
+      try {
+        expect(await axios.request(request)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // assert
+        expect(typedError.response.status).toBe(400);
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toEqual('Request is invalid.');
+      }
+    });
+
+    test('should return an error when no id is not in system', async () => {
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/auth/otp-lockout',
+        method: 'POST',
+        data: { id: '4d2269d3-9bfc-4f2d-b66c-ab63ea1d2c6f' }
+      };
+
+      try {
+        expect(await axios.request(request)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // assert
+        expect(typedError.response.status).toBe(400);
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toContain('Error in OTP Lockout handler:');
+      }
+    });
+  });
+
+  describe('POST /api/v1/auth/refresh-token', () => {
+    test('should logout because cannot test the refresh on this yet - too dumb', async () => {
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/auth/refresh-token',
+        method: 'POST',
+        headers: {
+          cookies: ['refresh=refresh-token']
+        }
+      };
+
+      const response = await axios.request<{ loggedOut: boolean }>(request);
+
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual({ loggedOut: true });
+    });
+  });
+
+  describe('POST /api/v1/auth/request-reset', () => {
+    test('should return error when email does not exist', async () => {
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/auth/request-reset',
+        method: 'POST',
+        data: {
+          email: 'test@email.com'
+        }
+      };
+
+      try {
+        expect(await axios.request(request)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // assert
+        expect(typedError.response.status).toBe(400);
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toContain('Could not find');
+      }
+    });
+
+    test('should return error when email was not sent', async () => {
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/auth/request-reset',
+        method: 'POST',
+        data: {
+          email: ''
+        }
+      };
+
+      try {
+        expect(await axios.request(request)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // assert
+        expect(typedError.response.status).toBe(400);
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toEqual('Request is invalid.');
       }
     });
   });
@@ -222,6 +402,35 @@ describe('v1 Auth Routes', () => {
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
         expect(typedError.response.data.message).toContain('invalid email does not appear to be a valid email.');
+      }
+    });
+  });
+
+  describe('PUT /api/v1/auth/setup-password', () => {
+    test('should return an error with a bad ID', async () => {
+      // arrange
+      const payload: SetupPasswordsPaylodType = {
+        id: '4d2269d3-9bfc-4f2d-b66c-ab63ea1d2c6f',
+        password: 'password',
+        securityAA: 'Answer',
+        securityQQ: 'Question'
+      };
+
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/auth/setup-password',
+        method: 'PUT',
+        data: payload
+      };
+
+      try {
+        // act
+        expect(await axios.request(request)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // assert
+        expect(typedError.response.status).toBe(400);
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toContain('Error in auth setup password:');
       }
     });
   });

@@ -42,7 +42,7 @@ import {
 } from './user.consts';
 import { APP_DOMAIN } from '@dx/config';
 import { usernameValidator } from '../api/username.validator';
-import { UserEmailType } from './user.types';
+import { UserEmailType, UserPhoneType } from './user.types';
 import { ApiLoggingClass } from '@dx/logger';
 
 @Table({
@@ -193,7 +193,7 @@ export class UserModel extends Model<UserModel> {
       await this.getEmails();
     }
 
-    const emailData = [];
+    const emailData: UserEmailType[] = [];
     for (const email of this.emails) {
       emailData.push({
         id: email.id,
@@ -239,6 +239,32 @@ export class UserModel extends Model<UserModel> {
       || this.phones
       || await UserPhoneModel.findAllByUserId(this.id);
     return this.phones;
+  }
+
+  async getPhoneData (): Promise<UserPhoneType[]> {
+    if (
+      !Array.isArray(this.phones)
+      || this.phones.length
+    ) {
+      await this.getPhones();
+    }
+
+    const phoneData: UserPhoneType[] = [];
+    for (const phone of this.phones) {
+      phoneData.push({
+        id: phone.id,
+        countryCode: phone.countryCode,
+        default: phone.default,
+        isDeleted: phone.isDeleted,
+        isSent: phone.isSent,
+        isVerified: phone.isVerified,
+        label: phone.label,
+        phone: phone.phone,
+        phoneFormatted: phone.phoneFormatted,
+      });
+    }
+
+    return phoneData;
   }
 
   async getPhone (phone: string): Promise<UserPhoneModelType | null> {

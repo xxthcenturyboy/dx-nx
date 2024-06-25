@@ -21,7 +21,7 @@ export async function getUserProfileState(
       isSuperAdmin: user.isSuperAdmin,
       lastName: user.lastName,
       optInBeta: user.optInBeta,
-      phones: user.phones,
+      phones: await user.getPhoneData(),
       restrictions: user.restrictions || [],
       role: user.roles,
       username: user.username

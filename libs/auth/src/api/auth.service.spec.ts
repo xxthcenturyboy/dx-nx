@@ -15,6 +15,7 @@ import {
 } from '@dx/user';
 import {
   GetByTokenQueryType,
+  LoginPaylodType,
   SessionData,
   SignupPayloadType,
   UserLookupQueryType,
@@ -195,6 +196,102 @@ describe('AuthService', () => {
       });
     });
 
+    describe('lockoutFromOtpEmail', () => {
+      it('should exist', () => {
+        expect(authService.lockoutFromOtpEmail).toBeDefined();
+      });
+
+      test('should throw when id does not exist', async () => {
+        // arrange
+        // act
+        try {
+          expect(await authService.lockoutFromOtpEmail('4d2269d3-9bfc-4f2d-b66c-ab63ea1d2c6f')).toThrow();
+        } catch (err) {
+          // assert
+          expect(err.message).toContain('Error in OTP Lockout handler:');
+        }
+      });
+    });
+
+    describe('login', () => {
+      it('should exist', () => {
+        expect(authService.login).toBeDefined();
+      });
+
+      test('should throw when email does not exist', async () => {
+        // arrange
+        const payload: LoginPaylodType = {
+          email: 'not-in-this-system@useless.com',
+          password: '',
+        };
+        // act
+        try {
+          expect(await authService.login(payload)).toThrow();
+        } catch (err) {
+          // assert
+          expect(err.message).toEqual('This is not a valid username.');
+        }
+      });
+
+      test('should throw when passwords is incorrect', async () => {
+        // arrange
+        const payload: LoginPaylodType = {
+          email: 'du.dx.software@gmail.com',
+          password: 'password',
+        };
+        // act
+        try {
+          expect(await authService.login(payload)).toThrow();
+        } catch (err) {
+          // assert
+          expect(err.message).toEqual('Incorrect username or password.');
+        }
+      });
+
+      test('should return user profile upon successful login', async () => {
+        // arrange
+        const payload: LoginPaylodType = {
+          email: 'du.dx.software@gmail.com',
+          password: 'advancedbasics1',
+        };
+        // act
+        const user = await authService.login(payload);
+        // console.log(user);
+        // assert
+        expect(user).toBeDefined();
+        expect((user as UserProfileStateType).emails).toHaveLength(1);
+        expect((user as UserProfileStateType).phones).toHaveLength(1);
+      });
+    });
+
+    describe('requestReset', () => {
+      it('should exist', () => {
+        expect(authService.requestReset).toBeDefined();
+      });
+
+      test('should throw when email does not exist', async () => {
+        // arrange
+        // act
+        try {
+          expect(await authService.requestReset('not-in-this-system@useless.com')).toThrow();
+        } catch (err) {
+          // assert
+          expect(err.message).toContain('Could not find');
+        }
+      });
+
+      test('should throw when no email is sent', async () => {
+        // arrange
+        // act
+        try {
+          expect(await authService.requestReset('')).toThrow();
+        } catch (err) {
+          // assert
+          expect(err.message).toEqual('Request is invalid.');
+        }
+      });
+    });
+
     describe('signup', () => {
       const STRONG_PW = 'ajf349234jla_(@kaldj';
       it('should exist', () => {
@@ -306,7 +403,6 @@ describe('AuthService', () => {
         };
         // act
         const user = await authService.signup(payload, session);
-        console.log(user);
         // assert
         expect(user).toBeDefined();
         expect((user as UserProfileStateType).emails).toHaveLength(1);

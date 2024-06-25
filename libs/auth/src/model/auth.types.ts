@@ -20,6 +20,22 @@ export type TokenConfirmationResponseType = {
   username: string
 };
 
+export type LoginPaylodType = {
+  email: string;
+  password: string;
+};
+
+export type OtpLockoutResponseType = {
+  locked: boolean;
+};
+
+export type SetupPasswordsPaylodType = {
+  id: string;
+  password: string;
+  securityAA: string;
+  securityQQ: string;
+};
+
 export type SessionData = {
   userId?: string;
   refreshToken?: string;

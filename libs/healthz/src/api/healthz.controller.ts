@@ -12,10 +12,17 @@ import {
   STATUS_ERROR,
   STATUS_OK
 } from "../model/healthz.const";
+import {
+  HealthzHttpType,
+  HealthzMemoryType,
+  HealthzPostgresType,
+  HealthzRedisType,
+  HealthzStatusType
+} from '../model/healthz.types';
 import { ApiLoggingClass } from "@dx/logger";
 
 const HttpHealth = {
-  getHealth: async function() {
+  getHealth: async function(): Promise<HealthzHttpType> {
     const httpService = new HttpHealthzService();
     return {
       status: await httpService.healthCheck()
@@ -24,7 +31,7 @@ const HttpHealth = {
 }
 
 const MemoryHealth = {
-  getHealth: function() {
+  getHealth: function(): HealthzMemoryType {
     const usage = process.memoryUsage();
     const status =
       usage.rss
@@ -40,26 +47,8 @@ const MemoryHealth = {
   }
 };
 
-const RedisHealth = {
-  getHealth: async function() {
-    const redisHealths = new RedisHealthzService();
-    const result = await redisHealths.healthz();
-    const status = (
-        result.ping
-        && result.read
-        && result.write
-      )
-      ? STATUS_OK
-      : STATUS_ERROR
-    return {
-      status,
-      profie: result
-    }
-  }
-};
-
 const PostgresHealth = {
-  getHealth: async function() {
+  getHealth: async function(): Promise<HealthzPostgresType> {
     const dbh = PostgresDbConnection.dbHandle;
     try {
       dbh.authenticate();
@@ -74,6 +63,24 @@ const PostgresHealth = {
     return {
       status: STATUS_ERROR,
       version: ''
+    }
+  }
+};
+
+const RedisHealth = {
+  getHealth: async function(): Promise<HealthzRedisType> {
+    const redisHealths = new RedisHealthzService();
+    const result = await redisHealths.healthz();
+    const status = (
+        result.ping
+        && result.read
+        && result.write
+      )
+      ? STATUS_OK
+      : STATUS_ERROR
+    return {
+      status,
+      profile: result
     }
   }
 };
@@ -94,7 +101,7 @@ export const HealthzController = {
       ? STATUS_OK
       : STATUS_ERROR;
 
-    const healthz = {
+    const healthz: HealthzStatusType = {
       status: apiStatus,
       http,
       memory,

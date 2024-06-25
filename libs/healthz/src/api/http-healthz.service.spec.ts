@@ -1,5 +1,4 @@
 import { STATUS_OK } from '../model/healthz.const';
-import { HttpHealthzResponseType } from '../model/healthz.types';
 import {
   HttpHealthzService,
   HttpHealthzServiceType

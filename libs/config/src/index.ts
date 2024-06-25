@@ -15,3 +15,7 @@ export {
   APP_DOMAIN
 } from './common/common-config.consts';
 export { isLocal } from './common/common-config.service';
+
+
+// Client
+export { CLIENT_APP_DOMAIN } from './client/client-config.consts';
