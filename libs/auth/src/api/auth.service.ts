@@ -20,12 +20,14 @@ import {
   UserLookupResponseType
 } from '../model/auth.types';
 import {
+  CLIENT_ROUTE,
   USER_LOOKUPS
 } from '../model/auth.consts';
 import {
   ApiLoggingClass,
   ApiLoggingClassType
 } from '@dx/logger';
+import { MailSendgrid } from '@dx/mail';
 import { CLIENT_APP_DOMAIN } from '@dx/config';
 
 export class AuthService {
@@ -180,14 +182,13 @@ export class AuthService {
         throw new Error('No token created.');
       }
 
-      // TODO: Wire up email
-      // const mail = new MailClass();
-      // const inviteUrl = `/auth/z?route=${ZPagesFrontendRoute.RESET}&token=${token}`;
+      const mail = new MailSendgrid();
+      const inviteUrl = `/auth/z?route=${CLIENT_ROUTE.RESET}&token=${token}`;
       // const shortLink = await ShortLinkModel.generateShortlink(inviteUrl);
+      const shortLink = `${inviteUrl}`;
 
-      // const resetMessageId = await mail.sendReset(email, shortLink);
+      const resetMessageId = await mail.sendReset(email, shortLink);
 
-      const resetMessageId = 'temp';
       await UserEmailModel.updateMessageInfo(email, resetMessageId);
 
       return { success: true };

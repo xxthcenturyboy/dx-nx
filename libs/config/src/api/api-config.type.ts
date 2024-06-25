@@ -7,6 +7,11 @@ export type AuthConfigType = {
   jwtSecret: string;
 }
 
+export type SendgridConfigType = {
+  apiKey: string;
+  url: string;
+};
+
 export type ApiConfigType = {
   appName: string;
   auth: AuthConfigType;
@@ -18,5 +23,6 @@ export type ApiConfigType = {
   port: number;
   postgresDbh: typeof Sequelize.prototype;
   redis: RedisServiceType;
+  sendgrid: SendgridConfigType;
   sessionSecret: string;
 };

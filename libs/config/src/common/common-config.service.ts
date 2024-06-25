@@ -1,4 +1,7 @@
-import { LOCAL_ENV_NAME } from "./common-config.consts";
+import {
+  LOCAL_ENV_NAME,
+  PROD_ENV_NAME
+} from "./common-config.consts";
 
 export function getEnvironment() {
   return {
@@ -25,4 +28,9 @@ export function isDebug() {
 export function isLocal() {
   const env = getEnvironment();
   return env.NODE_ENV === LOCAL_ENV_NAME;
+}
+
+export function isProd() {
+  const env = getEnvironment();
+  return env.NODE_ENV === PROD_ENV_NAME;
 }

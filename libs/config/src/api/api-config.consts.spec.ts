@@ -4,7 +4,9 @@ import {
   APP_PREFIX,
   CRYPT_KEY,
   JWT_SECRET,
-  POSTGRES_URI
+  POSTGRES_URI,
+  SENDGRID_API_KEY,
+  SENDGRID_URL
 } from './api-config.consts';
 
 describe('API_APP_NAME', () => {
@@ -58,5 +60,23 @@ describe('POSTGRES_URI', () => {
   // assert
   it('should exist when imported', () => {
     expect(POSTGRES_URI).toBeDefined();
+  });
+});
+
+describe('SENDGRID_API_KEY', () => {
+  // arrange
+  // act
+  // assert
+  it('should exist when imported', () => {
+    expect(SENDGRID_API_KEY).toBeDefined();
+  });
+});
+
+describe('SENDGRID_URL', () => {
+  // arrange
+  // act
+  // assert
+  it('should exist when imported', () => {
+    expect(SENDGRID_URL).toBeDefined();
   });
 });

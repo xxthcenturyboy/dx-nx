@@ -11,3 +11,10 @@ export const USER_LOOKUPS = {
   PHONE: 'phone',
   USERNAME: 'username'
 };
+
+export const CLIENT_ROUTE = {
+  INVITE: 'invite',
+  OTP_LOCK: 'otp-lock',
+  RESET: 'reset',
+  VALIDATE_EMAIL: 'validate-email'
+};

@@ -16,6 +16,13 @@ services:
       ports:
           - "5433:5432"
       container_name: "postgres"
+  sendgrid:
+    image: ghashange/sendgrid-mock:1.7.2
+    container_name: 'sendgrid'
+    ports:
+      - '7070:3000'
+    environment:
+      - API_KEY=${SENDGRID_API_KEY}
   monorepo-node-20:
     extends:
         file: ./docker-compose.base.yml
@@ -34,9 +41,11 @@ services:
     depends_on:
         - redis
         - postgres
+        - sendgrid
     links:
         - redis
         - postgres
+        - sendgrid
     environment:
         - ROOT_DIR=/app
 secrets:

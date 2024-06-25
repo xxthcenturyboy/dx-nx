@@ -54,7 +54,11 @@ This package utilizes a custom generator. To add a new generator run the followi
 
 To utilize a custom generator, add it to the Makefile, or type the following:
 
-`nx generate @myorg/plugins-nx:<custom-generator-name>`
+`nx generate @dx/plugins-nx:<custom-generator-name>`
+
+Currently in Makefile is
+  `make lib-module-dry`
+  `make lib-module`
 
 ## Cloning this project
 

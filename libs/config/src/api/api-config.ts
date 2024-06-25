@@ -6,10 +6,15 @@ import {
   isDebug,
   getEnvironment
 } from "../common/common-config.service";
-import { LOCAL_ENV_NAME } from '../common/common-config.consts';
+import {
+  LOCAL_ENV_NAME,
+  PROD_ENV_NAME
+} from '../common/common-config.consts';
 import {
   API_APP_NAME,
   APP_PREFIX,
+  SENDGRID_API_KEY,
+  SENDGRID_URL
 } from './api-config.consts';
 import {
   REDIS_DELIMITER,
@@ -50,6 +55,10 @@ export function getApiConfig(
     port: Number(env.API_PORT) || 80,
     postgresDbh: postgresDbh,
     redis: redisService,
+    sendgrid: {
+      apiKey: SENDGRID_API_KEY,
+      url: SENDGRID_URL
+    },
     sessionSecret: env.SESSION_SECRET || ''
   };
 }

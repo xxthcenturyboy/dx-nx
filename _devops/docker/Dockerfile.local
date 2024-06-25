@@ -15,7 +15,7 @@ RUN yarn global add nx@latest nodemon pino-pretty eslint --no-optional
 RUN --mount=type=secret,id=npmrc,target=/root/.npmrc
 RUN --mount=type=secret,id=gitconfig,target=/root/.gitconfig
 
-EXPOSE 4000
+EXPOSE 7070 4000
 
 # CMD ["/bin/bash"]
 CMD ["/bin/bash", "./_devops/scripts/docker-start.dev.sh"]
