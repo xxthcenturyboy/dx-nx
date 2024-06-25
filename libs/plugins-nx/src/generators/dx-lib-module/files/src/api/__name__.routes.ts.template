@@ -5,36 +5,12 @@ import {
 } from "./<%= name %>.controller";
 
 export class <%= hyphenatedToTilteCaseConcatenated(name) %>Routes {
-  <%= stripHyphens(name) %>Controller: <%= hyphenatedToTilteCaseConcatenated(name) %>ControllerType;
-  router: Router;
-  routes: Router[];
-
-  constructor() {
-    this.<%= stripHyphens(name) %>Controller = new <%= hyphenatedToTilteCaseConcatenated(name) %>Controller();
-    this.router = Router();
-    this.routes = [];
-  }
-
-  private loadRoutes() {
-    this.routes.push(
-      this.router.get('/', this.<%= stripHyphens(name) %>Controller.getData)
-    );
-  }
-
-  public getRoutes(): Router {
-    this.loadRoutes();
-    this.router.use('/<%= name %>', this.routes);
-    return this.router;
-  }
-
   static configure() {
-    const <%= stripHyphens(name) %>Controller = new <%= hyphenatedToTilteCaseConcatenated(name) %>Controller();
     const router = Router();
-    const routes: Router[] = [];
 
-    routes.push(router.get('/', <%= stripHyphens(name) %>Controller.getData));
+    router.get('/', <%= hyphenatedToTilteCaseConcatenated(name) %>Controller.getData);
 
-    return routes;
+    return router;
   }
 }
 
