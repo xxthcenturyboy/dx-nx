@@ -2,14 +2,12 @@ import { Sequelize } from 'sequelize-typescript';
 
 import { PostgresDbConnection } from '@dx/postgres';
 import { ApiLoggingClass } from '@dx/logger';
+import { EmailModel } from '@dx/email';
+import { PhoneModel } from '@dx/phone';
 import { UserModel } from './user.postgres-model';
-import { UserEmailModel } from './user-email.postgres-model';
-import { UserPhoneModel } from './user-phone.postgres-model';
 import { UserPrivilegeSetModel } from './user-privilege.postgres-model';
 import {
   USER_ENTITY_POSTGRES_DB_NAME,
-  USER_EMAIL_POSTGRES_DB_NAME,
-  USER_PHONE_POSTGRES_DB_NAME,
   USER_PRIVILEGES_POSTGRES_DB_NAME
 } from './user.consts';
 import {
@@ -28,8 +26,8 @@ describe('User Models', () => {
       const connection = new PostgresDbConnection({
         postgresUri: POSTGRES_URI,
         models: [
-          UserEmailModel,
-          UserPhoneModel,
+          EmailModel,
+          PhoneModel,
           UserPrivilegeSetModel,
           UserModel
         ]
@@ -39,7 +37,6 @@ describe('User Models', () => {
     });
 
     afterAll(async () => {
-
       await db.close();
     });
 
@@ -143,123 +140,6 @@ describe('User Models', () => {
       });
     });
 
-    describe('UserEmailModel', () => {
-      it('should exist when initialized', () => {
-        // arange
-        // act
-        // assert
-        expect(UserEmailModel).toBeDefined();
-        expect(UserEmailModel.isInitialized).toBeTruthy();
-        expect(UserEmailModel.name).toEqual(USER_EMAIL_POSTGRES_DB_NAME);
-        expect(UserEmailModel.primaryKeyAttribute).toEqual('id');
-      });
-
-      it('should have required attributes', () => {
-        // arrange
-        const attributes = UserEmailModel.getAttributes();
-        // act
-        // assert
-        expect(attributes.createdAt).toBeDefined();
-        expect(attributes.default).toBeDefined();
-        expect(attributes.deletedAt).toBeDefined();
-        expect(attributes.email).toBeDefined();
-        expect(attributes.isDeleted).toBeDefined();
-        expect(attributes.isVerified).toBeDefined();
-        expect(attributes.label).toBeDefined();
-        expect(attributes.lastSgMessageId).toBeDefined();
-        expect(attributes.lastVerificationSentAt).toBeDefined();
-        expect(attributes.token).toBeDefined();
-        expect(attributes.updatedAt).toBeDefined();
-        expect(attributes.userId).toBeDefined();
-        expect(attributes.verifiedAt).toBeDefined();
-      });
-
-      it('should have static methods', () => {
-        // arrange
-        // act
-        // assert
-        expect(UserEmailModel.assertEmailIsValid).toBeDefined();
-        expect(UserEmailModel.clearAllDefaultByUserId).toBeDefined();
-        expect(UserEmailModel.createOrFindOneByUserId).toBeDefined();
-        expect(UserEmailModel.findAllByUserId).toBeDefined();
-        expect(UserEmailModel.isEmailAvailable).toBeDefined();
-        expect(UserEmailModel.updateMessageInfo).toBeDefined();
-        expect(UserEmailModel.updateMessageInfoValidate).toBeDefined();
-        expect(UserEmailModel.validateEmail).toBeDefined();
-        expect(UserEmailModel.validateEmailWithToken).toBeDefined();
-      });
-
-      it('should have associations', () => {
-        // arrange
-        // act
-        // assert
-        expect(UserEmailModel.associations).toHaveProperty('user');
-        // @ts-expect-error - prototype exists
-        expect(UserEmailModel.prototype?.getUser).toBeDefined();
-        // @ts-expect-error - prototype exists
-        expect(UserEmailModel.prototype?.setUser).toBeDefined();
-        // @ts-expect-error - prototype exists
-        expect(UserEmailModel.prototype?.createUser).toBeDefined();
-      });
-    });
-
-    describe('UserPhoneModel', () => {
-      it('should exist when imported', () => {
-        // arange
-        // act
-        // assert
-        expect(UserPhoneModel).toBeDefined();
-        expect(UserPhoneModel.isInitialized).toBeTruthy();
-        expect(UserPhoneModel.name).toEqual(USER_PHONE_POSTGRES_DB_NAME);
-        expect(UserPhoneModel.primaryKeyAttribute).toEqual('id');
-      });
-
-      it('should have required attributes', () => {
-        // arrange
-        const attributes = UserPhoneModel.getAttributes();
-        // act
-        // assert
-        expect(attributes.countryCode).toBeDefined();
-        expect(attributes.createdAt).toBeDefined();
-        expect(attributes.default).toBeDefined();
-        expect(attributes.deletedAt).toBeDefined();
-        expect(attributes.isDeleted).toBeDefined();
-        expect(attributes.isSent).toBeDefined();
-        expect(attributes.isVerified).toBeDefined();
-        expect(attributes.label).toBeDefined();
-        expect(attributes.phone).toBeDefined();
-        expect(attributes.phoneFormatted).toBeDefined();
-        expect(attributes.twilioCodeSentAt).toBeDefined();
-        expect(attributes.twilioMessageId).toBeDefined();
-        expect(attributes.updatedAt).toBeDefined();
-        expect(attributes.userId).toBeDefined();
-        expect(attributes.verifiedAt).toBeDefined();
-      });
-
-      it('should have associations', () => {
-        // arrange
-        // act
-        // assert
-        expect(UserPhoneModel.associations).toHaveProperty('user');
-        // @ts-expect-error - prototype exists
-        expect(UserPhoneModel.prototype?.getUser).toBeDefined();
-        // @ts-expect-error - prototype exists
-        expect(UserPhoneModel.prototype?.setUser).toBeDefined();
-        // @ts-expect-error - prototype exists
-        expect(UserPhoneModel.prototype?.createUser).toBeDefined();
-      });
-
-      it('should have static methods', () => {
-        // arrange
-        // act
-        // assert
-        expect(UserPhoneModel.clearAllDefaultByUserId).toBeDefined();
-        expect(UserPhoneModel.createOrFindOneByUserId).toBeDefined();
-        expect(UserPhoneModel.findAllByUserId).toBeDefined();
-        expect(UserPhoneModel.isPhoneAvailable).toBeDefined();
-      });
-    });
-
     describe('UserPrivilegeSetModel', () => {
       it('should exist when imported', () => {
         // arange
@@ -291,22 +171,6 @@ describe('User Models', () => {
         // act
         // assert
         expect(UserModel).toBeDefined();
-      });
-    });
-    describe('UserEmailModel', () => {
-      it('should exist when imported', () => {
-        // arange
-        // act
-        // assert
-        expect(UserEmailModel).toBeDefined();
-      });
-    });
-    describe('UserPhoneModel', () => {
-      it('should exist when imported', () => {
-        // arange
-        // act
-        // assert
-        expect(UserPhoneModel).toBeDefined();
       });
     });
     describe('UserPrivilegeSetModel', () => {

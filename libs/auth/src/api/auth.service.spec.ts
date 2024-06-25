@@ -8,11 +8,11 @@ import {
 import { PostgresDbConnection } from '@dx/postgres';
 import {
   UserModel,
-  UserEmailModel,
-  UserPhoneModel,
   UserPrivilegeSetModel,
   UserProfileStateType
 } from '@dx/user';
+import { EmailModel } from '@dx/email';
+import { PhoneModel } from '@dx/phone';
 import {
   GetByTokenQueryType,
   LoginPaylodType,
@@ -40,8 +40,8 @@ describe('AuthService', () => {
       const connection = new PostgresDbConnection({
         postgresUri: POSTGRES_URI,
         models: [
-          UserEmailModel,
-          UserPhoneModel,
+          EmailModel,
+          PhoneModel,
           UserPrivilegeSetModel,
           UserModel
         ]

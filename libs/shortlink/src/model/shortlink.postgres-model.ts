@@ -14,7 +14,7 @@ import {
 import { CLIENT_APP_URL } from '@dx/config';
 import { ApiLoggingClass } from '@dx/logger';
 import {
-  dxEncryptionGenerateRandomValue,
+  randomId,
   malicousUrlCheck
 } from '@dx/utils';
 import { SHORTLINK_POSTGRES_DB_NAME } from '../model/shortlink.consts';
@@ -26,7 +26,7 @@ import { SHORTLINK_POSTGRES_DB_NAME } from '../model/shortlink.consts';
 })
 export class ShortLinkModel extends Model<ShortLinkModel> {
   @PrimaryKey
-  @Default(() => dxEncryptionGenerateRandomValue(10))
+  @Default(() => randomId())
   @Column(DataType.STRING)
   id: string;
 

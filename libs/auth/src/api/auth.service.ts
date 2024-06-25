@@ -3,11 +3,11 @@ import { Op } from 'sequelize';
 
 import {
   getUserProfileState,
-  UserEmailModel,
   UserModel,
-  UserPhoneModel,
   UserProfileStateType
 } from '@dx/user';
+import { EmailModel } from '@dx/email';
+import { PhoneModel } from '@dx/phone';
 import {
   GetByTokenQueryType,
   LoginPaylodType,
@@ -56,14 +56,14 @@ export class AuthService {
 
     try {
       if (type === USER_LOOKUPS.EMAIL) {
-        result.available = await UserEmailModel.isEmailAvailable(value);
+        result.available = await EmailModel.isEmailAvailable(value);
       }
 
       if (
         type === USER_LOOKUPS.PHONE
         && code
       ) {
-        result.available = await UserPhoneModel.isPhoneAvailable(value, code);
+        result.available = await PhoneModel.isPhoneAvailable(value, code);
       }
 
       if (type === USER_LOOKUPS.USERNAME) {
@@ -126,7 +126,7 @@ export class AuthService {
       password
     } = paylod;
 
-    const emailDoesNotExist = await UserEmailModel.isEmailAvailable(email);
+    const emailDoesNotExist = await EmailModel.isEmailAvailable(email);
     if (emailDoesNotExist) {
       throw new Error(`This is not a valid username.`);
     }
@@ -160,10 +160,10 @@ export class AuthService {
 
     try {
       if (!email.endsWith(`@${CLIENT_APP_DOMAIN}`)) {
-        await UserEmailModel.assertEmailIsValid(email);
+        await EmailModel.assertEmailIsValid(email);
       }
 
-      const existingEmailRecord = await UserEmailModel.findOne({
+      const existingEmailRecord = await EmailModel.findOne({
         where: {
           email,
           deletedAt: null,
@@ -189,7 +189,7 @@ export class AuthService {
 
       const resetMessageId = await mail.sendReset(email, shortLink);
 
-      await UserEmailModel.updateMessageInfo(email, resetMessageId);
+      await EmailModel.updateMessageInfo(email, resetMessageId);
 
       return { success: true };
 
@@ -272,13 +272,13 @@ ${pwStrengthMsg}
       //   throw new Error('Recaptcha failed.');
       // }
 
-      const isAvailable = await UserEmailModel.isEmailAvailable(email);
+      const isAvailable = await EmailModel.isEmailAvailable(email);
       if (!isAvailable) {
         throw new Error(`Email is already taken.`);
       }
 
       try {
-        await UserEmailModel.assertEmailIsValid(email);
+        await EmailModel.assertEmailIsValid(email);
       } catch (err) {
         this.logger.logWarn(`Signup - Invalid Email: ${email}`);
         throw new Error(`${email} does not appear to be a valid email.`);

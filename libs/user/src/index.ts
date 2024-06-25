@@ -15,22 +15,8 @@ export {
   UserModelType,
 } from './model/user.postgres-model';
 export {
-  UserEmailType,
-  UserPhoneType,
   UserProfileStateType
 } from './model/user.types';
-
-/// email
-export {
-  UserEmailModel,
-  UserEmailModelType
-} from './model/user-email.postgres-model';
-
-/// phone
-export {
-  UserPhoneModel,
-  UserPhoneModelType
-} from './model/user-phone.postgres-model';
 
 /// privileges
 export {

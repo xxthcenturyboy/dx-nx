@@ -38,7 +38,7 @@ describe('<%= hyphenatedToTilteCaseConcatenated(name) %>Controller', () => {
     it ('should return a message when invoked', () => {
       // arrange
       // act
-      <%= hyphenatedToTilteCaseConcatenated(name) %>Controller.getData();
+      <%= hyphenatedToTilteCaseConcatenated(name) %>Controller.getData(req, res);
       // assert
       expect(res.send).toHaveBeenCalled();
     });

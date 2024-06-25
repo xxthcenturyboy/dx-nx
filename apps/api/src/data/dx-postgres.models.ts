@@ -3,10 +3,10 @@ import {
   ModelCtor
 } from "sequelize-typescript";
 
+import { EmailModel } from "@dx/email";
+import { PhoneModel } from "@dx/phone";
 import {
   UserModel,
-  UserEmailModel,
-  UserPhoneModel,
   UserPrivilegeSetModel
 } from "@dx/user";
 import { ShortLinkModel } from "@dx/shortlink";
@@ -15,9 +15,9 @@ import { logTable } from "@dx/utils";
 export function getPostgresModels(): ModelCtor[] {
   const models: ModelCtor[] = [];
 
+  models.push(EmailModel);
+  models.push(PhoneModel);
   models.push(ShortLinkModel);
-  models.push(UserEmailModel);
-  models.push(UserPhoneModel);
   models.push(UserPrivilegeSetModel);
   models.push(UserModel);
 

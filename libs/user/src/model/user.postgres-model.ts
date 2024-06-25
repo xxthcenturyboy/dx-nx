@@ -24,13 +24,15 @@ import {
   DxDateUtilClass
 } from '@dx/utils';
 import {
-  UserEmailModel,
-  UserEmailModelType
-} from './user-email.postgres-model';
+  EmailModel,
+  EmailModelType,
+  EmailType
+} from '@dx/email';
 import {
-  UserPhoneModel,
-  UserPhoneModelType
-} from './user-phone.postgres-model';
+  PhoneModel,
+  PhoneModelType,
+  PhoneType
+} from '@dx/phone';
 import {
   UserPrivilegeSetModel,
   UserPrivilegeSetModelType
@@ -42,7 +44,6 @@ import {
 } from './user.consts';
 import { APP_DOMAIN } from '@dx/config';
 import { usernameValidator } from '../api/username.validator';
-import { UserEmailType, UserPhoneType } from './user.types';
 import { ApiLoggingClass } from '@dx/logger';
 
 @Table({
@@ -58,11 +59,11 @@ export class UserModel extends Model<UserModel> {
   @Column(DataType.UUID)
   id: string;
 
-  @HasMany(() => UserEmailModel)
-  emails: UserEmailModel[];
+  @HasMany(() => EmailModel)
+  emails: EmailModel[];
 
-  @HasMany(() => UserPhoneModel)
-  phones: UserPhoneModel[];
+  @HasMany(() => PhoneModel)
+  phones: PhoneModel[];
 
   @Column({ field: 'hashword', type: DataType.STRING })
   hashword: string;
@@ -178,14 +179,14 @@ export class UserModel extends Model<UserModel> {
     return !hashword && !deletedAt;
   }
 
-  async getEmails (): Promise<UserEmailModelType[]> {
+  async getEmails (): Promise<EmailModelType[]> {
     this.emails = null
       || this.emails
-      || await UserEmailModel.findAllByUserId(this.id);
+      || await EmailModel.findAllByUserId(this.id);
     return this.emails;
   }
 
-  async getEmailData (): Promise<UserEmailType[]> {
+  async getEmailData (): Promise<EmailType[]> {
     if (
       !Array.isArray(this.emails)
       || this.emails.length
@@ -193,7 +194,7 @@ export class UserModel extends Model<UserModel> {
       await this.getEmails();
     }
 
-    const emailData: UserEmailType[] = [];
+    const emailData: EmailType[] = [];
     for (const email of this.emails) {
       emailData.push({
         id: email.id,
@@ -208,7 +209,7 @@ export class UserModel extends Model<UserModel> {
     return emailData;
   }
 
-  async getEmail (email: string): Promise<UserEmailModelType | null> {
+  async getEmail (email: string): Promise<EmailModelType | null> {
     const emails = await this.getEmails();
     return emails.find(emailModel => email === emailModel.email) || null;
   }
@@ -216,7 +217,7 @@ export class UserModel extends Model<UserModel> {
   async getVerifiedEmail (): Promise<string | null> {
     const emails = await this.getEmails();
 
-    const data: UserEmailModelType | undefined = maxBy(
+    const data: EmailModelType | undefined = maxBy(
       emails.filter(({ isVerified }) => isVerified),
       ({ verifiedAt }) => verifiedAt
     );
@@ -227,21 +228,21 @@ export class UserModel extends Model<UserModel> {
   async getDefaultEmail (): Promise<string | null> {
     const emails = await this.getEmails();
 
-    const EmailModel: UserEmailModelType | undefined = emails.find((email) => {
+    const EmailModel: EmailModelType | undefined = emails.find((email) => {
       return email.default;
     });
 
     return EmailModel && EmailModel.email || null;
   }
 
-  async getPhones (): Promise<UserPhoneModelType[]> {
+  async getPhones (): Promise<PhoneModelType[]> {
     this.phones = null
       || this.phones
-      || await UserPhoneModel.findAllByUserId(this.id);
+      || await PhoneModel.findAllByUserId(this.id);
     return this.phones;
   }
 
-  async getPhoneData (): Promise<UserPhoneType[]> {
+  async getPhoneData (): Promise<PhoneType[]> {
     if (
       !Array.isArray(this.phones)
       || this.phones.length
@@ -249,7 +250,7 @@ export class UserModel extends Model<UserModel> {
       await this.getPhones();
     }
 
-    const phoneData: UserPhoneType[] = [];
+    const phoneData: PhoneType[] = [];
     for (const phone of this.phones) {
       phoneData.push({
         id: phone.id,
@@ -267,7 +268,7 @@ export class UserModel extends Model<UserModel> {
     return phoneData;
   }
 
-  async getPhone (phone: string): Promise<UserPhoneModelType | null> {
+  async getPhone (phone: string): Promise<PhoneModelType | null> {
     const phones = await this.getPhones();
     return phones.find(PhoneModel => phone === PhoneModel.phone) || null;
   }
@@ -275,7 +276,7 @@ export class UserModel extends Model<UserModel> {
   async getVerifiedPhone (): Promise<string | null> {
     const phones = await this.getPhones();
 
-    const PhoneModel: UserPhoneModelType | undefined = maxBy(
+    const PhoneModel: PhoneModelType | undefined = maxBy(
       phones.filter(({ isVerified }) => isVerified),
       ({ verifiedAt }) => verifiedAt
     );
@@ -286,7 +287,7 @@ export class UserModel extends Model<UserModel> {
   async getDefaultPhone (): Promise<string | null> {
     const phones = await this.getPhones();
 
-    const PhoneModel: UserPhoneModelType | undefined = phones.find((phone) => {
+    const PhoneModel: PhoneModelType | undefined = phones.find((phone) => {
       return phone.default;
     });
 
@@ -317,7 +318,7 @@ export class UserModel extends Model<UserModel> {
 
   static async registerAndCreateFromEmail (email: string, password: string): Promise<UserModelType> {
     if (!email.endsWith(`@${APP_DOMAIN}`)) {
-      await UserEmailModel.assertEmailIsValid(email);
+      await EmailModel.assertEmailIsValid(email);
     }
 
     const hashword = await dxEncryptionHashString(password);
@@ -331,13 +332,13 @@ export class UserModel extends Model<UserModel> {
       tokenExp,
     });
 
-    await UserEmailModel.createOrFindOneByUserId(user.id, email, token);
+    await EmailModel.createOrFindOneByUserId(user.id, email, token);
 
     return user;
   }
 
   static async loginWithPassword (email: string, password: string): Promise<UserModelType | null> {
-    const userEmail = await UserEmailModel.findOne({
+    const userEmail = await EmailModel.findOne({
       where: {
         email
       }
@@ -431,16 +432,16 @@ export class UserModel extends Model<UserModel> {
       throw new Error(`The username: ${username} is already in use.`);
     }
 
-    if (!await UserEmailModel.isEmailAvailable(email)) {
+    if (!await EmailModel.isEmailAvailable(email)) {
       throw new Error(`The email: ${email} is already in use`);
     }
 
-    if (phone && countryCode && !await UserPhoneModel.isPhoneAvailable(phone, countryCode)) {
+    if (phone && countryCode && !await PhoneModel.isPhoneAvailable(phone, countryCode)) {
       throw new Error(`The phone: ${phone} is already in use`);
     }
 
     if (!email.endsWith(`@${APP_DOMAIN}`)) {
-      await UserEmailModel.assertEmailIsValid(email);
+      await EmailModel.assertEmailIsValid(email);
     }
 
     try {
@@ -455,13 +456,13 @@ export class UserModel extends Model<UserModel> {
         username,
       });
 
-      const [emailData, didCreateEmail] = await UserEmailModel.createOrFindOneByUserId(user.id, email, token);
+      const [emailData, didCreateEmail] = await EmailModel.createOrFindOneByUserId(user.id, email, token);
       if (didCreateEmail && emailData) {
         user.emails = [emailData];
       }
 
       if (phone && countryCode) {
-        const [phoneData, didCreatePhone] = await UserPhoneModel.createOrFindOneByUserId(user.id, phone, countryCode);
+        const [phoneData, didCreatePhone] = await PhoneModel.createOrFindOneByUserId(user.id, phone, countryCode);
         if (didCreatePhone && phoneData) {
           user.phones = [phoneData];
         }
@@ -481,10 +482,10 @@ export class UserModel extends Model<UserModel> {
       },
       include: [
         {
-          model: UserEmailModel,
+          model: EmailModel,
         },
         {
-          model: UserPhoneModel,
+          model: PhoneModel,
         }
       ],
     });
@@ -499,7 +500,7 @@ export class UserModel extends Model<UserModel> {
     }
 
     if (data.emails && Array.isArray(data.emails) && data.emails.length > 0) {
-      await UserEmailModel.validateEmail(data.emails[0].email);
+      await EmailModel.validateEmail(data.emails[0].email);
     }
 
     return data;
@@ -624,13 +625,13 @@ export class UserModel extends Model<UserModel> {
 
   static async removeUser (id: string): Promise<boolean> {
     try {
-      const emailDeleted = await UserEmailModel.destroy({
+      const emailDeleted = await EmailModel.destroy({
         where: {
           userId: id
         },
         force: true
       });
-      const phoneDeleted = await UserPhoneModel.destroy({
+      const phoneDeleted = await PhoneModel.destroy({
         where: {
           userId: id
         },

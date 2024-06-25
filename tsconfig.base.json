@@ -25,6 +25,9 @@
       "@dx/config": [
         "libs/config/src/index.ts"
       ],
+      "@dx/email": [
+        "libs/email/src/index.ts"
+      ],
       "@dx/healthz": [
         "libs/healthz/src/index.ts"
       ],
@@ -33,6 +36,9 @@
       ],
       "@dx/mail": [
         "libs/mail/src/index.ts"
+      ],
+      "@dx/phone": [
+        "libs/phone/src/index.ts"
       ],
       "@dx/plugins-nx": [
         "libs/plugins-nx/src/index.ts"

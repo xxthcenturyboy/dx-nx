@@ -20,18 +20,29 @@ import {
 } from 'sequelize-typescript';
 import { DISPOSABLE_EMAIL_DOMAINS } from '@dx/utils';
 import {
-  USER_EMAIL_LABEL,
-  USER_EMAIL_POSTGRES_DB_NAME
-} from './user.consts';
-import { UserModel } from './user.postgres-model';
+  EMAIL_LABEL,
+  EMAIL_POSTGRES_DB_NAME
+} from './email.consts';
+import { UserModel } from '@dx/user';
 
 @Table({
-  modelName: USER_EMAIL_POSTGRES_DB_NAME,
-  indexes: [],
+  modelName: EMAIL_POSTGRES_DB_NAME,
+  indexes: [
+    {
+      unique: false,
+      name: 'email_user_id_index',
+      fields: ['user_id']
+    },
+    {
+      unique: false,
+      name: 'email_index',
+      fields: ['email']
+    }
+  ],
   underscored: true,
   timestamps: true,
 })
-export class UserEmailModel extends Model<UserEmailModel> {
+export class EmailModel extends Model<EmailModel> {
   @PrimaryKey
   @Default(fn('uuid_generate_v4'))
   @AllowNull(false)
@@ -39,7 +50,6 @@ export class UserEmailModel extends Model<UserEmailModel> {
   id: string;
 
   @ForeignKey(() => UserModel)
-  @Index('user-id-index')
   @AllowNull(false)
   @Column({ field: 'user_id', type: DataType.UUID })
   userId: string;
@@ -97,7 +107,7 @@ export class UserEmailModel extends Model<UserEmailModel> {
     return !!this.getDataValue('deletedAt');
   }
 
-  static async createOrFindOneByUserId (userId: string, email: string, token: string | null): Promise<[UserEmailModelType, boolean]> {
+  static async createOrFindOneByUserId (userId: string, email: string, token: string | null): Promise<[EmailModel, boolean]> {
     const UserEmail = await this.findOrCreate({
       where: {
         userId,
@@ -108,7 +118,7 @@ export class UserEmailModel extends Model<UserEmailModel> {
         email,
         token,
         default: true,
-        label: USER_EMAIL_LABEL.MAIN,
+        label: EMAIL_LABEL.MAIN,
       }
     });
 
@@ -134,8 +144,8 @@ export class UserEmailModel extends Model<UserEmailModel> {
     return !existing;
   }
 
-  static async findAllByUserId (userId): Promise<UserEmailModelType[]> {
-    return await UserEmailModel.findAll({
+  static async findAllByUserId (userId): Promise<EmailModel[]> {
+    return await EmailModel.findAll({
       where: {
         userId,
         deletedAt: null,
@@ -172,7 +182,7 @@ export class UserEmailModel extends Model<UserEmailModel> {
   }
 
   static async clearAllDefaultByUserId (userId: string): Promise<void> {
-    const emails = await UserEmailModel.findAllByUserId(userId);
+    const emails = await EmailModel.findAllByUserId(userId);
     for (const email of emails) {
       email.default = false;
       await email.save();
@@ -180,7 +190,7 @@ export class UserEmailModel extends Model<UserEmailModel> {
   }
 
   static async validateEmail (email: string): Promise<void> {
-    UserEmailModel.update({
+    EmailModel.update({
       verifiedAt: new Date()
     }, {
       where: {
@@ -191,7 +201,7 @@ export class UserEmailModel extends Model<UserEmailModel> {
   }
 
   static async updateMessageInfoValidate (email: string, messageId: string): Promise<void> {
-    UserEmailModel.update({
+    EmailModel.update({
       lastSgMessageId: messageId,
       lastVerificationSentAt: new Date(),
       verifiedAt: null
@@ -204,7 +214,7 @@ export class UserEmailModel extends Model<UserEmailModel> {
   }
 
   static async updateMessageInfo (email: string, messageId: string): Promise<void> {
-    UserEmailModel.update({
+    EmailModel.update({
       lastSgMessageId: messageId
     }, {
       where: {
@@ -214,8 +224,8 @@ export class UserEmailModel extends Model<UserEmailModel> {
     });
   }
 
-  static async validateEmailWithToken (token: string): Promise<UserEmailModelType> {
-    const email = await UserEmailModel.findOne({
+  static async validateEmailWithToken (token: string): Promise<EmailModel> {
+    const email = await EmailModel.findOne({
       where: {
         token,
         deletedAt: null
@@ -235,4 +245,4 @@ export class UserEmailModel extends Model<UserEmailModel> {
 
 }
 
-export type UserEmailModelType = typeof UserEmailModel.prototype;
+export type EmailModelType = typeof EmailModel.prototype;

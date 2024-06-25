@@ -13,16 +13,27 @@ import {
 } from 'sequelize-typescript';
 
 import { getTimeFromUuid } from '@dx/utils';
-import { USER_PHONE_POSTGRES_DB_NAME } from './user.consts';
-import { UserModel } from './user.postgres-model';
+import { PHONE_POSTGRES_DB_NAME } from './phone.consts';
+import { UserModel } from '@dx/user';
 
 @Table({
-  modelName: USER_PHONE_POSTGRES_DB_NAME,
-  indexes: [],
+  modelName: PHONE_POSTGRES_DB_NAME,
+  indexes: [
+    {
+      unique: false,
+      name: 'phone_user_id_index',
+      fields: ['user_id']
+    },
+    {
+      unique: false,
+      name: 'country_code_phone_index',
+      fields: ['country_code', 'phone']
+    }
+  ],
   underscored: true,
   timestamps: true,
 })
-export class UserPhoneModel extends Model<UserPhoneModel> {
+export class PhoneModel extends Model<PhoneModel> {
   @PrimaryKey
   @Default(fn('uuid_generate_v4'))
   @AllowNull(false)
@@ -30,7 +41,6 @@ export class UserPhoneModel extends Model<UserPhoneModel> {
   id: string;
 
   @ForeignKey(() => UserModel)
-  @Index('user-id-index')
   @AllowNull(false)
   @Column({ field: 'user_id', type: DataType.UUID })
   userId: string;
@@ -101,7 +111,7 @@ export class UserPhoneModel extends Model<UserPhoneModel> {
       || this.getDataValue('twilioCodeSentAt') > new Date(new Date().getTime() - 30000);
   }
 
-  static async createOrFindOneByUserId (userId: string, phone: string, countryCode: string): Promise<[UserPhoneModelType, boolean]> {
+  static async createOrFindOneByUserId (userId: string, phone: string, countryCode: string): Promise<[PhoneModelType, boolean]> {
     const UserPhone = await this.findOrCreate({
       where: {
         userId,
@@ -140,8 +150,8 @@ export class UserPhoneModel extends Model<UserPhoneModel> {
     return !existing;
   }
 
-  static async findAllByUserId(userId): Promise<UserPhoneModelType[]> {
-    return await UserPhoneModel.findAll({
+  static async findAllByUserId(userId): Promise<PhoneModelType[]> {
+    return await PhoneModel.findAll({
       where: {
         userId,
         deletedAt: null,
@@ -150,7 +160,7 @@ export class UserPhoneModel extends Model<UserPhoneModel> {
   }
 
   static async clearAllDefaultByUserId (userId: string): Promise<void> {
-    const phones = await UserPhoneModel.findAllByUserId(userId);
+    const phones = await PhoneModel.findAllByUserId(userId);
     for (const phone of phones) {
       phone.default = false;
       await phone.save();
@@ -159,4 +169,4 @@ export class UserPhoneModel extends Model<UserPhoneModel> {
 
 }
 
-export type UserPhoneModelType = typeof UserPhoneModel.prototype;
+export type PhoneModelType = typeof PhoneModel.prototype;
