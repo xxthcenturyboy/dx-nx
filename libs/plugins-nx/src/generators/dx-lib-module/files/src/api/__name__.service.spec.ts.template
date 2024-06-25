@@ -2,10 +2,8 @@ import { <%= hyphenatedToTilteCaseConcatenated(name) %>ResponseType  } from "../
 import { <%= hyphenatedToTilteCaseConcatenated(name) %>Service } from './<%= name %>.service';
 
 describe('<%= hyphenatedToTilteCaseConcatenated(name) %>Service', () => {
-  // arrange
   const <%= stripHyphens(name) %>Service = new <%= hyphenatedToTilteCaseConcatenated(name) %>Service();
-  // act
-  // assert
+
   it ('should exist when imported', () => {
     // arrange
     // act

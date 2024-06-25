@@ -1,8 +1,28 @@
-import { ShortlinkResponseType } from '../model/shortlink.types';
+import {
+  ApiLoggingClass,
+  ApiLoggingClassType
+} from '@dx/logger';
+import { ShortLinkModel } from '../model/shortlink.postgres-model';
 
 export class ShortlinkService {
-  public getData(): ShortlinkResponseType {
-    return { message: 'shortlink' };
+  logger: ApiLoggingClassType;
+
+  constructor() {
+    this.logger = ApiLoggingClass.instance;
+  }
+
+  public async getShortlinkTarget(id: string) {
+    try {
+      const path = await ShortLinkModel.getShortLinkTarget(id);
+      if (path) {
+        return path;
+      }
+    } catch (err) {
+      const message = err.message;
+      this.logger.logError(message);
+    }
+
+    return null;
   }
 }
 

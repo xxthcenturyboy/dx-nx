@@ -6,8 +6,16 @@ import { Request } from 'jest-express/lib/request';
 import { Response } from 'jest-express/lib/response';
 
 import { ShortlinkController } from './shortlink.controller';
+import {
+  sendOK,
+  sendBadRequest
+} from '@dx/server';
 
 jest.mock('./shortlink.service.ts');
+jest.mock('@dx/server', () => ({
+  sendOK: jest.fn(),
+  sendBadRequest: jest.fn()
+}));
 
 describe('ShortlinkController', () => {
   let req: IRequest;
@@ -29,20 +37,19 @@ describe('ShortlinkController', () => {
     expect(ShortlinkController).toBeDefined();
   });
 
-  it('should have a getData method when instantiated', () => {
-    // arrange
-    // act
-    // assert
-    expect(ShortlinkController.getData).toBeDefined();
-  });
-
-  describe('getData', () => {
-    it('should return a message when invoked', () => {
+  describe('redirectToTarget', () => {
+    test('should send bad request when invoked with a bad id', async () => {
       // arrange
+      req.params = {
+        id: 'test-id'
+      };
+      req.session = {
+        destroy: jest.fn(),
+      };
       // act
-      ShortlinkController.getData(req, res);
+      await ShortlinkController.redirectToTarget(req, res);
       // assert
-      expect(res.send).toHaveBeenCalled();
+      expect(sendBadRequest).toHaveBeenCalled();
     });
   });
 });

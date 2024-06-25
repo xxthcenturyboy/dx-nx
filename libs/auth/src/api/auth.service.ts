@@ -28,6 +28,7 @@ import {
   ApiLoggingClassType
 } from '@dx/logger';
 import { MailSendgrid } from '@dx/mail';
+import { ShortLinkModel } from '@dx/shortlink';
 import { CLIENT_APP_DOMAIN } from '@dx/config';
 
 export class AuthService {
@@ -184,8 +185,7 @@ export class AuthService {
 
       const mail = new MailSendgrid();
       const inviteUrl = `/auth/z?route=${CLIENT_ROUTE.RESET}&token=${token}`;
-      // const shortLink = await ShortLinkModel.generateShortlink(inviteUrl);
-      const shortLink = `${inviteUrl}`;
+      const shortLink = await ShortLinkModel.generateShortlink(inviteUrl);
 
       const resetMessageId = await mail.sendReset(email, shortLink);
 

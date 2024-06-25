@@ -53,7 +53,7 @@ describe('v1 Auth Routes', () => {
       // arrange
       let response: AxiosResponse<string, UserLookupResponseType>;
       const expectedResult: UserLookupResponseType = { available: false };
-      const url = `/api/v1/auth/lookup?value=du.dx.software@gmail.com&type=${USER_LOOKUPS.EMAIL}`;
+      const url = `/api/v1/auth/lookup?value=admin@danex.software&type=${USER_LOOKUPS.EMAIL}`;
       // act
       response = await axios.get(url);
       // assert
@@ -130,7 +130,7 @@ describe('v1 Auth Routes', () => {
 
     test('should return an error when password is incorrect', async () => {
       const paylod: LoginPaylodType = {
-        email: 'du.dx.software@gmail.com',
+        email: 'admin@danex.software',
         password: 'password'
       };
 
@@ -153,7 +153,7 @@ describe('v1 Auth Routes', () => {
 
     test('should return user profile when login is successful', async () => {
       const paylod: LoginPaylodType = {
-        email: 'du.dx.software@gmail.com',
+        email: 'admin@danex.software',
         password: 'advancedbasics1'
       };
 
@@ -359,7 +359,7 @@ describe('v1 Auth Routes', () => {
 
     test('should return an error when email is not available', async () => {
       const paylod: SignupPayloadType = {
-        email: 'du.dx.software@gmail.com',
+        email: 'admin@danex.software',
         password: STRONG_PW,
         passwordConfirm: STRONG_PW
       };

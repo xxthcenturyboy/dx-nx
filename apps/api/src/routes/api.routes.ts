@@ -3,10 +3,7 @@ import {
   Router
 } from 'express';
 
-import {
-  HealthzRoutes,
-  HealthzRoutesType
-} from '@dx/healthz';
+import { HealthzRoutes } from '@dx/healthz';
 import { RoutesV1 } from './v1.routes';
 import { endpointNotFound } from '@dx/server';
 

@@ -9,11 +9,13 @@ import {
   UserPhoneModel,
   UserPrivilegeSetModel
 } from "@dx/user";
+import { ShortLinkModel } from "@dx/shortlink";
 import { logTable } from "@dx/utils";
 
 export function getPostgresModels(): ModelCtor[] {
   const models: ModelCtor[] = [];
 
+  models.push(ShortLinkModel);
   models.push(UserEmailModel);
   models.push(UserPhoneModel);
   models.push(UserPrivilegeSetModel);

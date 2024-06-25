@@ -1,1 +1,5 @@
-export { ShortlinkRoutes, ShortlinkRoutesType } from './api/shortlink.routes';
+export {
+  ShortLinkModel,
+  ShortLinkModelType
+} from './model/shortlink.postgres-model';
+export { ShortlinkRoutes } from './api/shortlink.routes';

@@ -21,7 +21,6 @@ jest.mock('@dx/logger');
 
 describe('User Models', () => {
   if (isLocal()) {
-    console.log('running local tests: Connects to Postgres db');
     let db: Sequelize;
 
     beforeAll(async () => {
@@ -286,7 +285,6 @@ describe('User Models', () => {
     });
 
   } else {
-    console.log('running non-local tests: No db connection or mock');
     describe('UserModel', () => {
       it('should exist when imported', () => {
         // arange

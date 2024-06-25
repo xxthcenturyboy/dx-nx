@@ -124,7 +124,7 @@ describe('AuthService', () => {
         let response: void | null | UserLookupResponseType = null;
         const expectedResult: UserLookupResponseType = { available: false };
         const query: UserLookupQueryType = {
-          value: 'du.dx.software@gmail.com',
+          value: 'admin@danex.software',
           type: USER_LOOKUPS.EMAIL
         }
         // act
@@ -236,7 +236,7 @@ describe('AuthService', () => {
       test('should throw when passwords is incorrect', async () => {
         // arrange
         const payload: LoginPaylodType = {
-          email: 'du.dx.software@gmail.com',
+          email: 'admin@danex.software',
           password: 'password',
         };
         // act
@@ -251,7 +251,7 @@ describe('AuthService', () => {
       test('should return user profile upon successful login', async () => {
         // arrange
         const payload: LoginPaylodType = {
-          email: 'du.dx.software@gmail.com',
+          email: 'admin@danex.software',
           password: 'advancedbasics1',
         };
         // act
@@ -365,7 +365,7 @@ describe('AuthService', () => {
       test('should throw when email is not available', async () => {
         // arrange
         const payload: SignupPayloadType = {
-          email: 'du.dx.software@gmail.com',
+          email: 'admin@danex.software',
           password: STRONG_PW,
           passwordConfirm: STRONG_PW
         };

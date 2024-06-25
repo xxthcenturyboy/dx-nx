@@ -4,11 +4,25 @@ import {
 } from 'express';
 
 import { ShortlinkService } from './shortlink.service';
+import {
+  sendBadRequest,
+  sendOK
+} from '@dx/server';
 
 export const ShortlinkController = {
-  getData: function(req: Request, res: Response) {
-    const service = new ShortlinkService();
-    res.send(service.getData());
+  redirectToTarget: async function(req: Request, res: Response) {
+    try {
+      const { id } = req.query as { id: string };
+      const service = new ShortlinkService();
+      const result = await service.getShortlinkTarget(id);
+      if (result) {
+        return sendOK(req, res, result);
+      }
+
+      sendBadRequest(req, res, 'No target for this url.');
+    } catch (err) {
+      sendBadRequest(req, res, err.message);
+    }
   }
 }
 

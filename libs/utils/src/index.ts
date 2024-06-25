@@ -39,3 +39,5 @@ export {
 export { DxDateUtilClass } from './lib/dx-dates.util';
 
 export { logTable } from './lib/console-table-transformer';
+
+export { malicousUrlCheck } from './lib/malicious-url-check';

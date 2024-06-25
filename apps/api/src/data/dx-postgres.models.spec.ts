@@ -17,7 +17,7 @@ describe('getPostgresModels', () => {
     const models = getPostgresModels();
     // assert
     expect(models).toBeDefined();
-    expect(models).toHaveLength(4);
+    expect(models).toHaveLength(5);
   });
 });
 
