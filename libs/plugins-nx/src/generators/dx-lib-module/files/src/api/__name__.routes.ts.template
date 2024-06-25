@@ -1,8 +1,5 @@
 import { Router } from "express";
-import {
-  <%= hyphenatedToTilteCaseConcatenated(name) %>Controller,
-  <%= hyphenatedToTilteCaseConcatenated(name) %>ControllerType
-} from "./<%= name %>.controller";
+import { <%= hyphenatedToTilteCaseConcatenated(name) %>Controller } from "./<%= name %>.controller";
 
 export class <%= hyphenatedToTilteCaseConcatenated(name) %>Routes {
   static configure() {

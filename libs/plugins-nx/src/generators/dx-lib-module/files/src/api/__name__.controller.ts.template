@@ -5,11 +5,11 @@ import {
 
 import { <%= hyphenatedToTilteCaseConcatenated(name) %>Service } from "./<%= name %>.service";
 
-export class <%= hyphenatedToTilteCaseConcatenated(name) %>Controller {
-  public getData(req: Request, res: Response) {
+export const <%= hyphenatedToTilteCaseConcatenated(name) %>Controller = {
+  getData: function(req: Request, res: Response) {
     const service = new <%= hyphenatedToTilteCaseConcatenated(name) %>Service();
-    return res.send(service.getData());
+    res.send(service.getData());
   }
 }
 
-export type <%= hyphenatedToTilteCaseConcatenated(name) %>ControllerType = typeof <%= hyphenatedToTilteCaseConcatenated(name) %>Controller.prototype;
+export type <%= hyphenatedToTilteCaseConcatenated(name) %>ControllerType = typeof <%= hyphenatedToTilteCaseConcatenated(name) %>Controller;
