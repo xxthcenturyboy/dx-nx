@@ -1,5 +1,9 @@
-export type PhoneResponseType = {
-  message: string;
+export type CreatePhonePayloadType = {
+  countryCode: string;
+  def: boolean;
+  label: string;
+  phone: string;
+  userId: string;
 };
 
 export type PhoneType = {
@@ -13,4 +17,9 @@ export type PhoneType = {
   isSent: boolean;
   isVerified: boolean;
   uiFormatted?: string;
+};
+
+export type UpdatePhonePayloadType = {
+  def?: boolean;
+  label?: string;
 };

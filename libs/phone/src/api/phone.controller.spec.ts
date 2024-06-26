@@ -1,8 +1,21 @@
-import { Request as IRequest, Response as IResponse } from 'express';
+import {
+  Request as IRequest,
+  Response as IResponse
+} from 'express';
 import { Request } from 'jest-express/lib/request';
 import { Response } from 'jest-express/lib/response';
 
 import { PhoneController } from './phone.controller';
+import {
+  sendOK,
+  sendBadRequest
+} from '@dx/server';
+
+jest.mock('./phone.service.ts');
+jest.mock('@dx/server', () => ({
+  sendOK: jest.fn(),
+  sendBadRequest: jest.fn()
+}));
 
 describe('PhoneController', () => {
   let req: IRequest;
@@ -24,20 +37,42 @@ describe('PhoneController', () => {
     expect(PhoneController).toBeDefined();
   });
 
-  it('should have a getData method when instantiated', () => {
-    // arrange
-    // act
-    // assert
-    expect(PhoneController.getData).toBeDefined();
-  });
-
-  describe('getData', () => {
-    it('should return a message when invoked', () => {
+  describe('createPhone', () => {
+    test('should call sendBadRequest when sent without proper payload', async () => {
       // arrange
       // act
-      PhoneController.getData(req, res);
       // assert
-      expect(res.send).toHaveBeenCalled();
+      try {
+        expect(await PhoneController.createPhone(req, res)).toThrow();
+      } catch (err) {
+        expect(sendBadRequest).toHaveBeenCalled();
+      }
+    });
+  });
+
+  describe('updatePhone', () => {
+    test('should call sendBadRequest when sent without proper params', async () => {
+      // arrange
+      // act
+      // assert
+      try {
+        expect(await PhoneController.updatePhone(req, res)).toThrow();
+      } catch (err) {
+        expect(sendBadRequest).toHaveBeenCalled();
+      }
+    });
+  });
+
+  describe('deletePhone', () => {
+    test('should call sendBadRequest when sent without proper query params', async () => {
+      // arrange
+      // act
+      // assert
+      try {
+        expect(await PhoneController.deletePhone(req, res)).toThrow();
+      } catch (err) {
+        expect(sendBadRequest).toHaveBeenCalled();
+      }
     });
   });
 });

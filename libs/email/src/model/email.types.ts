@@ -13,3 +13,8 @@ export type CreateEmailPayloadType = {
   label: string;
   userId: string;
 };
+
+export type UpdateEmailPayloadType = {
+  def?: boolean;
+  label?: string;
+};

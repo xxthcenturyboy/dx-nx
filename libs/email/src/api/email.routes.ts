@@ -10,7 +10,11 @@ export class EmailRoutes {
 
     router.all('/*', [ensureLoggedIn]);
 
+    router.post('/', EmailController.createEmail);
 
+    router.put('/:id', EmailController.updateEmail);
+
+    router.delete('/:id', EmailController.deleteEmail);
 
     return router;
   }

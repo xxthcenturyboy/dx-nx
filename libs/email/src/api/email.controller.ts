@@ -4,7 +4,10 @@ import {
 } from 'express';
 
 import { EmailService } from './email.service';
-import { CreateEmailPayloadType } from '../model/email.types';
+import {
+  CreateEmailPayloadType,
+  UpdateEmailPayloadType
+} from '../model/email.types';
 import {
   sendBadRequest,
   sendOK
@@ -20,6 +23,36 @@ export const EmailController = {
       }
 
       sendBadRequest(req, res, `Email could not be created.`);
+    } catch (err) {
+      sendBadRequest(req, res, err.message);
+    }
+  },
+
+  deleteEmail: async function(req: Request, res: Response) {
+    try {
+      const { id } = req.params as { id: string }
+      const service = new EmailService();
+      const result = await service.deleteEmail(id);
+      if (result.id) {
+        return sendOK(req, res, result);
+      }
+
+      sendBadRequest(req, res, `Email could not be deleted.`);
+    } catch (err) {
+      sendBadRequest(req, res, err.message);
+    }
+  },
+
+  updateEmail: async function(req: Request, res: Response) {
+    try {
+      const { id } = req.params as { id: string }
+      const service = new EmailService();
+      const result = await service.updateEmail(id, req.body as UpdateEmailPayloadType);
+      if (result.id) {
+        return sendOK(req, res, result);
+      }
+
+      sendBadRequest(req, res, `Email could not be updated.`);
     } catch (err) {
       sendBadRequest(req, res, err.message);
     }
