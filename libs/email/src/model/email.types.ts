@@ -1,7 +1,3 @@
-export type EmailResponseType = {
-  message: string;
-};
-
 export type EmailType = {
   id: string;
   email: string;
@@ -9,4 +5,11 @@ export type EmailType = {
   default: boolean;
   isDeleted: boolean;
   isVerified: boolean;
+};
+
+export type CreateEmailPayloadType = {
+  email: string;
+  def: boolean;
+  label: string;
+  userId: string;
 };

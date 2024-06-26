@@ -1,7 +1,7 @@
 import { Sequelize } from 'sequelize-typescript';
 
 import { ApiLoggingClass } from '@dx/logger';
-import { ShortlinkResponseType } from '../model/shortlink.types';
+import { PostgresDbConnection } from '@dx/postgres';
 import { ShortLinkModel } from '../model/shortlink.postgres-model';
 import {
   ShortlinkService,
@@ -11,7 +11,6 @@ import {
   isLocal,
   POSTGRES_URI
 } from '@dx/config';
-import { PostgresDbConnection } from '@dx/postgres';
 
 jest.mock('@dx/logger');
 

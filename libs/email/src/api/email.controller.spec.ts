@@ -3,6 +3,16 @@ import { Request } from 'jest-express/lib/request';
 import { Response } from 'jest-express/lib/response';
 
 import { EmailController } from './email.controller';
+import {
+  sendOK,
+  sendBadRequest
+} from '@dx/server';
+
+jest.mock('./email.service.ts');
+jest.mock('@dx/server', () => ({
+  sendOK: jest.fn(),
+  sendBadRequest: jest.fn()
+}));
 
 describe('EmailController', () => {
   let req: IRequest;
@@ -24,20 +34,36 @@ describe('EmailController', () => {
     expect(EmailController).toBeDefined();
   });
 
-  it('should have a getData method when instantiated', () => {
+  it('should have a validateEmail method when instantiated', () => {
     // arrange
     // act
     // assert
-    expect(EmailController.getData).toBeDefined();
+    expect(EmailController.validateEmail).toBeDefined();
   });
 
-  describe('getData', () => {
-    it('should return a message when invoked', () => {
+  describe('createEmail', () => {
+    test('should return an error when sent without proper payload', async () => {
       // arrange
       // act
-      EmailController.getData(req, res);
       // assert
-      expect(res.send).toHaveBeenCalled();
+      try {
+        expect(await EmailController.createEmail(req, res)).toThrow();
+      } catch (err) {
+        expect(sendBadRequest).toHaveBeenCalled();
+      }
+    });
+  });
+
+  describe('validateEmail', () => {
+    test('should return an error when sent without a token', async () => {
+      // arrange
+      // act
+      // assert
+      try {
+        expect(await EmailController.validateEmail(req, res)).toThrow();
+      } catch (err) {
+        expect(sendBadRequest).toHaveBeenCalled();
+      }
     });
   });
 });

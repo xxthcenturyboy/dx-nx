@@ -34,4 +34,13 @@ describe('malicousUrlCheck', () => {
     // assert
     expect(true).toBeTruthy();
   });
+
+  it('should run without error on a benign url', () => {
+    // arrange
+    const urlToCheck = `/in-app-route`;
+    // act
+    malicousUrlCheck(urlToCheck);
+    // assert
+    expect(true).toBeTruthy();
+  });
 });
