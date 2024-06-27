@@ -15,7 +15,10 @@ import {
 } from '@dx/user';
 import {
   isLocal,
-  POSTGRES_URI
+  POSTGRES_URI,
+  TEST_EMAIL,
+  TEST_EXISTING_EMAIL,
+  TEST_EXISTING_USER_ID
 } from '@dx/config';
 import {
   CreateEmailPayloadType,
@@ -91,9 +94,9 @@ describe('EmailService', () => {
         // arrange
         const payload: CreateEmailPayloadType = {
           def: false,
-          email: 'admin@danex.software',
+          email: TEST_EXISTING_EMAIL,
           label: 'Work',
-          userId: '2cf4aebd-d30d-4c9e-9047-e52c10fe8d4d'
+          userId: TEST_EXISTING_USER_ID
         };
         // act
         // assert
@@ -110,7 +113,7 @@ describe('EmailService', () => {
           def: false,
           email: 'not a valid email',
           label: 'Work',
-          userId: '2cf4aebd-d30d-4c9e-9047-e52c10fe8d4d'
+          userId: TEST_EXISTING_USER_ID
         };
         // act
         // assert
@@ -125,9 +128,9 @@ describe('EmailService', () => {
         // arrange
         const payload: CreateEmailPayloadType = {
           def: false,
-          email: 'test@test.com',
+          email: TEST_EMAIL,
           label: 'Work',
-          userId: '2cf4aebd-d30d-4c9e-9047-e52c10fe8d4d'
+          userId: TEST_EXISTING_USER_ID
         };
         // act
         const response = await emailService.createEmail(payload);

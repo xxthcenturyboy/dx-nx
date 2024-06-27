@@ -16,6 +16,7 @@ import {
   isNumber,
   parseJson
 } from '@dx/utils';
+import { getRedisConfig } from '@dx/config';
 
 export class RedisService {
   cacheHandle: typeof Redis.Cluster.prototype | typeof Redis.prototype;
@@ -116,6 +117,30 @@ export class RedisService {
     }
   }
 
+  public async getAllNamespace<TData>(namespace: string): Promise<TData[]> {
+    if (!namespace) {
+      return null;
+    }
+    const result: TData[] = [];
+
+    try {
+      const keys = await this.getKeys(namespace);
+
+      if (Array.isArray(keys)) {
+        const prefix = getRedisConfig().prefix;
+        for (const key of keys) {
+          const trimmedKey = key.replace(`${prefix}:`, '');
+          result.push(await this.getCacheItem(trimmedKey));
+        }
+      }
+
+      return result;
+    } catch (error) {
+      this.logger.logError((error as Error).message, error);
+      return result;
+    }
+  }
+
   public async deleteCacheItem(key: string) {
     if (!key) {
       return false;
@@ -130,7 +155,10 @@ export class RedisService {
     }
   }
 
-  public async getKeys() {
+  public async getKeys(namespace?: string) {
+    if (namespace) {
+      return await this.cacheHandle.keys(`${namespace}*`);
+    }
     return await this.cacheHandle.keys('*');
   }
 }

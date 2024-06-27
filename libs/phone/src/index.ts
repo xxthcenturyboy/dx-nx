@@ -14,5 +14,7 @@ export {
 } from './model/phone.consts';
 
 export {
-  PhoneType
+  CreatePhonePayloadType,
+  PhoneType,
+  UpdatePhonePayloadType
 } from './model/phone.types';

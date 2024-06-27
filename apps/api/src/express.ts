@@ -11,6 +11,7 @@ import { Logger as WinstonLogger } from 'winston';
 import { logger as expressWinston } from 'express-winston';
 import cookieParser from 'cookie-parser';
 import morgan, { TokenIndexer } from 'morgan';
+import { DxDateUtilClass } from '@dx/utils';
 // import { StatusCodes } from 'http-status-codes';
 
 import {
@@ -19,7 +20,8 @@ import {
 } from '@dx/redis';
 import {
   API_ROOT,
-  APP_PREFIX
+  APP_PREFIX,
+  isLocal
 } from '@dx/config';
 
 import { handleError } from '@dx/server';
@@ -65,7 +67,14 @@ export async function configureExpress(
     store: redisStore,
     resave: false,
     saveUninitialized: true,
-    cookie: { httpOnly: true, secure: false, maxAge: undefined, sameSite: false }
+    cookie: {
+      httpOnly: true,
+      secure: false,
+      maxAge: isLocal()
+        ? DxDateUtilClass.getMilisecondsDays(1)
+        : DxDateUtilClass.getMilisecondsDays(30),
+      sameSite: false
+    }
   }));
 
   // Setup logging

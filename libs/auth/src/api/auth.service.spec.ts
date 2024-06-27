@@ -3,7 +3,12 @@ import { Sequelize } from 'sequelize-typescript';
 import { ApiLoggingClass } from '@dx/logger';
 import {
   isLocal,
-  POSTGRES_URI
+  POSTGRES_URI,
+  TEST_COUNTRY_CODE,
+  TEST_EMAIL,
+  TEST_EXISTING_EMAIL,
+  TEST_EXISTING_PHONE,
+  TEST_PASSWORD
 } from '@dx/config';
 import { PostgresDbConnection } from '@dx/postgres';
 import {
@@ -95,8 +100,8 @@ describe('AuthService', () => {
         let response: void | null | UserLookupResponseType = null;
         const expectedResult: UserLookupResponseType = { available: false };
         const query: UserLookupQueryType = {
-          code: '1',
-          value: '2131112222',
+          code: TEST_COUNTRY_CODE,
+          value: TEST_EXISTING_PHONE,
           type: USER_LOOKUPS.PHONE
         }
         // act
@@ -124,7 +129,7 @@ describe('AuthService', () => {
         let response: void | null | UserLookupResponseType = null;
         const expectedResult: UserLookupResponseType = { available: false };
         const query: UserLookupQueryType = {
-          value: 'admin@danex.software',
+          value: TEST_EXISTING_EMAIL,
           type: USER_LOOKUPS.EMAIL
         }
         // act
@@ -236,8 +241,8 @@ describe('AuthService', () => {
       test('should throw when passwords is incorrect', async () => {
         // arrange
         const payload: LoginPaylodType = {
-          email: 'admin@danex.software',
-          password: 'password',
+          email: TEST_EXISTING_EMAIL,
+          password: TEST_PASSWORD,
         };
         // act
         try {
@@ -251,8 +256,8 @@ describe('AuthService', () => {
       test('should return user profile upon successful login', async () => {
         // arrange
         const payload: LoginPaylodType = {
-          email: 'admin@danex.software',
-          password: 'advancedbasics1',
+          email: TEST_EXISTING_EMAIL,
+          password: TEST_PASSWORD,
         };
         // act
         const user = await authService.login(payload);
@@ -317,7 +322,7 @@ describe('AuthService', () => {
       test('should throw when passwords do not match', async () => {
         // arrange
         const payload: SignupPayloadType = {
-          email: 'test@email.com',
+          email: TEST_EMAIL,
           password: 'password1',
           passwordConfirm: 'not-matching-password'
         };
@@ -333,7 +338,7 @@ describe('AuthService', () => {
       test('should throw when session is missing', async () => {
         // arrange
         const payload: SignupPayloadType = {
-          email: 'test@email.com',
+          email: TEST_EMAIL,
           password: 'password1',
           passwordConfirm: 'password1'
         };
@@ -349,9 +354,9 @@ describe('AuthService', () => {
       test('should throw when password is weak', async () => {
         // arrange
         const payload: SignupPayloadType = {
-          email: 'test@email.com',
-          password: 'password',
-          passwordConfirm: 'password'
+          email: TEST_EMAIL,
+          password: TEST_PASSWORD,
+          passwordConfirm: TEST_PASSWORD
         };
         // act
         try {
@@ -365,7 +370,7 @@ describe('AuthService', () => {
       test('should throw when email is not available', async () => {
         // arrange
         const payload: SignupPayloadType = {
-          email: 'admin@danex.software',
+          email: TEST_EXISTING_EMAIL,
           password: STRONG_PW,
           passwordConfirm: STRONG_PW
         };
@@ -397,7 +402,7 @@ describe('AuthService', () => {
       test('should create a user when all data is good', async () => {
         // arrange
         const payload: SignupPayloadType = {
-          email: 'test@email.com',
+          email: TEST_EMAIL,
           password: STRONG_PW,
           passwordConfirm: STRONG_PW
         };

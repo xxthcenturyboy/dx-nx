@@ -13,5 +13,7 @@ export {
 } from './model/email.consts';
 
 export {
-  EmailType
+  CreateEmailPayloadType,
+  EmailType,
+  UpdateEmailPayloadType
 } from './model/email.types';

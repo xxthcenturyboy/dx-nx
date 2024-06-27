@@ -15,7 +15,8 @@ export {
   UserModelType,
 } from './model/user.postgres-model';
 export {
-  UserProfileStateType
+  UserProfileStateType,
+  UpdatePrivilegeSetPayloadType
 } from './model/user.types';
 
 /// privileges
@@ -23,3 +24,6 @@ export {
   UserPrivilegeSetModel,
   UserPrivilegeSetModelType,
 } from './model/user-privilege.postgres-model';
+export {
+  UserPrivilegeRoutes
+} from './api/user-privilege.routes';

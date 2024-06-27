@@ -19,6 +19,10 @@ import {
   sendBadRequest
 } from '@dx/server';
 import { ApiLoggingClass } from '@dx/logger';
+import {
+  TEST_EMAIL,
+  TEST_PASSWORD
+} from '@dx/config';
 
 jest.mock('./auth.service.ts');
 jest.mock('./token.service.ts');
@@ -91,8 +95,8 @@ describe('AuthController', () => {
     test('should sendBadRequest when invoked', async () => {
       // arrange
       const body: LoginPaylodType = {
-        email: 'test@email.com',
-        password: 'password'
+        email: TEST_EMAIL,
+        password: TEST_PASSWORD
       };
       req.body = body;
       // act
@@ -135,7 +139,7 @@ describe('AuthController', () => {
     test('should sendOk when invoked', async () => {
       // arrange
       const body = {
-        email: 'test@email.com'
+        email: TEST_EMAIL
       };
       req.body = body;
       // act
@@ -150,7 +154,7 @@ describe('AuthController', () => {
       // arrange
       const body: SetupPasswordsPaylodType = {
         id: '4d2269d3-9bfc-4f2d-b66c-ab63ea1d2c6f',
-        password: 'password',
+        password: TEST_PASSWORD,
         securityAA: 'Answer',
         securityQQ: 'Question'
       };
@@ -166,9 +170,9 @@ describe('AuthController', () => {
     test('should sendOk when invoked', async () => {
       // arrange
       const body: SignupPayloadType = {
-        email: 'test@email.com',
-        password: 'password',
-        passwordConfirm: 'password'
+        email: TEST_EMAIL,
+        password: TEST_PASSWORD,
+        passwordConfirm: TEST_PASSWORD
       };
       req.body = body;
       // act

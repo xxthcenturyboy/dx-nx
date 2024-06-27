@@ -1,5 +1,6 @@
 import { EmailType } from "@dx/email";
 import { PhoneType } from "@dx/phone";
+import { USER_ROLE } from "./user.consts";
 
 export type UserResponseType = {
   message: string;
@@ -22,8 +23,11 @@ export type UserProfileStateType = {
 };
 
 // User Privileges
-export type UserPrivilegesResponseType = {
-  message: string;
+export type UpdatePrivilegeSetPayloadType = {
+  id?: string;
+  name?: keyof typeof USER_ROLE;
+  order?: number;
+  description?: string;
 };
 
 export type UserPrivilegestMenuType = {

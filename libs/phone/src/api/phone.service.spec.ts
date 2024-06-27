@@ -15,7 +15,12 @@ import {
 } from '@dx/user';
 import {
   isLocal,
-  POSTGRES_URI
+  POSTGRES_URI,
+  TEST_COUNTRY_CODE,
+  TEST_EXISTING_PHONE,
+  TEST_EXISTING_USER_ID,
+  TEST_PHONE,
+  TEST_UUID
 } from '@dx/config';
 import {
   CreatePhonePayloadType,
@@ -91,11 +96,11 @@ describe('PhoneService', () => {
       test('should throw when the phone already exists', async () => {
         // arrange
         const payload: CreatePhonePayloadType = {
-          countryCode: '1',
+          countryCode: TEST_COUNTRY_CODE,
           def: false,
-          phone: '2131112222',
+          phone: TEST_EXISTING_PHONE,
           label: 'Work',
-          userId: '2cf4aebd-d30d-4c9e-9047-e52c10fe8d4d'
+          userId: TEST_EXISTING_USER_ID
         };
         // act
         // assert
@@ -109,11 +114,11 @@ describe('PhoneService', () => {
       test('should create a phone when all is good', async () => {
         // arrange
         const payload: CreatePhonePayloadType = {
-          countryCode: '1',
+          countryCode: TEST_COUNTRY_CODE,
           def: false,
-          phone: '2131234567',
+          phone: TEST_PHONE,
           label: 'Work',
-          userId: '2cf4aebd-d30d-4c9e-9047-e52c10fe8d4d'
+          userId: TEST_EXISTING_USER_ID
         };
         // act
         const response = await phoneService.createPhone(payload);
@@ -137,13 +142,12 @@ describe('PhoneService', () => {
 
       test('should throw when the phone does not exists', async () => {
         // arrange
-        const id = '882972bf-c490-4571-a6ce-a221f0116240';
         // act
         // assert
         try {
-          expect(await phoneService.updatePhone(id, {})).toThrow();
+          expect(await phoneService.updatePhone(TEST_UUID, {})).toThrow();
         } catch (err) {
-          expect(err.message).toEqual(`Phone could not be found with the id: ${id}`);
+          expect(err.message).toEqual(`Phone could not be found with the id: ${TEST_UUID}`);
         }
       });
 
@@ -173,13 +177,12 @@ describe('PhoneService', () => {
 
       test('should throw when the phone does not exists', async () => {
         // arrange
-        const id = '882972bf-c490-4571-a6ce-a221f0116240';
         // act
         // assert
         try {
-          expect(await phoneService.deletePhone(id)).toThrow();
+          expect(await phoneService.deletePhone(TEST_UUID)).toThrow();
         } catch (err) {
-          expect(err.message).toEqual(`Phone could not be found with the id: ${id}`);
+          expect(err.message).toEqual(`Phone could not be found with the id: ${TEST_UUID}`);
         }
       });
 

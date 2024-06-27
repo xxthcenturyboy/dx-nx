@@ -15,7 +15,8 @@ export {
 export { ApiConfigType } from './api/api-config.type';
 export {
   APP_DOMAIN,
-  COMPANY_NAME
+  COMPANY_NAME,
+  SORT_DIR
 } from './common/common-config.consts';
 export {
   isLocal,
@@ -27,3 +28,17 @@ export {
   CLIENT_APP_DOMAIN,
   CLIENT_APP_URL
 } from './client/client-config.consts';
+
+// Test Data
+export {
+  TEST_COUNTRY_CODE,
+  TEST_EMAIL,
+  TEST_EXISTING_EMAIL,
+  TEST_EXISTING_PASSWORD,
+  TEST_EXISTING_PHONE,
+  TEST_EXISTING_USER_ID,
+  TEST_EXISTING_USER_PRIVILEGE_ID,
+  TEST_PASSWORD,
+  TEST_PHONE,
+  TEST_UUID
+} from './tests/test.const';

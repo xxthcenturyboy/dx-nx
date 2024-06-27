@@ -8,8 +8,19 @@ import {
   UserLookupResponseType,
   USER_LOOKUPS
 } from '@dx/auth';
-import { LoginPaylodType, SetupPasswordsPaylodType, SignupPayloadType } from 'libs/auth/src/model/auth.types';
+import {
+  LoginPaylodType,
+  SetupPasswordsPaylodType,
+  SignupPayloadType
+} from 'libs/auth/src/model/auth.types';
 import { UserProfileStateType } from '@dx/user';
+import {
+  TEST_EMAIL,
+  TEST_PASSWORD,
+  TEST_EXISTING_EMAIL,
+  TEST_EXISTING_PHONE,
+  TEST_EXISTING_USER_ID
+} from '@dx/config';
 
 describe('v1 Auth Routes', () => {
   describe('GET /api/v1/auth/lookup', () => {
@@ -29,7 +40,7 @@ describe('v1 Auth Routes', () => {
       // arrange
       let response: AxiosResponse<string, UserLookupResponseType>;
       const expectedResult: UserLookupResponseType = { available: false };
-      const url = `/api/v1/auth/lookup?code=1&value=2131112222&type=${USER_LOOKUPS.PHONE}`;
+      const url = `/api/v1/auth/lookup?code=1&value=${TEST_EXISTING_PHONE}&type=${USER_LOOKUPS.PHONE}`;
       // act
       response = await axios.get(url);
       // assert
@@ -53,7 +64,7 @@ describe('v1 Auth Routes', () => {
       // arrange
       let response: AxiosResponse<string, UserLookupResponseType>;
       const expectedResult: UserLookupResponseType = { available: false };
-      const url = `/api/v1/auth/lookup?value=admin@danex.software&type=${USER_LOOKUPS.EMAIL}`;
+      const url = `/api/v1/auth/lookup?value=${TEST_EXISTING_EMAIL}&type=${USER_LOOKUPS.EMAIL}`;
       // act
       response = await axios.get(url);
       // assert
@@ -108,7 +119,7 @@ describe('v1 Auth Routes', () => {
     test('should return an error when email does not exist', async () => {
       const paylod: LoginPaylodType = {
         email: 'not-in-this-system@useless.com',
-        password: 'password'
+        password: TEST_PASSWORD
       };
 
       const request: AxiosRequestConfig = {
@@ -130,8 +141,8 @@ describe('v1 Auth Routes', () => {
 
     test('should return an error when password is incorrect', async () => {
       const paylod: LoginPaylodType = {
-        email: 'admin@danex.software',
-        password: 'password'
+        email: TEST_EXISTING_EMAIL,
+        password: TEST_PASSWORD
       };
 
       const request: AxiosRequestConfig = {
@@ -153,7 +164,7 @@ describe('v1 Auth Routes', () => {
 
     test('should return user profile when login is successful', async () => {
       const paylod: LoginPaylodType = {
-        email: 'admin@danex.software',
+        email: TEST_EXISTING_EMAIL,
         password: 'advancedbasics1'
       };
 
@@ -167,8 +178,7 @@ describe('v1 Auth Routes', () => {
 
       expect(response.status).toEqual(200);
       expect(response.data).toBeDefined();
-      expect(response.data.emails).toHaveLength(1);
-      expect(response.data.phones).toHaveLength(1);
+      expect(response.data.id).toEqual(TEST_EXISTING_USER_ID);
     });
   });
 
@@ -247,7 +257,7 @@ describe('v1 Auth Routes', () => {
         url: '/api/v1/auth/request-reset',
         method: 'POST',
         data: {
-          email: 'test@email.com'
+          email: TEST_EMAIL
         }
       };
 
@@ -288,8 +298,8 @@ describe('v1 Auth Routes', () => {
     test('should return an error when email not sent', async () => {
       const paylod: SignupPayloadType = {
         email: '',
-        password: 'password',
-        passwordConfirm: 'password'
+        password: TEST_PASSWORD,
+        passwordConfirm: TEST_PASSWORD
       };
 
       const request: AxiosRequestConfig = {
@@ -311,7 +321,7 @@ describe('v1 Auth Routes', () => {
 
     test('should return an error when passwords do not match', async () => {
       const paylod: SignupPayloadType = {
-        email: 'test@email.com',
+        email: TEST_EMAIL,
         password: 'password0',
         passwordConfirm: 'password1'
       };
@@ -335,9 +345,9 @@ describe('v1 Auth Routes', () => {
 
     test('should return an error when password is weak', async () => {
       const paylod: SignupPayloadType = {
-        email: 'test@email.com',
-        password: 'password',
-        passwordConfirm: 'password'
+        email: TEST_EMAIL,
+        password: TEST_PASSWORD,
+        passwordConfirm: TEST_PASSWORD
       };
 
       const request: AxiosRequestConfig = {
@@ -359,7 +369,7 @@ describe('v1 Auth Routes', () => {
 
     test('should return an error when email is not available', async () => {
       const paylod: SignupPayloadType = {
-        email: 'admin@danex.software',
+        email: TEST_EXISTING_EMAIL,
         password: STRONG_PW,
         passwordConfirm: STRONG_PW
       };
@@ -411,7 +421,7 @@ describe('v1 Auth Routes', () => {
       // arrange
       const payload: SetupPasswordsPaylodType = {
         id: '4d2269d3-9bfc-4f2d-b66c-ab63ea1d2c6f',
-        password: 'password',
+        password: TEST_PASSWORD,
         securityAA: 'Answer',
         securityQQ: 'Question'
       };

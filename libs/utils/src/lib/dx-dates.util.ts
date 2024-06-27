@@ -47,6 +47,10 @@ export class DxDateUtilClass {
 
     return dayjs.utc(d).unix();
   }
+
+  public static getMilisecondsDays(days: number) {
+    return days * 24 * 60 * 60 * 1000
+  }
 }
 
 export type DxDateUtilClassType = typeof DxDateUtilClass.prototype;
