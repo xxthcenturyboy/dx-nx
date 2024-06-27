@@ -7,6 +7,7 @@ import {
   TEST_COUNTRY_CODE,
   TEST_EMAIL,
   TEST_EXISTING_EMAIL,
+  TEST_EXISTING_PASSWORD,
   TEST_EXISTING_PHONE,
   TEST_PASSWORD
 } from '@dx/config';
@@ -257,7 +258,7 @@ describe('AuthService', () => {
         // arrange
         const payload: LoginPaylodType = {
           email: TEST_EXISTING_EMAIL,
-          password: TEST_PASSWORD,
+          password: TEST_EXISTING_PASSWORD,
         };
         // act
         const user = await authService.login(payload);
