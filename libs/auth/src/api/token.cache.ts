@@ -11,7 +11,7 @@ import { parseJson } from "@dx/utils";
 import { RefreshCacheType } from "../model/token.types";
 
 export class TokenCache {
-  keyPrefix: 'refreshToken';
+  keyPrefix = 'refresh-token';
   logger: ApiLoggingClassType
   redis: RedisServiceType;
 
