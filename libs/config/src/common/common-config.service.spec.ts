@@ -2,6 +2,7 @@ import {
   isDebug,
   isLocal,
   isProd,
+  isTest,
   getEnvironment
 } from './common-config.service';
 
@@ -29,6 +30,15 @@ describe('isProd', () => {
   // assert
   it('should exist when imported', () => {
     expect(isProd).toBeDefined();
+  });
+});
+
+describe('isTest', () => {
+  // arrange
+  // act
+  // assert
+  it('should exist when imported', () => {
+    expect(isTest).toBeDefined();
   });
 });
 

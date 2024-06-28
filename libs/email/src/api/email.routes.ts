@@ -1,12 +1,15 @@
 import { Router } from 'express';
 import { EmailController } from './email.controller';
-import { ensureLoggedIn } from '@dx/auth';
+import {
+  ensureLoggedIn,
+} from '@dx/auth';
 
 export class EmailRoutes {
   static configure() {
     const router = Router();
 
     router.post('/validate-email', EmailController.validateEmail);
+    router.post('/test/validate-email', EmailController.validateTestEmail);
 
     router.all('/*', [ensureLoggedIn]);
 

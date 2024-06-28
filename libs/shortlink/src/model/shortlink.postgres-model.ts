@@ -15,7 +15,7 @@ import { CLIENT_APP_URL } from '@dx/config';
 import { ApiLoggingClass } from '@dx/logger';
 import {
   randomId,
-  malicousUrlCheck
+  maliciousUrlCheck
 } from '@dx/utils';
 import { SHORTLINK_POSTGRES_DB_NAME } from '../model/shortlink.consts';
 
@@ -41,7 +41,7 @@ export class ShortLinkModel extends Model<ShortLinkModel> {
 
   public static async generateShortlink(url: string): Promise<string> {
     try {
-      malicousUrlCheck(url);
+      maliciousUrlCheck(url);
 
       // Check if we have this already
       const existing = await ShortLinkModel.findOne({
@@ -75,7 +75,7 @@ export class ShortLinkModel extends Model<ShortLinkModel> {
       });
 
       if (link) {
-        malicousUrlCheck(link.target);
+        maliciousUrlCheck(link.target);
         return link.target;
       }
 

@@ -9,6 +9,7 @@ export {
 } from './model/email.postgres-model';
 
 export {
+  EMAIL_MODEL_OPTIONS,
   EMAIL_POSTGRES_DB_NAME
 } from './model/email.consts';
 

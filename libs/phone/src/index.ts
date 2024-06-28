@@ -10,6 +10,7 @@ export {
 
 export {
   PHONE_ENTITY_NAME,
+  PHONE_MODEL_OPTIONS,
   PHONE_POSTGRES_DB_NAME
 } from './model/phone.consts';
 

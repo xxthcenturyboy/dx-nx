@@ -98,7 +98,7 @@ describe('v1 Auth Routes', () => {
   });
 
   describe('GET /api/v1/auth/token-invite', () => {
-    test('should return a message when queried', async () => {
+    test('should return an error when queried with an expired token.', async () => {
       // arrange
       const url = `/api/v1/auth/token-invite?token=413c78fb890955a86d3971828dd05a9b2d844e44d8a30d406f80bf6e79612bb97e8b3b5834c8dbebdf5c4dadc767a579`;
       // act

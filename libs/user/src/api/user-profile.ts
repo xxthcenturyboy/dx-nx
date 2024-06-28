@@ -1,6 +1,6 @@
-import { UserModel } from "../model/user.postgres-model";
-import { UserProfileStateType } from "../model/user.types";
-import { ApiLoggingClass } from "@dx/logger";
+import { UserModel } from '../model/user.postgres-model';
+import { UserProfileStateType } from '../model/user.types';
+import { ApiLoggingClass } from '@dx/logger';
 
 export async function getUserProfileState(
   user: UserModel,
@@ -9,14 +9,14 @@ export async function getUserProfileState(
   try {
     // common items
     const id = user.id;
-    const email = user.emails.find(e => e.default);
+    const defaultEmail = user.emails.find(e => e.default);
 
     const profile: UserProfileStateType = {
       id,
       emails: await user.getEmailData(),
       firstName: user.firstName,
       hasCompletedInvite: user.hasCompletedInvite,
-      isEmailVerified: !!email?.verifiedAt,
+      isEmailVerified: !!defaultEmail?.verifiedAt,
       isAdmin: user.isAdmin,
       isSuperAdmin: user.isSuperAdmin,
       lastName: user.lastName,

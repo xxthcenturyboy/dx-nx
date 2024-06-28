@@ -89,8 +89,8 @@ export class UserModel extends Model<UserModel> {
   tokenExp: number | null;
 
   @AllowNull(true)
-  @Column({ field: 'otp_code', type: DataType.INTEGER })
-  otpCode: number | null;
+  @Column({ field: 'otp_code', type: DataType.STRING })
+  otpCode: string | null;
 
   @Column(DataType.STRING)
   hashanswer: string;
@@ -534,12 +534,12 @@ export class UserModel extends Model<UserModel> {
     return token;
   }
 
-  static async updateOtpCode (id: string): Promise<number> {
+  static async updateOtpCode (id: string): Promise<string> {
     if (!id) {
       throw new Error(`No user ID provided`);
     }
 
-    const otpCode = Number(dxEncryptionGenerateRandomValue(6));
+    const otpCode = dxEncryptionGenerateRandomValue(3).toUpperCase();
 
     await UserModel.update({
       otpCode
@@ -549,7 +549,6 @@ export class UserModel extends Model<UserModel> {
         deletedAt: null
       }
     });
-
     return otpCode;
   }
 
@@ -582,7 +581,7 @@ export class UserModel extends Model<UserModel> {
     }, { where: { id, deletedAt: null } });
   }
 
-  static async updatePassword (id: string, password: string, oldPassword: string, otp: number): Promise<boolean> {
+  static async updatePassword (id: string, password: string, oldPassword: string, otp: string): Promise<boolean> {
     if (!password || !id || !oldPassword) {
       throw new Error(`Bad data provided.`);
     }

@@ -16,7 +16,10 @@ import {
   isNumber,
   parseJson
 } from '@dx/utils';
-import { getRedisConfig } from '@dx/config';
+import {
+  getRedisConfig,
+  isTest
+} from '@dx/config';
 
 export class RedisService {
   cacheHandle: typeof Redis.Cluster.prototype | typeof Redis.prototype;
@@ -27,7 +30,7 @@ export class RedisService {
     this.logger = ApiLoggingClass.instance;
     RedisService.#instance = this;
 
-    if (params.isTest) {
+    if (isTest()) {
       this.cacheHandle = new ioRedisMock();
       return;
     }

@@ -71,6 +71,17 @@ export const EmailController = {
     } catch (err) {
       sendBadRequest(req, res, err.message);
     }
+  },
+
+  validateTestEmail: async function(req: Request, res: Response) {
+    try {
+      const { email } = req.body as { email: string };
+      const service = new EmailService();
+      await service.validateTestEmail(email);
+      return sendOK(req, res, {});
+    } catch (err) {
+      sendBadRequest(req, res, err.message);
+    }
   }
 };
 

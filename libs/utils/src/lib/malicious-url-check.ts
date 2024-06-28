@@ -3,7 +3,7 @@ import {
   CLIENT_APP_URL
 } from '@dx/config';
 
-export function malicousUrlCheck(urlToCheck: string) {
+export function maliciousUrlCheck(urlToCheck: string) {
   const TRANSFORMED_APP_DOMAIN = CLIENT_APP_DOMAIN.replace(/\./g, '\\.');
   // below makes use of query params - not necessary here
   // const PATTERN_APP_DOMAIN = new RegExp(`^${CLIENT_APP_DOMAIN.replace(/\./g, '\\.')}[.:?/]`);

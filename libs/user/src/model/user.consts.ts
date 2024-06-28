@@ -17,17 +17,22 @@ export const ACCOUNT_RESTRICTIONS = {
 
 export const USER_ROLE_ARRAY = Object.values(USER_ROLE);
 
-/// User Email
-export const USER_EMAIL_ENTITY_NAME = 'user-email';
-export const USER_EMAIL_POSTGRES_DB_NAME = convertpHyphensToUnderscores(USER_EMAIL_ENTITY_NAME);
-export const USER_EMAIL_LABEL = {
-  DEFAULT: 'Default',
-  MAIN: 'Main'
-}
+export const USER_SORT_FIELDS = [
+  'firstName', 'lastName', 'optInBeta'
+];
 
-// User Phone
-export const USER_PHONE_ENTITY_NAME = 'user-phone';
-export const USER_PHONE_POSTGRES_DB_NAME = convertpHyphensToUnderscores(USER_PHONE_ENTITY_NAME);
+export const USER_FIND_ATTRIBUTES = [
+  'id',
+  'firstName',
+  'lastName',
+  'fullName',
+  'isAdmin',
+  'isSuperAdmin',
+  'optInBeta',
+  'roles',
+  'username',
+  'restrictions'
+];
 
 // User Privilege
 export const USER_PRIVILEGES_ENTITY_NAME = 'user-privileges';

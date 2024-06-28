@@ -10,8 +10,10 @@ import {
 import { randomId } from '@dx/utils';
 import { MailSendgrid } from '@dx/mail';
 import { ShortLinkModel } from '@dx/shortlink';
+import { isLocal } from '@dx/config';
 
 export class EmailService {
+  private LOCAL = isLocal();
   private logger: ApiLoggingClassType;
 
   constructor() {
@@ -146,6 +148,12 @@ export class EmailService {
     }
 
     return { id: '' };
+  }
+
+  public async validateTestEmail(email: string) {
+    if (this.LOCAL) {
+      await EmailModel.validateEmail(email);
+    }
   }
 }
 

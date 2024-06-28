@@ -16,11 +16,16 @@ export { ApiConfigType } from './api/api-config.type';
 export {
   APP_DOMAIN,
   COMPANY_NAME,
+  DEFAULT_LIMIT,
+  DEFAULT_OFFSET,
+  DEFAULT_SORT,
   SORT_DIR
 } from './common/common-config.consts';
 export {
+  isDebug,
   isLocal,
-  isProd
+  isProd,
+  isTest
 } from './common/common-config.service';
 
 // Client
@@ -38,7 +43,11 @@ export {
   TEST_EXISTING_PHONE,
   TEST_EXISTING_USER_ID,
   TEST_EXISTING_USER_PRIVILEGE_ID,
+  TEST_FIRST_NAME,
+  TEST_LAST_NAME,
   TEST_PASSWORD,
   TEST_PHONE,
+  TEST_USERNAME,
+  TEST_USER_CREATE,
   TEST_UUID
 } from './tests/test.const';

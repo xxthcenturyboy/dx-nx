@@ -30,7 +30,7 @@ export class UserPrivilegeService {
       const promises: Promise<void>[] = []
       const cache = new UserPrivilegeSetCache();
       for (const privilege of data) {
-        promises.push(void cache.setCache(privilege.name, privilege));
+        promises.push(void cache.setCache(privilege.name, privilege.toJSON()));
       }
       await Promise.all(promises);
     } catch (err) {
@@ -97,7 +97,7 @@ export class UserPrivilegeService {
       await set.save();
 
       const cache = new UserPrivilegeSetCache();
-      await cache.setCache(set.name, set);
+      await cache.setCache(set.name, set.toJSON());
 
       return set;
     } catch (err) {

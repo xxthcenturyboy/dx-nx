@@ -2,13 +2,10 @@ import {
   ACCOUNT_RESTRICTIONS,
   USER_ENTITY_NAME,
   USER_ENTITY_POSTGRES_DB_NAME,
+  USER_FIND_ATTRIBUTES,
   USER_ROLE,
   USER_ROLE_ARRAY,
-  USER_EMAIL_ENTITY_NAME,
-  USER_EMAIL_POSTGRES_DB_NAME,
-  USER_EMAIL_LABEL,
-  USER_PHONE_ENTITY_NAME,
-  USER_PHONE_POSTGRES_DB_NAME,
+  USER_SORT_FIELDS,
   USER_PRIVILEGES_ENTITY_NAME,
   USER_PRIVILEGES_POSTGRES_DB_NAME
 } from './user.consts';
@@ -82,69 +79,40 @@ describe('USER_ROLE_ARRAY ', () => {
   });
 });
 
-describe('USER_EMAIL_POSTGRES_DB_NAME ', () => {
+describe('USER_FIND_ATTRIBUTES ', () => {
   // arrange
   // act
   // assert
   it('should exist when imported', () => {
-    expect(USER_EMAIL_POSTGRES_DB_NAME).toBeDefined();
+    expect(USER_FIND_ATTRIBUTES).toBeDefined();
   });
 
   it('should have correct value', () => {
-    expect(USER_EMAIL_POSTGRES_DB_NAME).toEqual('user_email');
+    expect(USER_FIND_ATTRIBUTES).toEqual([
+      'id',
+      'firstName',
+      'lastName',
+      'fullName',
+      'isAdmin',
+      'isSuperAdmin',
+      'optInBeta',
+      'roles',
+      'username',
+      'restrictions'
+    ]);
   });
 });
 
-describe('USER_EMAIL_ENTITY_NAME ', () => {
+describe('USER_SORT_FIELDS ', () => {
   // arrange
   // act
   // assert
   it('should exist when imported', () => {
-    expect(USER_EMAIL_ENTITY_NAME).toBeDefined();
+    expect(USER_SORT_FIELDS).toBeDefined();
   });
 
   it('should have correct value', () => {
-    expect(USER_EMAIL_ENTITY_NAME).toEqual('user-email');
-  });
-});
-
-describe('USER_EMAIL_LABEL ', () => {
-  // arrange
-  // act
-  // assert
-  it('should exist when imported', () => {
-    expect(USER_EMAIL_LABEL).toBeDefined();
-  });
-
-  it('should have correct value', () => {
-    expect(USER_EMAIL_LABEL.DEFAULT).toEqual('Default');
-    expect(USER_EMAIL_LABEL.MAIN).toEqual('Main');
-  });
-});
-
-describe('USER_PHONE_ENTITY_NAME ', () => {
-  // arrange
-  // act
-  // assert
-  it('should exist when imported', () => {
-    expect(USER_PHONE_ENTITY_NAME).toBeDefined();
-  });
-
-  it('should have correct value', () => {
-    expect(USER_PHONE_ENTITY_NAME).toEqual('user-phone');
-  });
-});
-
-describe('USER_PHONE_POSTGRES_DB_NAME ', () => {
-  // arrange
-  // act
-  // assert
-  it('should exist when imported', () => {
-    expect(USER_PHONE_POSTGRES_DB_NAME).toBeDefined();
-  });
-
-  it('should have correct value', () => {
-    expect(USER_PHONE_POSTGRES_DB_NAME).toEqual('user_phone');
+    expect(USER_SORT_FIELDS).toEqual(['firstName', 'lastName', 'optInBeta']);
   });
 });
 

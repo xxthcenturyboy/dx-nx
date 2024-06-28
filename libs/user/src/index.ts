@@ -6,8 +6,6 @@ export { getUserProfileState } from './api/user-profile';
 export {
   USER_ENTITY_POSTGRES_DB_NAME,
   USER_ROLE,
-  USER_EMAIL_POSTGRES_DB_NAME,
-  USER_PHONE_POSTGRES_DB_NAME,
   USER_PRIVILEGES_POSTGRES_DB_NAME
 } from './model/user.consts';
 export {
@@ -15,8 +13,23 @@ export {
   UserModelType,
 } from './model/user.postgres-model';
 export {
+  CreateUserPayloadType,
+  CreateUserResponseType,
+  GetUserListResponseType,
+  GetUserProfileReturnType,
+  GetUserQueryType,
+  GetUserResponseType,
+  GetUsersListQueryType,
+  OtpCodeResponseType,
+  ResendInvitePayloadType,
+  SendInviteResponseType,
+  UpdatePasswordPayloadType,
+  UpdateUserPayloadType,
+  UpdateUserResponseType,
+  UserPrivilegestMenuType,
   UserProfileStateType,
-  UpdatePrivilegeSetPayloadType
+  UpdatePrivilegeSetPayloadType,
+  UserType
 } from './model/user.types';
 
 /// privileges
