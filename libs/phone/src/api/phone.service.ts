@@ -3,11 +3,13 @@ import {
   ApiLoggingClassType
 } from '@dx/logger';
 import { PhoneModel } from '../model/phone.postgres-model';
+import { PHONE_DEFAULT_REGION_CODE } from '../model/phone.consts';
 import {
   CreatePhonePayloadType,
   UpdatePhonePayloadType
 } from '../model/phone.types';
 import { isLocal } from '@dx/config';
+import { PhoneUtil } from '@dx/utils';
 
 export class PhoneService {
   private LOCAL: boolean;
@@ -21,6 +23,7 @@ export class PhoneService {
   public async createPhone(payload: CreatePhonePayloadType) {
     const {
       countryCode,
+      regionCode,
       def,
       label,
       phone,
@@ -35,7 +38,13 @@ export class PhoneService {
       throw new Error('Not enough information to create a phone.');
     }
 
-    const isPhoneAvailable = await PhoneModel.isPhoneAvailable(phone, countryCode);
+    const phoneUtil = new PhoneUtil(phone, regionCode || PHONE_DEFAULT_REGION_CODE);
+    if ( !phoneUtil.isValid) {
+      this.logger.logError(`invalid phone: ${phone}, ${regionCode || PHONE_DEFAULT_REGION_CODE}`);
+      throw new Error('This phone cannot be used.');
+    }
+
+    const isPhoneAvailable = await PhoneModel.isPhoneAvailable(phoneUtil.nationalNumber, countryCode);
     if (!isPhoneAvailable) {
       throw new Error(`This phone: ${phone} already exists.`);
     }
@@ -48,10 +57,16 @@ export class PhoneService {
       const userPhone = new PhoneModel();
       userPhone.userId = userId;
       userPhone.countryCode = countryCode;
-      userPhone.phone = phone;
+      userPhone.regionCode = regionCode || PHONE_DEFAULT_REGION_CODE;
+      userPhone.phone = phoneUtil.nationalNumber;
       userPhone.label = label;
       userPhone.default = def;
       await userPhone.save();
+
+      // TODO: Send Confirmation
+      // if (phoneUtil.isValidMobile) {
+
+      // }
 
       return { id: userPhone.id };
     } catch (err) {

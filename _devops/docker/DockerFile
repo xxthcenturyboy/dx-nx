@@ -1,5 +1,8 @@
 FROM node:20.12.2-alpine AS build
 
+RUN apk update --no-cache \
+    && apk add git bash python3 make gcc g++ openssh-client yarn bind-tools
+
 WORKDIR /dx-api
 COPY . /dx-api
 ARG NODE_ENV

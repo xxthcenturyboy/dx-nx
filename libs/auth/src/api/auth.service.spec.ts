@@ -9,7 +9,8 @@ import {
   TEST_EXISTING_EMAIL,
   TEST_EXISTING_PASSWORD,
   TEST_EXISTING_PHONE,
-  TEST_PASSWORD
+  TEST_PASSWORD,
+  TEST_PHONE_VALID
 } from '@dx/config';
 import { PostgresDbConnection } from '@dx/postgres';
 import {
@@ -87,7 +88,8 @@ describe('AuthService', () => {
         const expectedResult: UserLookupResponseType = { available: true };
         const query: UserLookupQueryType = {
           code: '1',
-          value: '2131112221',
+          region: 'US',
+          value: TEST_PHONE_VALID,
           type: USER_LOOKUPS.PHONE
         }
         // act

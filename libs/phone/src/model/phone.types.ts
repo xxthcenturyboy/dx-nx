@@ -1,5 +1,6 @@
 export type CreatePhonePayloadType = {
   countryCode: string;
+  regionCode?: string;
   def: boolean;
   label: string;
   phone: string;
@@ -9,6 +10,7 @@ export type CreatePhonePayloadType = {
 export type PhoneType = {
   id: string;
   countryCode: string;
+  regionCode?: string;
   default: boolean;
   phone: string;
   label: string;

@@ -22,6 +22,8 @@ export {
   SORT_DIR
 } from './common/common-config.consts';
 export { CUSTOM_PROFANE_WORDS } from './common/custom-profate-words.const';
+export { DISPOSABLE_EMAIL_DOMAINS } from './common/disposable-email-providers';
+export { INVALID_EMAIL_NAMES } from './common/email-validation.const';
 export {
   isDebug,
   isLocal,
@@ -48,6 +50,9 @@ export {
   TEST_LAST_NAME,
   TEST_PASSWORD,
   TEST_PHONE,
+  TEST_PHONE_IT_INVALID,
+  TEST_PHONE_IT_VALID,
+  TEST_PHONE_VALID,
   TEST_USERNAME,
   TEST_USER_CREATE,
   TEST_UUID

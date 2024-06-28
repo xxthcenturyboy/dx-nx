@@ -73,6 +73,7 @@ export type CreateUserPayloadType = {
   roles: string[];
   username: string;
   countryCode?: string;
+  regionCode?: string;
   firstName?: string;
   lastName?: string;
   phone?: string;

@@ -18,7 +18,7 @@ import {
   DeletedAt,
   Index
 } from 'sequelize-typescript';
-import { DISPOSABLE_EMAIL_DOMAINS } from '@dx/utils';
+import { EmailUtil } from '@dx/utils';
 import {
   EMAIL_LABEL,
   EMAIL_POSTGRES_DB_NAME
@@ -151,34 +151,6 @@ export class EmailModel extends Model<EmailModel> {
         deletedAt: null,
       },
     });
-  }
-
-  static async assertEmailIsValid (email: string): Promise<void> {
-    const cleanedEmail = email.replace(/\s/g, '').toLowerCase();
-
-    // Disallow dots and plus
-    const emailParts = cleanedEmail.split('@');
-    const [prefix, domain] = emailParts;
-    if (
-      !prefix
-      || !domain
-    ) {
-      throw new Error('The email you provided is not valid.');
-    }
-
-    const hasInvalidCharsInPrefix = /\+/.test(prefix);
-    const badGmail = domain === 'gmail.com' && /[\+]/.test(prefix);
-    if (hasInvalidCharsInPrefix || badGmail) {
-      throw new Error(`
-          The email you provided is not valid.
-      `);
-    }
-
-    // disallow disposable domains
-    if (DISPOSABLE_EMAIL_DOMAINS[domain]) {
-      // tslint:disable-next-line:max-line-length
-      throw new Error('The email you provided is not valid. Please note that we do not allow disposable emails or emails that do not exist, so make sure to use a real email address.');
-    }
   }
 
   static async clearAllDefaultByUserId (userId: string): Promise<void> {

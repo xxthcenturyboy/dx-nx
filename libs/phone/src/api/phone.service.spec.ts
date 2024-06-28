@@ -20,6 +20,7 @@ import {
   TEST_EXISTING_PHONE,
   TEST_EXISTING_USER_ID,
   TEST_PHONE,
+  TEST_PHONE_VALID,
   TEST_UUID
 } from '@dx/config';
 import {
@@ -111,12 +112,30 @@ describe('PhoneService', () => {
         }
       });
 
-      test('should create a phone when all is good', async () => {
+      test('should throw when the phone is invalid', async () => {
         // arrange
         const payload: CreatePhonePayloadType = {
           countryCode: TEST_COUNTRY_CODE,
           def: false,
           phone: TEST_PHONE,
+          label: 'Work',
+          userId: TEST_EXISTING_USER_ID
+        };
+        // act
+        // assert
+        try {
+          expect(await phoneService.createPhone(payload)).toThrow();
+        } catch (err) {
+          expect(err.message).toEqual('This phone cannot be used.');
+        }
+      });
+
+      test('should create a phone when all is good', async () => {
+        // arrange
+        const payload: CreatePhonePayloadType = {
+          countryCode: TEST_COUNTRY_CODE,
+          def: false,
+          phone: TEST_PHONE_VALID,
           label: 'Work',
           userId: TEST_EXISTING_USER_ID
         };

@@ -1,7 +1,6 @@
 import { Op } from 'sequelize';
 import {
   FindOptions,
-  IncludeOptions,
   WhereOptions
 } from 'sequelize/types';
 
@@ -9,7 +8,7 @@ import {
   ApiLoggingClass,
   ApiLoggingClassType
 } from '@dx/logger';
-import { UserModel, UserModelType } from '../model/user.postgres-model';
+import { UserModel } from '../model/user.postgres-model';
 import { getUserProfileState } from './user-profile';
 import {
   CreateUserPayloadType,
@@ -31,9 +30,8 @@ import {
   USER_SORT_FIELDS
 } from '../model/user.consts';
 import { EMAIL_MODEL_OPTIONS } from '@dx/email';
-import { PHONE_MODEL_OPTIONS } from '@dx/phone';
+import { PHONE_DEFAULT_REGION_CODE, PHONE_MODEL_OPTIONS } from '@dx/phone';
 import {
-  APP_DOMAIN,
   DEFAULT_LIMIT,
   DEFAULT_OFFSET,
   DEFAULT_SORT,
@@ -43,7 +41,11 @@ import {
 import { ShortLinkModel } from '@dx/shortlink';
 import { MailSendgrid } from '@dx/mail';
 import { EmailModel } from '@dx/email';
-import { ProfanityFilter } from '@dx/utils';
+import {
+  EmailUtil,
+  PhoneUtil,
+  ProfanityFilter
+} from '@dx/utils';
 
 export class UserService {
   private DEBUG = isDebug();
@@ -112,6 +114,7 @@ export class UserService {
   public async createUser(payload: CreateUserPayloadType): Promise<CreateUserResponseType> {
     const {
       countryCode,
+      regionCode,
       email,
       username,
       firstName,
@@ -132,15 +135,32 @@ export class UserService {
       throw new Error('Profane usernames are not allowed.');
     }
 
+    const emailUtil = new EmailUtil(email);
+    if (!emailUtil.validate()) {
+      throw new Error('Invalid Email');
+    }
+
+    let phoneValue: string;
+    let countryCodeValue: string = countryCode;
+    if (phone) {
+      const phoneUtil = new PhoneUtil(phone, regionCode || PHONE_DEFAULT_REGION_CODE);
+      if (!phoneUtil.isValid) {
+        throw new Error('Invalid Phone');
+      }
+      countryCodeValue = phoneUtil.countryCode;
+      phoneValue = phoneUtil.nationalNumber;
+    }
+
     try {
       const user = await UserModel.createFromUsername(
         username,
-        email,
+        emailUtil.formattedEmail(),
         roles,
         firstName,
         lastName,
-        phone,
-        countryCode
+        phoneValue,
+        countryCodeValue,
+        regionCode || PHONE_DEFAULT_REGION_CODE
       );
 
       if (!user) {
@@ -151,9 +171,9 @@ export class UserService {
       const inviteUrl = `/auth/z?route=invite&token=${user.token}`;
       const shortLink = await ShortLinkModel.generateShortlink(inviteUrl);
 
-      const inviteMessageId = await mail.sendInvite(email, shortLink);
+      const inviteMessageId = await mail.sendInvite(emailUtil.formattedEmail(), shortLink);
 
-      await EmailModel.updateMessageInfoValidate(email, inviteMessageId);
+      await EmailModel.updateMessageInfoValidate(emailUtil.formattedEmail(), inviteMessageId);
 
       return {
         id: user.id,
@@ -294,8 +314,8 @@ export class UserService {
       for (const user of users.rows) {
         rows.push(user.toJSON());
       }
-      users.rows = rows as UserModelType[];
-
+      // @ts-expect-error - types are ok
+      users.rows = rows;
       return users;
     } catch (err) {
       const message = err.message || 'Could not get user list.';
@@ -316,9 +336,15 @@ export class UserService {
       throw new Error('Request is invalid.');
     }
 
+    const emailUtil = new EmailUtil(email);
+
     try {
-      if (!email.endsWith(`@${APP_DOMAIN}`)) {
-        await EmailModel.assertEmailIsValid(email);
+      if (!emailUtil.validate()) {
+        if (emailUtil.isDisposableDomain()) {
+          throw new Error('The email you provided is not valid. Please note that we do not allow disposable emails or emails that do not exist, so make sure to use a real email address.');
+        }
+
+        throw new Error('The email you provided is not valid.');
       }
 
       const token = await UserModel.updateToken(id);
@@ -331,9 +357,9 @@ export class UserService {
       const inviteUrl = `/auth/z?route=invite&token=${token}`;
       const shortLink = await ShortLinkModel.generateShortlink(inviteUrl);
 
-      const inviteMessageId = await mail.sendInvite(email, shortLink);
+      const inviteMessageId = await mail.sendInvite(emailUtil.formattedEmail(), shortLink);
 
-      await EmailModel.updateMessageInfoValidate(email, inviteMessageId);
+      await EmailModel.updateMessageInfoValidate(emailUtil.formattedEmail(), inviteMessageId);
 
       return {
         invited: !!inviteMessageId

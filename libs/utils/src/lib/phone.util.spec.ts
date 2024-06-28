@@ -5,13 +5,13 @@ import {
 } from './phone.util';
 import {
   TEST_EXISTING_PHONE,
-  TEST_PHONE
+  TEST_PHONE,
+  TEST_PHONE_IT_INVALID,
+  TEST_PHONE_IT_VALID
 } from "@dx/config";
 
 describe('phone.util', () => {
   let phoneUtil: PhoneUtilType;
-  const INVALID_IT_PHONE = '11 111 1111';
-  const VALID_IT_PHONE = '06 555 5555';
 
   beforeAll(() => {
     new ApiLoggingClass({ appName: 'test' });
@@ -32,8 +32,8 @@ describe('phone.util', () => {
 
   test('should invalidate a bogus an Italian phone number', () => {
     // arrange
-    const nationalPhone = INVALID_IT_PHONE.replace(/\ /g, '');
-    phoneUtil = new PhoneUtil(INVALID_IT_PHONE, 'IT');
+    const nationalPhone = TEST_PHONE_IT_INVALID.replace(/\ /g, '');
+    phoneUtil = new PhoneUtil(TEST_PHONE_IT_INVALID, 'IT');
     // act
     // assert
     expect(phoneUtil.countryCode).toEqual('39');
@@ -58,8 +58,8 @@ describe('phone.util', () => {
 
   test('should validate a valid an Italian phone number', () => {
     // arrange
-    const nationalPhone = VALID_IT_PHONE.replace(/\ /g, '');
-    phoneUtil = new PhoneUtil(`39 ${VALID_IT_PHONE}`, 'IT');
+    const nationalPhone = TEST_PHONE_IT_VALID.replace(/\ /g, '');
+    phoneUtil = new PhoneUtil(`39 ${TEST_PHONE_IT_VALID}`, 'IT');
     // act
     // assert
     expect(phoneUtil.countryCode).toEqual('39');

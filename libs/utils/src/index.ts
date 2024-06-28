@@ -23,7 +23,6 @@ export {
   randomId
 } from './lib/number.util';
 
-export { DISPOSABLE_EMAIL_DOMAINS } from './lib/disposable-email-providers';
 
 export { getTimeFromUuid } from './lib/uuid.util';
 
@@ -44,4 +43,5 @@ export { maliciousUrlCheck } from './lib/malicious-url-check';
 
 export { PhoneUtil } from './lib/phone.util';
 
+export { EmailUtil } from './lib/email.util'
 export { ProfanityFilter } from './lib/profane.util'

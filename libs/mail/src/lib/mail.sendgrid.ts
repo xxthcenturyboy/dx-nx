@@ -17,7 +17,7 @@ import {
   ApiLoggingClass,
   ApiLoggingClassType
 } from '@dx/logger';
-import { DISPOSABLE_EMAIL_DOMAINS } from '@dx/utils';
+import { DISPOSABLE_EMAIL_DOMAINS } from '@dx/config';
 
 export class MailSendgrid {
   private fromAddress: string;

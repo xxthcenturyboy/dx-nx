@@ -6,6 +6,7 @@ export type UserLookupQueryType = {
   type: string;
   value: string;
   code?: string;
+  region?: string;
 };
 
 export type GetByTokenQueryType = {

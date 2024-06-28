@@ -16,6 +16,9 @@ import {
   TEST_COUNTRY_CODE,
   TEST_EXISTING_PHONE,
   TEST_PHONE,
+  TEST_PHONE_IT_INVALID,
+  TEST_PHONE_IT_VALID,
+  TEST_PHONE_VALID,
   TEST_UUID
 } from '@dx/config';
 
@@ -23,6 +26,7 @@ describe('v1 Phone Routes', () => {
   let authRes: UserProfileStateType;
   let authUtil: AuthUtilType;
   let idToUpdate: string;
+  let idToUpdateItaly: string;
 
   beforeAll(async () => {
     authUtil = new AuthUtil();
@@ -84,11 +88,104 @@ describe('v1 Phone Routes', () => {
       }
     });
 
+    test('should return an error when phone is invalid', async () => {
+      const payload: CreatePhonePayloadType = {
+        countryCode: TEST_COUNTRY_CODE,
+        regionCode: 'US',
+        def: false,
+        phone: TEST_PHONE,
+        label: 'Work',
+        userId: authRes.id
+      };
+
+      const request: AxiosRequestConfig = {
+        url: `/api/v1/phone/`,
+        method: 'POST',
+        headers: {
+          cookie: authUtil.cookeisRaw
+        },
+        withCredentials: true,
+        data: payload
+      };
+
+      try {
+        expect(await axios.request(request)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // assert
+        expect(typedError.response.status).toBe(400)
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toEqual(`This phone cannot be used.`);
+      }
+    });
+
+    test('should return an error when Italian phone is invalid', async () => {
+      const payload: CreatePhonePayloadType = {
+        countryCode: '39',
+        regionCode: 'IT',
+        def: false,
+        phone: TEST_PHONE_IT_INVALID,
+        label: 'Work',
+        userId: authRes.id
+      };
+
+      const request: AxiosRequestConfig = {
+        url: `/api/v1/phone/`,
+        method: 'POST',
+        headers: {
+          cookie: authUtil.cookeisRaw
+        },
+        withCredentials: true,
+        data: payload
+      };
+
+      try {
+        expect(await axios.request(request)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // assert
+        expect(typedError.response.status).toBe(400)
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toEqual(`This phone cannot be used.`);
+      }
+    });
+
+    test('should return 200 when successfuly creates Italian phone', async () => {
+      const payload: CreatePhonePayloadType = {
+        countryCode: '39',
+        regionCode: 'IT',
+        def: false,
+        phone: TEST_PHONE_IT_VALID,
+        label: 'Work',
+        userId: authRes.id
+      };
+
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/phone',
+        method: 'POST',
+        data: payload,
+        headers: {
+          cookie: authUtil.cookeisRaw
+
+        },
+        withCredentials: true,
+      };
+
+      const response = await axios.request(request);
+
+      expect(response.status).toEqual(200);
+      expect(response.data).toBeDefined();
+      expect(response.data.id).toBeDefined();
+
+      idToUpdateItaly = response.data.id;
+    });
+
     test('should return 200 when successfuly creates phone', async () => {
       const payload: CreatePhonePayloadType = {
         countryCode: TEST_COUNTRY_CODE,
+        regionCode: 'US',
         def: false,
-        phone: TEST_PHONE,
+        phone: TEST_PHONE_VALID,
         label: 'Work',
         userId: authRes.id
       };
@@ -201,8 +298,8 @@ describe('v1 Phone Routes', () => {
       expect(response.data.id).toBeDefined();
     });
 
-    test('should permanently delete a phone when called', async () => {
-      const request: AxiosRequestConfig = {
+    test('should permanently delete our test phones when called', async () => {
+      const request1: AxiosRequestConfig = {
         url: `/api/v1/phone/test/${idToUpdate}`,
         method: 'DELETE',
         headers: {
@@ -210,10 +307,20 @@ describe('v1 Phone Routes', () => {
         },
         withCredentials: true
       };
+      const request2: AxiosRequestConfig = {
+        url: `/api/v1/phone/test/${idToUpdateItaly}`,
+        method: 'DELETE',
+        headers: {
+          cookie: authUtil.cookeisRaw
+        },
+        withCredentials: true
+      };
 
-      const result = await axios.request<AxiosRequestConfig, AxiosResponse<void>>(request);
+      const result1 = await axios.request<AxiosRequestConfig, AxiosResponse<void>>(request1);
+      const result2 = await axios.request<AxiosRequestConfig, AxiosResponse<void>>(request2);
 
-      expect(result.status).toBe(200);
+      expect(result1.status).toBe(200);
+      expect(result2.status).toBe(200);
     });
   });
 });

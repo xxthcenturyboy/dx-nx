@@ -16,7 +16,10 @@ import {
   getTimeFromUuid,
   PhoneUtil
 } from '@dx/utils';
-import { PHONE_POSTGRES_DB_NAME } from './phone.consts';
+import {
+  PHONE_DEFAULT_REGION_CODE,
+  PHONE_POSTGRES_DB_NAME
+} from './phone.consts';
 import { UserModel } from '@dx/user';
 
 @Table({
@@ -56,7 +59,7 @@ export class PhoneModel extends Model<PhoneModel> {
   countryCode: string;
 
   @AllowNull(false)
-  @Column({ field: 'region_code', type: DataType.STRING(2), defaultValue: 'US' })
+  @Column({ field: 'region_code', type: DataType.STRING(2), defaultValue: PHONE_DEFAULT_REGION_CODE })
   regionCode: string;
 
   // @Is(/^\+?[0-9]{7,15}$/)
@@ -119,13 +122,18 @@ export class PhoneModel extends Model<PhoneModel> {
       || this.getDataValue('twilioCodeSentAt') > new Date(new Date().getTime() - 30000);
   }
 
-  static async createOrFindOneByUserId (userId: string, phone: string, countryCode: string, regionCode?: string): Promise<[PhoneModelType, boolean]> {
+  static async createOrFindOneByUserId (
+    userId: string,
+    phone: string,
+    countryCode: string,
+    regionCode?: string
+  ): Promise<[PhoneModelType, boolean]> {
     const UserPhone = await this.findOrCreate({
       where: {
         userId,
         countryCode,
         phone,
-        regionCode: regionCode || 'US'
+        regionCode: regionCode || PHONE_DEFAULT_REGION_CODE
       },
       defaults: {
         userId,

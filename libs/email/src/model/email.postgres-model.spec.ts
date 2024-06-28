@@ -73,7 +73,6 @@ describe('EmailModel', () => {
       // arrange
       // act
       // assert
-      expect(EmailModel.assertEmailIsValid).toBeDefined();
       expect(EmailModel.clearAllDefaultByUserId).toBeDefined();
       expect(EmailModel.createOrFindOneByUserId).toBeDefined();
       expect(EmailModel.findAllByUserId).toBeDefined();

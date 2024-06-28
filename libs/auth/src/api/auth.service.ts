@@ -7,7 +7,10 @@ import {
   UserProfileStateType
 } from '@dx/user';
 import { EmailModel } from '@dx/email';
-import { PhoneModel } from '@dx/phone';
+import {
+  PhoneModel,
+  PHONE_DEFAULT_REGION_CODE
+} from '@dx/phone';
 import {
   GetByTokenQueryType,
   LoginPaylodType,
@@ -29,7 +32,11 @@ import {
 } from '@dx/logger';
 import { MailSendgrid } from '@dx/mail';
 import { ShortLinkModel } from '@dx/shortlink';
-import { CLIENT_APP_DOMAIN } from '@dx/config';
+import {
+  EmailUtil,
+  PhoneUtil,
+  ProfanityFilter
+} from '@dx/utils';
 
 export class AuthService {
   logger: ApiLoggingClassType;
@@ -41,6 +48,7 @@ export class AuthService {
   public async doesEmailPhoneUsernameExist(query: UserLookupQueryType) {
     const {
       code,
+      region,
       type,
       value
     } = query;
@@ -56,17 +64,33 @@ export class AuthService {
 
     try {
       if (type === USER_LOOKUPS.EMAIL) {
-        result.available = await EmailModel.isEmailAvailable(value);
+        const emailUtil = new EmailUtil(value);
+        if (!emailUtil.validate()) {
+          if (emailUtil.isDisposableDomain()) {
+            throw new Error('Invalid email domain.');
+          }
+          throw new Error('Invalid Email.');
+        }
+        result.available = await EmailModel.isEmailAvailable(emailUtil.formattedEmail());
       }
 
       if (
         type === USER_LOOKUPS.PHONE
         && code
       ) {
-        result.available = await PhoneModel.isPhoneAvailable(value, code);
+        const phoneUtil = new PhoneUtil(value, region || PHONE_DEFAULT_REGION_CODE);
+        if ( !phoneUtil.isValid) {
+          this.logger.logError(`invalid phone: ${value}, ${region || PHONE_DEFAULT_REGION_CODE}`);
+          throw new Error('This phone cannot be used.');
+        }
+        result.available = await PhoneModel.isPhoneAvailable(phoneUtil.nationalNumber, code);
       }
 
       if (type === USER_LOOKUPS.USERNAME) {
+        const profanityUtil = new ProfanityFilter();
+        if (profanityUtil.isProfane(value)) {
+          throw new Error('Profanity is not allowed');
+        }
         result.available = await UserModel.isUsernameAvailable(value);
       }
 
@@ -159,13 +183,18 @@ export class AuthService {
     }
 
     try {
-      if (!email.endsWith(`@${CLIENT_APP_DOMAIN}`)) {
-        await EmailModel.assertEmailIsValid(email);
+      const emailUtil = new EmailUtil(email);
+      if (!emailUtil.validate()) {
+        if (emailUtil.isDisposableDomain()) {
+          throw new Error('Invalid Domain');
+        }
+
+        throw new Error('Invalid Email');
       }
 
       const existingEmailRecord = await EmailModel.findOne({
         where: {
-          email,
+          email: emailUtil.formattedEmail(),
           deletedAt: null,
           verifiedAt: {
             [Op.ne]: null
@@ -187,9 +216,9 @@ export class AuthService {
       const inviteUrl = `/auth/z?route=${CLIENT_ROUTE.RESET}&token=${token}`;
       const shortLink = await ShortLinkModel.generateShortlink(inviteUrl);
 
-      const resetMessageId = await mail.sendReset(email, shortLink);
+      const resetMessageId = await mail.sendReset(emailUtil.formattedEmail(), shortLink);
 
-      await EmailModel.updateMessageInfo(email, resetMessageId);
+      await EmailModel.updateMessageInfo(emailUtil.formattedEmail(), resetMessageId);
 
       return { success: true };
 
@@ -272,19 +301,21 @@ ${pwStrengthMsg}
       //   throw new Error('Recaptcha failed.');
       // }
 
-      const isAvailable = await EmailModel.isEmailAvailable(email);
-      if (!isAvailable) {
-        throw new Error(`Email is already taken.`);
-      }
-
-      try {
-        await EmailModel.assertEmailIsValid(email);
-      } catch (err) {
+      const emailUtil = new EmailUtil(email);
+      if (!emailUtil.validate()) {
+        if (emailUtil.isDisposableDomain()) {
+          this.logger.logWarn(`Signup - Disposable Email Domain: ${email}`);
+        }
         this.logger.logWarn(`Signup - Invalid Email: ${email}`);
         throw new Error(`${email} does not appear to be a valid email.`);
       }
 
-      const user = await UserModel.registerAndCreateFromEmail(email, password);
+      const isAvailable = await EmailModel.isEmailAvailable(emailUtil.formattedEmail());
+      if (!isAvailable) {
+        throw new Error(`Email is already taken.`);
+      }
+
+      const user = await UserModel.registerAndCreateFromEmail(emailUtil.formattedEmail(), password);
 
       if (!user) {
         throw Error(`Failed to create user using email ${email}`);

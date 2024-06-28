@@ -7,7 +7,10 @@ import {
   CreateEmailPayloadType,
   UpdateEmailPayloadType
 } from '../model/email.types';
-import { randomId } from '@dx/utils';
+import {
+  EmailUtil,
+  randomId
+} from '@dx/utils';
 import { MailSendgrid } from '@dx/mail';
 import { ShortLinkModel } from '@dx/shortlink';
 import { isLocal } from '@dx/config';
@@ -35,12 +38,19 @@ export class EmailService {
       throw new Error('Not enough information to create an email.');
     }
 
-    const isEmailAvailable = await EmailModel.isEmailAvailable(email);
+    const emailUtil = new EmailUtil(email);
+    const isEmailAvailable = await EmailModel.isEmailAvailable(emailUtil.formattedEmail());
     if (!isEmailAvailable) {
       throw new Error(`This email: ${email} already exists.`);
     }
 
-    await EmailModel.assertEmailIsValid(email);
+    if (!emailUtil.validate()) {
+      if (emailUtil.isDisposableDomain()) {
+        throw new Error('The email you provided is not valid. Please note that we do not allow disposable emails or emails that do not exist, so make sure to use a real email address.');
+      }
+
+      throw new Error('The email you provided is not valid.');
+    }
 
     if (def === true) {
       await EmailModel.clearAllDefaultByUserId(userId);
@@ -50,7 +60,7 @@ export class EmailService {
       const token = randomId();
       const userEmail = new EmailModel();
       userEmail.userId = userId;
-      userEmail.email = email;
+      userEmail.email = emailUtil.formattedEmail();
       userEmail.label = label;
       userEmail.default = def;
       userEmail.token = token.toString();
@@ -59,8 +69,8 @@ export class EmailService {
       const mail = new MailSendgrid();
       const validationUrl = `/auth/z?route=validate-email&token=${token}`;
       const shortLink = await ShortLinkModel.generateShortlink(validationUrl);
-      const sendgridId = await mail.sendConfirmation(email, shortLink);
-      await EmailModel.updateMessageInfoValidate(email, sendgridId);
+      const sendgridId = await mail.sendConfirmation(emailUtil.formattedEmail(), shortLink);
+      await EmailModel.updateMessageInfoValidate(emailUtil.formattedEmail(), sendgridId);
 
       return { id: userEmail.id };
     } catch (err) {

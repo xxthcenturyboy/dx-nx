@@ -42,7 +42,6 @@ import {
   USER_ENTITY_POSTGRES_DB_NAME,
   USER_ROLE
 } from './user.consts';
-import { APP_DOMAIN } from '@dx/config';
 import { usernameValidator } from '../api/username.validator';
 import { ApiLoggingClass } from '@dx/logger';
 
@@ -255,6 +254,7 @@ export class UserModel extends Model<UserModel> {
       phoneData.push({
         id: phone.id,
         countryCode: phone.countryCode,
+        regionCode: phone.regionCode,
         default: phone.default,
         isDeleted: phone.isDeleted,
         isSent: phone.isSent,
@@ -317,10 +317,6 @@ export class UserModel extends Model<UserModel> {
   }
 
   static async registerAndCreateFromEmail (email: string, password: string): Promise<UserModelType> {
-    if (!email.endsWith(`@${APP_DOMAIN}`)) {
-      await EmailModel.assertEmailIsValid(email);
-    }
-
     const hashword = await dxEncryptionHashString(password);
     const token = dxEncryptionGenerateRandomValue();
     const tokenExp = DxDateUtilClass.getTimestamp(2, 'days', 'ADD');
@@ -439,10 +435,6 @@ export class UserModel extends Model<UserModel> {
 
     if (phone && countryCode && !await PhoneModel.isPhoneAvailable(phone, countryCode)) {
       throw new Error(`The phone: ${phone} is already in use`);
-    }
-
-    if (!email.endsWith(`@${APP_DOMAIN}`)) {
-      await EmailModel.assertEmailIsValid(email);
     }
 
     try {

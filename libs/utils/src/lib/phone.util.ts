@@ -49,7 +49,7 @@ export class PhoneUtil {
       paddedNumber = `${paddedNumber}0`;
     }
 
-    return `${paddedNumber}${number}`;
+    return `${paddedNumber}${number}`.replace(/\ /g, '');
   }
 
   get normalizedPhone (): string {

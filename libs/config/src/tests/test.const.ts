@@ -1,3 +1,4 @@
+import { PHONE_DEFAULT_REGION_CODE } from '@dx/phone';
 import { CreateUserPayloadType } from '@dx/user';
 
 export const TEST_COUNTRY_CODE = '1';
@@ -11,14 +12,18 @@ export const TEST_FIRST_NAME = 'George';
 export const TEST_LAST_NAME = 'Washington';
 export const TEST_PASSWORD = 'password';
 export const TEST_PHONE = '0123456789';
+export const TEST_PHONE_IT_INVALID = '11 111 1111';
+export const TEST_PHONE_VALID = '8584846801';
+export const TEST_PHONE_IT_VALID = '06 555 5555';
 export const TEST_UUID = '9472bfb8-f7a9-4146-951e-15520f392baf';
 export const TEST_USERNAME = 'username';
 export const TEST_USER_CREATE: CreateUserPayloadType = {
   countryCode: TEST_COUNTRY_CODE,
+  regionCode: PHONE_DEFAULT_REGION_CODE,
   email: TEST_EMAIL,
   firstName: TEST_FIRST_NAME,
   lastName: TEST_LAST_NAME,
-  phone: TEST_PHONE,
+  phone: TEST_PHONE_VALID,
   roles: ['USER'],
   username: TEST_USERNAME,
 };
