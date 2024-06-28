@@ -12,7 +12,10 @@ import {
   Index,
 } from 'sequelize-typescript';
 
-import { getTimeFromUuid } from '@dx/utils';
+import {
+  getTimeFromUuid,
+  PhoneUtil
+} from '@dx/utils';
 import { PHONE_POSTGRES_DB_NAME } from './phone.consts';
 import { UserModel } from '@dx/user';
 
@@ -52,6 +55,11 @@ export class PhoneModel extends Model<PhoneModel> {
   @Column({ field: 'country_code', type: DataType.STRING(5) })
   countryCode: string;
 
+  @AllowNull(false)
+  @Column({ field: 'region_code', type: DataType.STRING(2) })
+  @Default('US')
+  regionCode: string;
+
   // @Is(/^\+?[0-9]{7,15}$/)
   @AllowNull(false)
   @Column(DataType.STRING(20))
@@ -83,9 +91,10 @@ export class PhoneModel extends Model<PhoneModel> {
   @Column({ field: 'updated_at', type: DataType.DATE })
   updatedAt: Date;
 
-  @Column(new DataType.VIRTUAL(DataType.STRING, ['countryCode', 'phone']))
+  @Column(new DataType.VIRTUAL(DataType.STRING, ['countryCode', 'phone', 'regionCode']))
   get phoneFormatted(): string {
-    return `+${this.getDataValue('phone')}`;
+    const phoneUtil = new PhoneUtil(this.getDataValue('phone'), this.getDataValue('regionCode'));
+    return phoneUtil.normalizedPhone;
   }
 
   @Column(new DataType.VIRTUAL(DataType.BOOLEAN, ['verifiedAt', 'deletedAt']))
@@ -111,12 +120,13 @@ export class PhoneModel extends Model<PhoneModel> {
       || this.getDataValue('twilioCodeSentAt') > new Date(new Date().getTime() - 30000);
   }
 
-  static async createOrFindOneByUserId (userId: string, phone: string, countryCode: string): Promise<[PhoneModelType, boolean]> {
+  static async createOrFindOneByUserId (userId: string, phone: string, countryCode: string, regionCode?: string): Promise<[PhoneModelType, boolean]> {
     const UserPhone = await this.findOrCreate({
       where: {
         userId,
         countryCode,
         phone,
+        regionCode
       },
       defaults: {
         userId,

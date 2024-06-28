@@ -1,26 +1,80 @@
-import * as phonelib from 'google-libphonenumber';
+import {
+  PhoneNumber,
+  PhoneNumberUtil
+} from 'google-libphonenumber';
 
-const phoneUtil = phonelib.PhoneNumberUtil.getInstance();
+import {
+  ApiLoggingClass,
+  ApiLoggingClassType
+} from '@dx/logger';
 
-export function normalizePhone(phone: string): string {
-  if (phone[0] === '+') {
-    // NOTE: isValidNumber will throw an error in certain cases
-    // like if the phone number is only one digit or very long
-    try {
-      const number = phoneUtil.parseAndKeepRawInput(phone, 'US');
-      const isValid = phoneUtil.isValidNumber(number);
-      if (isValid) {
-        return phone;
-      }
-    } catch (err) {
-      console.error(err);
+export class PhoneUtil {
+  private phoneUtil: typeof PhoneNumberUtil.prototype;
+  private logger: ApiLoggingClassType;
+  private phoneParsed: PhoneNumber;
+
+  constructor(
+    phone: string,
+    twoLetterRegionCode: string
+  ) {
+    this.logger = ApiLoggingClass.instance;
+    this.phoneUtil = PhoneNumberUtil.getInstance();
+
+    if (
+      phone
+      && twoLetterRegionCode
+    ) {
+      this.phoneParsed = this.phoneUtil.parseAndKeepRawInput(phone, twoLetterRegionCode);
     }
   }
 
-  let digits = phone.replace(/[^\d]+/g, '');
-  if (digits.length === 10) {
-    digits = `1${digits}`; // US country code required for SNS
+  get isValidMobile (): boolean {
+    return this.phoneType == 2
+      || this.phoneType === 3;
   }
 
-  return `+${digits}`;
+  get countryCode (): string {
+    return this.phoneParsed.getCountryCode().toString();
+  }
+
+  get nationalNumber (): string {
+    const zeros = this.phoneParsed.numberOfLeadingZerosCount() || this.phoneParsed.italianLeadingZeroCount();
+    const number = this.phoneParsed.getNationalNumber().toString();
+    if (!zeros) {
+      return number;
+    }
+
+    let paddedNumber = '';
+    for (let i = 0; i < zeros; i += 1) {
+      paddedNumber = `${paddedNumber}0`;
+    }
+
+    return `${paddedNumber}${number}`;
+  }
+
+  get normalizedPhone (): string {
+    const normalizePhone = `+${this.countryCode}${this.nationalNumber}`;
+    return normalizePhone;
+  }
+
+  get isValid (): boolean {
+    return this.phoneUtil.isValidNumber(this.phoneParsed);
+  }
+
+  get phoneType (): number {
+    return this.phoneUtil.getNumberType(this.phoneParsed);;
+  }
+
+  get phoneTypeString (): string {
+    switch(this.phoneType) {
+      case 1:
+        return 'MOBILE';
+      case 2:
+        return 'FIXED_OR_MOBILE';
+      default:
+        return 'N_A';
+    };
+  }
 }
+
+export type PhoneUtilType = typeof PhoneUtil.prototype;
