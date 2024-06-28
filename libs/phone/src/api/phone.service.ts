@@ -7,11 +7,14 @@ import {
   CreatePhonePayloadType,
   UpdatePhonePayloadType
 } from '../model/phone.types';
+import { isLocal } from '@dx/config';
 
 export class PhoneService {
+  private LOCAL: boolean;
   private logger: ApiLoggingClassType;
 
   constructor() {
+    this.LOCAL = isLocal();
     this.logger = ApiLoggingClass.instance;
   }
 
@@ -77,6 +80,17 @@ export class PhoneService {
     } catch (err) {
       this.logger.logError(err);
       return { id: '' };
+    }
+  }
+
+  public async deleteTestPhone(id: string) {
+    if (this.LOCAL) {
+      await PhoneModel.destroy({
+        where: {
+          id,
+        },
+        force: true
+      });
     }
   }
 

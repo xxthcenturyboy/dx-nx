@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { EmailController } from './email.controller';
 import {
   ensureLoggedIn,
+  hasSuperAdminRole
 } from '@dx/auth';
 
 export class EmailRoutes {
@@ -18,6 +19,7 @@ export class EmailRoutes {
     router.put('/:id', EmailController.updateEmail);
 
     router.delete('/:id', EmailController.deleteEmail);
+    router.delete('/test/:id', hasSuperAdminRole, EmailController.deleteEmailTest);
 
     return router;
   }

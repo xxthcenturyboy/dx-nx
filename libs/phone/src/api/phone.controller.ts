@@ -43,6 +43,17 @@ export const PhoneController = {
     }
   },
 
+  deletePhoneTest: async function (req: Request, res: Response) {
+    try {
+      const { id } = req.params as { id: string };
+      const service = new PhoneService();
+      const result = await service.deleteTestPhone(id);
+      return sendOK(req, res, result);
+    } catch (err) {
+      sendBadRequest(req, res, err.message);
+    }
+  },
+
   updatePhone: async function(req: Request, res: Response) {
     try {
       const { id } = req.params as { id: string }

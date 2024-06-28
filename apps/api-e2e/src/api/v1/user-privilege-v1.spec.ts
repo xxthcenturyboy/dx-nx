@@ -74,7 +74,7 @@ describe('v1 User Privilege Routes', () => {
       }
     });
 
-    test('should return 200 when successfuly updates email', async () => {
+    test('should return 200 when successfuly updates description', async () => {
       const payload: UpdatePrivilegeSetPayloadType = {
         description: 'Test',
       };
@@ -97,7 +97,7 @@ describe('v1 User Privilege Routes', () => {
       expect(response.data.id).toBeDefined();
     });
 
-    test('should return 200 when successfuly updates email', async () => {
+    test('should return 200 when successfuly updates description to original value', async () => {
       const payload: UpdatePrivilegeSetPayloadType = {
         description: initialDescription,
       };

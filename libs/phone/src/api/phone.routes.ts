@@ -1,5 +1,8 @@
 import { Router } from 'express';
-import { ensureLoggedIn } from '@dx/auth';
+import {
+  ensureLoggedIn,
+  hasSuperAdminRole
+} from '@dx/auth';
 import { PhoneController } from './phone.controller';
 
 export class PhoneRoutes {
@@ -13,6 +16,7 @@ export class PhoneRoutes {
     router.put('/:id', PhoneController.updatePhone);
 
     router.delete('/:id', PhoneController.deletePhone);
+    router.delete('/test/:id', hasSuperAdminRole, PhoneController.deletePhoneTest);
 
     return router;
   }

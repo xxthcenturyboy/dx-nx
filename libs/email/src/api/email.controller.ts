@@ -43,6 +43,17 @@ export const EmailController = {
     }
   },
 
+  deleteEmailTest: async function (req: Request, res: Response) {
+    try {
+      const { id } = req.params as { id: string };
+      const service = new EmailService();
+      const result = await service.deleteTestEmail(id);
+      return sendOK(req, res, result);
+    } catch (err) {
+      sendBadRequest(req, res, err.message);
+    }
+  },
+
   updateEmail: async function(req: Request, res: Response) {
     try {
       const { id } = req.params as { id: string }

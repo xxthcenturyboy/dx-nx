@@ -244,5 +244,20 @@ describe('v1 Email Routes', () => {
       expect(response.data).toBeDefined();
       expect(response.data.id).toBeDefined();
     });
+
+    test('should permanently delete an email when called', async () => {
+      const request: AxiosRequestConfig = {
+        url: `/api/v1/email/test/${idToUpdate}`,
+        method: 'DELETE',
+        headers: {
+          cookie: authUtil.cookeisRaw
+        },
+        withCredentials: true
+      };
+
+      const result = await axios.request<AxiosRequestConfig, AxiosResponse<void>>(request);
+
+      expect(result.status).toBe(200);
+    });
   });
 });

@@ -91,6 +91,17 @@ export class EmailService {
     }
   }
 
+  public async deleteTestEmail(id: string) {
+    if (this.LOCAL) {
+      await EmailModel.destroy({
+        where: {
+          id,
+        },
+        force: true
+      });
+    }
+  }
+
   public async updateEmail(
     id: string,
     payload: UpdateEmailPayloadType

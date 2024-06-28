@@ -315,7 +315,6 @@ describe('v1 User Routes', () => {
         oldPassword: TEST_EXISTING_PASSWORD,
         otpCode: otpCode
       };
-      console.log(otpCode);
       const request: AxiosRequestConfig = {
         url: `/api/v1/user/update/password`,
         method: 'PUT',
@@ -361,8 +360,6 @@ describe('v1 User Routes', () => {
       }
     });
   });
-
-
 
   describe('DELETE /api/v1/user', () => {
     test('should delete a user when called', async () => {
