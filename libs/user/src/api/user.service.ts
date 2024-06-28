@@ -43,6 +43,7 @@ import {
 import { ShortLinkModel } from '@dx/shortlink';
 import { MailSendgrid } from '@dx/mail';
 import { EmailModel } from '@dx/email';
+import { ProfanityFilter } from '@dx/utils';
 
 export class UserService {
   private DEBUG = isDebug();
@@ -124,6 +125,11 @@ export class UserService {
       || !email
     ) {
       throw new Error('Not enough information to create a user.');
+    }
+
+    const profanityFilter = new ProfanityFilter();
+    if (profanityFilter.isProfane(username)) {
+      throw new Error('Profane usernames are not allowed.');
     }
 
     try {
@@ -431,10 +437,18 @@ export class UserService {
         throw new Error(`User could not be found with the id: ${id}`);
       }
 
+      const profanityFilter = new ProfanityFilter();
+
       if (firstName !== undefined && typeof firstName === 'string') {
+        if (profanityFilter.isProfane(firstName)) {
+          user.setDataValue('firstName', profanityFilter.cleanProfanity(firstName));
+        }
         user.setDataValue('firstName', firstName);
       }
       if (lastName !== undefined && typeof lastName === 'string') {
+        if (profanityFilter.isProfane(lastName)) {
+          user.setDataValue('lastName', profanityFilter.cleanProfanity(lastName));
+        }
         user.setDataValue('lastName', lastName);
       }
       if (restrictions !== undefined && Array.isArray(restrictions)) {

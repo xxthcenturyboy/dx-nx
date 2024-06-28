@@ -426,7 +426,8 @@ export class UserModel extends Model<UserModel> {
     firstName?: string,
     lastName?: string,
     phone?: string,
-    countryCode?: string
+    countryCode?: string,
+    regionCode?: string
   ): Promise<UserModelType> {
     if (!await UserModel.isUsernameAvailable(username)) {
       throw new Error(`The username: ${username} is already in use.`);
@@ -462,7 +463,7 @@ export class UserModel extends Model<UserModel> {
       }
 
       if (phone && countryCode) {
-        const [phoneData, didCreatePhone] = await PhoneModel.createOrFindOneByUserId(user.id, phone, countryCode);
+        const [phoneData, didCreatePhone] = await PhoneModel.createOrFindOneByUserId(user.id, phone, countryCode, regionCode);
         if (didCreatePhone && phoneData) {
           user.phones = [phoneData];
         }

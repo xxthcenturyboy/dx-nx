@@ -21,6 +21,7 @@ export {
   DEFAULT_SORT,
   SORT_DIR
 } from './common/common-config.consts';
+export { CUSTOM_PROFANE_WORDS } from './common/custom-profate-words.const';
 export {
   isDebug,
   isLocal,

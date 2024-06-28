@@ -1,6 +1,12 @@
 import { ApiLoggingClass } from "@dx/logger";
-import { PhoneUtil, PhoneUtilType } from './phone.util';
-import { TEST_EXISTING_PHONE, TEST_PHONE } from "@dx/config";
+import {
+  PhoneUtil,
+  PhoneUtilType
+} from './phone.util';
+import {
+  TEST_EXISTING_PHONE,
+  TEST_PHONE
+} from "@dx/config";
 
 describe('phone.util', () => {
   let phoneUtil: PhoneUtilType;

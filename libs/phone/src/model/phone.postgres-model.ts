@@ -56,8 +56,7 @@ export class PhoneModel extends Model<PhoneModel> {
   countryCode: string;
 
   @AllowNull(false)
-  @Column({ field: 'region_code', type: DataType.STRING(2) })
-  @Default('US')
+  @Column({ field: 'region_code', type: DataType.STRING(2), defaultValue: 'US' })
   regionCode: string;
 
   // @Is(/^\+?[0-9]{7,15}$/)
@@ -126,7 +125,7 @@ export class PhoneModel extends Model<PhoneModel> {
         userId,
         countryCode,
         phone,
-        regionCode
+        regionCode: regionCode || 'US'
       },
       defaults: {
         userId,

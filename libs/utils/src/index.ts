@@ -43,3 +43,5 @@ export { logTable } from './lib/console-table-transformer';
 export { maliciousUrlCheck } from './lib/malicious-url-check';
 
 export { PhoneUtil } from './lib/phone.util';
+
+export { ProfanityFilter } from './lib/profane.util'

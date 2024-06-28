@@ -193,6 +193,13 @@ describe('PhoneService', () => {
         // assert
         expect(response.id).toEqual(idToDelete);
       });
+
+      test('should permanently delete a phone when called', async () => {
+        // arrange
+        // act
+        await phoneService.deleteTestPhone(idToDelete);
+        // assert
+      });
     });
   } else {
     it('should exist when imported', () => {

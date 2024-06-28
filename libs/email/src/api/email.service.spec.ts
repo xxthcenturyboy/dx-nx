@@ -207,6 +207,13 @@ describe('EmailService', () => {
         // assert
         expect(response.id).toEqual(emailIdToDelete);
       });
+
+      test('should permantly delete email when called', async () => {
+        // arrange
+        // act
+        await emailService.deleteTestEmail(emailIdToDelete);
+        // assert
+      });
     });
 
     describe('validateEmail', () => {
