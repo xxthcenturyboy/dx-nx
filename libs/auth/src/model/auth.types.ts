@@ -1,3 +1,8 @@
+export type AccountCreationPayloadType = {
+  value: string;
+  region?: string;
+};
+
 export type UserLookupResponseType = {
   available: boolean;
 };

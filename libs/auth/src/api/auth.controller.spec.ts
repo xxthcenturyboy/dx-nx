@@ -181,19 +181,4 @@ describe('AuthController', () => {
       expect(sendBadRequest).toHaveBeenCalled();
     });
   });
-
-  describe('userLookup', () => {
-    test('should sendOK when invoked', async () => {
-      // arrange
-      const query: UserLookupQueryType = {
-        value: 'admin',
-        type: USER_LOOKUPS.USERNAME
-      };
-      req.query = query;
-      // act
-      await AuthController.userLookup(req, res);
-      // assert
-      expect(sendOK).toHaveBeenCalled();
-    });
-  });
 });

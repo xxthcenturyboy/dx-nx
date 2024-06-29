@@ -10,6 +10,7 @@ import {
   AllowNull,
   BelongsTo,
   Index,
+  Unique
 } from 'sequelize-typescript';
 
 import {
@@ -126,21 +127,21 @@ export class PhoneModel extends Model<PhoneModel> {
     userId: string,
     phone: string,
     countryCode: string,
-    regionCode?: string
+    regionCode: string
   ): Promise<[PhoneModelType, boolean]> {
     const UserPhone = await this.findOrCreate({
       where: {
         userId,
         countryCode,
-        phone,
-        regionCode: regionCode || PHONE_DEFAULT_REGION_CODE
+        phone
       },
       defaults: {
         userId,
         countryCode,
         phone,
         default: true,
-        label: 'Default'
+        label: 'Default',
+        regionCode: regionCode || PHONE_DEFAULT_REGION_CODE
       }
     });
 
@@ -183,7 +184,6 @@ export class PhoneModel extends Model<PhoneModel> {
       await phone.save();
     }
   }
-
 }
 
 export type PhoneModelType = typeof PhoneModel.prototype;

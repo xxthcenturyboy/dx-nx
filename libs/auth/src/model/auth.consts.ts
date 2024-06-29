@@ -8,8 +8,7 @@ export const AUTH_TOKEN_NAMES = {
 
 export const USER_LOOKUPS = {
   EMAIL: 'email',
-  PHONE: 'phone',
-  USERNAME: 'username'
+  PHONE: 'phone'
 };
 
 export const CLIENT_ROUTE = {

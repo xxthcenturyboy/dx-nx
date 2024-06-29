@@ -44,6 +44,17 @@ describe('UserController', () => {
     expect(UserController).toBeDefined();
   });
 
+  describe('checkUsernameAvailability', () => {
+    test('should call sendBadRequest when sent', async () => {
+      // arrange
+      req.query = {};
+      // act
+      await UserController.checkUsernameAvailability(req, res);
+      // assert
+      expect(sendOK).toHaveBeenCalled();
+    });
+  });
+
   describe('createUser', () => {
     test('should call sendBadRequest when sent', async () => {
       // arrange

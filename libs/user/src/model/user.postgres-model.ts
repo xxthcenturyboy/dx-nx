@@ -316,19 +316,32 @@ export class UserModel extends Model<UserModel> {
     return this.roles.indexOf(role) > -1;
   }
 
-  static async registerAndCreateFromEmail (email: string, password: string): Promise<UserModelType> {
-    const hashword = await dxEncryptionHashString(password);
+  static async registerAndCreateFromEmail (email: string): Promise<UserModelType> {
     const token = dxEncryptionGenerateRandomValue();
     const tokenExp = DxDateUtilClass.getTimestamp(2, 'days', 'ADD');
 
     const user = await UserModel.create({
-      hashword,
       roles: [USER_ROLE.USER],
       token,
       tokenExp,
     });
 
     await EmailModel.createOrFindOneByUserId(user.id, email, token);
+
+    return user;
+  }
+
+  static async registerAndCreateFromPhone (
+    phone: string,
+    countryCode: string,
+    regionCode: string
+  ): Promise<UserModelType> {
+
+    const user = await UserModel.create({
+      roles: [USER_ROLE.USER]
+    });
+
+    await PhoneModel.createOrFindOneByUserId(user.id, phone, countryCode, regionCode);
 
     return user;
   }

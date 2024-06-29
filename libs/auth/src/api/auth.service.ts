@@ -4,6 +4,7 @@ import { Op } from 'sequelize';
 import {
   getUserProfileState,
   UserModel,
+  UserModelType,
   UserProfileStateType
 } from '@dx/user';
 import { EmailModel } from '@dx/email';
@@ -12,6 +13,7 @@ import {
   PHONE_DEFAULT_REGION_CODE
 } from '@dx/phone';
 import {
+  AccountCreationPayloadType,
   GetByTokenQueryType,
   LoginPaylodType,
   OtpLockoutResponseType,
@@ -45,7 +47,88 @@ export class AuthService {
     this.logger = ApiLoggingClass.instance;
   }
 
-  public async doesEmailPhoneUsernameExist(query: UserLookupQueryType) {
+  public async createAccount(
+    payload: AccountCreationPayloadType,
+    session: SessionData
+  ) {
+    const {
+      region,
+      value
+    } = payload;
+
+    if (!value) {
+      throw new Error('No data sent.');
+    }
+
+    if (!session) {
+      throw new Error(`Internal server error: Missing Session.`);
+    }
+
+    let user: UserModelType;
+
+    try {
+      const phoneUtil = new PhoneUtil(value, region || PHONE_DEFAULT_REGION_CODE);
+      if (
+        phoneUtil.isValid
+        && phoneUtil.countryCode
+        && phoneUtil.nationalNumber
+      ) {
+        const isAvailable = await PhoneModel.isPhoneAvailable(phoneUtil.nationalNumber, phoneUtil.countryCode);
+        if (!isAvailable) {
+          throw new Error(`Phone is unavailable.`);
+        }
+        user = await UserModel.registerAndCreateFromPhone(
+          phoneUtil.nationalNumber,
+          phoneUtil.countryCode,
+          region || PHONE_DEFAULT_REGION_CODE
+        );
+      }
+
+      if (!user) {
+        const emailUtil = new EmailUtil(value);
+        if (emailUtil.validate()) {
+          const isAvailable = await EmailModel.isEmailAvailable(emailUtil.formattedEmail());
+          if (!isAvailable) {
+            throw new Error(`Email is unavailable.`);
+          }
+          user = await UserModel.registerAndCreateFromEmail(emailUtil.formattedEmail());
+
+          if (user) {
+            const mail = new MailSendgrid();
+            const inviteUrl = `/auth/z?route=validate&token=${user.token}`;
+            const shortLink = await ShortLinkModel.generateShortlink(inviteUrl);
+            try  {
+              const inviteMessageId = await mail.sendInvite(emailUtil.formattedEmail(), shortLink);
+              await EmailModel.updateMessageInfoValidate(emailUtil.formattedEmail(), inviteMessageId);
+            } catch (err) {
+              this.logger.logError(err.message);
+            }
+          }
+        }
+      }
+
+      if (!user) {
+        const message = `Account could not be created with payload: ${JSON.stringify(payload, null, 2)}`;
+        this.logger.logError(message);
+        throw new Error(message);
+      }
+
+      await user.getEmails();
+      await user.getPhones();
+      const userProfile = await getUserProfileState(user, true);
+      if (!userProfile) {
+        throw Error(`Failed to build user profile.`);
+      }
+
+      return userProfile;
+    } catch (err) {
+      const message = err.message || 'Could not create account.';
+      this.logger.logError(message);
+      throw new Error(message);
+    }
+  }
+
+  public async doesEmailPhoneExist(query: UserLookupQueryType) {
     const {
       code,
       region,
@@ -76,22 +159,13 @@ export class AuthService {
 
       if (
         type === USER_LOOKUPS.PHONE
-        && code
       ) {
         const phoneUtil = new PhoneUtil(value, region || PHONE_DEFAULT_REGION_CODE);
-        if ( !phoneUtil.isValid) {
+        if (!phoneUtil.isValid) {
           this.logger.logError(`invalid phone: ${value}, ${region || PHONE_DEFAULT_REGION_CODE}`);
           throw new Error('This phone cannot be used.');
         }
-        result.available = await PhoneModel.isPhoneAvailable(phoneUtil.nationalNumber, code);
-      }
-
-      if (type === USER_LOOKUPS.USERNAME) {
-        const profanityUtil = new ProfanityFilter();
-        if (profanityUtil.isProfane(value)) {
-          throw new Error('Profanity is not allowed');
-        }
-        result.available = await UserModel.isUsernameAvailable(value);
+        result.available = await PhoneModel.isPhoneAvailable(phoneUtil.nationalNumber, phoneUtil.countryCode);
       }
 
       return result;
@@ -144,11 +218,11 @@ export class AuthService {
     }
   }
 
-  public async login(paylod: LoginPaylodType): Promise<UserProfileStateType | void>  {
+  public async login(payload: LoginPaylodType): Promise<UserProfileStateType | void>  {
     const {
       email,
       password
-    } = paylod;
+    } = payload;
 
     const emailDoesNotExist = await EmailModel.isEmailAvailable(email);
     if (emailDoesNotExist) {
@@ -229,13 +303,38 @@ export class AuthService {
     }
   }
 
-  public async setupPasswords(paylod: SetupPasswordsPaylodType): Promise<UserProfileStateType | void>  {
+  public async sendOtpToPhone(
+    phone: string,
+    region?: string
+  ): Promise<boolean> {
+    if (!phone) {
+      throw new Error('No phone sent.');
+    }
+
+    try {
+      const phoneUtil = new PhoneUtil(phone, region || PHONE_DEFAULT_REGION_CODE);
+      if (phoneUtil.isValid) {
+        // TODO: integrate with Twilio or other
+        return new Promise((resolve) => {
+          resolve(true);
+        });
+      }
+
+      return false;
+    } catch (err) {
+      const message = err.message || 'Error sending Otp to phone' + phone;
+      this.logger.logError(message);
+      throw new Error(message);
+    }
+  }
+
+  public async setupPasswords(payload: SetupPasswordsPaylodType): Promise<UserProfileStateType | void>  {
     const {
       id,
       password,
       securityAA,
       securityQQ
-    } = paylod;
+    } = payload;
 
     if (
       !id
@@ -312,10 +411,10 @@ ${pwStrengthMsg}
 
       const isAvailable = await EmailModel.isEmailAvailable(emailUtil.formattedEmail());
       if (!isAvailable) {
-        throw new Error(`Email is already taken.`);
+        throw new Error(`Email is unavailable.`);
       }
 
-      const user = await UserModel.registerAndCreateFromEmail(emailUtil.formattedEmail(), password);
+      const user = await UserModel.registerAndCreateFromEmail(emailUtil.formattedEmail());
 
       if (!user) {
         throw Error(`Failed to create user using email ${email}`);

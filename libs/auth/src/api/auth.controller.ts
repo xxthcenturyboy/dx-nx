@@ -6,6 +6,7 @@ import {
   sendOK
 } from '@dx/server';
 import {
+  AccountCreationPayloadType,
   GetByTokenQueryType,
   LoginPaylodType,
   OtpLockoutResponseType,
@@ -18,6 +19,28 @@ import { UserProfileStateType } from '@dx/user';
 import { ApiLoggingClass } from '@dx/logger';
 
 export const AuthController = {
+  createAccount: async function(req: Request, res: Response) {
+    try {
+      const service = new AuthService();
+      const result = await service.createAccount(
+        req.body as AccountCreationPayloadType,
+        req.session
+      ) as UserProfileStateType;
+
+      req.session.userId = result.id;
+
+      const Token = new TokenService(req, res);
+      const tokenSetup = await Token.issueAll();
+      if (!tokenSetup) {
+        throw new Error('Could not create Auth Tokens!');
+      }
+
+      sendOK(req, res, result);
+    } catch (err) {
+      sendBadRequest(req, res, err.message);
+    }
+  },
+
   getByToken: async function(req: Request, res: Response) {
     try {
       const service = new AuthService();
@@ -105,6 +128,18 @@ export const AuthController = {
     }
   },
 
+  sendOtpToPhone: async function(req: Request, res: Response) {
+    try {
+      const { phone, region } = req.body as { phone: string, region?: string };
+      const service = new AuthService();
+      const result = await service.sendOtpToPhone(phone, region) as boolean;
+
+      sendOK(req, res, result);
+    } catch (err) {
+      sendBadRequest(req, res, err.message);
+    }
+  },
+
   setupPasswords: async function(req: Request, res: Response) {
     try {
       const service = new AuthService();
@@ -124,32 +159,10 @@ export const AuthController = {
     }
   },
 
-  signup: async function(req: Request, res: Response) {
-    try {
-      const service = new AuthService();
-      const result = await service.signup(
-        req.body as SignupPayloadType,
-        req.session
-      ) as UserProfileStateType;
-
-      req.session.userId = result.id;
-
-      const Token = new TokenService(req, res);
-      const tokenSetup = await Token.issueAll();
-      if (!tokenSetup) {
-        throw new Error('Could not create Auth Tokens!');
-      }
-
-      sendOK(req, res, result);
-    } catch (err) {
-      sendBadRequest(req, res, err.message);
-    }
-  },
-
   userLookup: async function(req: Request, res: Response) {
     try {
       const service = new AuthService();
-      const result = await service.doesEmailPhoneUsernameExist(req.query as UserLookupQueryType);
+      const result = await service.doesEmailPhoneExist(req.query as UserLookupQueryType);
       sendOK(req, res, result);
     } catch (err) {
       sendBadRequest(req, res, err.message);

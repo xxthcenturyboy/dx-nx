@@ -18,6 +18,17 @@ import {
 } from '../model/user.types';
 
 export const UserController = {
+  checkUsernameAvailability: async function (req: Request, res: Response) {
+    try {
+      const { username } = req.query as { username: string };
+      const service = new UserService();
+      const result = await service.isUsernameAvailable(username);
+      return sendOK(req, res, result);
+    } catch (err) {
+      sendBadRequest(req, res, err.message);
+    }
+  },
+
   createUser: async function (req: Request, res: Response) {
     try {
       const service = new UserService();

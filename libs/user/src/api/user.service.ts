@@ -324,6 +324,28 @@ export class UserService {
     }
   }
 
+  public async isUsernameAvailable(usernameToCheck: string) {
+    if (!usernameToCheck) {
+      throw new Error('Nothing to check.');
+    }
+
+    const result = { available: false };
+
+    const profanityUtil = new ProfanityFilter();
+    if (profanityUtil.isProfane(usernameToCheck)) {
+      throw new Error('Profanity is not allowed');
+    }
+    try {
+      result.available = await UserModel.isUsernameAvailable(usernameToCheck);
+    } catch (err) {
+      const message = err.message || 'Error checking for username availability';
+      this.logger.logError(message);
+      throw new Error(message);
+    }
+
+    return result;
+  }
+
   public async resendInvite(payload: ResendInvitePayloadType): Promise<SendInviteResponseType> {
     const {
       id,

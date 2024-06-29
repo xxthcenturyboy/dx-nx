@@ -8,8 +8,8 @@ import { SG_TEMPLATES } from './templates.sendgrid';
 import {
   APP_DOMAIN,
   COMPANY_NAME,
-  isLocal,
   isProd,
+  isTest,
   SENDGRID_API_KEY,
   SENDGRID_URL
 } from '@dx/config';
@@ -27,7 +27,7 @@ export class MailSendgrid {
     this.fromAddress = `${COMPANY_NAME} <noreply@${APP_DOMAIN}>`;
     this.logger = ApiLoggingClass.instance;
 
-    if (isLocal()) {
+    if (isTest()) {
       sgClient.setApiKey(SENDGRID_API_KEY);
       sgClient.setDefaultRequest('baseUrl', SENDGRID_URL);
       sgMail.setClient(sgClient);
@@ -55,7 +55,7 @@ export class MailSendgrid {
 
   private async sendMail(mailData: MailDataRequired): Promise<string> {
     const res = await sgMail.send(mailData);
-    const sgId = isLocal()
+    const sgId = isTest()
       ? res[0].headers['etag']
       : res[0].headers['x-message-id']
     return sgId || 'no-id-for-sendgrid';

@@ -24,7 +24,11 @@ export class PhoneUtil {
       phone
       && twoLetterRegionCode
     ) {
-      this.phoneParsed = this.phoneUtil.parseAndKeepRawInput(phone, twoLetterRegionCode);
+      try {
+        this.phoneParsed = this.phoneUtil.parseAndKeepRawInput(phone, twoLetterRegionCode);
+      } catch (err) {
+        this.logger.logError(err.message || 'PhoneUtil Constructor Error');
+      }
     }
   }
 
@@ -34,12 +38,12 @@ export class PhoneUtil {
   }
 
   get countryCode (): string {
-    return this.phoneParsed.getCountryCode().toString();
+    return this.phoneParsed?.getCountryCode().toString() || '';
   }
 
   get nationalNumber (): string {
-    const zeros = this.phoneParsed.numberOfLeadingZerosCount() || this.phoneParsed.italianLeadingZeroCount();
-    const number = this.phoneParsed.getNationalNumber().toString();
+    const zeros = this.phoneParsed?.numberOfLeadingZerosCount() || this.phoneParsed?.italianLeadingZeroCount();
+    const number = this.phoneParsed?.getNationalNumber().toString();
     if (!zeros) {
       return number;
     }
@@ -58,11 +62,13 @@ export class PhoneUtil {
   }
 
   get isValid (): boolean {
-    return this.phoneUtil.isValidNumber(this.phoneParsed);
+    return this.phoneParsed
+      && this.phoneUtil.isValidNumber(this.phoneParsed);
   }
 
   get phoneType (): number {
-    return this.phoneUtil.getNumberType(this.phoneParsed);;
+    return this.phoneParsed
+      && this.phoneUtil.getNumberType(this.phoneParsed);;
   }
 
   get phoneTypeString (): string {
@@ -72,7 +78,7 @@ export class PhoneUtil {
       case 2:
         return 'FIXED_OR_MOBILE';
       default:
-        return 'N_A';
+        return 'ZZ';
     };
   }
 }

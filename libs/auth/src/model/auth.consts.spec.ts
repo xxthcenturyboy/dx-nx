@@ -72,6 +72,5 @@ describe('USER_LOOKUPS ', () => {
     // assert
     expect(USER_LOOKUPS.EMAIL).toEqual('email');
     expect(USER_LOOKUPS.PHONE).toEqual('phone');
-    expect(USER_LOOKUPS.USERNAME).toEqual('username');
   });
 });

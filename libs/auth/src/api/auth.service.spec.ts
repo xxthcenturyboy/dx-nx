@@ -10,6 +10,8 @@ import {
   TEST_EXISTING_PASSWORD,
   TEST_EXISTING_PHONE,
   TEST_PASSWORD,
+  TEST_PHONE,
+  TEST_PHONE_IT_INVALID,
   TEST_PHONE_VALID
 } from '@dx/config';
 import { PostgresDbConnection } from '@dx/postgres';
@@ -20,11 +22,12 @@ import {
 } from '@dx/user';
 import { EmailModel } from '@dx/email';
 import { PhoneModel } from '@dx/phone';
+import { ShortLinkModel } from '@dx/shortlink';
 import {
+  AccountCreationPayloadType,
   GetByTokenQueryType,
   LoginPaylodType,
   SessionData,
-  SignupPayloadType,
   UserLookupQueryType,
   UserLookupResponseType
 } from '../model/auth.types';
@@ -49,6 +52,7 @@ describe('AuthService', () => {
         models: [
           EmailModel,
           PhoneModel,
+          ShortLinkModel,
           UserPrivilegeSetModel,
           UserModel
         ]
@@ -77,9 +81,122 @@ describe('AuthService', () => {
       expect(authService).toBeDefined();
     });
 
-    describe('doesEmailPhoneUsernameExist', () => {
+    describe('createAccount', () => {
       it('should exist', () => {
-        expect(authService.doesEmailPhoneUsernameExist).toBeDefined();
+        // arrange
+        // act
+        // assert
+        expect(authService.createAccount).toBeDefined();
+      });
+
+      test('should throw when value does not exist', async () => {
+        // arrange
+        const payload: AccountCreationPayloadType = {
+          value: ''
+        };
+        // act
+        try {
+          expect(await authService.createAccount(payload, session)).toThrow();
+        } catch (err) {
+          // assert
+          expect(err.message).toEqual('No data sent.');
+        }
+      });
+
+      test('should throw when email is not available', async () => {
+        // arrange
+        const payload: AccountCreationPayloadType = {
+          value: TEST_EXISTING_EMAIL
+        };
+        // act
+        try {
+          expect(await authService.createAccount(payload, session)).toThrow();
+        } catch (err) {
+          // assert
+          expect(err.message).toEqual('Email is unavailable.');
+        }
+      });
+
+      test('should throw when invalid email sent', async () => {
+        // arrange
+        const payload: AccountCreationPayloadType = {
+          value: 'not-a-valid-email',
+          region: 'US'
+        };
+        // act
+        try {
+          expect(await authService.createAccount(payload, session)).toThrow();
+        } catch (err) {
+          // assert
+          expect(err.message).toEqual(`Account could not be created with payload: ${JSON.stringify(payload, null, 2)}`);
+        }
+      });
+
+      test('should throw when phone is not available', async () => {
+        // arrange
+        const payload: AccountCreationPayloadType = {
+          value: TEST_EXISTING_PHONE,
+          region: 'US'
+        };
+        // act
+        try {
+          expect(await authService.createAccount(payload, session)).toThrow();
+        } catch (err) {
+          // assert
+          expect(err.message).toEqual('Phone is unavailable.');
+        }
+      });
+
+      test('should throw when invalid phone sent', async () => {
+        // arrange
+        const payload: AccountCreationPayloadType = {
+          value: TEST_PHONE
+        };
+        // act
+        try {
+          expect(await authService.createAccount(payload, session)).toThrow();
+        } catch (err) {
+          // assert
+          expect(err.message).toEqual(`Account could not be created with payload: ${JSON.stringify(payload, null, 2)}`);
+        }
+      });
+
+      test('should create an account with email when called', async () => {
+        // arrange
+        const payload: AccountCreationPayloadType = {
+          value: TEST_EMAIL
+        };
+        // act
+        const user = await authService.createAccount(payload, session);
+        // assert
+        expect(user).toBeDefined();
+        expect((user as UserProfileStateType).emails).toHaveLength(1);
+        // clenup
+        if (user && user.id) {
+          await UserModel.removeUser(user.id);
+        }
+      });
+
+      test('should create an account with phone when called', async () => {
+        // arrange
+        const payload: AccountCreationPayloadType = {
+          value: TEST_PHONE_VALID
+        };
+        // act
+        const user = await authService.createAccount(payload, session);
+        // assert
+        expect(user).toBeDefined();
+        expect((user as UserProfileStateType).phones).toHaveLength(1);
+        // clenup
+        if (user && user.id) {
+          await UserModel.removeUser(user.id);
+        }
+      });
+    });
+
+    describe('doesEmailPhoneExist', () => {
+      it('should exist', () => {
+        expect(authService.doesEmailPhoneExist).toBeDefined();
       });
 
       test('should return true when phone does not exist', async () => {
@@ -93,7 +210,7 @@ describe('AuthService', () => {
           type: USER_LOOKUPS.PHONE
         }
         // act
-        response = await authService.doesEmailPhoneUsernameExist(query);
+        response = await authService.doesEmailPhoneExist(query);
         // assert
         expect(response).toEqual(expectedResult);
       });
@@ -106,11 +223,27 @@ describe('AuthService', () => {
           code: TEST_COUNTRY_CODE,
           value: TEST_EXISTING_PHONE,
           type: USER_LOOKUPS.PHONE
-        }
+        };
         // act
-        response = await authService.doesEmailPhoneUsernameExist(query);
+        response = await authService.doesEmailPhoneExist(query);
         // assert
         expect(response).toEqual(expectedResult);
+      });
+
+      test('should throw when invalid phone number is sent', async () => {
+        // arrange
+        const query: UserLookupQueryType = {
+          region: 'IT',
+          value: TEST_PHONE_IT_INVALID,
+          type: USER_LOOKUPS.PHONE
+        };
+        // act
+        // assert
+        try  {
+          expect(await authService.doesEmailPhoneExist(query)).toThrow();
+        } catch (err) {
+          expect(err.message).toEqual('Error in auth lookup handler: This phone cannot be used.');
+        }
       });
 
       test('should return true when email does not exist', async () => {
@@ -120,9 +253,9 @@ describe('AuthService', () => {
         const query: UserLookupQueryType = {
           value: 'dud.dx.software@gmail.com',
           type: USER_LOOKUPS.EMAIL
-        }
+        };
         // act
-        response = await authService.doesEmailPhoneUsernameExist(query);
+        response = await authService.doesEmailPhoneExist(query);
         // assert
         expect(response).toEqual(expectedResult);
       });
@@ -136,37 +269,39 @@ describe('AuthService', () => {
           type: USER_LOOKUPS.EMAIL
         }
         // act
-        response = await authService.doesEmailPhoneUsernameExist(query);
+        response = await authService.doesEmailPhoneExist(query);
         // assert
         expect(response).toEqual(expectedResult);
       });
 
-      test('should return true when username does not exist', async () => {
+      test('should throw when disposable email domain is sent', async () => {
         // arrange
-        let response: void | null | UserLookupResponseType = null;
-        const expectedResult: UserLookupResponseType = { available: true };
         const query: UserLookupQueryType = {
-          value: 'administrator',
-          type: USER_LOOKUPS.USERNAME
-        }
+          value: 'email@080mail.com',
+          type: USER_LOOKUPS.EMAIL
+        };
         // act
-        response = await authService.doesEmailPhoneUsernameExist(query);
         // assert
-        expect(response).toEqual(expectedResult);
+        try  {
+          expect(await authService.doesEmailPhoneExist(query)).toThrow();
+        } catch (err) {
+          expect(err.message).toEqual('Error in auth lookup handler: Invalid email domain.');
+        }
       });
 
-      test('should return false when username does exist', async () => {
+      test('should throw when email is invalid', async () => {
         // arrange
-        let response: void | null | UserLookupResponseType = null;
-        const expectedResult: UserLookupResponseType = { available: false };
         const query: UserLookupQueryType = {
-          value: 'admin',
-          type: USER_LOOKUPS.USERNAME
-        }
+          value: 'not a valid email',
+          type: USER_LOOKUPS.EMAIL
+        };
         // act
-        response = await authService.doesEmailPhoneUsernameExist(query);
         // assert
-        expect(response).toEqual(expectedResult);
+        try  {
+          expect(await authService.doesEmailPhoneExist(query)).toThrow();
+        } catch (err) {
+          expect(err.message).toEqual('Error in auth lookup handler: Invalid Email.');
+        }
       });
     });
 
@@ -300,124 +435,36 @@ describe('AuthService', () => {
       });
     });
 
-    describe('signup', () => {
-      const STRONG_PW = 'ajf349234jla_(@kaldj';
+    describe('sendOtpToPhone', () => {
       it('should exist', () => {
-        expect(authService.signup).toBeDefined();
+        expect(authService.sendOtpToPhone).toBeDefined();
       });
 
-      test('should throw when email does not exist', async () => {
+      test('should throw when phone does not exist', async () => {
         // arrange
-        const payload: SignupPayloadType = {
-          email: '',
-          password: '',
-          passwordConfirm: ''
-        };
         // act
         try {
-          expect(await authService.signup(payload, session)).toThrow();
+          expect(await authService.sendOtpToPhone('')).toThrow();
         } catch (err) {
           // assert
-          expect(err.message).toEqual('Email is required.');
+          expect(err.message).toEqual('No phone sent.');
         }
       });
 
-      test('should throw when passwords do not match', async () => {
+      test('should return false when phone is invalid', async () => {
         // arrange
-        const payload: SignupPayloadType = {
-          email: TEST_EMAIL,
-          password: 'password1',
-          passwordConfirm: 'not-matching-password'
-        };
         // act
-        try {
-          expect(await authService.signup(payload, session)).toThrow();
-        } catch (err) {
-          // assert
-          expect(err.message).toEqual('Passwords must match.');
-        }
-      });
-
-      test('should throw when session is missing', async () => {
-        // arrange
-        const payload: SignupPayloadType = {
-          email: TEST_EMAIL,
-          password: 'password1',
-          passwordConfirm: 'password1'
-        };
-        // act
-        try {
-          expect(await authService.signup(payload, undefined)).toThrow();
-        } catch (err) {
-          // assert
-          expect(err.message).toEqual('Internal server error: Missing Session.');
-        }
-      });
-
-      test('should throw when password is weak', async () => {
-        // arrange
-        const payload: SignupPayloadType = {
-          email: TEST_EMAIL,
-          password: TEST_PASSWORD,
-          passwordConfirm: TEST_PASSWORD
-        };
-        // act
-        try {
-          expect(await authService.signup(payload, session)).toThrow();
-        } catch (err) {
-          // assert
-          expect(err.message).toContain('Please choose a stronger password.');
-        }
-      });
-
-      test('should throw when email is not available', async () => {
-        // arrange
-        const payload: SignupPayloadType = {
-          email: TEST_EXISTING_EMAIL,
-          password: STRONG_PW,
-          passwordConfirm: STRONG_PW
-        };
-        // act
-        try {
-          expect(await authService.signup(payload, session)).toThrow();
-        } catch (err) {
-          // assert
-          expect(err.message).toEqual('Email is already taken.');
-        }
-      });
-
-      test('should throw when email is invalid', async () => {
-        // arrange
-        const payload: SignupPayloadType = {
-          email: 'invalid email',
-          password: STRONG_PW,
-          passwordConfirm: STRONG_PW
-        };
-        // act
-        try {
-          expect(await authService.signup(payload, session)).toThrow();
-        } catch (err) {
-          // assert
-          expect(err.message).toEqual('invalid email does not appear to be a valid email.');
-        }
-      });
-
-      test('should create a user when all data is good', async () => {
-        // arrange
-        const payload: SignupPayloadType = {
-          email: TEST_EMAIL,
-          password: STRONG_PW,
-          passwordConfirm: STRONG_PW
-        };
-        // act
-        const user = await authService.signup(payload, session);
+        const result = await authService.sendOtpToPhone(TEST_PHONE);
         // assert
-        expect(user).toBeDefined();
-        expect((user as UserProfileStateType).emails).toHaveLength(1);
-        // clenup
-        if (user && user.id) {
-          await UserModel.removeUser(user.id);
-        }
+        expect(result).toBe(false);
+      });
+
+      test('should return true when phone is valid', async () => {
+        // arrange
+        // act
+        const result = await authService.sendOtpToPhone(TEST_PHONE_VALID);
+        // assert
+        expect(result).toBe(true);
       });
     });
   } else {
@@ -438,8 +485,11 @@ describe('AuthService', () => {
       // act
       const authService = new AuthService();
       // assert
-      expect(authService.doesEmailPhoneUsernameExist).toBeDefined();
+      expect(authService.doesEmailPhoneExist).toBeDefined();
       expect(authService.getByToken).toBeDefined();
+      expect(authService.lockoutFromOtpEmail).toBeDefined();
+      expect(authService.login).toBeDefined();
+      expect(authService.requestReset).toBeDefined();
       expect(authService.signup).toBeDefined();
     });
   }

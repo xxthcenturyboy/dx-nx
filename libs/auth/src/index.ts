@@ -13,7 +13,10 @@ export {
   userHasRole
 } from './api/ensure-role.middleware';
 export {
+  AccountCreationPayloadType,
   GetByTokenQueryType,
+  LoginPaylodType,
+  SetupPasswordsPaylodType,
   TokenConfirmationResponseType,
   UserLookupQueryType,
   UserLookupResponseType

@@ -210,6 +210,40 @@ describe('UserService', () => {
       });
     });
 
+    describe('isUsernameAvailable', () => {
+      test('should return true when username does not exist', async () => {
+        // arrange
+        let response: { available: boolean } | null = null;
+        const expectedResult = { available: true };
+
+        // act
+        response = await service.isUsernameAvailable('non-existent-username');
+        // assert
+        expect(response).toEqual(expectedResult);
+      });
+
+      test('should throw when profanity is used', async () => {
+        // arrange
+        // act
+        // assert
+        try  {
+          expect(await service.isUsernameAvailable('asshole')).toThrow();
+        } catch (err) {
+          expect(err.message).toEqual('Profanity is not allowed');
+        }
+      });
+
+      test('should return false when username does exist', async () => {
+        // arrange
+        let response: { available: boolean } | null = null;
+        const expectedResult = { available: false };
+        // act
+        response = await service.isUsernameAvailable('admin');
+        // assert
+        expect(response).toEqual(expectedResult);
+      });
+    });
+
     describe('resendInvite', () => {
       test('should throw when sent without payload.', async () => {
         // arrange

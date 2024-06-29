@@ -44,6 +44,62 @@ describe('v1 User Routes', () => {
     }
   });
 
+  describe('GET /api/v1/user/check/availabilty', () => {
+    test('should return available = true when username is available', async () => {
+      const request: AxiosRequestConfig = {
+        url: `/api/v1/user/check/availabilty?username=usernameNotInSystem`,
+        method: 'GET',
+        headers: {
+          cookie: authUtil.cookeisRaw
+        },
+        withCredentials: true,
+      };
+
+      const result = await axios.request<AxiosRequestConfig, AxiosResponse<{ available: boolean}>>(request);
+
+      expect(result.status).toBe(200);
+      expect(result.data.available).toBe(true);
+    });
+
+    test('should return available = false when username is not available', async () => {
+      const request: AxiosRequestConfig = {
+        url: `/api/v1/user/check/availabilty?username=admin`,
+        method: 'GET',
+        headers: {
+          cookie: authUtil.cookeisRaw
+        },
+        withCredentials: true,
+      };
+
+      const result = await axios.request<AxiosRequestConfig, AxiosResponse<{ available: boolean}>>(request);
+
+      expect(result.status).toBe(200);
+      expect(result.data.available).toBe(false);
+    });
+
+    test('should return an error when username is profane', async () => {
+      const request: AxiosRequestConfig = {
+        url: `/api/v1/user/check/availabilty?username=asshole`,
+        method: 'GET',
+        headers: {
+          cookie: authUtil.cookeisRaw
+        },
+        withCredentials: true,
+      };
+
+      try {
+        expect(await axios.request(request)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // console.log('got error', typedError);
+        // assert
+        expect(typedError.response.status).toBe(400);
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toEqual('Profanity is not allowed');
+      }
+    });
+  });
+
   describe('GET /api/v1/user/list', () => {
     test('should return an array of users when called', async () => {
       const request: AxiosRequestConfig = {
