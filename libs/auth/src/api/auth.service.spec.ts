@@ -25,7 +25,6 @@ import { PhoneModel } from '@dx/phone';
 import { ShortLinkModel } from '@dx/shortlink';
 import {
   AccountCreationPayloadType,
-  GetByTokenQueryType,
   LoginPaylodType,
   SessionData,
   UserLookupQueryType,
@@ -135,6 +134,7 @@ describe('AuthService', () => {
       test('should throw when phone is not available', async () => {
         // arrange
         const payload: AccountCreationPayloadType = {
+          code: 'OU812',
           value: TEST_EXISTING_PHONE,
           region: 'US'
         };
@@ -150,6 +150,7 @@ describe('AuthService', () => {
       test('should throw when invalid phone sent', async () => {
         // arrange
         const payload: AccountCreationPayloadType = {
+          code: 'OU812',
           value: TEST_PHONE
         };
         // act
@@ -180,6 +181,7 @@ describe('AuthService', () => {
       test('should create an account with phone when called', async () => {
         // arrange
         const payload: AccountCreationPayloadType = {
+          code: 'OU812',
           value: TEST_PHONE_VALID
         };
         // act
@@ -305,40 +307,36 @@ describe('AuthService', () => {
       });
     });
 
-    describe('getByToken', () => {
+    describe('validateEmail', () => {
       it('should exist', () => {
-        expect(authService.getByToken).toBeDefined();
+        expect(authService.validateEmail).toBeDefined();
       });
 
       test('should throw when token does not exist', async () => {
         // arrange
-        const query: GetByTokenQueryType = {
-          token: 'bad-token'
-        };
         // act
         try {
-          expect(await authService.getByToken(query)).toThrow();
+          expect(await authService.validateEmail('')).toThrow();
         } catch (err) {
           // assert
-          expect(err.message).toEqual('Error in auth get user by token handler: No user found with that link.');
+          expect(err.message).toEqual('No token to validate.');
         }
       });
 
       test('should throw when token is expired', async () => {
         // arrange
-        const query: GetByTokenQueryType = {
-          token: '413c78fb890955a86d3971828dd05a9b2d844e44d8a30d406f80bf6e79612bb97e8b3b5834c8dbebdf5c4dadc767a579'
-        };
+        const token = '413c78fb890955a86d3971828dd05a9b2d844e44d8a30d406f80bf6e79612bb97e8b3b5834c8dbebdf5c4dadc767a579';
         // act
         try {
-          expect(await authService.getByToken(query)).toThrow();
+          expect(await authService.validateEmail(token)).toThrow();
         } catch (err) {
           // assert
-          expect(err.message).toEqual('Error in auth get user by token handler: Token has expired.');
+          expect(err.message).toEqual('Token is invalid');
         }
       });
     });
 
+    // ??
     describe('lockoutFromOtpEmail', () => {
       it('should exist', () => {
         expect(authService.lockoutFromOtpEmail).toBeDefined();
@@ -364,7 +362,7 @@ describe('AuthService', () => {
       test('should throw when email does not exist', async () => {
         // arrange
         const payload: LoginPaylodType = {
-          email: 'not-in-this-system@useless.com',
+          value: 'not-in-this-system@useless.com',
           password: '',
         };
         // act
@@ -372,14 +370,29 @@ describe('AuthService', () => {
           expect(await authService.login(payload)).toThrow();
         } catch (err) {
           // assert
-          expect(err.message).toEqual('This is not a valid username.');
+          expect(err.message).toEqual('Could not log you in.');
         }
       });
 
-      test('should throw when passwords is incorrect', async () => {
+      test('should throw when phone does not exist', async () => {
         // arrange
         const payload: LoginPaylodType = {
-          email: TEST_EXISTING_EMAIL,
+          value: TEST_PHONE_VALID,
+          code: 'OU812',
+        };
+        // act
+        try {
+          expect(await authService.login(payload)).toThrow();
+        } catch (err) {
+          // assert
+          expect(err.message).toEqual('Could not log you in.');
+        }
+      });
+
+      test('should throw when password is incorrect', async () => {
+        // arrange
+        const payload: LoginPaylodType = {
+          value: TEST_EXISTING_EMAIL,
           password: TEST_PASSWORD,
         };
         // act
@@ -387,15 +400,44 @@ describe('AuthService', () => {
           expect(await authService.login(payload)).toThrow();
         } catch (err) {
           // assert
-          expect(err.message).toEqual('Incorrect username or password.');
+          expect(err.message).toEqual('Could not log you in.');
         }
       });
 
-      test('should return user profile upon successful login', async () => {
+      test('should return user profile upon successful email, passwordless login', async () => {
         // arrange
         const payload: LoginPaylodType = {
-          email: TEST_EXISTING_EMAIL,
+          value: TEST_EXISTING_EMAIL,
+        };
+        // act
+        const user = await authService.login(payload);
+        // console.log(user);
+        // assert
+        expect(user).toBeDefined();
+        expect((user as UserProfileStateType).emails).toHaveLength(1);
+        expect((user as UserProfileStateType).phones).toHaveLength(1);
+      });
+
+      test('should return user profile upon successful email/password login', async () => {
+        // arrange
+        const payload: LoginPaylodType = {
+          value: TEST_EXISTING_EMAIL,
           password: TEST_EXISTING_PASSWORD,
+        };
+        // act
+        const user = await authService.login(payload);
+        // console.log(user);
+        // assert
+        expect(user).toBeDefined();
+        expect((user as UserProfileStateType).emails).toHaveLength(1);
+        expect((user as UserProfileStateType).phones).toHaveLength(1);
+      });
+
+      test('should return user profile upon successful phone login', async () => {
+        // arrange
+        const payload: LoginPaylodType = {
+          value: TEST_EXISTING_PHONE,
+          code: 'OU812',
         };
         // act
         const user = await authService.login(payload);
@@ -486,11 +528,11 @@ describe('AuthService', () => {
       const authService = new AuthService();
       // assert
       expect(authService.doesEmailPhoneExist).toBeDefined();
-      expect(authService.getByToken).toBeDefined();
       expect(authService.lockoutFromOtpEmail).toBeDefined();
       expect(authService.login).toBeDefined();
       expect(authService.requestReset).toBeDefined();
       expect(authService.signup).toBeDefined();
+      expect(authService.validateEmail).toBeDefined();
     });
   }
 });

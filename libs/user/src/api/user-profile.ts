@@ -10,13 +10,18 @@ export async function getUserProfileState(
     // common items
     const id = user.id;
     const defaultEmail = user.emails.find(e => e.default);
+    const defaultPhone = user.phones.find(e => e.default);
+    const mailVerified = !!defaultEmail?.verifiedAt;
+    const phoneVerified = !!defaultPhone?.verifiedAt;
 
     const profile: UserProfileStateType = {
       id,
       emails: await user.getEmailData(),
       firstName: user.firstName,
-      hasCompletedInvite: user.hasCompletedInvite,
-      isEmailVerified: !!defaultEmail?.verifiedAt,
+      fullName: user.fullName,
+      hasSecuredAccount: (!!user.hashword && mailVerified) || phoneVerified,
+      hasVerifiedEmail: mailVerified,
+      hasVerifiedPhone: phoneVerified,
       isAdmin: user.isAdmin,
       isSuperAdmin: user.isSuperAdmin,
       lastName: user.lastName,

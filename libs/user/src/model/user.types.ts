@@ -22,10 +22,12 @@ export type UserProfileStateType = {
   id: string;
   emails: EmailType[];
   firstName: string;
-  hasCompletedInvite: boolean;
-  isEmailVerified: boolean;
-  isSuperAdmin: boolean;
+  fullName: string;
+  hasSecuredAccount: boolean;
+  hasVerifiedEmail: boolean;
+  hasVerifiedPhone: boolean;
   isAdmin: boolean;
+  isSuperAdmin: boolean;
   lastName: string;
   optInBeta: boolean;
   phones: PhoneType[];

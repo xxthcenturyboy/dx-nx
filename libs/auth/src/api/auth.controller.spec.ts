@@ -56,25 +56,11 @@ describe('AuthController', () => {
     expect(AuthController).toBeDefined();
   });
 
-  it('should have userLookup method when instantiated', () => {
+  it('should have authLookup method when instantiated', () => {
     // arrange
     // act
     // assert
-    expect(AuthController.userLookup).toBeDefined();
-  });
-
-  describe('getByToken', () => {
-    test('should sendOk when invoked', async () => {
-      // arrange
-      const query: GetByTokenQueryType = {
-        token: '413c78fb890955a86d3971828dd05a9b2d844e44d8a30d406f80bf6e79612bb97e8b3b5834c8dbebdf5c4dadc767a579'
-      };
-      req.query = query;
-      // act
-      await AuthController.getByToken(req, res);
-      // assert
-      expect(sendOK).toHaveBeenCalled();
-    });
+    expect(AuthController.authLookup).toBeDefined();
   });
 
   describe('lockoutFromOtpEmail', () => {
@@ -166,19 +152,17 @@ describe('AuthController', () => {
     });
   });
 
-  describe('signup', () => {
+  describe('validateEmail', () => {
     test('should sendOk when invoked', async () => {
       // arrange
-      const body: SignupPayloadType = {
-        email: TEST_EMAIL,
-        password: TEST_PASSWORD,
-        passwordConfirm: TEST_PASSWORD
+      const query: GetByTokenQueryType = {
+        token: '413c78fb890955a86d3971828dd05a9b2d844e44d8a30d406f80bf6e79612bb97e8b3b5834c8dbebdf5c4dadc767a579'
       };
-      req.body = body;
+      req.query = query;
       // act
-      await AuthController.signup(req, res);
+      await AuthController.validateEmail(req, res);
       // assert
-      expect(sendBadRequest).toHaveBeenCalled();
+      expect(sendOK).toHaveBeenCalled();
     });
   });
 });

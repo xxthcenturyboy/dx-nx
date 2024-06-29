@@ -138,12 +138,18 @@ export class UserModel extends Model<UserModel> {
 
   @Column(new DataType.VIRTUAL(DataType.BOOLEAN, ['roles']))
   get isAdmin (): boolean {
-    return this.getDataValue('roles')?.some(role => role === USER_ROLE.ADMIN) || false;
+    const roles = this.getDataValue('roles');
+    return Array.isArray(roles)
+      ? roles.some(role => role === USER_ROLE.ADMIN) || false
+      : false;
   }
 
   @Column(new DataType.VIRTUAL(DataType.BOOLEAN, ['roles']))
   get isSuperAdmin (): boolean {
-    return this.getDataValue('roles')?.some(role => role === USER_ROLE.SUPER_ADMIN) || false;
+    const roles = this.getDataValue('roles');
+    return Array.isArray(roles)
+      ? roles.some(role => role === USER_ROLE.SUPER_ADMIN) || false
+      : false;
   }
 
   @Column(new DataType.VIRTUAL(DataType.STRING, ['firstName', 'lastName']))
@@ -168,14 +174,6 @@ export class UserModel extends Model<UserModel> {
     return restrictions
       ? Array.isArray(restrictions) && restrictions.length > 1
       : false;
-  }
-
-  @Column(new DataType.VIRTUAL(DataType.BOOLEAN, ['hashword', 'deletedAt']))
-  get hasCompletedInvite (): boolean {
-    const hashword = this.getDataValue('hashword');
-    const deletedAt = this.getDataValue('deletedAt');
-
-    return !hashword && !deletedAt;
   }
 
   async getEmails (): Promise<EmailModelType[]> {
@@ -341,7 +339,7 @@ export class UserModel extends Model<UserModel> {
       roles: [USER_ROLE.USER]
     });
 
-    await PhoneModel.createOrFindOneByUserId(user.id, phone, countryCode, regionCode);
+    await PhoneModel.createOrFindOneByUserId(user.id, phone, countryCode, regionCode, true);
 
     return user;
   }
@@ -479,7 +477,7 @@ export class UserModel extends Model<UserModel> {
       throw err;
     }
   }
-
+  // TODO: Remove
   static async getByToken (token: string): Promise<UserModelType> {
     const data = await this.findOne({
       where: {
@@ -505,8 +503,13 @@ export class UserModel extends Model<UserModel> {
       throw new Error(`Token has expired.`);
     }
 
-    if (data.emails && Array.isArray(data.emails) && data.emails.length > 0) {
-      await EmailModel.validateEmail(data.emails[0].email);
+    if (
+      data.emails
+      && Array.isArray(data.emails)
+      && data.emails.length > 0
+    ) {
+      const emailToVerify = data.emails.find(email => email.token === token);
+      await EmailModel.verifyEmail(emailToVerify.id);
     }
 
     return data;

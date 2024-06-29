@@ -14,10 +14,8 @@ export {
 } from './api/ensure-role.middleware';
 export {
   AccountCreationPayloadType,
-  GetByTokenQueryType,
   LoginPaylodType,
   SetupPasswordsPaylodType,
-  TokenConfirmationResponseType,
   UserLookupQueryType,
   UserLookupResponseType
 } from './model/auth.types';

@@ -5,8 +5,8 @@ export class AuthRoutes {
   static configure() {
     const router = Router();
 
-    router.get('/lookup', AuthController.userLookup);
-    router.get('/token-invite', AuthController.getByToken);
+    router.get('/lookup', AuthController.authLookup);
+    router.get('/validate/email/:token', AuthController.validateEmail);
 
     router.post('/account', AuthController.createAccount);
     router.post('/login', AuthController.login);

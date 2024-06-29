@@ -7,18 +7,26 @@ import {
 } from '@dx/server';
 import {
   AccountCreationPayloadType,
-  GetByTokenQueryType,
   LoginPaylodType,
   OtpLockoutResponseType,
   SetupPasswordsPaylodType,
-  SignupPayloadType,
   UserLookupQueryType
 } from '../model/auth.types';
 import { TokenService } from './token.service';
-import { UserProfileStateType } from '@dx/user';
+import { UserProfileStateType, UserType } from '@dx/user';
 import { ApiLoggingClass } from '@dx/logger';
 
 export const AuthController = {
+  authLookup: async function(req: Request, res: Response) {
+    try {
+      const service = new AuthService();
+      const result = await service.doesEmailPhoneExist(req.query as UserLookupQueryType);
+      sendOK(req, res, result);
+    } catch (err) {
+      sendBadRequest(req, res, err.message);
+    }
+  },
+
   createAccount: async function(req: Request, res: Response) {
     try {
       const service = new AuthService();
@@ -35,16 +43,6 @@ export const AuthController = {
         throw new Error('Could not create Auth Tokens!');
       }
 
-      sendOK(req, res, result);
-    } catch (err) {
-      sendBadRequest(req, res, err.message);
-    }
-  },
-
-  getByToken: async function(req: Request, res: Response) {
-    try {
-      const service = new AuthService();
-      const result = await service.getByToken(req.query as GetByTokenQueryType);
       sendOK(req, res, result);
     } catch (err) {
       sendBadRequest(req, res, err.message);
@@ -159,10 +157,12 @@ export const AuthController = {
     }
   },
 
-  userLookup: async function(req: Request, res: Response) {
+  validateEmail: async function(req: Request, res: Response) {
     try {
+      const { token } = req.params as { token: string };
       const service = new AuthService();
-      const result = await service.doesEmailPhoneExist(req.query as UserLookupQueryType);
+      const result = await service.validateEmail(token);
+
       sendOK(req, res, result);
     } catch (err) {
       sendBadRequest(req, res, err.message);

@@ -81,6 +81,7 @@ describe('EmailModel', () => {
       expect(EmailModel.updateMessageInfoValidate).toBeDefined();
       expect(EmailModel.validateEmail).toBeDefined();
       expect(EmailModel.validateEmailWithToken).toBeDefined();
+      expect(EmailModel.verifyEmail).toBeDefined();
     });
 
     it('should have associations', () => {

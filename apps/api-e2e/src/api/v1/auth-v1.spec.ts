@@ -125,24 +125,6 @@ describe('v1 Auth Routes', () => {
     });
   });
 
-  describe('GET /api/v1/auth/token-invite', () => {
-    test('should return an error when queried with an expired token.', async () => {
-      // arrange
-      const url = `/api/v1/auth/token-invite?token=413c78fb890955a86d3971828dd05a9b2d844e44d8a30d406f80bf6e79612bb97e8b3b5834c8dbebdf5c4dadc767a579`;
-      // act
-      try {
-        expect(await axios.get(url)).toThrow();
-      } catch (err) {
-        const typedError = err as AxiosError;
-        // console.log('got error', typedError);
-        // assert
-        expect(typedError.response.status).toBe(400);
-        // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual('Error in auth get user by token handler: Token has expired.');
-      }
-    });
-  });
-
   describe('POST /api/v1/auth/account', () => {
     afterEach(async () => {
       if (id) {

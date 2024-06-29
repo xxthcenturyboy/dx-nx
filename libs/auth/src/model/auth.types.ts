@@ -1,6 +1,7 @@
 export type AccountCreationPayloadType = {
-  value: string;
+  code?: string;
   region?: string;
+  value: string;
 };
 
 export type UserLookupResponseType = {
@@ -14,21 +15,12 @@ export type UserLookupQueryType = {
   region?: string;
 };
 
-export type GetByTokenQueryType = {
-  token: string;
-};
-
-export type TokenConfirmationResponseType = {
-  id: string,
-  email: string,
-  firstName: string,
-  lastName: string,
-  username: string
-};
-
 export type LoginPaylodType = {
-  email: string;
-  password: string;
+  value: string;
+  biometric?: string;
+  code?: string;
+  region?: string;
+  password?: string;
 };
 
 export type OtpLockoutResponseType = {

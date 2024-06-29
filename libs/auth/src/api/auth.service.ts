@@ -14,13 +14,11 @@ import {
 } from '@dx/phone';
 import {
   AccountCreationPayloadType,
-  GetByTokenQueryType,
   LoginPaylodType,
   OtpLockoutResponseType,
   SessionData,
   SetupPasswordsPaylodType,
   SignupPayloadType,
-  TokenConfirmationResponseType,
   UserLookupQueryType,
   UserLookupResponseType
 } from '../model/auth.types';
@@ -47,11 +45,25 @@ export class AuthService {
     this.logger = ApiLoggingClass.instance;
   }
 
+  // TODO: replace with real vendor service
+  private async validateOtpTemp(
+    code: string,
+    phone: string,
+    countryCode: string
+  ) {
+    return new Promise<boolean>((resolve) => {
+      resolve(
+        !!(code && phone && countryCode)
+      );
+    });
+  }
+
   public async createAccount(
     payload: AccountCreationPayloadType,
     session: SessionData
   ) {
     const {
+      code,
       region,
       value
     } = payload;
@@ -69,7 +81,8 @@ export class AuthService {
     try {
       const phoneUtil = new PhoneUtil(value, region || PHONE_DEFAULT_REGION_CODE);
       if (
-        phoneUtil.isValid
+        code
+        && phoneUtil.isValid
         && phoneUtil.countryCode
         && phoneUtil.nationalNumber
       ) {
@@ -77,11 +90,15 @@ export class AuthService {
         if (!isAvailable) {
           throw new Error(`Phone is unavailable.`);
         }
-        user = await UserModel.registerAndCreateFromPhone(
-          phoneUtil.nationalNumber,
-          phoneUtil.countryCode,
-          region || PHONE_DEFAULT_REGION_CODE
-        );
+
+        const isCodeValid = await this.validateOtpTemp(code, phoneUtil.nationalNumber, phoneUtil.countryCode);
+        if (isCodeValid) {
+          user = await UserModel.registerAndCreateFromPhone(
+            phoneUtil.nationalNumber,
+            phoneUtil.countryCode,
+            region || PHONE_DEFAULT_REGION_CODE
+          );
+        }
       }
 
       if (!user) {
@@ -109,7 +126,6 @@ export class AuthService {
 
       if (!user) {
         const message = `Account could not be created with payload: ${JSON.stringify(payload, null, 2)}`;
-        this.logger.logError(message);
         throw new Error(message);
       }
 
@@ -176,30 +192,6 @@ export class AuthService {
     }
   }
 
-  public async getByToken(query: GetByTokenQueryType) {
-    const { token } = query;
-    if (!token) {
-      throw new Error('Incorrect query parameters.');
-    }
-
-    try {
-      const user = await UserModel.getByToken(token);
-      const result: TokenConfirmationResponseType = {
-        id: user.id,
-        email: user?.emails[0]?.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        username: user.username
-      };
-
-      return result;
-    } catch (err) {
-      const message = `Error in auth get user by token handler: ${err.message}`;
-      this.logger.logError(message);
-      throw new Error(message);
-    }
-  }
-
   public async lockoutFromOtpEmail(id: string): Promise<OtpLockoutResponseType> {
     if (!id) {
       throw new Error('Request is invalid.');
@@ -220,35 +212,90 @@ export class AuthService {
 
   public async login(payload: LoginPaylodType): Promise<UserProfileStateType | void>  {
     const {
-      email,
-      password
+      biometric,
+      code,
+      region,
+      password,
+      value
     } = payload;
 
-    const emailDoesNotExist = await EmailModel.isEmailAvailable(email);
-    if (emailDoesNotExist) {
-      throw new Error(`This is not a valid username.`);
+    if (!value) {
+      throw new Error('No data sent.');
     }
 
-    let user: UserModel | null;
+    let user: UserModelType;
+
     try {
-      // Attempt login
-      user = await UserModel.loginWithPassword(email, password);
+      // Phone Number Login
+      const phoneUtil = new PhoneUtil(value, region || PHONE_DEFAULT_REGION_CODE);
+      if (
+        code
+        && phoneUtil.isValid
+        && phoneUtil.countryCode
+        && phoneUtil.nationalNumber
+      ) {
+        const isCodeValid = await this.validateOtpTemp(code, phoneUtil.nationalNumber, phoneUtil.countryCode);
+        if (isCodeValid) {
+          const phone = await PhoneModel.findByPhoneAndCode(phoneUtil.nationalNumber, phoneUtil.countryCode);
+          if (
+            phone
+            && phone.isVerified
+            && phone.userId
+          ) {
+            user = await UserModel.findByPk(phone.userId);
+          }
+        }
+      }
+
+      // Email Login
+      if (!user) {
+        const emailUtil = new EmailUtil(value);
+        if (emailUtil.validate()) {
+          if (password) {
+            user = await UserModel.loginWithPassword(emailUtil.formattedEmail(), password);
+          }
+
+          if (
+            !user
+            && !password
+          ) {
+            const email = await EmailModel.findByEmail(emailUtil.formattedEmail());
+            if (
+              email
+              && email.userId
+            ) {
+              user = await UserModel.findByPk(email.userId);
+            }
+          }
+
+        }
+      }
+
+      if (!user) {
+        throw new Error('Could not log you in.');
+      }
+
+      if (
+        user.deletedAt
+        || user.accountLocked
+      ) {
+        this.logger.logError(`Attempted login by a locked account: ${JSON.stringify(user, null, 2)}`);
+        throw new Error('Could not log you in.');
+      }
+
+      await user.getEmails();
+      await user.getPhones();
+      const userProfile = await getUserProfileState(user, true);
+      if (!userProfile) {
+        throw Error(`Failed to build user profile.`);
+      }
+
+      return userProfile;
     } catch (err) {
+      const message = `Could not log in with payload: ${JSON.stringify(payload, null, 2)}`;
+      this.logger.logError(message);
       throw new Error(err.message);
     }
-
-    if (!user) {
-      throw new Error('Incorrect username or password.');
-    }
-
-    await user.getEmails();
-    await user.getPhones();
-    const userProfile = await getUserProfileState(user, true);
-    if (!userProfile) {
-      throw Error(`Failed to build user profile.`);
-    }
-
-    return userProfile;
   }
 
   public async requestReset(email: string) {
@@ -433,6 +480,23 @@ ${pwStrengthMsg}
       throw new Error(err.message);
       // throw new Error('Unknown error. Please contact support.');
     }
+  }
+
+  public async validateEmail(token: string) {
+    if (!token) {
+      throw new Error('No token to validate.');
+    }
+
+    try {
+      const email = await EmailModel.validateEmailWithToken(token);
+
+      return email.toJSON();
+    } catch (err) {
+      const message = err.message || 'Could not verify email';
+      this.logger.logError(message);
+      throw new Error(message);
+    }
+
   }
 }
 

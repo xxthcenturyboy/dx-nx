@@ -32,7 +32,7 @@ export class AuthUtil {
 
   public async login() {
     const paylod: LoginPaylodType = {
-      email: TEST_EXISTING_EMAIL,
+      value: TEST_EXISTING_EMAIL,
       password: TEST_EXISTING_PASSWORD
     };
 

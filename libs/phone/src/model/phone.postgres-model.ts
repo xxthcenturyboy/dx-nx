@@ -127,8 +127,12 @@ export class PhoneModel extends Model<PhoneModel> {
     userId: string,
     phone: string,
     countryCode: string,
-    regionCode: string
+    regionCode: string,
+    shouldValidate?: boolean
   ): Promise<[PhoneModelType, boolean]> {
+    const verifiedAt = shouldValidate
+      ? new Date()
+      : undefined
     const UserPhone = await this.findOrCreate({
       where: {
         userId,
@@ -141,7 +145,8 @@ export class PhoneModel extends Model<PhoneModel> {
         phone,
         default: true,
         label: 'Default',
-        regionCode: regionCode || PHONE_DEFAULT_REGION_CODE
+        regionCode: regionCode || PHONE_DEFAULT_REGION_CODE,
+        verifiedAt
       }
     });
 
@@ -172,6 +177,23 @@ export class PhoneModel extends Model<PhoneModel> {
     return await PhoneModel.findAll({
       where: {
         userId,
+        deletedAt: null,
+      },
+    });
+  }
+
+  static async findByPhoneAndCode(
+    phone: string,
+    countryCode: string
+  ): Promise<PhoneModelType> {
+    return await this.findOne({
+      where: {
+        countryCode,
+        phone,
+        // @ts-ignore
+        // verifiedAt: {
+        //   [Op.ne]: null,
+        // },
         deletedAt: null,
       },
     });

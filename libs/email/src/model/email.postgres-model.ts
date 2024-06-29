@@ -106,7 +106,11 @@ export class EmailModel extends Model<EmailModel> {
     return !!this.getDataValue('deletedAt');
   }
 
-  static async createOrFindOneByUserId (userId: string, email: string, token: string | null): Promise<[EmailModel, boolean]> {
+  static async createOrFindOneByUserId (
+    userId: string,
+    email: string,
+    token: string | null
+  ): Promise<[EmailModel, boolean]> {
     const UserEmail = await this.findOrCreate({
       where: {
         userId,
@@ -128,7 +132,6 @@ export class EmailModel extends Model<EmailModel> {
     const existing = await this.findOne({
       where: {
         email,
-        // @ts-ignore
         verifiedAt: {
           [Op.ne]: null,
         },
@@ -141,6 +144,15 @@ export class EmailModel extends Model<EmailModel> {
     }
 
     return !existing;
+  }
+
+  static async findByEmail (email: string): Promise<EmailModelType> {
+    return await this.findOne({
+      where: {
+        email,
+        deletedAt: null,
+      },
+    });
   }
 
   static async findAllByUserId (userId): Promise<EmailModel[]> {
@@ -159,13 +171,24 @@ export class EmailModel extends Model<EmailModel> {
       await email.save();
     }
   }
-
+  // Used in Test
   static async validateEmail (email: string): Promise<void> {
     EmailModel.update({
       verifiedAt: new Date()
     }, {
       where: {
         email,
+        deletedAt: null
+      }
+    });
+  }
+  // TODO: Remove
+  static async verifyEmail (id: string): Promise<void> {
+    EmailModel.update({
+      verifiedAt: new Date()
+    }, {
+      where: {
+        id,
         deletedAt: null
       }
     });
