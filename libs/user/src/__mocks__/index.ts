@@ -1,5 +1,5 @@
 import { Model } from "sequelize-typescript";
-import { USER_ROLE } from "../model/user.consts";
+import { USER_ROLE } from '../model/user.consts';
 
 const mockUsers = {
   user1: {
