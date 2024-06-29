@@ -44,7 +44,7 @@ describe('email.util', () => {
 
   test('should flag an email with potentially bad gmail', () => {
     // arrange
-    emailUtil = new EmailUtil(`d.j.u@advancedbasics.com`);
+    emailUtil = new EmailUtil(`d.j.u@gmail.com`);
     // act
     const isValid = emailUtil.validate();
     // assert

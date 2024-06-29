@@ -42,9 +42,14 @@ npx nx run-many -t <target1> <target2>
 npx nx run-many -t <target1> <target2> -p <proj1> <proj2>
 ```
 
-.. or run for an individual test with `--test-file=<testfilename>`;
+.. or run for an individual e2e test with `--test-file=<testfilename>`;
 ```
 nx e2e api-e2e --test-file=user-v1.spec.ts --verbose
+```
+
+.. or run for an individual unit test with `nx run <project>:test <path-to-file>`;
+```
+nx run postgres:test ./libs/data/postgres/src/postgres.db-connection.spec.ts
 ```
 
 Targets can be defined in the `package.json` or `projects.json`. Learn more [in the docs](https://nx.dev/features/run-tasks).

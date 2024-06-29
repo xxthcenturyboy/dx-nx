@@ -11,7 +11,7 @@ RUN mkdir ${APP_HOME}
 WORKDIR ${APP_HOME}
 
 RUN npm install -g npm@10.8.1 nx
-RUN yarn global add nx@latest nodemon pino-pretty eslint --no-optional
+RUN yarn global add nx@latest nodemon --no-optional
 RUN --mount=type=secret,id=npmrc,target=/root/.npmrc
 RUN --mount=type=secret,id=gitconfig,target=/root/.gitconfig
 

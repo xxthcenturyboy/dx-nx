@@ -18,7 +18,6 @@ import {
   DeletedAt,
   Index
 } from 'sequelize-typescript';
-import { EmailUtil } from '@dx/utils';
 import {
   EMAIL_LABEL,
   EMAIL_POSTGRES_DB_NAME

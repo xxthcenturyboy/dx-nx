@@ -4,20 +4,20 @@ import { USER_ROLE } from '../model/user.consts';
 const mockUsers = {
   user1: {
     roles: [
-      USER_ROLE.SUPER_ADMIN,
-      USER_ROLE.ADMIN,
-      USER_ROLE.USER
+      USER_ROLE?.SUPER_ADMIN,
+      USER_ROLE?.ADMIN,
+      USER_ROLE?.USER
     ]
   },
   user2: {
     roles: [
-      USER_ROLE.ADMIN,
-      USER_ROLE.USER
+      USER_ROLE?.ADMIN,
+      USER_ROLE?.USER
     ]
   },
   user3: {
     roles: [
-      USER_ROLE.USER
+      USER_ROLE?.USER
     ]
   }
 };
