@@ -115,7 +115,7 @@ export class AuthService {
             const inviteUrl = `/auth/z?route=validate&token=${user.token}`;
             const shortLink = await ShortLinkModel.generateShortlink(inviteUrl);
             try  {
-              const inviteMessageId = await mail.sendInvite(emailUtil.formattedEmail(), shortLink);
+              const inviteMessageId = await mail.sendConfirmation(emailUtil.formattedEmail(), shortLink);
               await EmailModel.updateMessageInfoValidate(emailUtil.formattedEmail(), inviteMessageId);
             } catch (err) {
               this.logger.logError(err.message);
@@ -226,6 +226,12 @@ export class AuthService {
     let user: UserModelType;
 
     try {
+      // Authentication in order of preference
+      if (biometric) {
+        // TODO: Implement once devices are hooked up
+      }
+
+
       // Phone Number Login
       const phoneUtil = new PhoneUtil(value, region || PHONE_DEFAULT_REGION_CODE);
       if (
@@ -350,6 +356,41 @@ export class AuthService {
     }
   }
 
+  public async sendOtpToEmail(
+    email: string
+  ): Promise<boolean> {
+    if (!email) {
+      throw new Error('No email sent.');
+    }
+
+    try {
+      const emailUtil = new EmailUtil(email);
+      if (emailUtil.validate()) {
+        const email = await EmailModel.findByEmail(emailUtil.formattedEmail());
+        if (
+          email
+          && email.userId
+        ) {
+          const otpCode = await UserModel.updateOtpCode(email.userId);
+          const mail = new MailSendgrid();
+          try {
+            const inviteMessageId = await mail.sendOtp(emailUtil.formattedEmail(), otpCode, '');
+            await EmailModel.updateMessageInfoValidate(emailUtil.formattedEmail(), inviteMessageId);
+            return true;
+          } catch (err) {
+            this.logger.logError(err.message);
+          }
+        }
+      }
+
+      return false;
+    } catch (err) {
+      const message = err.message || 'Error sending Otp to email' + email;
+      this.logger.logError(message);
+      throw new Error(message);
+    }
+  }
+
   public async sendOtpToPhone(
     phone: string,
     region?: string
@@ -405,80 +446,6 @@ export class AuthService {
       const message = `Error in auth setup password: ${err.message}`;
       this.logger.logError(message);
       throw new Error(message);
-    }
-  }
-
-  public async signup(
-    payload: SignupPayloadType,
-    session: SessionData
-  ): Promise<UserProfileStateType | void> {
-    const {
-      email,
-      password,
-      passwordConfirm,
-      recaptcha,
-      redirectUrl,
-    } = payload;
-
-    if (!email) {
-      throw new Error(`Email is required.`);
-    }
-
-    if (password !== passwordConfirm) {
-      throw new Error('Passwords must match.');
-    }
-
-    if (!session) {
-      throw new Error(`Internal server error: Missing Session.`);
-    }
-
-    // Check password strength
-    const pwStrength = zxcvbn(password);
-    if (pwStrength.score < 3) {
-      const pwStrengthMsg = `${pwStrength.feedback && pwStrength.feedback.warning && pwStrength.feedback.warning || ''}`;
-      throw new Error(`Please choose a stronger password.
-${pwStrengthMsg}
-      `);
-    }
-
-    try {
-      // const recaptchVerified = await recaptchaVerify(recaptcha);
-      // if (!recaptchVerified) {
-      //   throw new Error('Recaptcha failed.');
-      // }
-
-      const emailUtil = new EmailUtil(email);
-      if (!emailUtil.validate()) {
-        if (emailUtil.isDisposableDomain()) {
-          this.logger.logWarn(`Signup - Disposable Email Domain: ${email}`);
-        }
-        this.logger.logWarn(`Signup - Invalid Email: ${email}`);
-        throw new Error(`${email} does not appear to be a valid email.`);
-      }
-
-      const isAvailable = await EmailModel.isEmailAvailable(emailUtil.formattedEmail());
-      if (!isAvailable) {
-        throw new Error(`Email is unavailable.`);
-      }
-
-      const user = await UserModel.registerAndCreateFromEmail(emailUtil.formattedEmail());
-
-      if (!user) {
-        throw Error(`Failed to create user using email ${email}`);
-      }
-
-      await user.getEmails();
-      await user.getPhones();
-      const userProfile = await getUserProfileState(user, true);
-      if (!userProfile) {
-        throw Error(`Failed to build user profile.`);
-      }
-
-      return userProfile;
-    } catch (err) {
-      this.logger.logError(`Error in signup handler: ${err.message}`);
-      throw new Error(err.message);
-      // throw new Error('Unknown error. Please contact support.');
     }
   }
 

@@ -102,7 +102,6 @@ export type OtpCodeResponseType = {
 export type UpdatePasswordPayloadType = {
   id: string;
   password: string;
-  oldPassword: string;
   otpCode: string;
 };
 

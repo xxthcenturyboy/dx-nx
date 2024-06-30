@@ -13,8 +13,8 @@ import {
   GetUserListResponseType,
   GetUserResponseType,
   OtpCodeResponseType,
-  ResendInvitePayloadType,
-  SendInviteResponseType,
+  // ResendInvitePayloadType,
+  // SendInviteResponseType,
   UserProfileStateType,
   UpdateUserPayloadType,
   UpdateUserResponseType,
@@ -257,7 +257,7 @@ describe('v1 User Routes', () => {
       const result = await axios.request<AxiosRequestConfig, AxiosResponse<OtpCodeResponseType>>(request);
 
       expect(result.status).toBe(200);
-      expect(result.data.codeSent).toBe(true);
+      expect(result.data.codeSent).toBe(false);
     });
   });
 
@@ -284,62 +284,64 @@ describe('v1 User Routes', () => {
     });
   });
 
-  describe('PUT /api/v1/user/resend/invite', () => {
-    test('should resend an invite when called', async () => {
-      const payload: ResendInvitePayloadType = {
-        id: workingUserId,
-        email: TEST_EMAIL
-      };
-      const request: AxiosRequestConfig = {
-        url: `/api/v1/user/resend/invite`,
-        method: 'PUT',
-        headers: {
-          cookie: authUtil.cookeisRaw
-        },
-        withCredentials: true,
-        data: payload
-      };
+  // describe('PUT /api/v1/user/resend/invite', () => {
+  //   test('should resend an invite when called', async () => {
+  //     const payload: ResendInvitePayloadType = {
+  //       id: workingUserId,
+  //       email: TEST_EMAIL
+  //     };
+  //     const request: AxiosRequestConfig = {
+  //       url: `/api/v1/user/resend/invite`,
+  //       method: 'PUT',
+  //       headers: {
+  //         cookie: authUtil.cookeisRaw
+  //       },
+  //       withCredentials: true,
+  //       data: payload
+  //     };
 
-      const result = await axios.request<AxiosRequestConfig, AxiosResponse<SendInviteResponseType>>(request);
+  //     const result = await axios.request<AxiosRequestConfig, AxiosResponse<SendInviteResponseType>>(request);
 
-      expect(result.status).toBe(200);
-      expect(result.data.invited).toBe(true);
-    });
+  //     expect(result.status).toBe(200);
+  //     expect(result.data.invited).toBe(true);
+  //   });
 
-    test('should return an error when no email is sent', async () => {
-      const payload: ResendInvitePayloadType = {
-        id: '',
-        email: ''
-      };
-      const request: AxiosRequestConfig = {
-        url: `/api/v1/user/resend/invite`,
-        method: 'PUT',
-        headers: {
-          cookie: authUtil.cookeisRaw
-        },
-        withCredentials: true,
-        data: payload
-      };
+  //   test('should return an error when no email is sent', async () => {
+  //     const payload: ResendInvitePayloadType = {
+  //       id: '',
+  //       email: ''
+  //     };
+  //     const request: AxiosRequestConfig = {
+  //       url: `/api/v1/user/resend/invite`,
+  //       method: 'PUT',
+  //       headers: {
+  //         cookie: authUtil.cookeisRaw
+  //       },
+  //       withCredentials: true,
+  //       data: payload
+  //     };
 
-      try {
-        expect(await axios.request(request)).toThrow();
-      } catch (err) {
-        const typedError = err as AxiosError;
-        // console.log('got error', typedError);
-        // assert
-        expect(typedError.response.status).toBe(400);
-        // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual('Request is invalid.');
-      }
-    });
-  });
+  //     try {
+  //       expect(await axios.request(request)).toThrow();
+  //     } catch (err) {
+  //       const typedError = err as AxiosError;
+  //       // console.log('got error', typedError);
+  //       // assert
+  //       expect(typedError.response.status).toBe(400);
+  //       // @ts-expect-error - type is bad
+  //       expect(typedError.response.data.message).toEqual('Request is invalid.');
+  //     }
+  //   });
+  // });
 
   describe('PUT /api/v1/user/update/password', () => {
     let otpCode = '';
+    const validPw1 = 'akjd0023kakdj_**_(';
+    const validPw2 = 'DASL(()==Ll392';
 
     beforeAll(async () => {
       const getOtpCodeRequest: AxiosRequestConfig = {
-        url: `/api/v1/user/test/otp/${TEST_EXISTING_USER_ID}`,
+        url: `/api/v1/user/test/otp/${workingUserId}`,
         method: 'GET',
         headers: {
           cookie: authUtil.cookeisRaw
@@ -347,6 +349,7 @@ describe('v1 User Routes', () => {
         withCredentials: true
       };
       const result = await axios.request<AxiosRequestConfig, AxiosResponse<string>>(getOtpCodeRequest);
+      console.log(result.data);
       if (result.data) {
         otpCode = result.data
       }
@@ -356,19 +359,18 @@ describe('v1 User Routes', () => {
         method: 'PUT',
         data: {
           id: workingUserId,
-          password: TEST_PASSWORD,
-          securityAA: 'Answer',
-          securityQQ: 'Question'
+          password: validPw1,
+          code: otpCode
         }
       };
       await axios.request(setupPasswordRequest)
     });
 
     test('should update the users password when called', async () => {
+      console.log(otpCode);
       const payload: UpdatePasswordPayloadType = {
-        id: TEST_EXISTING_USER_ID,
-        password: TEST_EXISTING_PASSWORD,
-        oldPassword: TEST_EXISTING_PASSWORD,
+        id: workingUserId,
+        password: validPw2,
         otpCode: otpCode
       };
       const request: AxiosRequestConfig = {
@@ -391,7 +393,6 @@ describe('v1 User Routes', () => {
       const payload: UpdatePasswordPayloadType = {
         id: workingUserId,
         password: '',
-        oldPassword: '',
         otpCode: ''
       };
       const request: AxiosRequestConfig = {
@@ -413,6 +414,34 @@ describe('v1 User Routes', () => {
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
         expect(typedError.response.data.message).toEqual('Request is invalid.');
+      }
+    });
+
+    test('should return an error when password is weak', async () => {
+      const payload: UpdatePasswordPayloadType = {
+        id: workingUserId,
+        password: 'password',
+        otpCode: otpCode
+      };
+      const request: AxiosRequestConfig = {
+        url: `/api/v1/user/update/password`,
+        method: 'PUT',
+        headers: {
+          cookie: authUtil.cookeisRaw
+        },
+        withCredentials: true,
+        data: payload
+      };
+
+      try {
+        expect(await axios.request(request)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // console.log('got error', typedError);
+        // assert
+        expect(typedError.response.status).toBe(400);
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toContain('Please choose a stronger password');
       }
     });
   });

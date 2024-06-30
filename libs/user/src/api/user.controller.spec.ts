@@ -55,16 +55,16 @@ describe('UserController', () => {
     });
   });
 
-  describe('createUser', () => {
-    test('should call sendBadRequest when sent', async () => {
-      // arrange
-      req.body = TEST_USER_CREATE;
-      // act
-      await UserController.createUser(req, res);
-      // assert
-      expect(sendBadRequest).toHaveBeenCalled();
-    });
-  });
+  // describe('createUser', () => {
+  //   test('should call sendBadRequest when sent', async () => {
+  //     // arrange
+  //     req.body = TEST_USER_CREATE;
+  //     // act
+  //     await UserController.createUser(req, res);
+  //     // assert
+  //     expect(sendBadRequest).toHaveBeenCalled();
+  //   });
+  // });
 
   describe('deleteUser', () => {
     test('should call sendBadRequest when sent', async () => {

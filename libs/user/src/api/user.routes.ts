@@ -19,11 +19,11 @@ export class UserRoutes {
     router.get('/check/availabilty', UserController.checkUsernameAvailability);
     router.get('/test/otp/:userId', hasSuperAdminRole, UserController.getOtpTest);
 
-    router.post('/', hasAdminRole, UserController.createUser);
+    router.post('/', hasSuperAdminRole, UserController.createUser);
     router.post('/send-otp-code', UserController.sendOtpCode);
 
     router.put('/:id', hasAdminRole, UserController.updateUser);
-    router.put('/resend/invite', hasAdminRole, UserController.resendInvite);
+    // router.put('/resend/invite', hasAdminRole, UserController.resendInvite);
     router.put('/update/password', UserController.updatePassword);
 
     router.delete('/:id', hasAdminRole, UserController.deleteUser);

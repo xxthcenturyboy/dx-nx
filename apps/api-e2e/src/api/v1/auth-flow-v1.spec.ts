@@ -161,10 +161,10 @@ describe('v1 Auth Flow', () => {
     });
   });
 
-  describe('Send OTP to Phone for confirmation prior to creating account or logging in.', () => {
-    test('should return fals when sent with an invalid phone', async () => {
+  describe('Send OTP to Phone/Email for confirmation prior to creating account or logging in.', () => {
+    test('should return false when sent with an invalid phone', async () => {
       const request: AxiosRequestConfig = {
-        url: '/api/v1/auth/otp-code/send',
+        url: '/api/v1/auth/otp-code/send/phone',
         method: 'POST',
         data: {
           phone: TEST_PHONE
@@ -179,7 +179,7 @@ describe('v1 Auth Flow', () => {
 
     test('should return true when sent with valid phone', async () => {
       const request: AxiosRequestConfig = {
-        url: '/api/v1/auth/otp-code/send',
+        url: '/api/v1/auth/otp-code/send/phone',
         method: 'POST',
         data: {
           phone: TEST_PHONE_VALID
@@ -190,6 +190,36 @@ describe('v1 Auth Flow', () => {
 
       expect(response.status).toEqual(200);
       expect(response.data).toBe(true);
+    });
+
+    test('should return false when sent with an invalid email', async () => {
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/auth/otp-code/send/email',
+        method: 'POST',
+        data: {
+          email: TEST_EMAIL
+        }
+      };
+
+      const response = await axios.request(request);
+
+      expect(response.status).toEqual(200);
+      expect(response.data).toBe(false);
+    });
+
+    test('should return true when sent with valid email', async () => {
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/auth/otp-code/send/email',
+        method: 'POST',
+        data: {
+          email: TEST_EXISTING_EMAIL
+        }
+      };
+
+      const response = await axios.request(request);
+
+      expect(response.status).toEqual(200);
+      expect(response.data).toBe(false);
     });
   });
 
@@ -500,6 +530,20 @@ describe('v1 Auth Flow', () => {
 
       expect(response.status).toEqual(200);
       expect(response.data.phones).toHaveLength(1);
+    });
+  });
+
+  describe('Logout', () => {
+    test('should return true on successful logout', async () => {
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/auth/logout',
+        method: 'POST'
+      };
+
+      const response = await axios.request<{ loggedOut: boolean }>(request);
+
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual({ loggedOut: true });
     });
   });
 });

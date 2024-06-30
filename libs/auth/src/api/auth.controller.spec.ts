@@ -7,7 +7,6 @@ import { Response } from 'jest-express/lib/response';
 
 import { AuthController } from './auth.controller';
 import {
-  GetByTokenQueryType,
   LoginPaylodType,
   SetupPasswordsPaylodType,
   SignupPayloadType,
@@ -21,7 +20,9 @@ import {
 import { ApiLoggingClass } from '@dx/logger';
 import {
   TEST_EMAIL,
-  TEST_PASSWORD
+  TEST_PASSWORD,
+  TEST_PHONE,
+  TEST_PHONE_VALID
 } from '@dx/config';
 
 jest.mock('./auth.service.ts');
@@ -81,7 +82,7 @@ describe('AuthController', () => {
     test('should sendBadRequest when invoked', async () => {
       // arrange
       const body: LoginPaylodType = {
-        email: TEST_EMAIL,
+        value: TEST_EMAIL,
         password: TEST_PASSWORD
       };
       req.body = body;
@@ -152,10 +153,35 @@ describe('AuthController', () => {
     });
   });
 
+  describe('sendOtpToEmail', () => {
+    test('should sendOk when invoked', async () => {
+      // arrange
+      req.body = { email: TEST_EMAIL };
+      // act
+      await AuthController.sendOtpToEmail(req, res);
+      // assert
+      expect(sendBadRequest).toHaveBeenCalled();
+    });
+  });
+
+  describe('setupPasswords', () => {
+    test('should sendOk when invoked', async () => {
+      // arrange
+      req.body = {
+        phone: TEST_PHONE,
+        region: 'US'
+      };
+      // act
+      await AuthController.sendOtpToPhone(req, res);
+      // assert
+      expect(sendBadRequest).toHaveBeenCalled();
+    });
+  });
+
   describe('validateEmail', () => {
     test('should sendOk when invoked', async () => {
       // arrange
-      const query: GetByTokenQueryType = {
+      const query = {
         token: '413c78fb890955a86d3971828dd05a9b2d844e44d8a30d406f80bf6e79612bb97e8b3b5834c8dbebdf5c4dadc767a579'
       };
       req.query = query;

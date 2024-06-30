@@ -24,8 +24,45 @@ import {
 } from '@dx/config';
 
 describe('v1 Auth Routes', () => {
-  let id: string;
+  let emailAccountId: string;
+  let phoneAccountId: string;
   let cookies: string[];
+
+  afterAll(async () => {
+    if (
+      emailAccountId
+      || phoneAccountId
+    ) {
+      const authUtil = new AuthUtil();
+      await authUtil.login();
+      cookies = authUtil.cookeisRaw;
+
+      if (emailAccountId) {
+        const removeEmailAccountRequest: AxiosRequestConfig = {
+          url: `/api/v1/user/test/${emailAccountId}`,
+          method: 'DELETE',
+          headers: {
+            cookie: cookies
+          },
+          withCredentials: true
+        };
+        await axios.request<AxiosRequestConfig, AxiosResponse<void>>(removeEmailAccountRequest);
+      }
+
+      if (phoneAccountId) {
+        const removePhoneAccountRequest: AxiosRequestConfig = {
+          url: `/api/v1/user/test/${phoneAccountId}`,
+          method: 'DELETE',
+          headers: {
+            cookie: cookies
+          },
+          withCredentials: true
+        };
+        await axios.request<AxiosRequestConfig, AxiosResponse<void>>(removePhoneAccountRequest);
+      }
+
+    }
+  });
 
   describe('GET /api/v1/auth/lookup', () => {
     test('should return available when queried with a non-existent phone', async () => {
@@ -125,28 +162,32 @@ describe('v1 Auth Routes', () => {
     });
   });
 
-  describe('POST /api/v1/auth/account', () => {
-    afterEach(async () => {
-      if (id) {
-        if (!cookies) {
-          const authUtil = new AuthUtil();
-          await authUtil.login();
-          cookies = authUtil.cookeisRaw;
-        }
+  describe('GET /api/v1/auth/:token', () => {
+    test('should return an error when sent with an invalid email.', async () => {
+      // arrange
+      const payload: AccountCreationPayloadType = {
+        value: 'not-a-valid-email'
+      };
 
-        const request: AxiosRequestConfig = {
-          url: `/api/v1/user/test/${id}`,
-          method: 'DELETE',
-          headers: {
-            cookie: cookies
-          },
-          withCredentials: true
-        };
-
-        await axios.request<AxiosRequestConfig, AxiosResponse<void>>(request);
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/auth/validate/email/413c78fb890955a86d3971828dd05a9b2d844e44d8a30d406f80bf6e79612bb97e8b3b5834c8dbebdf5c4dadc767a579',
+        method: 'GET'
+      };
+      // act
+      try {
+        expect(await axios.request(request)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // console.log('got error', typedError);
+        // assert
+        expect(typedError.response.status).toBe(400);
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toEqual('Token is invalid');
       }
     });
+  });
 
+  describe('POST /api/v1/auth/account', () => {
     test('should return an error when sent with no value.', async () => {
       // arrange
       const payload: AccountCreationPayloadType = {
@@ -222,6 +263,7 @@ describe('v1 Auth Routes', () => {
     test('should return an error when sent with an invalid phone.', async () => {
       // arrange
       const payload: AccountCreationPayloadType = {
+        code: 'OU812',
         value: TEST_PHONE
       };
 
@@ -246,6 +288,7 @@ describe('v1 Auth Routes', () => {
     test('should return an error when sent with an existing phone.', async () => {
       // arrange
       const payload: AccountCreationPayloadType = {
+        code: 'OU812',
         value: TEST_EXISTING_PHONE
       };
 
@@ -278,7 +321,7 @@ describe('v1 Auth Routes', () => {
       };
 
       const response = await axios.request<UserProfileStateType>(request);
-      id = response.data.id;
+      emailAccountId = response.data.id;
 
       expect(response.status).toEqual(200);
       expect(response.data.emails).toHaveLength(1);
@@ -286,6 +329,7 @@ describe('v1 Auth Routes', () => {
 
     test('should return user profile when successfully create account with phone', async () => {
       const payload: AccountCreationPayloadType = {
+        code: 'OU812',
         value: TEST_PHONE_VALID
       };
       const request: AxiosRequestConfig = {
@@ -295,7 +339,7 @@ describe('v1 Auth Routes', () => {
       };
 
       const response = await axios.request<UserProfileStateType>(request);
-      id = response.data.id;
+      phoneAccountId = response.data.id;
 
       expect(response.status).toEqual(200);
       expect(response.data.phones).toHaveLength(1);
@@ -303,69 +347,128 @@ describe('v1 Auth Routes', () => {
   });
 
   describe('POST /api/v1/auth/login', () => {
-    test('should return an error when email does not exist', async () => {
-      const paylod: LoginPaylodType = {
-        email: 'not-in-this-system@useless.com',
-        password: TEST_PASSWORD
+    test('should return an error when sent with an email that does not have an account.', async () => {
+      // arrange
+      const payload: LoginPaylodType = {
+        value: 'not-in-this-system@useless.com'
       };
 
       const request: AxiosRequestConfig = {
         url: '/api/v1/auth/login',
         method: 'POST',
-        data: paylod
+        data: payload
       };
-
+      // act
       try {
         expect(await axios.request(request)).toThrow();
       } catch (err) {
         const typedError = err as AxiosError;
+        // console.log('got error', typedError);
         // assert
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual('This is not a valid username.');
+        expect(typedError.response.data.message).toEqual('Could not log you in.');
       }
     });
 
-    test('should return an error when password is incorrect', async () => {
-      const paylod: LoginPaylodType = {
-        email: TEST_EXISTING_EMAIL,
-        password: TEST_PASSWORD
+    test('should return an error when sent with a phone that does not have an account.', async () => {
+      // arrange
+      const payload: LoginPaylodType = {
+        code: 'OU812',
+        value: '8584846802'
       };
 
       const request: AxiosRequestConfig = {
         url: '/api/v1/auth/login',
         method: 'POST',
-        data: paylod
+        data: payload
       };
-
+      // act
       try {
         expect(await axios.request(request)).toThrow();
       } catch (err) {
         const typedError = err as AxiosError;
+        // console.log('got error', typedError);
         // assert
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual('Incorrect username or password.');
+        expect(typedError.response.data.message).toEqual('Could not log you in.');
       }
     });
 
-    test('should return user profile when login is successful', async () => {
-      const paylod: LoginPaylodType = {
-        email: TEST_EXISTING_EMAIL,
-        password: 'advancedbasics1'
+    test('should return an error when password is incorrect.', async () => {
+      // arrange
+      const payload: LoginPaylodType = {
+        value: TEST_EXISTING_EMAIL,
+        password: 'bad-password'
       };
 
       const request: AxiosRequestConfig = {
         url: '/api/v1/auth/login',
         method: 'POST',
-        data: paylod
+        data: payload
+      };
+      // act
+      try {
+        expect(await axios.request(request)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // console.log('got error', typedError);
+        // assert
+        expect(typedError.response.status).toBe(400);
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toEqual('Could not log you in.');
+      }
+    });
+
+    test('should return user profile when successfully logged in with email, passwordless login', async () => {
+      const payload: LoginPaylodType = {
+        value: TEST_EXISTING_EMAIL
+      };
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/auth/login',
+        method: 'POST',
+        data: payload
       };
 
       const response = await axios.request<UserProfileStateType>(request);
 
       expect(response.status).toEqual(200);
-      expect(response.data).toBeDefined();
-      expect(response.data.id).toEqual(TEST_EXISTING_USER_ID);
+      expect(response.data.emails).toHaveLength(1);
+    });
+
+    test('should return user profile when successfully logged in with email / password', async () => {
+      const payload: LoginPaylodType = {
+        value: TEST_EXISTING_EMAIL,
+        password: 'advancedbasics1'
+      };
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/auth/login',
+        method: 'POST',
+        data: payload
+      };
+
+      const response = await axios.request<UserProfileStateType>(request);
+
+      expect(response.status).toEqual(200);
+      expect(response.data.emails).toHaveLength(1);
+    });
+
+    test('should return user profile when successfully logged in with phone', async () => {
+      const payload: LoginPaylodType = {
+        code: 'OU812',
+        value: TEST_EXISTING_PHONE
+      };
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/auth/login',
+        method: 'POST',
+        data: payload
+      };
+
+      const response = await axios.request<UserProfileStateType>(request);
+
+      expect(response.status).toEqual(200);
+      expect(response.data.phones).toHaveLength(1);
     });
   });
 
@@ -383,10 +486,42 @@ describe('v1 Auth Routes', () => {
     });
   });
 
-  describe('POST /api/v1/auth/otp-code/send', () => {
+  describe('POST /api/v1/auth/otp-code/send/email', () => {
+    test('should return fals when sent with an invalid email', async () => {
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/auth/otp-code/send/email',
+        method: 'POST',
+        data: {
+          email: TEST_EMAIL
+        }
+      };
+
+      const response = await axios.request<boolean>(request);
+
+      expect(response.status).toEqual(200);
+      expect(response.data).toBe(false);
+    });
+
+    test('should return true when sent with valid email', async () => {
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/auth/otp-code/send/email',
+        method: 'POST',
+        data: {
+          email: TEST_EXISTING_EMAIL
+        }
+      };
+
+      const response = await axios.request<boolean>(request);
+
+      expect(response.status).toEqual(200);
+      expect(response.data).toBe(false);
+    });
+  });
+
+  describe('POST /api/v1/auth/otp-code/send/phone', () => {
     test('should return fals when sent with an invalid phone', async () => {
       const request: AxiosRequestConfig = {
-        url: '/api/v1/auth/otp-code/send',
+        url: '/api/v1/auth/otp-code/send/phone',
         method: 'POST',
         data: {
           phone: TEST_PHONE
@@ -401,7 +536,7 @@ describe('v1 Auth Routes', () => {
 
     test('should return true when sent with valid phone', async () => {
       const request: AxiosRequestConfig = {
-        url: '/api/v1/auth/otp-code/send',
+        url: '/api/v1/auth/otp-code/send/phone',
         method: 'POST',
         data: {
           phone: TEST_PHONE_VALID

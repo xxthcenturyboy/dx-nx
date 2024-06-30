@@ -19,7 +19,7 @@ export async function getUserProfileState(
       emails: await user.getEmailData(),
       firstName: user.firstName,
       fullName: user.fullName,
-      hasSecuredAccount: (!!user.hashword && mailVerified) || phoneVerified,
+      hasSecuredAccount: await user.hasSecuredAccount(),
       hasVerifiedEmail: mailVerified,
       hasVerifiedPhone: phoneVerified,
       isAdmin: user.isAdmin,

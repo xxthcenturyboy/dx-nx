@@ -244,46 +244,46 @@ describe('UserService', () => {
       });
     });
 
-    describe('resendInvite', () => {
-      test('should throw when sent without payload.', async () => {
-        // arrange
-        // act
-        // assert
-        try  {
-          expect(await service.resendInvite({ id: '', email: '' })).toThrow();
-        } catch (err) {
-          expect(err.message).toEqual('Request is invalid.');
-        }
-      });
+    // describe('resendInvite', () => {
+    //   test('should throw when sent without payload.', async () => {
+    //     // arrange
+    //     // act
+    //     // assert
+    //     try  {
+    //       expect(await service.resendInvite({ id: '', email: '' })).toThrow();
+    //     } catch (err) {
+    //       expect(err.message).toEqual('Request is invalid.');
+    //     }
+    //   });
 
-      test('should throw when email is invalid', async () => {
-        // arrange
-        const payload: ResendInvitePayloadType = {
-          id: idToUpdate,
-          email: 'not-valid-email'
-        };
-        // act
-        // assert
-        try  {
-          expect(await service.resendInvite(payload)).toThrow();
-        } catch (err) {
-          expect(err.message).toEqual('The email you provided is not valid.');
-        }
-      });
+    //   test('should throw when email is invalid', async () => {
+    //     // arrange
+    //     const payload: ResendInvitePayloadType = {
+    //       id: idToUpdate,
+    //       email: 'not-valid-email'
+    //     };
+    //     // act
+    //     // assert
+    //     try  {
+    //       expect(await service.resendInvite(payload)).toThrow();
+    //     } catch (err) {
+    //       expect(err.message).toEqual('The email you provided is not valid.');
+    //     }
+    //   });
 
-      test('should send the invite when sent', async () => {
-        // arrange
-        const payload: ResendInvitePayloadType = {
-          id: idToUpdate,
-          email: TEST_EMAIL
-        };
-        // act
-        const result = await service.resendInvite(payload);
-        // assert
-        expect(result).toBeDefined();
-        expect(result.invited).toBe(true);
-      });
-    });
+    //   test('should send the invite when sent', async () => {
+    //     // arrange
+    //     const payload: ResendInvitePayloadType = {
+    //       id: idToUpdate,
+    //       email: TEST_EMAIL
+    //     };
+    //     // act
+    //     const result = await service.resendInvite(payload);
+    //     // assert
+    //     expect(result).toBeDefined();
+    //     expect(result.invited).toBe(true);
+    //   });
+    // });
 
     describe('sendOtpCode', () => {
       test('should throw when sent without id.', async () => {
@@ -344,7 +344,6 @@ describe('UserService', () => {
         const payload: UpdatePasswordPayloadType = {
           id: '',
           password: '',
-          oldPassword: '',
           otpCode: ''
         };
         // act
@@ -356,6 +355,22 @@ describe('UserService', () => {
         }
       });
 
+      test('should throw when sent a weak password.', async () => {
+        // arrange
+        const payload: UpdatePasswordPayloadType = {
+          id: idToUpdate,
+          password: 'password',
+          otpCode: 'CODE11'
+        };
+        // act
+        // assert
+        try  {
+          expect(await service.updatePassword(payload)).toThrow();
+        } catch (err) {
+          expect(err.message).toContain('Please choose a stronger password.');
+        }
+      });
+
       test('should update Password when sent', async () => {
         // arrange
         await EmailModel.validateEmail(TEST_EMAIL);
@@ -364,8 +379,7 @@ describe('UserService', () => {
 
         const payload: UpdatePasswordPayloadType = {
           id: idToUpdate,
-          password: 'new-password',
-          oldPassword: TEST_PASSWORD,
+          password: 'JS(*#Jlal__lld9iqe',
           otpCode: user.otpCode
         };
         // act
@@ -421,7 +435,7 @@ describe('UserService', () => {
       expect(service.getProfile).toBeDefined();
       expect(service.getUser).toBeDefined();
       expect(service.getUserList).toBeDefined();
-      expect(service.resendInvite).toBeDefined();
+      // expect(service.resendInvite).toBeDefined();
       expect(service.sendOtpCode).toBeDefined();
       expect(service.updatePassword).toBeDefined();
       expect(service.updateUser).toBeDefined();

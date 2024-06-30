@@ -314,6 +314,20 @@ export class UserModel extends Model<UserModel> {
     return this.roles.indexOf(role) > -1;
   }
 
+  async hasSecuredAccount(): Promise<boolean> {
+    const verifiedEmail = await this.getVerifiedEmail();
+    const verifiedPhone = await this.getVerifiedPhone();
+    if (this.isSuperAdmin) {
+      return true;
+    }
+
+    return !!(
+      verifiedEmail
+      && this.hashword
+    )
+    || !!verifiedPhone;
+  }
+
   static async registerAndCreateFromEmail (email: string): Promise<UserModelType> {
     const token = dxEncryptionGenerateRandomValue();
     const tokenExp = DxDateUtilClass.getTimestamp(2, 'days', 'ADD');
@@ -449,11 +463,13 @@ export class UserModel extends Model<UserModel> {
     }
 
     try {
+      const otpCode = dxEncryptionGenerateRandomValue(3).toUpperCase();
       const token = dxEncryptionGenerateRandomValue();
       const tokenExp = DxDateUtilClass.getTimestamp(2, 'days', 'ADD');
       const user = await UserModel.create({
         firstName,
         lastName,
+        otpCode,
         roles,
         token,
         tokenExp,
@@ -590,18 +606,25 @@ export class UserModel extends Model<UserModel> {
     }, { where: { id, deletedAt: null } });
   }
 
-  static async updatePassword (id: string, password: string, oldPassword: string, otp: string): Promise<boolean> {
-    if (!password || !id || !oldPassword) {
+  static async updatePassword (
+    id: string,
+    password: string,
+    otp: string
+  ): Promise<boolean> {
+    if (
+      !password
+      || !id
+    ) {
       throw new Error(`Bad data provided.`);
     }
 
-    const user = await UserModel.findByPk(id) as UserModelType;
-    const oldPasswordMatch = await dxEncryptionVerifyHash(user.hashword, oldPassword);
+    const user = await UserModel.findByPk(id);
+    // const oldPasswordMatch = await dxEncryptionVerifyHash(user.hashword, oldPassword);
     const otpMatch = otp === user.otpCode;
 
-    if (!oldPasswordMatch) {
-      throw new Error(`Existing password does not match.`);
-    }
+    // if (!oldPasswordMatch) {
+    //   throw new Error(`Existing password does not match.`);
+    // }
 
     if (!otpMatch) {
       throw new Error(`Authorization code does not match.`);

@@ -14,7 +14,8 @@ export class AuthRoutes {
     router.post('/otp-lockout', AuthController.lockoutFromOtpEmail);
     router.post('/refresh-token', AuthController.refreshTokens);
     router.post('/request-reset', AuthController.requestReset);
-    router.post('/otp-code/send', AuthController.sendOtpToPhone);
+    router.post('/otp-code/send/email', AuthController.sendOtpToEmail);
+    router.post('/otp-code/send/phone', AuthController.sendOtpToPhone);
 
     router.put('/setup-password', AuthController.setupPasswords);
 

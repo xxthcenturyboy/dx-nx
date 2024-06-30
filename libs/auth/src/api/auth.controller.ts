@@ -126,6 +126,18 @@ export const AuthController = {
     }
   },
 
+  sendOtpToEmail: async function(req: Request, res: Response) {
+    try {
+      const { email } = req.body as { email: string };
+      const service = new AuthService();
+      const result = await service.sendOtpToEmail(email) as boolean;
+
+      sendOK(req, res, result);
+    } catch (err) {
+      sendBadRequest(req, res, err.message);
+    }
+  },
+
   sendOtpToPhone: async function(req: Request, res: Response) {
     try {
       const { phone, region } = req.body as { phone: string, region?: string };

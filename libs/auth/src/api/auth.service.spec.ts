@@ -477,6 +477,39 @@ describe('AuthService', () => {
       });
     });
 
+    describe('sendOtpToEmail', () => {
+      it('should exist', () => {
+        expect(authService.sendOtpToEmail).toBeDefined();
+      });
+
+      test('should throw when email does not exist', async () => {
+        // arrange
+        // act
+        try {
+          expect(await authService.sendOtpToEmail('')).toThrow();
+        } catch (err) {
+          // assert
+          expect(err.message).toEqual('No email sent.');
+        }
+      });
+
+      test('should return false when email is invalid', async () => {
+        // arrange
+        // act
+        const result = await authService.sendOtpToEmail('invalid-email');
+        // assert
+        expect(result).toBe(false);
+      });
+
+      test('should return true when email is valid', async () => {
+        // arrange
+        // act
+        const result = await authService.sendOtpToEmail(TEST_EXISTING_EMAIL);
+        // assert
+        expect(result).toBe(true);
+      });
+    });
+
     describe('sendOtpToPhone', () => {
       it('should exist', () => {
         expect(authService.sendOtpToPhone).toBeDefined();

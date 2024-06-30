@@ -124,19 +124,19 @@ export const UserController = {
     }
   },
 
-  resendInvite: async function(req: Request, res: Response) {
-    try {
-      const service = new UserService();
-      const result = await service.resendInvite(req.body as ResendInvitePayloadType);
-      if (result) {
-        return sendOK(req, res, result);
-      }
+  // resendInvite: async function(req: Request, res: Response) {
+  //   try {
+  //     const service = new UserService();
+  //     const result = await service.resendInvite(req.body as ResendInvitePayloadType);
+  //     if (result) {
+  //       return sendOK(req, res, result);
+  //     }
 
-      sendBadRequest(req, res, `Invite could not be sent.`);
-    } catch (err) {
-      sendBadRequest(req, res, err.message);
-    }
-  },
+  //     sendBadRequest(req, res, `Invite could not be sent.`);
+  //   } catch (err) {
+  //     sendBadRequest(req, res, err.message);
+  //   }
+  // },
 
   sendOtpCode: async function(req: Request, res: Response) {
     try {

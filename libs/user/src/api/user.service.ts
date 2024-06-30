@@ -1,3 +1,4 @@
+import zxcvbn from 'zxcvbn';
 import { Op } from 'sequelize';
 import {
   FindOptions,
@@ -171,13 +172,21 @@ export class UserService {
       const inviteUrl = `/auth/z?route=invite&token=${user.token}`;
       const shortLink = await ShortLinkModel.generateShortlink(inviteUrl);
 
-      const inviteMessageId = await mail.sendInvite(emailUtil.formattedEmail(), shortLink);
+      try {
+        const inviteMessageId = await mail.sendInvite(emailUtil.formattedEmail(), shortLink);
+        await EmailModel.updateMessageInfoValidate(emailUtil.formattedEmail(), inviteMessageId);
+        return {
+          id: user.id,
+          invited: !!inviteMessageId
+        };
+      } catch (err) {
+        this.logger.logError(err.message);
+      }
 
-      await EmailModel.updateMessageInfoValidate(emailUtil.formattedEmail(), inviteMessageId);
 
       return {
         id: user.id,
-        invited: !!inviteMessageId
+        invited: false
       };
     } catch (err) {
       const message = err.message || 'Could not create user.';
@@ -346,52 +355,52 @@ export class UserService {
     return result;
   }
 
-  public async resendInvite(payload: ResendInvitePayloadType): Promise<SendInviteResponseType> {
-    const {
-      id,
-      email
-    } = payload;
-    if (
-      !id
-      || !email
-    ) {
-      throw new Error('Request is invalid.');
-    }
+  // public async resendInvite(payload: ResendInvitePayloadType): Promise<SendInviteResponseType> {
+  //   const {
+  //     id,
+  //     email
+  //   } = payload;
+  //   if (
+  //     !id
+  //     || !email
+  //   ) {
+  //     throw new Error('Request is invalid.');
+  //   }
 
-    const emailUtil = new EmailUtil(email);
+  //   const emailUtil = new EmailUtil(email);
 
-    try {
-      if (!emailUtil.validate()) {
-        if (emailUtil.isDisposableDomain()) {
-          throw new Error('The email you provided is not valid. Please note that we do not allow disposable emails or emails that do not exist, so make sure to use a real email address.');
-        }
+  //   try {
+  //     if (!emailUtil.validate()) {
+  //       if (emailUtil.isDisposableDomain()) {
+  //         throw new Error('The email you provided is not valid. Please note that we do not allow disposable emails or emails that do not exist, so make sure to use a real email address.');
+  //       }
 
-        throw new Error('The email you provided is not valid.');
-      }
+  //       throw new Error('The email you provided is not valid.');
+  //     }
 
-      const token = await UserModel.updateToken(id);
+  //     const token = await UserModel.updateToken(id);
 
-      if (!token) {
-        throw new Error('No token created.');
-      }
+  //     if (!token) {
+  //       throw new Error('No token created.');
+  //     }
 
-      const mail = new MailSendgrid();
-      const inviteUrl = `/auth/z?route=invite&token=${token}`;
-      const shortLink = await ShortLinkModel.generateShortlink(inviteUrl);
+  //     const mail = new MailSendgrid();
+  //     const inviteUrl = `/auth/z?route=invite&token=${token}`;
+  //     const shortLink = await ShortLinkModel.generateShortlink(inviteUrl);
 
-      const inviteMessageId = await mail.sendInvite(emailUtil.formattedEmail(), shortLink);
+  //     const inviteMessageId = await mail.sendInvite(emailUtil.formattedEmail(), shortLink);
 
-      await EmailModel.updateMessageInfoValidate(emailUtil.formattedEmail(), inviteMessageId);
+  //     await EmailModel.updateMessageInfoValidate(emailUtil.formattedEmail(), inviteMessageId);
 
-      return {
-        invited: !!inviteMessageId
-      };
-    } catch (err) {
-      const message = err.message || 'Could not send invite.';
-      this.logger.logError(message);
-      throw new Error(message);
-    }
-  }
+  //     return {
+  //       invited: !!inviteMessageId
+  //     };
+  //   } catch (err) {
+  //     const message = err.message || 'Could not send invite.';
+  //     this.logger.logError(message);
+  //     throw new Error(message);
+  //   }
+  // }
 
   public async sendOtpCode(userId: string): Promise<OtpCodeResponseType> {
     if (!userId) {
@@ -420,12 +429,18 @@ export class UserService {
       const inviteUrl = `/auth/z?route=otp-lock&id=${userId}`;
       const shortLink = await ShortLinkModel.generateShortlink(inviteUrl);
 
-      const otpMessageId = await mail.sendOtp(email, otpCode, shortLink);
-
-      await EmailModel.updateMessageInfoValidate(email, otpMessageId);
+      try {
+        const otpMessageId = await mail.sendOtp(email, otpCode, shortLink);
+        await EmailModel.updateMessageInfoValidate(email, otpMessageId);
+        return {
+          codeSent: !!otpMessageId
+        };
+      } catch (err) {
+        this.logger.logError(err.message);
+      }
 
       return {
-        codeSent: !!otpMessageId
+        codeSent: false
       };
     } catch (err) {
       const message = err.message || 'Could not send code.';
@@ -438,21 +453,28 @@ export class UserService {
     const {
       id,
       password,
-      oldPassword,
       otpCode
     } = payload;
 
     if (
       !id
       || !password
-      || !oldPassword
       || !otpCode
     ) {
       throw new Error('Request is invalid.');
     }
 
+    // Check password strength
+    const pwStrength = zxcvbn(password);
+    if (pwStrength.score < 3) {
+      const pwStrengthMsg = `${pwStrength.feedback && pwStrength.feedback.warning && pwStrength.feedback.warning || ''}`;
+      throw new Error(`Please choose a stronger password.
+${pwStrengthMsg}
+      `);
+    }
+
     try {
-      const didUpdate = await UserModel.updatePassword(id, password, oldPassword, otpCode);
+      const didUpdate = await UserModel.updatePassword(id, password, otpCode);
       const result = { success: didUpdate };
 
       return result;
