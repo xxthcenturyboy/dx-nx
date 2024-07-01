@@ -1,3 +1,5 @@
+import { ApiLoggingClass } from "@dx/logger";
+
 export function parseJson<TData>(stringToParseToJson: string): TData | null {
   if (
     stringToParseToJson
@@ -6,8 +8,7 @@ export function parseJson<TData>(stringToParseToJson: string): TData | null {
     try {
       return JSON.parse(stringToParseToJson) as TData;
     } catch (err) {
-      console.error(err);
-      return null;
+      ApiLoggingClass.instance.logError(err.message);
     }
   }
 

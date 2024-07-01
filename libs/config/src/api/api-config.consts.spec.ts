@@ -4,6 +4,7 @@ import {
   APP_PREFIX,
   CRYPT_KEY,
   JWT_SECRET,
+  OTP_SALT,
   POSTGRES_URI,
   SENDGRID_API_KEY,
   SENDGRID_URL
@@ -51,6 +52,15 @@ describe('JWT_SECRET', () => {
   // assert
   it('should exist when imported', () => {
     expect(JWT_SECRET).toBeDefined();
+  });
+});
+
+describe('OTP_SALT', () => {
+  // arrange
+  // act
+  // assert
+  it('should exist when imported', () => {
+    expect(OTP_SALT).toBeDefined();
   });
 });
 

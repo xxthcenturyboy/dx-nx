@@ -29,6 +29,9 @@ export { getTimeFromUuid } from './lib/uuid.util';
 export { JSONObject } from './lib/types';
 
 export {
+  dxEncryptionGetSaltFromHash,
+  dxEncryptionGenerateHashWithSalt,
+  dxEncryptionGgenerateOTP,
   dxEncryptionGenerateRandomValue,
   dxEncryptionHashAnyToString,
   dxEncryptionHashString,

@@ -102,6 +102,19 @@ export class RedisService {
     }
   }
 
+  public async getCacheItemSimple(key: string) {
+    if (!key) {
+      return null;
+    }
+
+    try {
+      return await this.cacheHandle.get(key);
+    } catch (error) {
+      this.logger.logError((error as Error).message, error);
+      return null;
+    }
+  }
+
   public async getCacheItem<TData>(key: string) {
     if (!key) {
       return null;
@@ -109,6 +122,7 @@ export class RedisService {
 
     try {
       const data = await this.cacheHandle.get(key);
+      return data as TData;
       if (data) {
         return parseJson<TData>(data);
       }

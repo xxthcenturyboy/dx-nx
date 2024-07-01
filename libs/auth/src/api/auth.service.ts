@@ -1,4 +1,3 @@
-import zxcvbn from 'zxcvbn';
 import { Op } from 'sequelize';
 
 import {
@@ -18,7 +17,6 @@ import {
   OtpLockoutResponseType,
   SessionData,
   SetupPasswordsPaylodType,
-  SignupPayloadType,
   UserLookupQueryType,
   UserLookupResponseType
 } from '../model/auth.types';
@@ -34,28 +32,15 @@ import { MailSendgrid } from '@dx/mail';
 import { ShortLinkModel } from '@dx/shortlink';
 import {
   EmailUtil,
-  PhoneUtil,
-  ProfanityFilter
+  PhoneUtil
 } from '@dx/utils';
+import { OtpCodeCache } from '../model/otp-code.redis-cache';
 
 export class AuthService {
   logger: ApiLoggingClassType;
 
   constructor() {
     this.logger = ApiLoggingClass.instance;
-  }
-
-  // TODO: replace with real vendor service
-  private async validateOtpTemp(
-    code: string,
-    phone: string,
-    countryCode: string
-  ) {
-    return new Promise<boolean>((resolve) => {
-      resolve(
-        !!(code && phone && countryCode)
-      );
-    });
   }
 
   public async createAccount(
@@ -68,8 +53,11 @@ export class AuthService {
       value
     } = payload;
 
-    if (!value) {
-      throw new Error('No data sent.');
+    if (
+      !value
+      || !code
+    ) {
+      throw new Error('Bad data sent.');
     }
 
     if (!session) {
@@ -81,8 +69,7 @@ export class AuthService {
     try {
       const phoneUtil = new PhoneUtil(value, region || PHONE_DEFAULT_REGION_CODE);
       if (
-        code
-        && phoneUtil.isValid
+        phoneUtil.isValid
         && phoneUtil.countryCode
         && phoneUtil.nationalNumber
       ) {
@@ -91,7 +78,8 @@ export class AuthService {
           throw new Error(`Phone is unavailable.`);
         }
 
-        const isCodeValid = await this.validateOtpTemp(code, phoneUtil.nationalNumber, phoneUtil.countryCode);
+        const otpCache = new OtpCodeCache();
+        const isCodeValid = await otpCache.validatePhoneOtp(code, phoneUtil.countryCode, phoneUtil.nationalNumber);
         if (isCodeValid) {
           user = await UserModel.registerAndCreateFromPhone(
             phoneUtil.nationalNumber,
@@ -108,17 +96,21 @@ export class AuthService {
           if (!isAvailable) {
             throw new Error(`Email is unavailable.`);
           }
-          user = await UserModel.registerAndCreateFromEmail(emailUtil.formattedEmail());
+          const otpCache = new OtpCodeCache();
+          const isCodeValid = await otpCache.validateEmailOtp(code, emailUtil.formattedEmail());
+          if (isCodeValid) {
+            user = await UserModel.registerAndCreateFromEmail(emailUtil.formattedEmail());
 
-          if (user) {
-            const mail = new MailSendgrid();
-            const inviteUrl = `/auth/z?route=validate&token=${user.token}`;
-            const shortLink = await ShortLinkModel.generateShortlink(inviteUrl);
-            try  {
-              const inviteMessageId = await mail.sendConfirmation(emailUtil.formattedEmail(), shortLink);
-              await EmailModel.updateMessageInfoValidate(emailUtil.formattedEmail(), inviteMessageId);
-            } catch (err) {
-              this.logger.logError(err.message);
+            if (user) {
+              const mail = new MailSendgrid();
+              const inviteUrl = `/auth/z?route=validate&token=${user.token}`;
+              const shortLink = await ShortLinkModel.generateShortlink(inviteUrl);
+              try  {
+                const inviteMessageId = await mail.sendConfirmation(emailUtil.formattedEmail(), shortLink);
+                await EmailModel.updateMessageInfoValidate(emailUtil.formattedEmail(), inviteMessageId);
+              } catch (err) {
+                this.logger.logError(err.message);
+              }
             }
           }
         }
@@ -231,7 +223,6 @@ export class AuthService {
         // TODO: Implement once devices are hooked up
       }
 
-
       // Phone Number Login
       const phoneUtil = new PhoneUtil(value, region || PHONE_DEFAULT_REGION_CODE);
       if (
@@ -240,7 +231,8 @@ export class AuthService {
         && phoneUtil.countryCode
         && phoneUtil.nationalNumber
       ) {
-        const isCodeValid = await this.validateOtpTemp(code, phoneUtil.nationalNumber, phoneUtil.countryCode);
+        const otpCache = new OtpCodeCache();
+        const isCodeValid = await otpCache.validatePhoneOtp(code, phoneUtil.countryCode, phoneUtil.nationalNumber);
         if (isCodeValid) {
           const phone = await PhoneModel.findByPhoneAndCode(phoneUtil.nationalNumber, phoneUtil.countryCode);
           if (
@@ -264,16 +256,20 @@ export class AuthService {
           if (
             !user
             && !password
+            && code
           ) {
-            const email = await EmailModel.findByEmail(emailUtil.formattedEmail());
-            if (
-              email
-              && email.userId
-            ) {
-              user = await UserModel.findByPk(email.userId);
+            const otpCache = new OtpCodeCache();
+            const isCodeValid = await otpCache.validateEmailOtp(code, emailUtil.formattedEmail());
+            if (isCodeValid) {
+              const email = await EmailModel.findByEmail(emailUtil.formattedEmail());
+              if (
+                email
+                && email.userId
+              ) {
+                user = await UserModel.findByPk(email.userId);
+              }
             }
           }
-
         }
       }
 
@@ -304,6 +300,7 @@ export class AuthService {
     }
   }
 
+  // TODO: Likey not used - check e2e tests
   public async requestReset(email: string) {
     if (!email) {
       throw new Error('Request is invalid.');
@@ -358,32 +355,27 @@ export class AuthService {
 
   public async sendOtpToEmail(
     email: string
-  ): Promise<boolean> {
+  ): Promise<string> {
     if (!email) {
       throw new Error('No email sent.');
     }
 
     try {
       const emailUtil = new EmailUtil(email);
+      let otpCode: string;
       if (emailUtil.validate()) {
-        const email = await EmailModel.findByEmail(emailUtil.formattedEmail());
-        if (
-          email
-          && email.userId
-        ) {
-          const otpCode = await UserModel.updateOtpCode(email.userId);
-          const mail = new MailSendgrid();
-          try {
-            const inviteMessageId = await mail.sendOtp(emailUtil.formattedEmail(), otpCode, '');
-            await EmailModel.updateMessageInfoValidate(emailUtil.formattedEmail(), inviteMessageId);
-            return true;
-          } catch (err) {
-            this.logger.logError(err.message);
-          }
+        const otpCache = new OtpCodeCache();
+        otpCode = await otpCache.setEmailOtp(emailUtil.formattedEmail());
+        const mail = new MailSendgrid();
+        try {
+          const sgMessageId = await mail.sendOtp(emailUtil.formattedEmail(), otpCode, '');
+          await EmailModel.updateMessageInfoValidate(emailUtil.formattedEmail(), sgMessageId);
+        } catch (err) {
+          this.logger.logError(err.message);
         }
       }
 
-      return false;
+      return otpCode;
     } catch (err) {
       const message = err.message || 'Error sending Otp to email' + email;
       this.logger.logError(message);
@@ -394,21 +386,21 @@ export class AuthService {
   public async sendOtpToPhone(
     phone: string,
     region?: string
-  ): Promise<boolean> {
+  ): Promise<string> {
     if (!phone) {
       throw new Error('No phone sent.');
     }
 
     try {
+      let otpCode: string;
       const phoneUtil = new PhoneUtil(phone, region || PHONE_DEFAULT_REGION_CODE);
       if (phoneUtil.isValid) {
-        // TODO: integrate with Twilio or other
-        return new Promise((resolve) => {
-          resolve(true);
-        });
+        const otpCache = new OtpCodeCache();
+        otpCode = await otpCache.setPhoneOtp(phoneUtil.countryCode, phoneUtil.nationalNumber);
+        // TODO: integrate with Twilio or other to send SMS
       }
 
-      return false;
+      return otpCode;
     } catch (err) {
       const message = err.message || 'Error sending Otp to phone' + phone;
       this.logger.logError(message);
@@ -416,6 +408,7 @@ export class AuthService {
     }
   }
 
+  // TODO: Likely not used - check e2e tests
   public async setupPasswords(payload: SetupPasswordsPaylodType): Promise<UserProfileStateType | void>  {
     const {
       id,

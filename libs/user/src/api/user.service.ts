@@ -18,9 +18,6 @@ import {
   GetUserListResponseType,
   GetUsersListQueryType,
   GetUserResponseType,
-  OtpCodeResponseType,
-  ResendInvitePayloadType,
-  SendInviteResponseType,
   UserType,
   UpdateUserPayloadType,
   UpdateUserResponseType,
@@ -31,7 +28,10 @@ import {
   USER_SORT_FIELDS
 } from '../model/user.consts';
 import { EMAIL_MODEL_OPTIONS } from '@dx/email';
-import { PHONE_DEFAULT_REGION_CODE, PHONE_MODEL_OPTIONS } from '@dx/phone';
+import {
+  PHONE_DEFAULT_REGION_CODE,
+  PHONE_MODEL_OPTIONS
+} from '@dx/phone';
 import {
   DEFAULT_LIMIT,
   DEFAULT_OFFSET,
@@ -47,6 +47,10 @@ import {
   PhoneUtil,
   ProfanityFilter
 } from '@dx/utils';
+import {
+  OtpGenerate,
+  OtpValidate
+} from '@dx/auth';
 
 export class UserService {
   private DEBUG = isDebug();
@@ -255,6 +259,7 @@ export class UserService {
     }
   }
 
+  // TODO: Only used for testing - can deprecate now
   public async getOtpCode(userId: string) {
     if (this.LOCAL) {
       const user = await UserModel.findByPk(userId);
@@ -402,46 +407,13 @@ export class UserService {
   //   }
   // }
 
-  public async sendOtpCode(userId: string): Promise<OtpCodeResponseType> {
+  public async sendOtpCode(userId: string): Promise<string> {
     if (!userId) {
       throw new Error('Request is invalid.');
     }
 
     try {
-      const user = await UserModel.findByPk(userId) as UserModel;
-
-      if (!user) {
-        throw new Error('No user for this id.');
-      }
-
-      if (user.accountLocked) {
-        throw new Error(`Account is locked.`);
-      }
-
-      const email = await user.getVerifiedEmail();
-      if (!email) {
-        throw new Error(`No verified email found.`);
-      }
-
-      const otpCode = await UserModel.updateOtpCode(userId);
-
-      const mail = new MailSendgrid();
-      const inviteUrl = `/auth/z?route=otp-lock&id=${userId}`;
-      const shortLink = await ShortLinkModel.generateShortlink(inviteUrl);
-
-      try {
-        const otpMessageId = await mail.sendOtp(email, otpCode, shortLink);
-        await EmailModel.updateMessageInfoValidate(email, otpMessageId);
-        return {
-          codeSent: !!otpMessageId
-        };
-      } catch (err) {
-        this.logger.logError(err.message);
-      }
-
-      return {
-        codeSent: false
-      };
+      return await OtpGenerate.generateOptCode(userId);
     } catch (err) {
       const message = err.message || 'Could not send code.';
       this.logger.logError(message);
@@ -464,6 +436,11 @@ export class UserService {
       throw new Error('Request is invalid.');
     }
 
+    const isCodeValid = await OtpValidate.validateOptCode(id, otpCode);
+    if (!isCodeValid) {
+      throw new Error('Invalid OTP code.');
+    }
+
     // Check password strength
     const pwStrength = zxcvbn(password);
     if (pwStrength.score < 3) {
@@ -474,7 +451,7 @@ ${pwStrengthMsg}
     }
 
     try {
-      const didUpdate = await UserModel.updatePassword(id, password, otpCode);
+      const didUpdate = await UserModel.updatePassword(id, password);
       const result = { success: didUpdate };
 
       return result;

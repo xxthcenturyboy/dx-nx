@@ -223,13 +223,18 @@ export class UserModel extends Model<UserModel> {
   }
 
   async getDefaultEmail (): Promise<string | null> {
+    const email = await this.getDefaultEmailModel();
+    return email && email.email || null;
+  }
+
+  async getDefaultEmailModel(): Promise<EmailModel> {
     const emails = await this.getEmails();
 
     const EmailModel: EmailModelType | undefined = emails.find((email) => {
       return email.default;
     });
 
-    return EmailModel && EmailModel.email || null;
+    return EmailModel
   }
 
   async getPhones (): Promise<PhoneModelType[]> {
@@ -283,13 +288,18 @@ export class UserModel extends Model<UserModel> {
   }
 
   async getDefaultPhone (): Promise<string | null> {
+    const phone = await this.getDefaultPhoneModel();
+    return phone && phone.phone || null;
+  }
+
+  async getDefaultPhoneModel (): Promise<PhoneModelType> {
     const phones = await this.getPhones();
 
-    const PhoneModel: PhoneModelType | undefined = phones.find((phone) => {
+    const result = phones.find((phone) => {
       return phone.default;
     });
 
-    return PhoneModel && PhoneModel.phone || null;
+    return result || null;
   }
 
   async getPrivilegSets (): Promise<UserPrivilegeSetModelType[]> {
@@ -608,8 +618,7 @@ export class UserModel extends Model<UserModel> {
 
   static async updatePassword (
     id: string,
-    password: string,
-    otp: string
+    password: string
   ): Promise<boolean> {
     if (
       !password
@@ -620,15 +629,10 @@ export class UserModel extends Model<UserModel> {
 
     const user = await UserModel.findByPk(id);
     // const oldPasswordMatch = await dxEncryptionVerifyHash(user.hashword, oldPassword);
-    const otpMatch = otp === user.otpCode;
 
     // if (!oldPasswordMatch) {
     //   throw new Error(`Existing password does not match.`);
     // }
-
-    if (!otpMatch) {
-      throw new Error(`Authorization code does not match.`);
-    }
 
     const hashword = await dxEncryptionHashString(password);
 

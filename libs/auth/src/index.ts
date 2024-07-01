@@ -22,3 +22,9 @@ export {
 export {
   USER_LOOKUPS
 } from './model/auth.consts';
+export {
+  OtpCodeCache,
+  OtpCodeCacheType
+} from './model/otp-code.redis-cache';
+export { OtpGenerate } from './api/otp.generate';
+export { OtpValidate } from './api/otp.validate';

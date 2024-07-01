@@ -1,5 +1,5 @@
 export type AccountCreationPayloadType = {
-  code?: string;
+  code: string;
   region?: string;
   value: string;
 };

@@ -26,6 +26,24 @@ export const dxEncryptionHashString = async (str: string): Promise<string> => {
   return `${btoa(salt)}.${btoa(result)}`;
 };
 
+export const dxEncryptionGetSaltFromHash = (hash: string): string => {
+  if (typeof hash !== 'string') return ''; // invalid input
+  if (hash.length > 120) return ''; // hash is impossibly long
+
+  const [salt, result] = hash.split('.');
+
+  return salt;
+};
+
+export const dxEncryptionGenerateHashWithSalt = async (str: string, salt: string): Promise<string> => {
+  if (typeof salt !== 'string') return ''; // invalid input
+  if (typeof str !== 'string') return ''; // invalid input
+  const saltBuffer = atob(salt);
+
+  const result = await pbkdf2(normalize(str), saltBuffer);
+  return `${btoa(saltBuffer)}.${btoa(result)}`;
+};
+
 export const dxEncryptionVerifyHash = async (hash: string, str: string): Promise<boolean> => {
   if (typeof hash !== 'string') return false; // invalid input
   if (typeof str !== 'string') return false; // invalid input

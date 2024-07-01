@@ -15,6 +15,7 @@ import {
   TEST_PHONE_VALID
 } from '@dx/config';
 import { PostgresDbConnection } from '@dx/postgres';
+import { RedisService } from '@dx/redis';
 import {
   UserModel,
   UserPrivilegeSetModel,
@@ -42,6 +43,8 @@ describe('AuthService', () => {
   if (isLocal()) {
     let authService: AuthServiceType;
     let db: Sequelize;
+    let emailAccountId: string;
+    let phoneAccountId: string;
     let session: SessionData = {};
 
     beforeAll(async () => {
@@ -58,6 +61,14 @@ describe('AuthService', () => {
       });
       await connection.initialize();
       db = PostgresDbConnection.dbHandle;
+      new RedisService({
+        isLocal: true,
+        redis: {
+          port: 6379,
+          prefix: 'dx',
+          url: 'redis://redis'
+        }
+      });
     });
 
     beforeEach(() => {
@@ -65,6 +76,12 @@ describe('AuthService', () => {
     });
 
     afterAll(async () => {
+      if (emailAccountId) {
+        await UserModel.removeUser(emailAccountId);
+      }
+      if (phoneAccountId) {
+        await UserModel.removeUser(phoneAccountId);
+      }
       jest.clearAllMocks();
       await db.close();
     });
@@ -91,6 +108,7 @@ describe('AuthService', () => {
       test('should throw when value does not exist', async () => {
         // arrange
         const payload: AccountCreationPayloadType = {
+          code: '',
           value: ''
         };
         // act
@@ -98,13 +116,14 @@ describe('AuthService', () => {
           expect(await authService.createAccount(payload, session)).toThrow();
         } catch (err) {
           // assert
-          expect(err.message).toEqual('No data sent.');
+          expect(err.message).toEqual('Bad data sent.');
         }
       });
 
       test('should throw when email is not available', async () => {
         // arrange
         const payload: AccountCreationPayloadType = {
+          code: 'OU812',
           value: TEST_EXISTING_EMAIL
         };
         // act
@@ -119,6 +138,7 @@ describe('AuthService', () => {
       test('should throw when invalid email sent', async () => {
         // arrange
         const payload: AccountCreationPayloadType = {
+          code: 'OU812',
           value: 'not-a-valid-email',
           region: 'US'
         };
@@ -164,7 +184,9 @@ describe('AuthService', () => {
 
       test('should create an account with email when called', async () => {
         // arrange
+        const otpCode = await authService.sendOtpToEmail(TEST_EMAIL);
         const payload: AccountCreationPayloadType = {
+          code: otpCode,
           value: TEST_EMAIL
         };
         // act
@@ -172,16 +194,15 @@ describe('AuthService', () => {
         // assert
         expect(user).toBeDefined();
         expect((user as UserProfileStateType).emails).toHaveLength(1);
-        // clenup
-        if (user && user.id) {
-          await UserModel.removeUser(user.id);
-        }
+
+        emailAccountId = user.id;
       });
 
       test('should create an account with phone when called', async () => {
         // arrange
+        const otpCode = await authService.sendOtpToPhone(TEST_PHONE_VALID, 'US');
         const payload: AccountCreationPayloadType = {
-          code: 'OU812',
+          code: otpCode,
           value: TEST_PHONE_VALID
         };
         // act
@@ -190,9 +211,7 @@ describe('AuthService', () => {
         expect(user).toBeDefined();
         expect((user as UserProfileStateType).phones).toHaveLength(1);
         // clenup
-        if (user && user.id) {
-          await UserModel.removeUser(user.id);
-        }
+        phoneAccountId = user.id;
       });
     });
 
@@ -208,7 +227,7 @@ describe('AuthService', () => {
         const query: UserLookupQueryType = {
           code: '1',
           region: 'US',
-          value: TEST_PHONE_VALID,
+          value: '8586844802',
           type: USER_LOOKUPS.PHONE
         }
         // act
@@ -406,8 +425,10 @@ describe('AuthService', () => {
 
       test('should return user profile upon successful email, passwordless login', async () => {
         // arrange
+        const otpCode = await authService.sendOtpToEmail(TEST_EMAIL);
         const payload: LoginPaylodType = {
-          value: TEST_EXISTING_EMAIL,
+          code: otpCode,
+          value: TEST_EMAIL,
         };
         // act
         const user = await authService.login(payload);
@@ -415,7 +436,6 @@ describe('AuthService', () => {
         // assert
         expect(user).toBeDefined();
         expect((user as UserProfileStateType).emails).toHaveLength(1);
-        expect((user as UserProfileStateType).phones).toHaveLength(1);
       });
 
       test('should return user profile upon successful email/password login', async () => {
@@ -435,16 +455,16 @@ describe('AuthService', () => {
 
       test('should return user profile upon successful phone login', async () => {
         // arrange
+        const otpCode = await authService.sendOtpToPhone(TEST_PHONE_VALID, 'US');
         const payload: LoginPaylodType = {
-          value: TEST_EXISTING_PHONE,
-          code: 'OU812',
+          value: TEST_PHONE_VALID,
+          code: otpCode,
         };
         // act
         const user = await authService.login(payload);
         // console.log(user);
         // assert
         expect(user).toBeDefined();
-        expect((user as UserProfileStateType).emails).toHaveLength(1);
         expect((user as UserProfileStateType).phones).toHaveLength(1);
       });
     });
@@ -493,24 +513,25 @@ describe('AuthService', () => {
         }
       });
 
-      test('should return false when email is invalid', async () => {
+      test('should return undefined when email is invalid', async () => {
         // arrange
         // act
         const result = await authService.sendOtpToEmail('invalid-email');
         // assert
-        expect(result).toBe(false);
+        expect(result).not.toBeDefined();
       });
 
-      test('should return true when email is valid', async () => {
+      test('should return otp code when email is valid', async () => {
         // arrange
         // act
-        const result = await authService.sendOtpToEmail(TEST_EXISTING_EMAIL);
+        const result = await authService.sendOtpToEmail(TEST_EMAIL);
         // assert
-        expect(result).toBe(true);
+        expect(result).toBeTruthy();
       });
     });
 
-    describe('sendOtpToPhone', () => {
+    describe('sendOtpToPhone', () => {+
+
       it('should exist', () => {
         expect(authService.sendOtpToPhone).toBeDefined();
       });
@@ -526,20 +547,20 @@ describe('AuthService', () => {
         }
       });
 
-      test('should return false when phone is invalid', async () => {
+      test('should return undefined when phone is invalid', async () => {
         // arrange
         // act
         const result = await authService.sendOtpToPhone(TEST_PHONE);
         // assert
-        expect(result).toBe(false);
+        expect(result).not.toBeDefined();
       });
 
-      test('should return true when phone is valid', async () => {
+      test('should return otp code when phone is valid', async () => {
         // arrange
         // act
         const result = await authService.sendOtpToPhone(TEST_PHONE_VALID);
         // assert
-        expect(result).toBe(true);
+        expect(result).toBeTruthy();
       });
     });
   } else {
@@ -560,11 +581,14 @@ describe('AuthService', () => {
       // act
       const authService = new AuthService();
       // assert
+      expect(authService.createAccount).toBeDefined();
       expect(authService.doesEmailPhoneExist).toBeDefined();
       expect(authService.lockoutFromOtpEmail).toBeDefined();
       expect(authService.login).toBeDefined();
       expect(authService.requestReset).toBeDefined();
-      expect(authService.signup).toBeDefined();
+      expect(authService.sendOtpToEmail).toBeDefined();
+      expect(authService.sendOtpToPhone).toBeDefined();
+      expect(authService.setupPasswords).toBeDefined();
       expect(authService.validateEmail).toBeDefined();
     });
   }

@@ -130,7 +130,7 @@ export const AuthController = {
     try {
       const { email } = req.body as { email: string };
       const service = new AuthService();
-      const result = await service.sendOtpToEmail(email) as boolean;
+      const result = await service.sendOtpToEmail(email);
 
       sendOK(req, res, result);
     } catch (err) {
@@ -142,7 +142,7 @@ export const AuthController = {
     try {
       const { phone, region } = req.body as { phone: string, region?: string };
       const service = new AuthService();
-      const result = await service.sendOtpToPhone(phone, region) as boolean;
+      const result = await service.sendOtpToPhone(phone, region);
 
       sendOK(req, res, result);
     } catch (err) {
