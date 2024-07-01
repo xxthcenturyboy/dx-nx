@@ -7,12 +7,8 @@ import { Response } from 'jest-express/lib/response';
 
 import { AuthController } from './auth.controller';
 import {
-  LoginPaylodType,
-  SetupPasswordsPaylodType,
-  SignupPayloadType,
-  UserLookupQueryType
+  LoginPaylodType
 } from '../model/auth.types';
-import { USER_LOOKUPS } from '../model/auth.consts';
 import {
   sendOK,
   sendBadRequest
@@ -122,37 +118,6 @@ describe('AuthController', () => {
     });
   });
 
-  describe('requestReset', () => {
-    test('should sendOk when invoked', async () => {
-      // arrange
-      const body = {
-        email: TEST_EMAIL
-      };
-      req.body = body;
-      // act
-      await AuthController.requestReset(req, res);
-      // assert
-      expect(sendOK).toHaveBeenCalled();
-    });
-  });
-
-  describe('setupPasswords', () => {
-    test('should sendOk when invoked', async () => {
-      // arrange
-      const body: SetupPasswordsPaylodType = {
-        id: '4d2269d3-9bfc-4f2d-b66c-ab63ea1d2c6f',
-        password: TEST_PASSWORD,
-        securityAA: 'Answer',
-        securityQQ: 'Question'
-      };
-      req.body = body;
-      // act
-      await AuthController.setupPasswords(req, res);
-      // assert
-      expect(sendBadRequest).toHaveBeenCalled();
-    });
-  });
-
   describe('sendOtpToEmail', () => {
     test('should sendOk when invoked', async () => {
       // arrange
@@ -164,13 +129,10 @@ describe('AuthController', () => {
     });
   });
 
-  describe('setupPasswords', () => {
+  describe('sendOtpToPhone', () => {
     test('should sendOk when invoked', async () => {
       // arrange
-      req.body = {
-        phone: TEST_PHONE,
-        region: 'US'
-      };
+      req.body = { email: TEST_EMAIL };
       // act
       await AuthController.sendOtpToPhone(req, res);
       // assert

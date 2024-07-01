@@ -15,7 +15,6 @@ export {
 export {
   AccountCreationPayloadType,
   LoginPaylodType,
-  SetupPasswordsPaylodType,
   UserLookupQueryType,
   UserLookupResponseType
 } from './model/auth.types';

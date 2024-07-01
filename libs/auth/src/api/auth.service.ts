@@ -16,7 +16,6 @@ import {
   LoginPaylodType,
   OtpLockoutResponseType,
   SessionData,
-  SetupPasswordsPaylodType,
   UserLookupQueryType,
   UserLookupResponseType
 } from '../model/auth.types';
@@ -300,59 +299,6 @@ export class AuthService {
     }
   }
 
-  // TODO: Likey not used - check e2e tests
-  public async requestReset(email: string) {
-    if (!email) {
-      throw new Error('Request is invalid.');
-    }
-
-    try {
-      const emailUtil = new EmailUtil(email);
-      if (!emailUtil.validate()) {
-        if (emailUtil.isDisposableDomain()) {
-          throw new Error('Invalid Domain');
-        }
-
-        throw new Error('Invalid Email');
-      }
-
-      const existingEmailRecord = await EmailModel.findOne({
-        where: {
-          email: emailUtil.formattedEmail(),
-          deletedAt: null,
-          verifiedAt: {
-            [Op.ne]: null
-          }
-        }
-      });
-
-      if (!existingEmailRecord) {
-        throw new Error(`Could not find ${email}.`);
-      }
-
-      const token = await UserModel.updateToken(existingEmailRecord.userId);
-
-      if (!token) {
-        throw new Error('No token created.');
-      }
-
-      const mail = new MailSendgrid();
-      const inviteUrl = `/auth/z?route=${CLIENT_ROUTE.RESET}&token=${token}`;
-      const shortLink = await ShortLinkModel.generateShortlink(inviteUrl);
-
-      const resetMessageId = await mail.sendReset(emailUtil.formattedEmail(), shortLink);
-
-      await EmailModel.updateMessageInfo(emailUtil.formattedEmail(), resetMessageId);
-
-      return { success: true };
-
-    } catch (err) {
-      const message = `Error in reset request handler: ${err.message}`;
-      this.logger.logError(message);
-      throw new Error(message);
-    }
-  }
-
   public async sendOtpToEmail(
     email: string
   ): Promise<string> {
@@ -360,9 +306,9 @@ export class AuthService {
       throw new Error('No email sent.');
     }
 
+    let otpCode: string;
     try {
       const emailUtil = new EmailUtil(email);
-      let otpCode: string;
       if (emailUtil.validate()) {
         const otpCache = new OtpCodeCache();
         otpCode = await otpCache.setEmailOtp(emailUtil.formattedEmail());
@@ -374,6 +320,7 @@ export class AuthService {
           this.logger.logError(err.message);
         }
       }
+
 
       return otpCode;
     } catch (err) {
@@ -391,8 +338,9 @@ export class AuthService {
       throw new Error('No phone sent.');
     }
 
+    let otpCode: string;
+
     try {
-      let otpCode: string;
       const phoneUtil = new PhoneUtil(phone, region || PHONE_DEFAULT_REGION_CODE);
       if (phoneUtil.isValid) {
         const otpCache = new OtpCodeCache();
@@ -403,40 +351,6 @@ export class AuthService {
       return otpCode;
     } catch (err) {
       const message = err.message || 'Error sending Otp to phone' + phone;
-      this.logger.logError(message);
-      throw new Error(message);
-    }
-  }
-
-  // TODO: Likely not used - check e2e tests
-  public async setupPasswords(payload: SetupPasswordsPaylodType): Promise<UserProfileStateType | void>  {
-    const {
-      id,
-      password,
-      securityAA,
-      securityQQ
-    } = payload;
-
-    if (
-      !id
-      && !password
-      && !securityAA
-      && !securityQQ
-    ) {
-      throw new Error('Request is invalid.');
-    }
-
-    try {
-      await UserModel.setPassword(id, password, securityAA, securityQQ);
-
-      const user = await UserModel.findByPk(id);
-      await user.getPhones();
-      await user.getEmails();
-      const profile = await getUserProfileState(user, true);
-
-      return profile;
-    } catch (err) {
-      const message = `Error in auth setup password: ${err.message}`;
       this.logger.logError(message);
       throw new Error(message);
     }

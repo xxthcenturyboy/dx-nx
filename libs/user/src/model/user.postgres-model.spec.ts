@@ -61,7 +61,6 @@ describe('User Models', () => {
         expect(attributes.deletedAt).toBeDefined();
         expect(attributes.firstName).toBeDefined();
         expect(attributes.fullName).toBeDefined();
-        expect(attributes.hasCompletedInvite).toBeDefined();
         expect(attributes.hashanswer).toBeDefined();
         expect(attributes.hashword).toBeDefined();
         expect(attributes.isAdmin).toBeDefined();

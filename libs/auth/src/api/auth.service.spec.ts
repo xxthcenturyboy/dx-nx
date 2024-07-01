@@ -355,7 +355,7 @@ describe('AuthService', () => {
       });
     });
 
-    // ??
+    // TODO: Using?
     describe('lockoutFromOtpEmail', () => {
       it('should exist', () => {
         expect(authService.lockoutFromOtpEmail).toBeDefined();
@@ -469,34 +469,6 @@ describe('AuthService', () => {
       });
     });
 
-    describe('requestReset', () => {
-      it('should exist', () => {
-        expect(authService.requestReset).toBeDefined();
-      });
-
-      test('should throw when email does not exist', async () => {
-        // arrange
-        // act
-        try {
-          expect(await authService.requestReset('not-in-this-system@useless.com')).toThrow();
-        } catch (err) {
-          // assert
-          expect(err.message).toContain('Could not find');
-        }
-      });
-
-      test('should throw when no email is sent', async () => {
-        // arrange
-        // act
-        try {
-          expect(await authService.requestReset('')).toThrow();
-        } catch (err) {
-          // assert
-          expect(err.message).toEqual('Request is invalid.');
-        }
-      });
-    });
-
     describe('sendOtpToEmail', () => {
       it('should exist', () => {
         expect(authService.sendOtpToEmail).toBeDefined();
@@ -588,7 +560,6 @@ describe('AuthService', () => {
       expect(authService.requestReset).toBeDefined();
       expect(authService.sendOtpToEmail).toBeDefined();
       expect(authService.sendOtpToPhone).toBeDefined();
-      expect(authService.setupPasswords).toBeDefined();
       expect(authService.validateEmail).toBeDefined();
     });
   }

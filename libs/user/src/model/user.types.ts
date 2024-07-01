@@ -26,10 +26,10 @@ export type UserProfileStateType = {
   hasSecuredAccount: boolean;
   hasVerifiedEmail: boolean;
   hasVerifiedPhone: boolean;
-  isAdmin: boolean;
-  isSuperAdmin: boolean;
+  a: boolean;
+  sa: boolean;
   lastName: string;
-  optInBeta: boolean;
+  b: boolean;
   phones: PhoneType[];
   restrictions: string[];
   role: string[];
@@ -102,6 +102,7 @@ export type OtpCodeResponseType = {
 export type UpdatePasswordPayloadType = {
   id: string;
   password: string;
+  passwordConfirm: string;
   otpCode: string;
 };
 

@@ -101,7 +101,7 @@ export class OtpCodeCache {
     const key = this.getFormattedKeyName(`${code}_${hashedValue}`);
     try {
       const data = await this.cache.getCacheItemSimple(key);
-      const isValid = data === code;
+      const isValid = data.toString() === code.toString();
       if (isValid) {
         void this.cache.deleteCacheItem(key);
       }
@@ -130,7 +130,7 @@ export class OtpCodeCache {
     const key = this.getFormattedKeyName(`${code}_${hashedValue}`);
     try {
       const data = await this.cache.getCacheItemSimple(key);
-      const isValid = data === code;
+      const isValid = data.toString() === code.toString();
       if (isValid) {
         void this.cache.deleteCacheItem(key);
       }

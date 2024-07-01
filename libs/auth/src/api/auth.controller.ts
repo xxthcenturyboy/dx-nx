@@ -1,4 +1,7 @@
-import { Request, Response } from 'express';
+import {
+  Request,
+  Response
+} from 'express';
 
 import { AuthService } from './auth.service';
 import {
@@ -9,11 +12,10 @@ import {
   AccountCreationPayloadType,
   LoginPaylodType,
   OtpLockoutResponseType,
-  SetupPasswordsPaylodType,
   UserLookupQueryType
 } from '../model/auth.types';
 import { TokenService } from './token.service';
-import { UserProfileStateType, UserType } from '@dx/user';
+import { UserProfileStateType } from '@dx/user';
 import { ApiLoggingClass } from '@dx/logger';
 
 export const AuthController = {
@@ -114,18 +116,6 @@ export const AuthController = {
     sendOK(req, res, 'Tokens Reissued');
   },
 
-  requestReset: async function(req: Request, res: Response) {
-    try {
-      const { email } = req.body as { email: string };
-      const service = new AuthService();
-      const result = await service.requestReset(email) as { success: boolean };
-
-      sendOK(req, res, result);
-    } catch (err) {
-      sendBadRequest(req, res, err.message);
-    }
-  },
-
   sendOtpToEmail: async function(req: Request, res: Response) {
     try {
       const { email } = req.body as { email: string };
@@ -143,25 +133,6 @@ export const AuthController = {
       const { phone, region } = req.body as { phone: string, region?: string };
       const service = new AuthService();
       const result = await service.sendOtpToPhone(phone, region);
-
-      sendOK(req, res, result);
-    } catch (err) {
-      sendBadRequest(req, res, err.message);
-    }
-  },
-
-  setupPasswords: async function(req: Request, res: Response) {
-    try {
-      const service = new AuthService();
-      const result = await service.setupPasswords(req.body as SetupPasswordsPaylodType) as UserProfileStateType;
-
-      req.session.userId = result.id;
-
-      const Token = new TokenService(req, res);
-      const tokenSetup = await Token.issueAll();
-      if (!tokenSetup) {
-        throw new Error('Could not create Auth Tokens!');
-      }
 
       sendOK(req, res, result);
     } catch (err) {

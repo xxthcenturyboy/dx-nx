@@ -11,13 +11,10 @@ export class AuthRoutes {
     router.post('/account', AuthController.createAccount);
     router.post('/login', AuthController.login);
     router.post('/logout', AuthController.logout);
-    router.post('/otp-lockout', AuthController.lockoutFromOtpEmail);
-    router.post('/refresh-token', AuthController.refreshTokens);
-    router.post('/request-reset', AuthController.requestReset);
     router.post('/otp-code/send/email', AuthController.sendOtpToEmail);
     router.post('/otp-code/send/phone', AuthController.sendOtpToPhone);
-
-    router.put('/setup-password', AuthController.setupPasswords);
+    // router.post('/otp-lockout', AuthController.lockoutFromOtpEmail);
+    router.post('/refresh-token', AuthController.refreshTokens);
 
     return router;
   }

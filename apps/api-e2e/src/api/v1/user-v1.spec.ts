@@ -349,7 +349,6 @@ describe('v1 User Routes', () => {
         withCredentials: true
       };
       const result = await axios.request<AxiosRequestConfig, AxiosResponse<string>>(getOtpCodeRequest);
-      console.log(result.data);
       if (result.data) {
         otpCode = result.data
       }
@@ -360,6 +359,7 @@ describe('v1 User Routes', () => {
         data: {
           id: workingUserId,
           password: validPw1,
+          passwordConfirm: validPw1,
           code: otpCode
         }
       };
@@ -371,6 +371,7 @@ describe('v1 User Routes', () => {
       const payload: UpdatePasswordPayloadType = {
         id: workingUserId,
         password: validPw2,
+        passwordConfirm: validPw2,
         otpCode: otpCode
       };
       const request: AxiosRequestConfig = {

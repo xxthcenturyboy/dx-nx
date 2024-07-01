@@ -422,15 +422,21 @@ export class UserService {
     const {
       id,
       password,
+      passwordConfirm,
       otpCode
     } = payload;
 
     if (
       !id
       || !password
+      || !passwordConfirm
       || !otpCode
     ) {
       throw new Error('Request is invalid.');
+    }
+
+    if (password !== passwordConfirm) {
+      throw new Error('Passwords must match.');
     }
 
     const isCodeValid = await OtpService.validateOptCode(id, otpCode);
