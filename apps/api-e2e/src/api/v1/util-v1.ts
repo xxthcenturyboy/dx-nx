@@ -30,16 +30,48 @@ export class AuthUtil {
     }
   }
 
-  public async login() {
+  public async login(
+    email?: string,
+    password?: string
+  ) {
     const paylod: LoginPaylodType = {
-      value: TEST_EXISTING_EMAIL,
-      password: TEST_EXISTING_PASSWORD
+      value: email || TEST_EXISTING_EMAIL,
+      password: password || TEST_EXISTING_PASSWORD
     };
 
     const request: AxiosRequestConfig = {
       url: '/api/v1/auth/login',
       method: 'POST',
       data: paylod
+    };
+
+    try {
+      const response = await axios.request<UserProfileStateType>(request);
+      this.setCookies(response.headers['set-cookie']);
+      return response.data;
+    } catch (err) {
+      const typedError = err as AxiosError;
+      console.error(
+        typedError.response.status,
+        // @ts-expect-error - type is bad
+        typedError.response.data.message
+      );
+    }
+
+    return false;
+  }
+
+  public async loginEmalPasswordless(
+    email: string,
+    code: string
+  ) {
+    const request: AxiosRequestConfig = {
+      url: '/api/v1/auth/login',
+      method: 'POST',
+      data: {
+        code: code,
+        value: email
+      }
     };
 
     try {

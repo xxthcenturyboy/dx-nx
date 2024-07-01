@@ -8,6 +8,7 @@ export type EmailType = {
 };
 
 export type CreateEmailPayloadType = {
+  code: string;
   email: string;
   def: boolean;
   label: string;

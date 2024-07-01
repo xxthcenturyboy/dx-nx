@@ -297,7 +297,7 @@ describe('UserService', () => {
 
       test('should throw when profanity is used', async () => {
         // arrange
-        otpEmail = await service.sendOtpCode(idToUpdate);
+        otpEmail = (await service.sendOtpCode(idToUpdate)).code;
         const payload: UpdateUsernamePayloadType = {
           otpCode: otpEmail,
           username: 'Asshole'
@@ -313,7 +313,7 @@ describe('UserService', () => {
 
       test('should throw when username is unavailable', async () => {
         // arrange
-        otpEmail = await service.sendOtpCode(idToUpdate);
+        otpEmail = (await service.sendOtpCode(idToUpdate)).code;
         const payload: UpdateUsernamePayloadType = {
           otpCode: otpEmail,
           username: 'admin'
@@ -329,7 +329,7 @@ describe('UserService', () => {
 
       test('should update the username when executed', async () => {
         // arrange
-        otpEmail = await service.sendOtpCode(idToUpdate);
+        otpEmail = (await service.sendOtpCode(idToUpdate)).code;
         const payload: UpdateUsernamePayloadType = {
           otpCode: otpEmail,
           username: 'Superman'
@@ -400,13 +400,13 @@ describe('UserService', () => {
         // act
         const code = await service.sendOtpCode(TEST_UUID);
         // assert
-        expect(code).not.toBeDefined();
+        expect(code.code).toBeUndefined();
       });
 
       test('should send the code when sent', async () => {
         // arrange
         // act
-        otpEmail = await service.sendOtpCode(idToUpdate);
+        otpEmail = (await service.sendOtpCode(idToUpdate)).code;
         // assert
         expect(otpEmail).toBeDefined();
         expect(typeof otpEmail === 'string').toBe(true);
@@ -459,7 +459,7 @@ describe('UserService', () => {
 
       test('should update Password when sent', async () => {
         // arrange
-        otpEmail = await service.sendOtpCode(idToUpdate);
+        otpEmail = (await service.sendOtpCode(idToUpdate)).code;
 
         const payload: UpdatePasswordPayloadType = {
           id: idToUpdate,

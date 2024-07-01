@@ -2,6 +2,7 @@ import { Sequelize } from 'sequelize-typescript';
 
 import { ApiLoggingClass } from '@dx/logger';
 import { PostgresDbConnection } from '@dx/postgres';
+import { RedisService } from '@dx/redis';
 import {
   PhoneService,
   PhoneServiceType
@@ -27,6 +28,7 @@ import {
   CreatePhonePayloadType,
   UpdatePhonePayloadType
 } from '../model/phone.types';
+import { UserService } from '@dx/user';
 
 jest.mock('@dx/logger');
 
@@ -50,6 +52,14 @@ describe('PhoneService', () => {
       });
       await connection.initialize();
       db = PostgresDbConnection.dbHandle;
+      new RedisService({
+        isLocal: true,
+        redis: {
+          port: 6379,
+          prefix: 'dx',
+          url: 'redis://redis'
+        }
+      });
     });
 
     beforeEach(() => {
@@ -79,6 +89,7 @@ describe('PhoneService', () => {
       test('should throw when the payload is incomplete', async () => {
         // arrange
         const payload: CreatePhonePayloadType = {
+          code: '',
           countryCode: '',
           def: false,
           phone: '',
@@ -97,6 +108,7 @@ describe('PhoneService', () => {
       test('should throw when the phone already exists', async () => {
         // arrange
         const payload: CreatePhonePayloadType = {
+          code: 'code',
           countryCode: TEST_COUNTRY_CODE,
           def: false,
           phone: TEST_EXISTING_PHONE,
@@ -115,6 +127,7 @@ describe('PhoneService', () => {
       test('should throw when the phone is invalid', async () => {
         // arrange
         const payload: CreatePhonePayloadType = {
+          code: 'code',
           countryCode: TEST_COUNTRY_CODE,
           def: false,
           phone: TEST_PHONE,
@@ -132,7 +145,10 @@ describe('PhoneService', () => {
 
       test('should create a phone when all is good', async () => {
         // arrange
+        const userService = new UserService();
+        const otp = await userService.sendOtpCode(TEST_EXISTING_USER_ID);
         const payload: CreatePhonePayloadType = {
+          code: otp.code,
           countryCode: TEST_COUNTRY_CODE,
           def: false,
           phone: TEST_PHONE_VALID,

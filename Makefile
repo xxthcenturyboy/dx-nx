@@ -13,11 +13,11 @@ api:
 
 ## run e2e tests for the API
 api-e2e:
-	docker exec -it ${MONOREPO_CONTAINER_ID} nx e2e api-e2e
+	docker exec -it ${MONOREPO_CONTAINER_ID} nx e2e api-e2e --run-in-band
 
 ## run e2e tests for the API with full details
 api-e2e-verbose:
-	docker exec -it ${MONOREPO_CONTAINER_ID} nx e2e api-e2e --verbose
+	docker exec -it ${MONOREPO_CONTAINER_ID} nx e2e api-e2e --run-in-band --verbose
 
 ## runs all unit tests
 test-all:

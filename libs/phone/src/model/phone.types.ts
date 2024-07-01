@@ -1,4 +1,5 @@
 export type CreatePhonePayloadType = {
+  code: string;
   countryCode: string;
   regionCode?: string;
   def: boolean;

@@ -7,13 +7,9 @@ import {
   CreateEmailPayloadType,
   UpdateEmailPayloadType
 } from '../model/email.types';
-import {
-  EmailUtil,
-  randomId
-} from '@dx/utils';
-import { MailSendgrid } from '@dx/mail';
-import { ShortLinkModel } from '@dx/shortlink';
+import { EmailUtil } from '@dx/utils';
 import { isLocal } from '@dx/config';
+import { OtpService } from '@dx/auth';
 
 export class EmailService {
   private LOCAL = isLocal();
@@ -25,6 +21,7 @@ export class EmailService {
 
   public async createEmail(payload: CreateEmailPayloadType) {
     const {
+      code,
       def,
       email,
       label,
@@ -52,25 +49,23 @@ export class EmailService {
       throw new Error('The email you provided is not valid.');
     }
 
+    const isCodeValid = await OtpService.validateOptCode(userId, code);
+    if (!isCodeValid) {
+      throw new Error('Invalid OTP code.');
+    }
+
     if (def === true) {
       await EmailModel.clearAllDefaultByUserId(userId);
     }
 
     try {
-      const token = randomId();
       const userEmail = new EmailModel();
       userEmail.userId = userId;
       userEmail.email = emailUtil.formattedEmail();
       userEmail.label = label;
       userEmail.default = def;
-      userEmail.token = token.toString();
+      userEmail.verifiedAt = new Date();
       await userEmail.save();
-
-      const mail = new MailSendgrid();
-      const validationUrl = `/auth/z?route=validate-email&token=${token}`;
-      const shortLink = await ShortLinkModel.generateShortlink(validationUrl);
-      const sendgridId = await mail.sendConfirmation(emailUtil.formattedEmail(), shortLink);
-      await EmailModel.updateMessageInfoValidate(emailUtil.formattedEmail(), sendgridId);
 
       return { id: userEmail.id };
     } catch (err) {
@@ -98,17 +93,6 @@ export class EmailService {
     } catch (err) {
       this.logger.logError(err);
       return { id: '' };
-    }
-  }
-
-  public async deleteTestEmail(id: string) {
-    if (this.LOCAL) {
-      await EmailModel.destroy({
-        where: {
-          id,
-        },
-        force: true
-      });
     }
   }
 
@@ -152,28 +136,22 @@ export class EmailService {
     }
   }
 
-  public async validateEmail(token: string) {
-    if (!token) {
-      throw new Error('No Token for validate email.');
-    }
-    try {
-      const email = await EmailModel.validateEmailWithToken(token);
-
-      if (!email) {
-        throw new Error(`Email could not be found with the tokan: ${token}`);
-      }
-
-      return { id: email.id };
-    } catch (err) {
-      this.logger.logError(err.message);
-    }
-
-    return { id: '' };
-  }
-
+  // TODO: Only used in test - remove when can
   public async validateTestEmail(email: string) {
     if (this.LOCAL) {
       await EmailModel.validateEmail(email);
+    }
+  }
+
+  // TODO: Only used in test - remove when can
+  public async deleteTestEmail(id: string) {
+    if (this.LOCAL) {
+      await EmailModel.destroy({
+        where: {
+          id,
+        },
+        force: true
+      });
     }
   }
 }

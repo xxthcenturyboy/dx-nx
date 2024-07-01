@@ -2,6 +2,7 @@ import { Sequelize } from 'sequelize-typescript';
 
 import { ApiLoggingClass } from '@dx/logger';
 import { PostgresDbConnection } from '@dx/postgres';
+import { RedisService } from '@dx/redis';
 import {
   EmailService,
   EmailServiceType
@@ -24,6 +25,7 @@ import {
   CreateEmailPayloadType,
   UpdateEmailPayloadType
 } from '../model/email.types';
+import { UserService } from '@dx/user';
 
 jest.mock('@dx/logger');
 
@@ -47,6 +49,14 @@ describe('EmailService', () => {
       });
       await connection.initialize();
       db = PostgresDbConnection.dbHandle;
+      new RedisService({
+        isLocal: true,
+        redis: {
+          port: 6379,
+          prefix: 'dx',
+          url: 'redis://redis'
+        }
+      });
     });
 
     beforeEach(() => {
@@ -76,6 +86,7 @@ describe('EmailService', () => {
       test('should throw when the payload is incomplete', async () => {
         // arrange
         const payload: CreateEmailPayloadType = {
+          code: '',
           def: false,
           email: '',
           label: '',
@@ -93,6 +104,7 @@ describe('EmailService', () => {
       test('should throw when the email already exists', async () => {
         // arrange
         const payload: CreateEmailPayloadType = {
+          code: '',
           def: false,
           email: TEST_EXISTING_EMAIL,
           label: 'Work',
@@ -110,6 +122,7 @@ describe('EmailService', () => {
       test('should throw when the email is not valid', async () => {
         // arrange
         const payload: CreateEmailPayloadType = {
+          code: '',
           def: false,
           email: 'not a valid email',
           label: 'Work',
@@ -126,7 +139,10 @@ describe('EmailService', () => {
 
       test('should create an email when all is good', async () => {
         // arrange
+        const userService = new UserService();
+        const otp = await userService.sendOtpCode(TEST_EXISTING_USER_ID);
         const payload: CreateEmailPayloadType = {
+          code: otp.code,
           def: false,
           email: TEST_EMAIL,
           label: 'Work',
@@ -215,27 +231,6 @@ describe('EmailService', () => {
         // assert
       });
     });
-
-    describe('validateEmail', () => {
-      test('should return an empty string when the token is not found.', async () => {
-        // arrange
-        // act
-        const response = await emailService.validateEmail('invalid-token');
-        // assert
-        expect(response).toEqual({ id: '' });
-      });
-
-      test('should throw when the token is not found.', async () => {
-        // arrange
-        // act
-        // assert
-        try {
-          expect(await emailService.validateEmail('')).toThrow();
-        } catch (err) {
-          expect(err.message).toEqual('No Token for validate email.');
-        }
-      });
-    });
   } else {
     it('should exist when imported', () => {
       // arrange
@@ -260,7 +255,6 @@ describe('EmailService', () => {
       expect(service.createEmail).toBeDefined();
       expect(service.deleteEmail).toBeDefined();
       expect(service.updateEmail).toBeDefined();
-      expect(service.validateEmail).toBeDefined();
     });
   }
 });

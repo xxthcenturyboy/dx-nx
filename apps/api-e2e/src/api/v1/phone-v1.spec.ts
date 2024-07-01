@@ -21,6 +21,7 @@ import {
   TEST_PHONE_VALID,
   TEST_UUID
 } from '@dx/config';
+import { OtpResponseType } from '@dx/auth';
 
 describe('v1 Phone Routes', () => {
   let authRes: UserProfileStateType;
@@ -60,6 +61,7 @@ describe('v1 Phone Routes', () => {
 
     test('should return an error when phone exists', async () => {
       const payload: CreatePhonePayloadType = {
+        code: 'code',
         countryCode: TEST_COUNTRY_CODE,
         def: false,
         phone: TEST_EXISTING_PHONE,
@@ -90,6 +92,7 @@ describe('v1 Phone Routes', () => {
 
     test('should return an error when phone is invalid', async () => {
       const payload: CreatePhonePayloadType = {
+        code: 'code',
         countryCode: TEST_COUNTRY_CODE,
         regionCode: 'US',
         def: false,
@@ -121,6 +124,7 @@ describe('v1 Phone Routes', () => {
 
     test('should return an error when Italian phone is invalid', async () => {
       const payload: CreatePhonePayloadType = {
+        code: 'code',
         countryCode: '39',
         regionCode: 'IT',
         def: false,
@@ -151,7 +155,16 @@ describe('v1 Phone Routes', () => {
     });
 
     test('should return 200 when successfuly creates Italian phone', async () => {
+      const result = await axios.request<AxiosRequestConfig, AxiosResponse<OtpResponseType>>({
+        url: `/api/v1/user/send-otp-code`,
+        method: 'POST',
+        headers: {
+          cookie: authUtil.cookeisRaw
+        },
+        withCredentials: true
+      });
       const payload: CreatePhonePayloadType = {
+        code: result.data.code,
         countryCode: '39',
         regionCode: 'IT',
         def: false,
@@ -181,7 +194,16 @@ describe('v1 Phone Routes', () => {
     });
 
     test('should return 200 when successfuly creates phone', async () => {
+      const result = await axios.request<AxiosRequestConfig, AxiosResponse<OtpResponseType>>({
+        url: `/api/v1/user/send-otp-code`,
+        method: 'POST',
+        headers: {
+          cookie: authUtil.cookeisRaw
+        },
+        withCredentials: true
+      });
       const payload: CreatePhonePayloadType = {
+        code: result.data.code,
         countryCode: TEST_COUNTRY_CODE,
         regionCode: 'US',
         def: false,

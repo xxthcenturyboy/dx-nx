@@ -69,17 +69,6 @@ export const UserController = {
     }
   },
 
-  getOtpTest: async function (req: Request, res: Response) {
-    try {
-      const { userId } = req.params as { userId: string };
-      const service = new UserService();
-      const result = await service.getOtpCode(userId);
-      return sendOK(req, res, result);
-    } catch (err) {
-      sendBadRequest(req, res, err.message);
-    }
-  },
-
   getUser: async function (req: Request, res: Response) {
     try {
       const { id } = req.params as GetUserQueryType;

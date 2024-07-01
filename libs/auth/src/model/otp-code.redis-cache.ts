@@ -74,7 +74,7 @@ export class OtpCodeCache {
       return '';
     }
 
-    const code = dxEncryptionGgenerateOTP(6);
+    const code = dxEncryptionGgenerateOTP(6).toString();
     const hashedValue = await this.getHashedPhoneValue(countryCode, nationalNumber);
     const key = this.getFormattedKeyName(`${code}_${hashedValue}`);
     try {

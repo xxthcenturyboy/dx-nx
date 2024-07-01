@@ -69,21 +69,6 @@ export const EmailController = {
     }
   },
 
-  validateEmail: async function(req: Request, res: Response) {
-    try {
-      const { token } = req.body as { token: string };
-      const service = new EmailService();
-      const result = await service.validateEmail(token);
-      if (result.id) {
-        return sendOK(req, res, result);
-      }
-
-      sendBadRequest(req, res, `Email could not be found with the token: ${token}`);
-    } catch (err) {
-      sendBadRequest(req, res, err.message);
-    }
-  },
-
   validateTestEmail: async function(req: Request, res: Response) {
     try {
       const { email } = req.body as { email: string };

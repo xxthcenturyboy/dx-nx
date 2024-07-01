@@ -29,8 +29,10 @@ export {
   UserPrivilegestMenuType,
   UserProfileStateType,
   UpdatePrivilegeSetPayloadType,
+  UpdateUsernamePayloadType,
   UserType
 } from './model/user.types';
+export { UserService } from './api/user.service';
 
 /// privileges
 export {

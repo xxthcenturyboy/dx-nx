@@ -23,6 +23,10 @@ export type LoginPaylodType = {
   password?: string;
 };
 
+export type OtpResponseType = {
+  code: string;
+};
+
 export type OtpLockoutResponseType = {
   locked: boolean;
 };

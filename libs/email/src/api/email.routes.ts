@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { EmailController } from './email.controller';
 import {
   ensureLoggedIn,
+  hasAdminRole,
   hasSuperAdminRole
 } from '@dx/auth';
 
@@ -9,7 +10,6 @@ export class EmailRoutes {
   static configure() {
     const router = Router();
 
-    router.post('/validate-email', EmailController.validateEmail);
     router.post('/test/validate-email', EmailController.validateTestEmail);
 
     router.all('/*', [ensureLoggedIn]);
@@ -18,7 +18,7 @@ export class EmailRoutes {
 
     router.put('/:id', EmailController.updateEmail);
 
-    router.delete('/:id', EmailController.deleteEmail);
+    router.delete('/:id', hasAdminRole, EmailController.deleteEmail);
     router.delete('/test/:id', hasSuperAdminRole, EmailController.deleteEmailTest);
 
     return router;

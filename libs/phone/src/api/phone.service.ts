@@ -10,6 +10,7 @@ import {
 } from '../model/phone.types';
 import { isLocal } from '@dx/config';
 import { PhoneUtil } from '@dx/utils';
+import { OtpService } from '@dx/auth';
 
 export class PhoneService {
   private LOCAL: boolean;
@@ -22,6 +23,7 @@ export class PhoneService {
 
   public async createPhone(payload: CreatePhonePayloadType) {
     const {
+      code,
       countryCode,
       regionCode,
       def,
@@ -39,7 +41,7 @@ export class PhoneService {
     }
 
     const phoneUtil = new PhoneUtil(phone, regionCode || PHONE_DEFAULT_REGION_CODE);
-    if ( !phoneUtil.isValid) {
+    if (!phoneUtil.isValid) {
       this.logger.logError(`invalid phone: ${phone}, ${regionCode || PHONE_DEFAULT_REGION_CODE}`);
       throw new Error('This phone cannot be used.');
     }
@@ -49,7 +51,15 @@ export class PhoneService {
       throw new Error(`This phone: ${phone} already exists.`);
     }
 
+    const isCodeValid = await OtpService.validateOptCode(userId, code);
+    if (!isCodeValid) {
+      throw new Error('Invalid OTP code.');
+    }
+
     if (def === true) {
+      if (!phoneUtil.isValidMobile) {
+        throw new Error('Cannot use this phone number as your default.');
+      }
       await PhoneModel.clearAllDefaultByUserId(userId);
     }
 
@@ -61,12 +71,8 @@ export class PhoneService {
       userPhone.phone = phoneUtil.nationalNumber;
       userPhone.label = label;
       userPhone.default = def;
+      userPhone.verifiedAt = new Date();
       await userPhone.save();
-
-      // TODO: Send Confirmation
-      // if (phoneUtil.isValidMobile) {
-
-      // }
 
       return { id: userPhone.id };
     } catch (err) {

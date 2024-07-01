@@ -12,24 +12,18 @@ import {
   GetUserProfileReturnType,
   GetUserListResponseType,
   GetUserResponseType,
-  OtpCodeResponseType,
-  // ResendInvitePayloadType,
-  // SendInviteResponseType,
   UserProfileStateType,
   UpdateUserPayloadType,
   UpdateUserResponseType,
-  UpdatePasswordPayloadType,
-
+  UpdatePasswordPayloadType
 } from '@dx/user';
 import {
-  TEST_EMAIL,
-  TEST_EXISTING_EMAIL,
-  TEST_EXISTING_PASSWORD,
   TEST_EXISTING_USER_ID,
-  TEST_PASSWORD,
   TEST_USER_CREATE,
   TEST_UUID
 } from '@dx/config';
+import { UpdateUsernamePayloadType } from '@dx/user';
+import { OtpResponseType } from '@dx/auth';
 
 describe('v1 User Routes', () => {
   let authRes: UserProfileStateType;
@@ -227,23 +221,6 @@ describe('v1 User Routes', () => {
   });
 
   describe('POST /api/v1/user/send-otp-code', () => {
-    afterAll(async () => {
-      const payload = {
-        email: TEST_EXISTING_EMAIL
-      };
-      const request: AxiosRequestConfig = {
-        url: `/api/v1/email/test/validate-email`,
-        method: 'POST',
-        headers: {
-          cookie: authUtil.cookeisRaw
-        },
-        withCredentials: true,
-        data: payload
-      };
-
-      await axios.request<AxiosRequestConfig, AxiosResponse<void>>(request);
-    });
-
     test('should send an otp via email when called', async () => {
       const request: AxiosRequestConfig = {
         url: `/api/v1/user/send-otp-code`,
@@ -254,10 +231,11 @@ describe('v1 User Routes', () => {
         withCredentials: true
       };
 
-      const result = await axios.request<AxiosRequestConfig, AxiosResponse<OtpCodeResponseType>>(request);
+      const result = await axios.request<AxiosRequestConfig, AxiosResponse<OtpResponseType>>(request);
 
       expect(result.status).toBe(200);
-      expect(result.data.codeSent).toBe(false);
+      expect(result.data.code).toBeDefined();
+      expect(typeof result.data.code === 'string').toBe(true);
     });
   });
 
@@ -269,6 +247,70 @@ describe('v1 User Routes', () => {
       };
       const request: AxiosRequestConfig = {
         url: `/api/v1/user/${workingUserId}`,
+        method: 'PUT',
+        headers: {
+          cookie: authUtil.cookeisRaw
+        },
+        withCredentials: true,
+        data: payload
+      };
+
+      const result = await axios.request<AxiosRequestConfig, AxiosResponse<UpdateUserResponseType>>(request);
+
+      expect(result.status).toBe(200);
+      expect(result.data.userId).toEqual(workingUserId);
+    });
+  });
+
+  describe('PUT /api/v1/user/roles-restrictions/:id', () => {
+    test('should update user role when called', async () => {
+      const payload: UpdateUserPayloadType = {
+        roles: ['USER']
+      };
+      const request: AxiosRequestConfig = {
+        url: `/api/v1/user/roles-restrictions/${workingUserId}`,
+        method: 'PUT',
+        headers: {
+          cookie: authUtil.cookeisRaw
+        },
+        withCredentials: true,
+        data: payload
+      };
+
+      const result = await axios.request<AxiosRequestConfig, AxiosResponse<UpdateUserResponseType>>(request);
+
+      expect(result.status).toBe(200);
+      expect(result.data.userId).toEqual(workingUserId);
+    });
+  });
+
+  describe('PUT /api/v1/user/update/username/:id', () => {
+    test('should update the username when called', async () => {
+      const otpResponse = await axios.request<string>({
+        url: '/api/v1/auth/otp-code/send/email',
+        method: 'POST',
+        data: {
+          email: TEST_USER_CREATE.email
+        }
+      });
+      const authUtil = new AuthUtil();
+      await authUtil.loginEmalPasswordless(TEST_USER_CREATE.email, otpResponse.data);
+
+      const otpRes = await axios.request<AxiosRequestConfig, AxiosResponse<OtpResponseType>>({
+        url: `/api/v1/user/send-otp-code`,
+        method: 'POST',
+        headers: {
+          cookie: authUtil.cookeisRaw
+        },
+        withCredentials: true
+      });
+
+      const payload: UpdateUsernamePayloadType = {
+        otpCode: otpRes.data.code,
+        username: 'test-username'
+      };
+      const request: AxiosRequestConfig = {
+        url: `/api/v1/user/update/username/${workingUserId}`,
         method: 'PUT',
         headers: {
           cookie: authUtil.cookeisRaw
@@ -335,50 +377,46 @@ describe('v1 User Routes', () => {
   // });
 
   describe('PUT /api/v1/user/update/password', () => {
+    let authUtilUpdate: AuthUtilType;
     let otpCode = '';
     const validPw1 = 'akjd0023kakdj_**_(';
-    const validPw2 = 'DASL(()==Ll392';
 
     beforeAll(async () => {
-      const getOtpCodeRequest: AxiosRequestConfig = {
-        url: `/api/v1/user/test/otp/${workingUserId}`,
-        method: 'GET',
+      const otpResponse = await axios.request<string>({
+        url: '/api/v1/auth/otp-code/send/email',
+        method: 'POST',
+        data: {
+          email: TEST_USER_CREATE.email
+        }
+      });
+      authUtilUpdate = new AuthUtil();
+      await authUtilUpdate.loginEmalPasswordless(TEST_USER_CREATE.email, otpResponse.data);
+    });
+
+    beforeEach(async () => {
+      const otpResponse = await axios.request<AxiosRequestConfig, AxiosResponse<OtpResponseType>>({
+        url: `/api/v1/user/send-otp-code`,
+        method: 'POST',
         headers: {
-          cookie: authUtil.cookeisRaw
+          cookie: authUtilUpdate.cookeisRaw
         },
         withCredentials: true
-      };
-      const result = await axios.request<AxiosRequestConfig, AxiosResponse<string>>(getOtpCodeRequest);
-      if (result.data) {
-        otpCode = result.data
-      }
-
-      const setupPasswordRequest: AxiosRequestConfig = {
-        url: '/api/v1/auth/setup-password',
-        method: 'PUT',
-        data: {
-          id: workingUserId,
-          password: validPw1,
-          passwordConfirm: validPw1,
-          code: otpCode
-        }
-      };
-      await axios.request(setupPasswordRequest)
+      });
+      otpCode = otpResponse.data.code;
     });
 
     test('should update the users password when called', async () => {
-      console.log(otpCode);
       const payload: UpdatePasswordPayloadType = {
         id: workingUserId,
-        password: validPw2,
-        passwordConfirm: validPw2,
+        password: validPw1,
+        passwordConfirm: validPw1,
         otpCode: otpCode
       };
       const request: AxiosRequestConfig = {
         url: `/api/v1/user/update/password`,
         method: 'PUT',
         headers: {
-          cookie: authUtil.cookeisRaw
+          cookie: authUtilUpdate.cookeisRaw
         },
         withCredentials: true,
         data: payload
@@ -394,13 +432,14 @@ describe('v1 User Routes', () => {
       const payload: UpdatePasswordPayloadType = {
         id: workingUserId,
         password: '',
+        passwordConfirm: '',
         otpCode: ''
       };
       const request: AxiosRequestConfig = {
         url: `/api/v1/user/update/password`,
         method: 'PUT',
         headers: {
-          cookie: authUtil.cookeisRaw
+          cookie: authUtilUpdate.cookeisRaw
         },
         withCredentials: true,
         data: payload
@@ -422,13 +461,14 @@ describe('v1 User Routes', () => {
       const payload: UpdatePasswordPayloadType = {
         id: workingUserId,
         password: 'password',
+        passwordConfirm: 'password',
         otpCode: otpCode
       };
       const request: AxiosRequestConfig = {
         url: `/api/v1/user/update/password`,
         method: 'PUT',
         headers: {
-          cookie: authUtil.cookeisRaw
+          cookie: authUtilUpdate.cookeisRaw
         },
         withCredentials: true,
         data: payload

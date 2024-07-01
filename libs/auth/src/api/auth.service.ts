@@ -72,6 +72,10 @@ export class AuthService {
         && phoneUtil.countryCode
         && phoneUtil.nationalNumber
       ) {
+        if (!phoneUtil.isValidMobile) {
+          throw new Error('This phone number cannot be used to create an account.');
+        }
+
         const isAvailable = await PhoneModel.isPhoneAvailable(phoneUtil.nationalNumber, phoneUtil.countryCode);
         if (!isAvailable) {
           throw new Error(`Phone is unavailable.`);

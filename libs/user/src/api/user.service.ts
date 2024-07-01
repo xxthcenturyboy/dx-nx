@@ -48,7 +48,10 @@ import {
   PhoneUtil,
   ProfanityFilter
 } from '@dx/utils';
-import { OtpService } from '@dx/auth';
+import {
+  OtpResponseType,
+  OtpService
+} from '@dx/auth';
 
 export class UserService {
   private DEBUG = isDebug();
@@ -259,14 +262,6 @@ export class UserService {
     }
   }
 
-  // TODO: Only used for testing - can deprecate now
-  public async getOtpCode(userId: string) {
-    if (this.LOCAL) {
-      const user = await UserModel.findByPk(userId);
-      return user.otpCode;
-    }
-  }
-
   public async getUser(id: string): Promise<GetUserResponseType> {
     if (!id) {
       throw new Error('No id provided searching users.');
@@ -407,13 +402,14 @@ export class UserService {
   //   }
   // }
 
-  public async sendOtpCode(userId: string): Promise<string> {
+  public async sendOtpCode(userId: string): Promise<OtpResponseType> {
     if (!userId) {
       throw new Error('Request is invalid.');
     }
 
     try {
-      return await OtpService.generateOptCode(userId);
+      const code = await OtpService.generateOptCode(userId);
+      return { code };
     } catch (err) {
       const message = err.message || 'Could not send code.';
       this.logger.logError(message);

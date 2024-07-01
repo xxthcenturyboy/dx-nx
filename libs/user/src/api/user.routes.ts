@@ -17,7 +17,6 @@ export class UserRoutes {
     router.get('/profile', UserController.getUserProfile);
     router.get('/user/:id', hasAdminRole, UserController.getUser);
     router.get('/check/availabilty', UserController.checkUsernameAvailability);
-    router.get('/test/otp/:userId', hasSuperAdminRole, UserController.getOtpTest);
 
     router.post('/', hasSuperAdminRole, UserController.createUser);
     router.post('/send-otp-code', UserController.sendOtpCode);

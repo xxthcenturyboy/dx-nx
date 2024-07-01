@@ -36,12 +36,6 @@ describe('EmailController', () => {
     expect(EmailController).toBeDefined();
   });
 
-  it('should have a validateEmail method when instantiated', () => {
-    // arrange
-    // act
-    // assert
-    expect(EmailController.validateEmail).toBeDefined();
-  });
 
   describe('createEmail', () => {
     test('should call sendBadRequest when sent without proper payload', async () => {
@@ -97,16 +91,4 @@ describe('EmailController', () => {
     });
   });
 
-  describe('validateEmail', () => {
-    test('should return an error when sent without a token', async () => {
-      // arrange
-      // act
-      // assert
-      try {
-        expect(await EmailController.validateEmail(req, res)).toThrow();
-      } catch (err) {
-        expect(sendBadRequest).toHaveBeenCalled();
-      }
-    });
-  });
 });
