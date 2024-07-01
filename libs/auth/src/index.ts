@@ -26,5 +26,4 @@ export {
   OtpCodeCache,
   OtpCodeCacheType
 } from './model/otp-code.redis-cache';
-export { OtpGenerate } from './api/otp.generate';
-export { OtpValidate } from './api/otp.validate';
+export { OtpService } from './api/otp.service';

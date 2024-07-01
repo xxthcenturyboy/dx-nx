@@ -47,10 +47,7 @@ import {
   PhoneUtil,
   ProfanityFilter
 } from '@dx/utils';
-import {
-  OtpGenerate,
-  OtpValidate
-} from '@dx/auth';
+import { OtpService } from '@dx/auth';
 
 export class UserService {
   private DEBUG = isDebug();
@@ -413,7 +410,7 @@ export class UserService {
     }
 
     try {
-      return await OtpGenerate.generateOptCode(userId);
+      return await OtpService.generateOptCode(userId);
     } catch (err) {
       const message = err.message || 'Could not send code.';
       this.logger.logError(message);
@@ -436,7 +433,7 @@ export class UserService {
       throw new Error('Request is invalid.');
     }
 
-    const isCodeValid = await OtpValidate.validateOptCode(id, otpCode);
+    const isCodeValid = await OtpService.validateOptCode(id, otpCode);
     if (!isCodeValid) {
       throw new Error('Invalid OTP code.');
     }
