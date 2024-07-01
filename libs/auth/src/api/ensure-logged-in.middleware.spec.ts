@@ -11,6 +11,7 @@ import { ensureLoggedIn } from './ensure-logged-in.middleware';
 import { ApiLoggingClass } from '@dx/logger';
 import { sendUnauthorized } from '@dx/server';
 import { TokenService } from './token.service';
+import { AUTH_TOKEN_NAMES } from '../model/auth.consts';
 
 jest.mock('@dx/logger');
 jest.mock('@dx/server', () => ({
@@ -38,7 +39,7 @@ describe('ensureLoggedIn', () => {
     req.sessionId = 'test-session-id';
     req.url = 'http://test-url.com';
     const tokenService = new TokenService(req, res);
-    await tokenService.issueAll();
+    await tokenService.issueAll(req?.cookies[AUTH_TOKEN_NAMES.ACCTSECURE] === 'true');
     req.cookies = {
       refresh: 'test-refresh-token',
       token: tokenService.token

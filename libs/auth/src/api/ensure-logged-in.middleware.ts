@@ -6,6 +6,7 @@ import {
 import { ApiLoggingClass } from '@dx/logger';
 import { TokenService } from './token.service';
 import { sendUnauthorized } from '@dx/server';
+import { AUTH_TOKEN_NAMES } from '../model/auth.consts';
 
 export async function ensureLoggedIn(
   req: Request,
@@ -15,7 +16,9 @@ export async function ensureLoggedIn(
   // Ensure token is still valid
   try {
     const userId = req.session && req.session.userId;
-    const refreshToken = req?.cookies?.refresh as string;
+    // const accountSecured = req?.cookies[AUTH_TOKEN_NAMES.ACCTSECURE];
+    // console.log('accountSecured', accountSecured, typeof accountSecured, accountSecured === 'true');
+    const refreshToken = req?.cookies[AUTH_TOKEN_NAMES.REFRESH];
 
     // must have a userID on the session or else
     if (

@@ -23,6 +23,7 @@ export const TEST_USER_CREATE: CreateUserPayloadType = {
   email: TEST_EMAIL,
   firstName: TEST_FIRST_NAME,
   lastName: TEST_LAST_NAME,
+  isTest: true,
   phone: TEST_PHONE_VALID,
   roles: ['USER'],
   username: TEST_USERNAME,

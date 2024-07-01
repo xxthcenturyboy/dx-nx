@@ -12,7 +12,7 @@ import {
   CreateUserPayloadType,
   GetUserQueryType,
   GetUsersListQueryType,
-  ResendInvitePayloadType,
+  UpdateUsernamePayloadType,
   UpdatePasswordPayloadType,
   UpdateUserPayloadType
 } from '../model/user.types';
@@ -167,6 +167,21 @@ export const UserController = {
     }
   },
 
+  updateRolesRestrictions: async function (req: Request, res: Response) {
+    try {
+      const { id } = req.params as { id: string };
+      const service = new UserService();
+      const result = await service.updateRolesAndRestrictions(id, req.body as UpdateUserPayloadType);
+      if (result) {
+        return sendOK(req, res, result);
+      }
+
+      sendBadRequest(req, res, `Could not update user.`);
+    } catch (err) {
+      sendBadRequest(req, res, err.message);
+    }
+  },
+
   updateUser: async function (req: Request, res: Response) {
     try {
       const { id } = req.params as { id: string };
@@ -177,6 +192,21 @@ export const UserController = {
       }
 
       sendBadRequest(req, res, `Could not update user.`);
+    } catch (err) {
+      sendBadRequest(req, res, err.message);
+    }
+  },
+
+  updateUserName: async function (req: Request, res: Response) {
+    try {
+      const { id } = req.params as { id: string };
+      const service = new UserService();
+      const result = await service.updateUserName(id, req.body as UpdateUsernamePayloadType);
+      if (result) {
+        return sendOK(req, res, result);
+      }
+
+      sendBadRequest(req, res, `Could not update username.`);
     } catch (err) {
       sendBadRequest(req, res, err.message);
     }

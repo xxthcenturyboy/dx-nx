@@ -13,7 +13,7 @@ export class OtpService {
     try {
       const user = await UserModel.findByPk(userId);
       if (!user) {
-        throw new Error(`User could not be found with the id: ${userId}`);
+        throw new Error(`User could not be found with the id: ${userId} for generate OPT`);
       }
       if (user.accountLocked) {
         throw new Error(`Account is locked.`);
@@ -61,7 +61,7 @@ export class OtpService {
     try {
       const user = await UserModel.findByPk(userId);
       if (!user) {
-        throw new Error(`User could not be found with the id: ${userId}`);
+        throw new Error(`User could not be found with the id: ${userId} for validate OPT`);
       }
       if (user.accountLocked) {
         throw new Error(`Account is locked.`);
@@ -76,7 +76,7 @@ export class OtpService {
         && phone.phone
         && phone.regionCode !== undefined
       ) {
-        isPhoneValid = await codeCache.validatePhoneOtp(code, phone.phone, phone.regionCode);
+        isPhoneValid = await codeCache.validatePhoneOtp(code, phone.countryCode, phone.phone);
       }
 
       if (isPhoneValid) {

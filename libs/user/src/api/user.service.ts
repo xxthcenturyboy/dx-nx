@@ -20,6 +20,7 @@ import {
   GetUserResponseType,
   UserType,
   UpdateUserPayloadType,
+  UpdateUsernamePayloadType,
   UpdateUserResponseType,
   UpdatePasswordPayloadType
 } from '../model/user.types';
@@ -122,7 +123,8 @@ export class UserService {
       firstName,
       lastName,
       phone,
-      roles
+      roles,
+      isTest
     } = payload;
 
     if (
@@ -162,7 +164,8 @@ export class UserService {
         lastName,
         phoneValue,
         countryCodeValue,
-        regionCode || PHONE_DEFAULT_REGION_CODE
+        regionCode || PHONE_DEFAULT_REGION_CODE,
+        isTest
       );
 
       if (!user) {
@@ -465,15 +468,52 @@ ${pwStrengthMsg}
     }
   }
 
+  public async updateRolesAndRestrictions(
+    id: string,
+    payload: UpdateUserPayloadType
+  ): Promise<UpdateUserResponseType> {
+    const {
+      restrictions,
+      roles,
+    } = payload;
+
+    if (!id) {
+      throw new Error('No id for update user.');
+    }
+
+    try {
+      const user = await UserModel.findByPk(id);
+
+      if (!user) {
+        throw new Error(`User could not be found with the id: ${id}`);
+      }
+
+      if (restrictions !== undefined && Array.isArray(restrictions)) {
+        user.setDataValue('restrictions', restrictions);
+      }
+      if (roles !== undefined && Array.isArray(roles)) {
+        user.setDataValue('roles', roles);
+      }
+
+      await user.save();
+
+      return {
+        userId: user.id
+      };
+    } catch (err) {
+      const message = err.message || 'Could not update user.';
+      this.logger.logError(message);
+      throw new Error(message);
+    }
+  }
+
   public async updateUser(
     id: string,
     payload: UpdateUserPayloadType
   ): Promise<UpdateUserResponseType> {
     const {
       firstName,
-      lastName,
-      restrictions,
-      roles,
+      lastName
     } = payload;
 
     if (!id) {
@@ -501,12 +541,6 @@ ${pwStrengthMsg}
         }
         user.setDataValue('lastName', lastName);
       }
-      if (restrictions !== undefined && Array.isArray(restrictions)) {
-        user.setDataValue('restrictions', restrictions);
-      }
-      if (roles !== undefined && Array.isArray(roles)) {
-        user.setDataValue('roles', roles);
-      }
 
       await user.save();
 
@@ -515,6 +549,50 @@ ${pwStrengthMsg}
       };
     } catch (err) {
       const message = err.message || 'Could not update user.';
+      this.logger.logError(message);
+      throw new Error(message);
+    }
+  }
+
+  public async updateUserName(
+    id: string,
+    payload: UpdateUsernamePayloadType
+  ): Promise<UpdateUserResponseType> {
+    const {
+      otpCode,
+      username
+    } = payload;
+
+    if (!id) {
+      throw new Error('No id for update username.');
+    }
+
+    const isCodeValid = await OtpService.validateOptCode(id, otpCode);
+    if (!isCodeValid) {
+      throw new Error('Invalid OTP code.');
+    }
+
+    const isAvailable = await this.isUsernameAvailable(username);
+    if (!isAvailable.available) {
+      throw new Error('Username is not available.');
+    }
+
+    try {
+      const user = await UserModel.findByPk(id);
+
+      if (!user) {
+        throw new Error(`User could not be found with the id: ${id}`);
+      }
+
+      user.setDataValue('username', username);
+
+      await user.save();
+
+      return {
+        userId: user.id
+      };
+    } catch (err) {
+      const message = err.message || 'Could not update username.';
       this.logger.logError(message);
       throw new Error(message);
     }

@@ -66,6 +66,11 @@ export type UpdateUserPayloadType = {
   restrictions?: string[];
 };
 
+export type UpdateUsernamePayloadType = {
+  otpCode: string;
+  username: string;
+};
+
 export type UpdateUserResponseType = {
   userId: string;
 };
@@ -75,6 +80,7 @@ export type CreateUserPayloadType = {
   roles: string[];
   username: string;
   countryCode?: string;
+  isTest?: boolean;
   regionCode?: string;
   firstName?: string;
   lastName?: string;

@@ -114,19 +114,19 @@ describe('UserController', () => {
     });
   });
 
-  describe('resendInvite', () => {
-    test('should call sendBadRequest when sent', async () => {
-      // arrange
-      req.body = {
-        id: TEST_UUID,
-        email: TEST_EMAIL
-      };
-      // act
-      await UserController.resendInvite(req, res);
-      // assert
-      expect(sendBadRequest).toHaveBeenCalled();
-    });
-  });
+  // describe('resendInvite', () => {
+  //   test('should call sendBadRequest when sent', async () => {
+  //     // arrange
+  //     req.body = {
+  //       id: TEST_UUID,
+  //       email: TEST_EMAIL
+  //     };
+  //     // act
+  //     await UserController.resendInvite(req, res);
+  //     // assert
+  //     expect(sendBadRequest).toHaveBeenCalled();
+  //   });
+  // });
 
   describe('sendOtpCode', () => {
     test('should call sendBadRequest when sent with userId', async () => {
@@ -157,6 +157,34 @@ describe('UserController', () => {
     });
   });
 
+  describe('updateRolesRestrictions', () => {
+    test('should call sendBadRequest when sent', async () => {
+      // arrange
+      req.params = { id: TEST_UUID };
+      req.body = {
+        roles: ['Test']
+      };
+      // act
+      await UserController.updateRolesRestrictions(req, res);
+      // assert
+      expect(sendBadRequest).toHaveBeenCalled();
+    });
+  });
+
+  describe('updateUsername', () => {
+    test('should call sendBadRequest when sent', async () => {
+      // arrange
+      req.params = { id: TEST_UUID };
+      req.body = {
+        code: 'code',
+        username: 'Test'
+      };
+      // act
+      await UserController.updateUserName(req, res);
+      // assert
+      expect(sendBadRequest).toHaveBeenCalled();
+    });
+  });
   describe('updateUser', () => {
     test('should call sendBadRequest when sent', async () => {
       // arrange

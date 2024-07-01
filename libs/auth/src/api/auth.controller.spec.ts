@@ -125,7 +125,7 @@ describe('AuthController', () => {
       // act
       await AuthController.sendOtpToEmail(req, res);
       // assert
-      expect(sendBadRequest).toHaveBeenCalled();
+      expect(sendOK).toHaveBeenCalled();
     });
   });
 
@@ -136,7 +136,7 @@ describe('AuthController', () => {
       // act
       await AuthController.sendOtpToPhone(req, res);
       // assert
-      expect(sendBadRequest).toHaveBeenCalled();
+      expect(sendOK).toHaveBeenCalled();
     });
   });
 

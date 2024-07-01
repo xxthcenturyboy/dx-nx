@@ -396,7 +396,7 @@ describe('AuthService', () => {
       test('should throw when phone does not exist', async () => {
         // arrange
         const payload: LoginPaylodType = {
-          value: TEST_PHONE_VALID,
+          value: '8584846802',
           code: 'OU812',
         };
         // act
@@ -502,8 +502,7 @@ describe('AuthService', () => {
       });
     });
 
-    describe('sendOtpToPhone', () => {+
-
+    describe('sendOtpToPhone', () => {
       it('should exist', () => {
         expect(authService.sendOtpToPhone).toBeDefined();
       });
@@ -557,7 +556,6 @@ describe('AuthService', () => {
       expect(authService.doesEmailPhoneExist).toBeDefined();
       expect(authService.lockoutFromOtpEmail).toBeDefined();
       expect(authService.login).toBeDefined();
-      expect(authService.requestReset).toBeDefined();
       expect(authService.sendOtpToEmail).toBeDefined();
       expect(authService.sendOtpToPhone).toBeDefined();
       expect(authService.validateEmail).toBeDefined();

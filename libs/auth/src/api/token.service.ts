@@ -47,7 +47,7 @@ export class TokenService {
     this.logger = ApiLoggingClass.instance;
   }
 
-  public async issueAll(): Promise<boolean> {
+  public async issueAll(hasAccountBeenSecured: boolean): Promise<boolean> {
     try {
       const { token, exp } = this.createToken();
       const refresh = await this.createRefreshToken();
@@ -56,6 +56,7 @@ export class TokenService {
 
       this.res.cookie(AUTH_TOKEN_NAMES.AUTH, token, tokenOptions);
       this.token = token;
+      refresh && this.res.cookie(AUTH_TOKEN_NAMES.ACCTSECURE, hasAccountBeenSecured, { httpOnly: true, secure: true });
       refresh && this.res.cookie(AUTH_TOKEN_NAMES.REFRESH, refresh, { httpOnly: true, secure: true });
       this.res.cookie(AUTH_TOKEN_NAMES.EXP, exp);
       return true;
@@ -65,13 +66,16 @@ export class TokenService {
     }
   }
 
-  public async reissueFromRefresh(refreshToken: string): Promise<boolean> {
+  public async reissueFromRefresh(
+    refreshToken: string,
+    hasAccountBeenSecured: boolean
+  ): Promise<boolean> {
     const consumed = await this.consumeRefreshToken(refreshToken);
     if (consumed === false) {
       return false;
     }
 
-    return await this.issueAll();
+    return await this.issueAll(hasAccountBeenSecured);
   }
 
   public invalidateTokens (res: Response): boolean {
@@ -115,20 +119,20 @@ export class TokenService {
     };
   }
 
-  private setAccessToken(): boolean {
-    try {
-      const { token, exp } = this.createToken();
+  // private setAccessToken(): boolean {
+  //   try {
+  //     const { token, exp } = this.createToken();
 
-      const tokenOptions = this.getTokenOptions(exp);
+  //     const tokenOptions = this.getTokenOptions(exp);
 
-      this.res.cookie(AUTH_TOKEN_NAMES.AUTH, token, tokenOptions);
-      this.res.cookie(AUTH_TOKEN_NAMES.EXP, exp);
-      return true;
-    } catch (err) {
-      this.logger.logError(err);
-      return false;
-    }
-  }
+  //     this.res.cookie(AUTH_TOKEN_NAMES.AUTH, token, tokenOptions);
+  //     this.res.cookie(AUTH_TOKEN_NAMES.EXP, exp);
+  //     return true;
+  //   } catch (err) {
+  //     this.logger.logError(err);
+  //     return false;
+  //   }
+  // }
 
   private async getRefreshHistory (): Promise<void> {
     if (!this.userId) {
@@ -238,14 +242,16 @@ export class TokenService {
   }
 
   public validateToken(): boolean {
+    let verified = false;
     if (this.token && this.token !== 'none') {
-      const verified = this.verifyToken();
-      if (verified) {
-        return this.setAccessToken();
-      }
+      verified = this.verifyToken();
+      // if (verified) {
+      //   return this.setAccessToken();
+      // }
     }
 
-    return false;
+    // return false;
+    return verified;
   }
 }
 

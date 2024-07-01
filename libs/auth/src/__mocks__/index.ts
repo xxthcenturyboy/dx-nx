@@ -12,13 +12,13 @@ export class TokenService {
     this.res = res;
   }
 
-  public async issueAll() {
+  public async issueAll(isSecure: boolean) {
     return new Promise((resolve) => {
       resolve(true);
     });
   }
 
-  public async reissueFromRefresh(refreshToken: string) {
+  public async reissueFromRefresh(refreshToken: string, isSecure: boolean) {
     return new Promise((resolve) => {
       resolve(!!refreshToken);
     });

@@ -109,7 +109,8 @@ export class EmailModel extends Model<EmailModel> {
   static async createOrFindOneByUserId (
     userId: string,
     email: string,
-    token: string | null
+    token: string | null,
+    validate?: boolean
   ): Promise<[EmailModel, boolean]> {
     const UserEmail = await this.findOrCreate({
       where: {
@@ -122,6 +123,7 @@ export class EmailModel extends Model<EmailModel> {
         token,
         default: true,
         label: EMAIL_LABEL.MAIN,
+        verifiedAt: validate ? new Date() : null
       }
     });
 

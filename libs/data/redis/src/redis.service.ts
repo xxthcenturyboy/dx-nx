@@ -122,7 +122,6 @@ export class RedisService {
 
     try {
       const data = await this.cacheHandle.get(key);
-      return data as TData;
       if (data) {
         return parseJson<TData>(data);
       }

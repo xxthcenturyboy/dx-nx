@@ -133,7 +133,7 @@ describe('User Models', () => {
         expect(UserModel.createFromUsername).toBeDefined();
         expect(UserModel.updateToken).toBeDefined();
         expect(UserModel.updateOtpCode).toBeDefined();
-        expect(UserModel.setPassword).toBeDefined();
+        expect(UserModel.setPasswordTest).toBeDefined();
         expect(UserModel.updatePassword).toBeDefined();
         expect(UserModel.lockoutOtp).toBeDefined();
       });

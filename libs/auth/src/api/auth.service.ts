@@ -98,7 +98,7 @@ export class AuthService {
           const otpCache = new OtpCodeCache();
           const isCodeValid = await otpCache.validateEmailOtp(code, emailUtil.formattedEmail());
           if (isCodeValid) {
-            user = await UserModel.registerAndCreateFromEmail(emailUtil.formattedEmail());
+            user = await UserModel.registerAndCreateFromEmail(emailUtil.formattedEmail(), true);
 
             if (user) {
               const mail = new MailSendgrid();

@@ -1,9 +1,12 @@
+import { APP_PREFIX } from "@dx/config";
+
 export const AUTH_ENTITY_NAME = 'auth';
 
 export const AUTH_TOKEN_NAMES = {
   AUTH: 'token',
   EXP: 'exp',
-  REFRESH:  'refresh'
+  REFRESH:  'refresh',
+  ACCTSECURE: `${APP_PREFIX}-accts`
 };
 
 export const USER_LOOKUPS = {

@@ -215,7 +215,7 @@ export class UserModel extends Model<UserModel> {
     const emails = await this.getEmails();
 
     const data: EmailModelType | undefined = maxBy(
-      emails.filter(({ isVerified }) => isVerified),
+      emails.filter(({ isVerified, isDeleted }) => isVerified && !isDeleted),
       ({ verifiedAt }) => verifiedAt
     );
 
@@ -280,7 +280,7 @@ export class UserModel extends Model<UserModel> {
     const phones = await this.getPhones();
 
     const PhoneModel: PhoneModelType | undefined = maxBy(
-      phones.filter(({ isVerified }) => isVerified),
+      phones.filter(({ isVerified, isDeleted }) => isVerified && !isDeleted),
       ({ verifiedAt }) => verifiedAt
     );
 
@@ -296,7 +296,7 @@ export class UserModel extends Model<UserModel> {
     const phones = await this.getPhones();
 
     const result = phones.find((phone) => {
-      return phone.default;
+      return phone.default && phone.deletedAt === null;
     });
 
     return result || null;
@@ -338,7 +338,10 @@ export class UserModel extends Model<UserModel> {
     || !!verifiedPhone;
   }
 
-  static async registerAndCreateFromEmail (email: string): Promise<UserModelType> {
+  static async registerAndCreateFromEmail (
+    email: string,
+    shouldValidate: boolean
+  ): Promise<UserModelType> {
     const token = dxEncryptionGenerateRandomValue();
     const tokenExp = DxDateUtilClass.getTimestamp(2, 'days', 'ADD');
 
@@ -348,7 +351,7 @@ export class UserModel extends Model<UserModel> {
       tokenExp,
     });
 
-    await EmailModel.createOrFindOneByUserId(user.id, email, token);
+    await EmailModel.createOrFindOneByUserId(user.id, email, token, shouldValidate);
 
     return user;
   }
@@ -458,7 +461,8 @@ export class UserModel extends Model<UserModel> {
     lastName?: string,
     phone?: string,
     countryCode?: string,
-    regionCode?: string
+    regionCode?: string,
+    shouldValidate?: boolean
   ): Promise<UserModelType> {
     if (!await UserModel.isUsernameAvailable(username)) {
       throw new Error(`The username: ${username} is already in use.`);
@@ -486,13 +490,13 @@ export class UserModel extends Model<UserModel> {
         username,
       });
 
-      const [emailData, didCreateEmail] = await EmailModel.createOrFindOneByUserId(user.id, email, token);
+      const [emailData, didCreateEmail] = await EmailModel.createOrFindOneByUserId(user.id, email, token, shouldValidate);
       if (didCreateEmail && emailData) {
         user.emails = [emailData];
       }
 
       if (phone && countryCode) {
-        const [phoneData, didCreatePhone] = await PhoneModel.createOrFindOneByUserId(user.id, phone, countryCode, regionCode);
+        const [phoneData, didCreatePhone] = await PhoneModel.createOrFindOneByUserId(user.id, phone, countryCode, regionCode, shouldValidate);
         if (didCreatePhone && phoneData) {
           user.phones = [phoneData];
         }
@@ -587,7 +591,12 @@ export class UserModel extends Model<UserModel> {
     return otpCode;
   }
 
-  static async setPassword (id: string, password: string, securityAA: string, securityQQ: string): Promise<[affectedCount: number]> {
+  static async setPasswordTest (
+    id: string,
+    password: string,
+    securityAA: string,
+    securityQQ: string
+  ): Promise<[affectedCount: number]> {
     if (!password || !id) {
       throw new Error(`Bad data provided.`);
     }

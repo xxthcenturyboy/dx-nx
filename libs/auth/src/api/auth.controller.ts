@@ -17,6 +17,7 @@ import {
 import { TokenService } from './token.service';
 import { UserProfileStateType } from '@dx/user';
 import { ApiLoggingClass } from '@dx/logger';
+import { AUTH_TOKEN_NAMES } from '../model/auth.consts';
 
 export const AuthController = {
   authLookup: async function(req: Request, res: Response) {
@@ -40,7 +41,7 @@ export const AuthController = {
       req.session.userId = result.id;
 
       const Token = new TokenService(req, res);
-      const tokenSetup = await Token.issueAll();
+      const tokenSetup = await Token.issueAll(result.hasSecuredAccount);
       if (!tokenSetup) {
         throw new Error('Could not create Auth Tokens!');
       }
@@ -71,7 +72,7 @@ export const AuthController = {
       req.session.userId = result.id;
 
       const Token = new TokenService(req, res);
-      const tokenSetup = await Token.issueAll();
+      const tokenSetup = await Token.issueAll(result.hasSecuredAccount);
       if (!tokenSetup) {
         throw new Error('Could not create Auth Tokens!');
       }
@@ -95,7 +96,8 @@ export const AuthController = {
   },
 
   refreshTokens: async function(req: Request, res: Response) {
-    const refreshToken = req?.cookies?.refresh as string;
+    const refreshToken = req?.cookies[AUTH_TOKEN_NAMES.REFRESH] as string;
+    const isAccountSecured = req?.cookies[AUTH_TOKEN_NAMES.ACCTSECURE] === 'true';
     if (!refreshToken) {
       ApiLoggingClass.instance.logError('No refresh token!');
       return AuthController.logout(req, res);
@@ -107,7 +109,7 @@ export const AuthController = {
       return AuthController.logout(req, res);
     }
 
-    const reissued = await tokenService.reissueFromRefresh(refreshToken);
+    const reissued = await tokenService.reissueFromRefresh(refreshToken, isAccountSecured);
     if (!reissued) {
       ApiLoggingClass.instance.logError('Unable to reissue the tokens.');
       return AuthController.logout(req, res);

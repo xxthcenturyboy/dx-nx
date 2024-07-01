@@ -24,8 +24,6 @@ describe('TokenService', () => {
   // @ts-expect-error - spying on private method
   const getTokenOptionsSpy = jest.spyOn(TokenService.prototype, 'getTokenOptions');
   // @ts-expect-error - spying on private method
-  const setAccessTokenSpy = jest.spyOn(TokenService.prototype, 'setAccessToken');
-  // @ts-expect-error - spying on private method
   const getRefreshHistorySpy = jest.spyOn(TokenService.prototype, 'getRefreshHistory');
   // @ts-expect-error - spying on private method
   const addRefreshToHistorySpy = jest.spyOn(TokenService.prototype, 'addRefreshToHistory');
@@ -65,7 +63,7 @@ describe('TokenService', () => {
     // arrange
     tokenService = new TokenService(req, res);
     // act
-    const result = await tokenService.issueAll();
+    const result = await tokenService.issueAll(true);
     // assert
     expect(result).toBeTruthy();
     expect(createTokenSpy).toHaveBeenCalled();
@@ -79,10 +77,10 @@ describe('TokenService', () => {
     // arrange
     tokenService = new TokenService(req, res);
     // act
-    await tokenService.issueAll();
+    await tokenService.issueAll(true);
     // @ts-expect-error - ok
     const refreshToken = Object.keys(tokenService.refreshHistory)[0];
-    const result = await tokenService.reissueFromRefresh(refreshToken);
+    const result = await tokenService.reissueFromRefresh(refreshToken, true);
     // assert
     expect(result).toBeTruthy();
     expect(consumeRefreshTokenSpy).toHaveBeenCalled();
@@ -108,7 +106,7 @@ describe('TokenService', () => {
     // arrange
     tokenService = new TokenService(req, res);
     // act
-    await tokenService.issueAll();
+    await tokenService.issueAll(true);
     // @ts-expect-error - ok
     const refreshToken = Object.keys(tokenService.refreshHistory)[0];
     const result = await tokenService.hasRefreshBeenUsed(refreshToken);
@@ -122,15 +120,14 @@ describe('TokenService', () => {
     // arrange
     tokenService = new TokenService(req, res);
     // act
-    await tokenService.issueAll();
+    await tokenService.issueAll(true);
     const result = tokenService.validateToken();
     // assert
     expect(result).toBeTruthy();
     expect(verifyTokenSpy).toHaveBeenCalledTimes(1);
     expect(isPayloadValidSpy).toHaveBeenCalledTimes(1);
-    expect(res.cookie).toHaveBeenCalledTimes(4);
-    expect(createTokenSpy).toHaveBeenCalledTimes(2);
-    expect(setAccessTokenSpy).toHaveBeenCalledTimes(1);
-    expect(getTokenOptionsSpy).toHaveBeenCalledTimes(2);
+    expect(res.cookie).toHaveBeenCalledTimes(2);
+    expect(createTokenSpy).toHaveBeenCalledTimes(1);
+    expect(getTokenOptionsSpy).toHaveBeenCalledTimes(1);
   });
 });

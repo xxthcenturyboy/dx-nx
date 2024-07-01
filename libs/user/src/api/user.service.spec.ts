@@ -2,6 +2,7 @@ import { Sequelize } from 'sequelize-typescript';
 
 import { ApiLoggingClass } from '@dx/logger';
 import { PostgresDbConnection } from '@dx/postgres';
+import { RedisService } from '@dx/redis';
 import {
   UserService,
   UserServiceType
@@ -14,7 +15,6 @@ import { UserModel } from '../model/user.postgres-model';
 import {
   isLocal,
   POSTGRES_URI,
-  TEST_EMAIL,
   TEST_EXISTING_EMAIL,
   TEST_EXISTING_USER_ID,
   TEST_PASSWORD,
@@ -22,9 +22,9 @@ import {
   TEST_UUID
 } from '@dx/config';
 import {
-  ResendInvitePayloadType,
   UpdatePasswordPayloadType,
   UpdateUserPayloadType,
+  UpdateUsernamePayloadType,
   UserProfileStateType
 } from '../model/user.types';
 
@@ -32,7 +32,8 @@ jest.mock('@dx/logger');
 
 describe('UserService', () => {
   if (isLocal()) {
-    let db: Sequelize
+    let db: Sequelize;
+    let otpEmail: string;
     let service: UserServiceType;
     let idToUpdate: string;
 
@@ -50,6 +51,14 @@ describe('UserService', () => {
       });
       await connection.initialize();
       db = PostgresDbConnection.dbHandle;
+      new RedisService({
+        isLocal: true,
+        redis: {
+          port: 6379,
+          prefix: 'dx',
+          url: 'redis://redis'
+        }
+      });
     });
 
     beforeEach(() => {
@@ -125,6 +134,32 @@ describe('UserService', () => {
         expect(result.invited).toEqual(true);
 
         idToUpdate = result.id;
+      });
+    });
+
+    describe('updateRolesRestrictions', () => {
+      test('should throw when missing id', async () => {
+        // arrange
+        // act
+        // assert
+        try  {
+          expect(await service.updateRolesAndRestrictions('', {})).toThrow();
+        } catch (err) {
+          expect(err.message).toEqual('No id for update user.');
+        }
+      });
+
+      test('should update the roles and restrictions when executed', async () => {
+        // arrange
+        const payload: UpdateUserPayloadType = {
+          roles: ['USER'],
+          restrictions: []
+        };
+        // act
+        const result = await service.updateRolesAndRestrictions(idToUpdate, payload);
+        // assert
+        expect(result).toBeDefined();
+        expect(result.userId).toEqual(idToUpdate);
       });
     });
 
@@ -244,6 +279,69 @@ describe('UserService', () => {
       });
     });
 
+    describe('updateUserName', () => {
+      test('should throw when missing id', async () => {
+        // arrange
+        const payload: UpdateUsernamePayloadType = {
+          otpCode: 'code',
+          username: 'username'
+        };
+        // act
+        // assert
+        try  {
+          expect(await service.updateUserName('', payload)).toThrow();
+        } catch (err) {
+          expect(err.message).toEqual('No id for update username.');
+        }
+      });
+
+      test('should throw when profanity is used', async () => {
+        // arrange
+        otpEmail = await service.sendOtpCode(idToUpdate);
+        const payload: UpdateUsernamePayloadType = {
+          otpCode: otpEmail,
+          username: 'Asshole'
+        };
+        // act
+        // assert
+        try  {
+          expect(await service.updateUserName(idToUpdate, payload)).toThrow();
+        } catch (err) {
+          expect(err.message).toEqual('Profanity is not allowed');
+        }
+      });
+
+      test('should throw when username is unavailable', async () => {
+        // arrange
+        otpEmail = await service.sendOtpCode(idToUpdate);
+        const payload: UpdateUsernamePayloadType = {
+          otpCode: otpEmail,
+          username: 'admin'
+        };
+        // act
+        // assert
+        try  {
+          expect(await service.updateUserName(idToUpdate, payload)).toThrow();
+        } catch (err) {
+          expect(err.message).toEqual('Username is not available.');
+        }
+      });
+
+      test('should update the username when executed', async () => {
+        // arrange
+        otpEmail = await service.sendOtpCode(idToUpdate);
+        const payload: UpdateUsernamePayloadType = {
+          otpCode: otpEmail,
+          username: 'Superman'
+        };
+        // act
+        const result = await service.updateUserName(idToUpdate, payload);
+        // assert
+        expect(result).toBeDefined();
+        expect(result.userId).toEqual(idToUpdate);
+      });
+    });
+
     // describe('resendInvite', () => {
     //   test('should throw when sent without payload.', async () => {
     //     // arrange
@@ -300,38 +398,24 @@ describe('UserService', () => {
       test('should throw when id is wrong', async () => {
         // arrange
         // act
+        const code = await service.sendOtpCode(TEST_UUID);
         // assert
-        try  {
-          expect(await service.sendOtpCode(TEST_UUID)).toThrow();
-        } catch (err) {
-          expect(err.message).toEqual('No user for this id.');
-        }
-      });
-
-      test('should throw when there are no verified email for user', async () => {
-        // arrange
-        // act
-        // assert
-        try  {
-          expect(await service.sendOtpCode(idToUpdate)).toThrow();
-        } catch (err) {
-          expect(err.message).toEqual('No verified email found.');
-        }
+        expect(code).not.toBeDefined();
       });
 
       test('should send the code when sent', async () => {
         // arrange
         // act
-        const result = await service.sendOtpCode(TEST_EXISTING_USER_ID);
+        otpEmail = await service.sendOtpCode(idToUpdate);
         // assert
-        expect(result).toBeDefined();
-        expect(result.codeSent).toBe(true);
+        expect(otpEmail).toBeDefined();
+        expect(typeof otpEmail === 'string').toBe(true);
       });
     });
 
     describe('updatePassword', () => {
       beforeAll(async () => {
-        await UserModel.setPassword(
+        await UserModel.setPasswordTest(
           idToUpdate,
           TEST_PASSWORD,
           'Name',
@@ -344,6 +428,7 @@ describe('UserService', () => {
         const payload: UpdatePasswordPayloadType = {
           id: '',
           password: '',
+          passwordConfirm: '',
           otpCode: ''
         };
         // act
@@ -360,7 +445,8 @@ describe('UserService', () => {
         const payload: UpdatePasswordPayloadType = {
           id: idToUpdate,
           password: 'password',
-          otpCode: 'CODE11'
+          passwordConfirm: 'password',
+          otpCode: otpEmail
         };
         // act
         // assert
@@ -373,14 +459,13 @@ describe('UserService', () => {
 
       test('should update Password when sent', async () => {
         // arrange
-        await EmailModel.validateEmail(TEST_EMAIL);
-        await service.sendOtpCode(idToUpdate);
-        const user = await UserModel.findByPk(idToUpdate);
+        otpEmail = await service.sendOtpCode(idToUpdate);
 
         const payload: UpdatePasswordPayloadType = {
           id: idToUpdate,
           password: 'JS(*#Jlal__lld9iqe',
-          otpCode: user.otpCode
+          passwordConfirm: 'JS(*#Jlal__lld9iqe',
+          otpCode: otpEmail
         };
         // act
         const result = await service.updatePassword(payload);
