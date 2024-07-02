@@ -35,7 +35,7 @@ describe('AUTH_TOKEN_NAMES ', () => {
     // assert
     expect(AUTH_TOKEN_NAMES.AUTH).toEqual('token');
     expect(AUTH_TOKEN_NAMES.EXP).toEqual('exp');
-    expect(AUTH_TOKEN_NAMES.REFRESH).toEqual('refresh');
+    expect(AUTH_TOKEN_NAMES.REFRESH).toEqual('jwt');
   });
 });
 

@@ -1,5 +1,3 @@
-import { Op } from 'sequelize';
-
 import {
   getUserProfileState,
   UserModel,
@@ -14,13 +12,11 @@ import {
 import {
   AccountCreationPayloadType,
   LoginPaylodType,
-  OtpLockoutResponseType,
   SessionData,
   UserLookupQueryType,
   UserLookupResponseType
 } from '../model/auth.types';
 import {
-  CLIENT_ROUTE,
   USER_LOOKUPS
 } from '../model/auth.consts';
 import {
@@ -34,6 +30,7 @@ import {
   PhoneUtil
 } from '@dx/utils';
 import { OtpCodeCache } from '../model/otp-code.redis-cache';
+import { TokenService } from './token.service';
 
 export class AuthService {
   logger: ApiLoggingClassType;
@@ -283,6 +280,23 @@ export class AuthService {
       this.logger.logError(message);
       throw new Error(err.message);
     }
+  }
+
+  public async logout(refreshToken: string): Promise<boolean> {
+    try {
+      const user = await UserModel.getByRefreshToken(refreshToken);
+      if (!user) {
+        return false;
+      }
+
+      const refreshTokens = user.refreshTokens.filter(token => token !== refreshToken);
+      const userId = TokenService.getUserIdFromToken(refreshToken);
+      return await UserModel.updateRefreshToken(userId, refreshTokens);
+    } catch (err) {
+      this.logger.logError(err);
+    }
+
+    return false;
   }
 
   public async sendOtpToEmail(

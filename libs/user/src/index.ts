@@ -29,6 +29,7 @@ export {
   UserPrivilegestMenuType,
   UserProfileStateType,
   UpdatePrivilegeSetPayloadType,
+  UserSessionType,
   UpdateUsernamePayloadType,
   UserType
 } from './model/user.types';

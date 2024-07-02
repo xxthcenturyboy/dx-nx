@@ -20,6 +20,7 @@ export {
   UserLookupResponseType
 } from './model/auth.types';
 export {
+  AUTH_TOKEN_NAMES,
   USER_LOOKUPS
 } from './model/auth.consts';
 export {

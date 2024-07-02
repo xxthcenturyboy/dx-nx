@@ -16,6 +16,7 @@ import {
   sendFile,
   sendForbidden,
   sendMethodNotAllowed,
+  sendNoContent,
   sendNotFound,
   sendOK,
   sendUnauthorized

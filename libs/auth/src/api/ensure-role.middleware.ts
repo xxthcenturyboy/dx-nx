@@ -9,6 +9,7 @@ import {
   UserModel,
   USER_ROLE
 } from '@dx/user';
+import { TokenService } from './token.service';
 
 export async function userHasRole(
   userId: string,
@@ -28,9 +29,15 @@ export async function hasAdminRole(
   next: NextFunction
 ): Promise<void> {
   try {
-    const userId = req.session.userId;
+    const authHeader = req.headers['authorization'];
+    if (!authHeader) {
+      throw new Error('No Auth Headers Sent.');
+    }
+
+    const token = authHeader.split('Bearer ')[1];
+    const userId = TokenService.getUserIdFromToken(token);
     if (!userId) {
-      throw new Error('No user ID');
+      throw new Error('Token invalid or expired.');
     }
 
     const hasSuperAdminRole = await userHasRole(userId, USER_ROLE.SUPER_ADMIN);
@@ -58,10 +65,17 @@ export async function hasSuperAdminRole(
   next: NextFunction
 ): Promise<void> {
   try {
-    const userId = req.session.userId;
-    if (!userId) {
-      throw new Error('No user ID');
+    const authHeader = req.headers['authorization'];
+    if (!authHeader) {
+      throw new Error('No Auth Headers Sent.');
     }
+
+    const token = authHeader.split('Bearer ')[1];
+    const userId = TokenService.getUserIdFromToken(token);
+    if (!userId) {
+      throw new Error('Token invalid or expired.');
+    }
+
     const hasRole = await userHasRole(userId, USER_ROLE.SUPER_ADMIN);
 
     if (!hasRole) {

@@ -6,8 +6,10 @@ export {
   sendFile,
   sendForbidden,
   sendMethodNotAllowed,
+  sendNoContent,
   sendNotFound,
   sendOK,
   sendUnauthorized,
 } from './lib/http-responses';
 export { handleError } from './lib/error-handler';
+export { CookeiService } from './lib/cookie.service';

@@ -451,6 +451,20 @@ describe('AuthService', () => {
       });
     });
 
+    describe('logout', () => {
+      it('should exist', () => {
+        expect(authService.logout).toBeDefined();
+      });
+
+      test('should return false token does not exist', async () => {
+        // arrange
+        // act
+        const result = await authService.logout('token');
+        // assert
+        expect(result).toBe(false);
+      });
+    });
+
     describe('sendOtpToEmail', () => {
       it('should exist', () => {
         expect(authService.sendOtpToEmail).toBeDefined();
@@ -537,6 +551,7 @@ describe('AuthService', () => {
       expect(authService.createAccount).toBeDefined();
       expect(authService.doesEmailPhoneExist).toBeDefined();
       expect(authService.login).toBeDefined();
+      expect(authService.logout).toBeDefined();
       expect(authService.sendOtpToEmail).toBeDefined();
       expect(authService.sendOtpToPhone).toBeDefined();
       expect(authService.validateEmail).toBeDefined();

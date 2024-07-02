@@ -1,257 +1,116 @@
 import {
-  CookieOptions,
   Request,
   Response
 } from 'express';
-import * as jwt from 'jwt-simple';
+import jwt from 'jsonwebtoken';
 
 import {
+  GenerateTokenParams,
+  GenerateTokenResponse,
   JwtPayloadType,
-  RefreshCacheType
+  TokenExpiration
 } from '../model/token.types';
-import { AUTH_TOKEN_NAMES } from '../model/auth.consts';
 import {
-  DxDateUtilClass,
-  randomId
+  DxDateUtilClass
 } from '@dx/utils';
 import {
-  ApiLoggingClass,
-  ApiLoggingClassType
+  ApiLoggingClass
 } from '@dx/logger';
 import { APP_DOMAIN } from '@dx/config';
-import {
-  TokenCache,
-  TokenCacheType
-} from './token.cache';
 import { JWT_SECRET } from '@dx/config';
+import { UserModel } from '@dx/user';
 
 export class TokenService {
-  public audience: string;
-  public issuer = `accounts.${APP_DOMAIN}`;
-  private logger: ApiLoggingClassType;
-  private refreshHistory: RefreshCacheType | null;
-  private req: Request;
-  private res: Response;
-  public token: string;
-  private tokenCache: TokenCacheType;
-  public userId: string | undefined;
+  public static issuer = `accounts.${APP_DOMAIN}`;
 
-  constructor(req: Request, res: Response) {
-    this.req = req;
-    this.res = res;
-    this.tokenCache = new TokenCache();
-    this.refreshHistory = null;
-    this.token = this.req?.cookies?.token || '';
-    this.userId = this.req?.session?.userId;
-    this.audience = this.userId || 'user';
-    this.logger = ApiLoggingClass.instance;
+  public static generateTokens(
+    userId: string,
+    params?: GenerateTokenParams
+  ): GenerateTokenResponse {
+    const accessExpOptions: TokenExpiration = params?.accessToken
+      ? params?.accessToken
+      : {
+        time: 30,
+        unit: 'minutes',
+        addSub: 'ADD'
+      };
+    const refreshExpOptions: TokenExpiration = params?.refreshToken
+      ? params?.refreshToken
+      : {
+        time: 2,
+        unit: 'days',
+        addSub: 'ADD'
+      };
+
+    const accessTokenExp = DxDateUtilClass.getTimestamp(
+      accessExpOptions.time,
+      accessExpOptions.unit,
+      accessExpOptions.addSub
+    );
+    const accessToken = jwt.sign(
+      {
+        _id: userId,
+        issuer: TokenService.issuer,
+      },
+      JWT_SECRET,
+      {
+        expiresIn: `${accessExpOptions.time} ${accessExpOptions.unit}`
+      }
+    );
+
+    const refreshTokenExp = DxDateUtilClass.getTimestamp(
+      refreshExpOptions.time,
+      refreshExpOptions.unit,
+      refreshExpOptions.addSub
+    );
+    const refreshToken = jwt.sign(
+      {
+        _id: userId,
+        issuer: TokenService.issuer,
+      },
+      JWT_SECRET,
+      {
+        expiresIn: `${refreshExpOptions.time} ${refreshExpOptions.unit}`
+      }
+    );
+
+    return {
+      accessToken,
+      accessTokenExp,
+      refreshToken,
+      refreshTokenExp
+    };
   }
 
-  public async issueAll(hasAccountBeenSecured: boolean): Promise<boolean> {
+  public static getUserIdFromToken(token: string): string {
     try {
-      const { token, exp } = this.createToken();
-      const refresh = await this.createRefreshToken();
-
-      const tokenOptions = this.getTokenOptions(exp);
-
-      this.res.cookie(AUTH_TOKEN_NAMES.AUTH, token, tokenOptions);
-      this.token = token;
-      refresh && this.res.cookie(AUTH_TOKEN_NAMES.ACCTSECURE, hasAccountBeenSecured, { httpOnly: true, secure: true });
-      refresh && this.res.cookie(AUTH_TOKEN_NAMES.REFRESH, refresh, { httpOnly: true, secure: true });
-      this.res.cookie(AUTH_TOKEN_NAMES.EXP, exp);
-      return true;
+      const payload = jwt.verify(token, JWT_SECRET) as JwtPayloadType;
+      return payload._id || '';
     } catch (err) {
-      this.logger.logError(err);
-      return false;
+      ApiLoggingClass.instance.logError(err);
     }
+    return '';
   }
 
-  public async reissueFromRefresh(
-    refreshToken: string,
-    hasAccountBeenSecured: boolean
-  ): Promise<boolean> {
-    const consumed = await this.consumeRefreshToken(refreshToken);
-    if (consumed === false) {
-      return false;
-    }
+  public static async isRefreshValid(refreshToken: string): Promise<string | boolean> {
+    try {
+      const user = await UserModel.getByRefreshToken(refreshToken);
+      if (!user) {
+        const userId = TokenService.getUserIdFromToken(refreshToken);
+        if (!userId) {
+          return false;
+        }
 
-    return await this.issueAll(hasAccountBeenSecured);
-  }
-
-  public invalidateTokens (res: Response): boolean {
-    if (res) {
-      const options = {
-        httpOnly: true,
-        expires: new Date(Date.now() + 5 * 1000)
-      };
-
-      res.cookie(AUTH_TOKEN_NAMES.AUTH, 'none', options);
-      res.cookie(AUTH_TOKEN_NAMES.REFRESH, 'none', options);
-      res.cookie(AUTH_TOKEN_NAMES.EXP, 'none', options);
-      if (this.userId) {
-        void this.tokenCache.deleteCache(this.userId);
-      }
-      return true;
-    }
-
-    return false;
-  }
-
-  public async hasRefreshBeenUsed (refreshToken: string): Promise<boolean> {
-    if (!refreshToken) {
-      return true;
-    }
-
-    await this.getRefreshHistory();
-
-    if (!this.refreshHistory) {
-      return true;
-    }
-
-    return this.refreshHistory[refreshToken];
-  }
-
-  private getTokenOptions (exp: number): CookieOptions {
-    return {
-      httpOnly: true,
-      expires: new Date(exp * 1000),
-      secure: true,
-    };
-  }
-
-  // private setAccessToken(): boolean {
-  //   try {
-  //     const { token, exp } = this.createToken();
-
-  //     const tokenOptions = this.getTokenOptions(exp);
-
-  //     this.res.cookie(AUTH_TOKEN_NAMES.AUTH, token, tokenOptions);
-  //     this.res.cookie(AUTH_TOKEN_NAMES.EXP, exp);
-  //     return true;
-  //   } catch (err) {
-  //     this.logger.logError(err);
-  //     return false;
-  //   }
-  // }
-
-  private async getRefreshHistory (): Promise<void> {
-    if (!this.userId) {
-      return;
-    }
-
-    this.refreshHistory = await this.tokenCache.getCache(this.userId);
-  }
-
-  private async addRefreshToHistory(refreshToken: string): Promise<boolean> {
-    if (!refreshToken || !this.userId) {
-      return false;
-    }
-
-    if (!this.refreshHistory) {
-      await this.getRefreshHistory();
-    }
-
-    if (!this.refreshHistory) {
-      this.refreshHistory = {
-        [refreshToken]: false
-      };
-    } else {
-      this.refreshHistory = {
-        ...this.refreshHistory,
-        [refreshToken]: false
-      };
-    }
-
-    return await this.tokenCache.setCache(this.userId, this.refreshHistory);
-  }
-
-  private async consumeRefreshToken (refreshToken: string): Promise<boolean> {
-    if (!refreshToken || !this.userId) {
-      return false;
-    }
-
-    if (!this.refreshHistory) {
-      await this.getRefreshHistory();
-    }
-
-    if (!this.refreshHistory) {
-      return false;
-    }
-
-    this.refreshHistory[refreshToken] = true;
-    return await this.tokenCache.setCache(this.userId, this.refreshHistory);
-  }
-
-  private createToken(): { token: string, exp: number} {
-    const exp = DxDateUtilClass.getTimestamp(4, 'hour', 'ADD');
-    const payload: JwtPayloadType = {
-      exp,
-      audience: this.audience,
-      issuer: this.issuer,
-      sub: this.userId || '',
-    };
-    return {
-      exp,
-      token: jwt.encode(payload, JWT_SECRET)
-    };
-  }
-
-  private async createRefreshToken(): Promise<string | false> {
-    const refreshToken = `${new Date().getTime()}-${randomId()}`;
-    const added = await this.addRefreshToHistory(refreshToken);
-    return added && refreshToken;
-  }
-
-  private isPayloadValid(payload: JwtPayloadType): boolean {
-    if (!payload) {
-      return false;
-    }
-
-    if (!payload.sub || payload.sub !== this.userId) {
-      return false;
-    }
-
-    if (!payload.issuer || payload.issuer !== this.issuer) {
-      return false;
-    }
-
-    if (!payload.audience || payload.audience !== this.audience) {
-      return false;
-    }
-
-    if (!payload.exp) {
-      return false;
-    }
-
-    return true;
-  }
-
-  private verifyToken(): boolean {
-    try  {
-      const payload = jwt.decode(this.token, JWT_SECRET) as JwtPayloadType;
-      if (this.isPayloadValid(payload)) {
-        const nextExpire = DxDateUtilClass.getTimestamp();
-        return payload.exp > nextExpire;
+        // this user has been hacked
+        await UserModel.clearRefreshTokens(userId);
+        return false;
       }
 
-      return false;
+      return user.id;
     } catch (err) {
-      this.logger.logError(err);
+      ApiLoggingClass.instance.logError(err);
       return false;
     }
-  }
-
-  public validateToken(): boolean {
-    let verified = false;
-    if (this.token && this.token !== 'none') {
-      verified = this.verifyToken();
-      // if (verified) {
-      //   return this.setAccessToken();
-      // }
-    }
-
-    // return false;
-    return verified;
   }
 }
 

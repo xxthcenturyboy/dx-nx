@@ -1,4 +1,5 @@
 import * as Express from 'express';
+import { UserSessionType } from '@dx/user';
 
 interface SessionData {
   userId?: string;
@@ -29,6 +30,7 @@ declare global {
     interface Request {
       session: SessionData;
       sessionId: string;
+      user?: UserSessionType
     }
   }
 }

@@ -3,12 +3,13 @@ import {
   ModelCtor
 } from "sequelize-typescript";
 
-import { EmailModel } from "@dx/email";
-import { PhoneModel } from "@dx/phone";
 import {
   UserModel,
   UserPrivilegeSetModel
 } from "@dx/user";
+import { EmailModel } from "@dx/email";
+import { PhoneModel } from "@dx/phone";
+
 import { ShortLinkModel } from "@dx/shortlink";
 import { logTable } from "@dx/utils";
 

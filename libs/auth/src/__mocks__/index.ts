@@ -2,59 +2,32 @@ import {
   Request,
   Response
 } from "express";
+import {
+  GenerateTokenParams,
+  GenerateTokenResponse
+} from "../model/token.types";
+import { TEST_EXISTING_USER_ID } from '@dx/config';
 
 export class TokenService {
-  private req: Request;
-  private res: Response;
-
-  constructor(req: Request, res: Response) {
-    this.req = req;
-    this.res = res;
+  public static generateTokens(
+    userId: string,
+    params?: GenerateTokenParams
+  ): GenerateTokenResponse {
+    return {
+      accessToken: '',
+      accessTokenExp: 1,
+      refreshToken: '',
+      refreshTokenExp: 1
+    };
   }
 
-  public async issueAll(isSecure: boolean) {
-    return new Promise((resolve) => {
-      resolve(true);
-    });
+  public static getUserIdFromToken(token: string): string {
+    return TEST_EXISTING_USER_ID;
   }
 
-  public async reissueFromRefresh(refreshToken: string, isSecure: boolean) {
-    return new Promise((resolve) => {
-      resolve(!!refreshToken);
-    });
-  }
-
-  public invalidateTokens(res: Response) {
-    return true;
-  }
-
-  public async hasRefreshBeenUsed(refreshToken: string) {
-    return new Promise((resolve) => {
-      resolve(!!refreshToken);
-    });
+  public static isRefreshValid(token: string): string | boolean {
+    return '';
   }
 }
 
 export type TokenServiceType = typeof TokenService.prototype;
-
-export class TokenCache {
-  setCache(userId: string, keyArray: any) {
-    console.log('tryna set cache');
-    return new Promise((resolve) => {
-      resolve(true);
-    });
-  }
-
-  getCache(userId: string) {
-    console.log('tryna get cache');
-    return new Promise((resolve) => {
-      resolve({ data: userId });
-    });
-  }
-
-  deleteCache(userId: string) {
-    return new Promise((resolve) => {
-      resolve(true);
-    });
-  }
-}

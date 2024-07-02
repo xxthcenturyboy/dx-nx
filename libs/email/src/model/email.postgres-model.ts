@@ -53,8 +53,10 @@ export class EmailModel extends Model<EmailModel> {
   @Column({ field: 'user_id', type: DataType.UUID })
   userId: string;
 
-  @BelongsTo(() => UserModel)
-  user: UserModel;
+  // This prevents the custom generator from running to create new library modules
+  // ?? resolve by renaming moudle/
+  @BelongsTo(() => UserModel, 'userId')
+  user?: UserModel;
 
   @IsEmail
   @AllowNull(false)
@@ -157,7 +159,7 @@ export class EmailModel extends Model<EmailModel> {
     });
   }
 
-  static async findAllByUserId (userId): Promise<EmailModel[]> {
+  static async findAllByUserId (userId: string): Promise<EmailModel[]> {
     return await EmailModel.findAll({
       where: {
         userId,

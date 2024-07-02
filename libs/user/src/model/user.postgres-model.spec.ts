@@ -133,6 +133,10 @@ describe('User Models', () => {
         expect(UserModel.updateToken).toBeDefined();
         expect(UserModel.setPasswordTest).toBeDefined();
         expect(UserModel.updatePassword).toBeDefined();
+        expect(UserModel.getByRefreshToken).toBeDefined();
+        expect(UserModel.getUserSessionData).toBeDefined();
+        expect(UserModel.clearRefreshTokens).toBeDefined();
+        expect(UserModel.updateRefreshToken).toBeDefined();
       });
     });
 

@@ -1,4 +1,5 @@
 import {
+  col,
   fn,
   literal,
   Op
@@ -44,6 +45,7 @@ import {
 } from './user.consts';
 import { usernameValidator } from '../api/username.validator';
 import { ApiLoggingClass } from '@dx/logger';
+import { UserSessionType } from './user.types';
 
 @Table({
   modelName: USER_ENTITY_POSTGRES_DB_NAME,
@@ -126,6 +128,9 @@ export class UserModel extends Model<UserModel> {
     }
   })
   restrictions: string[] | null;
+
+  @Column({ field: 'refresh_tokens', type: DataType.ARRAY(DataType.STRING) })
+  refreshTokens: string[] | null;
 
   @Default(fn('now'))
   @AllowNull(false)
@@ -501,8 +506,146 @@ export class UserModel extends Model<UserModel> {
       throw err;
     }
   }
-  // TODO: Remove
-  static async getByToken (token: string): Promise<UserModelType> {
+
+  static async getByRefreshToken (token: string): Promise<UserModelType> {
+    const data = await this.findOne({
+      where: {
+        refreshTokens: { [Op.contains]: [token] },
+        deletedAt: null
+      }
+    });
+
+    if (!data) {
+      throw new Error(`No user found with that token.`);
+    }
+
+    return data;
+  }
+
+  static async clearRefreshTokens (id: string): Promise<boolean> {
+    if (
+      !id
+    ) {
+      throw new Error(`No id provided.`);
+    }
+
+    const res = await UserModel.update(
+      { refreshTokens: null },
+      {
+        where: {
+          id,
+          deletedAt: null
+        }
+      }
+    );
+
+    return res
+     && Array.isArray(res)
+      && res[0] === 0;
+  }
+
+  static async updateRefreshToken (
+    id: string,
+    token: string | string[],
+    initialize?: boolean
+  ): Promise<boolean> {
+    if (
+      !id
+      || ! token
+    ) {
+      throw new Error(`No id or token provided.`);
+    }
+
+    let res: number[];
+
+    if (Array.isArray(token)) {
+      res = await UserModel.update(
+        { refreshTokens: token },
+        {
+          where: {
+            id,
+            deletedAt: null
+          }
+        }
+      );
+    }
+
+    if (typeof token === 'string') {
+      if (initialize) {
+        res = await UserModel.update(
+          { refreshTokens: [token as string] },
+          {
+            where: {
+              id,
+              deletedAt: null
+            }
+          }
+        );
+      }
+
+      if (!initialize) {
+        res = await UserModel.update(
+          { refreshTokens: fn('array_append', col('refresh_tokens'), token) },
+          {
+            where: {
+              id,
+              deletedAt: null
+            }
+          }
+        );
+      }
+    }
+
+    return res
+     && Array.isArray(res)
+      && res[0] === 0;
+  }
+
+  static async getUserSessionData(id: string): Promise<UserSessionType> {
+    const data = await this.findOne({
+      where: {
+        id,
+        deletedAt: null,
+      },
+      include: [
+        {
+          model: EmailModel,
+        },
+        {
+          model: PhoneModel,
+        }
+      ],
+    });
+
+    const sessionData: UserSessionType = {
+      id: '',
+      fullName: '',
+      hasSecuredAccount: false,
+      isAdmin: false,
+      isSuperAdmin: false,
+      optInBeta: false,
+      roles: [],
+      username: '',
+      restrictions: []
+    };
+
+    if (data) {
+      sessionData.fullName = data.fullName;
+      sessionData.id = data.id;
+      sessionData.hasSecuredAccount = await data.hasSecuredAccount();
+      sessionData.isAdmin = data.isAdmin;
+      sessionData.isSuperAdmin = data.isSuperAdmin;
+      sessionData.optInBeta = data.optInBeta;
+      sessionData.restrictions = data.restrictions;
+      sessionData.roles = data.roles;
+      sessionData.username = data.username;
+    }
+
+    return sessionData;
+  }
+
+   // TODO: Remove
+   static async getByToken (token: string): Promise<UserModelType> {
     const data = await this.findOne({
       where: {
         token,
@@ -539,6 +682,7 @@ export class UserModel extends Model<UserModel> {
     return data;
   }
 
+  // TODO: Remove
   static async updateToken (id: string): Promise<string> {
     if (!id) {
       throw new Error(`No user ID provided`);

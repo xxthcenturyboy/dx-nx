@@ -9,11 +9,10 @@ import {
 } from 'express';
 
 import { ApiLoggingClass } from '@dx/logger';
-import { TokenService } from '@dx/auth';
+import { CookeiService } from './cookie.service';
 
 export function destroySession(req: Request, res: Response) {
-  const token = new TokenService(req, res);
-  token.invalidateTokens(res);
+  CookeiService.clearCookies(res);
   req.session?.destroy(() => null);
 }
 
@@ -23,6 +22,10 @@ export function send400(res: Response, data: any): void {
 
 export function sendOK(req: Request, res: Response, data: any): void {
   res.status(StatusCodes.OK).send(data).end();
+}
+
+export function sendNoContent(req: Request, res: Response, data: any): void {
+  res.status(StatusCodes.NO_CONTENT).send(data).end();
 }
 
 export function sendFile(req: Request, res: Response, pathToFile: string, fileName: string): void {

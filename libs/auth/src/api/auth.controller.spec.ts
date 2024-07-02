@@ -11,22 +11,32 @@ import {
 } from '../model/auth.types';
 import {
   sendOK,
-  sendBadRequest
+  sendBadRequest,
+  sendNoContent,
+  CookeiService,
+  sendUnauthorized
 } from '@dx/server';
 import { ApiLoggingClass } from '@dx/logger';
 import {
   TEST_EMAIL,
-  TEST_PASSWORD,
-  TEST_PHONE,
-  TEST_PHONE_VALID
+  TEST_PASSWORD
 } from '@dx/config';
 
 jest.mock('./auth.service.ts');
 jest.mock('./token.service.ts');
 jest.mock('@dx/logger');
 jest.mock('@dx/server', () => ({
+  CookeiService: {
+    clearCookie: jest.fn(),
+    clearCookies: jest.fn(),
+    getCookie: jest.fn(),
+    setCookie: jest.fn(),
+    setCookies: jest.fn()
+  },
   sendOK: jest.fn(),
-  sendBadRequest: jest.fn()
+  sendBadRequest: jest.fn(),
+  sendNoContent: jest.fn(),
+  sendUnauthorized: jest.fn()
 }));
 
 describe('AuthController', () => {
@@ -76,7 +86,7 @@ describe('AuthController', () => {
   });
 
   describe('logout', () => {
-    test('should sendOk when invoked', async () => {
+    test('should sendNoContent when invoked', async () => {
       // arrange
       req.session = {
         destroy: jest.fn()
@@ -84,12 +94,12 @@ describe('AuthController', () => {
       // act
       await AuthController.logout(req, res);
       // assert
-      expect(req.session.destroy).toHaveBeenCalled();
+      expect(sendNoContent).toHaveBeenCalled();
     });
   });
 
   describe('refreshTokens', () => {
-    test('should sendOk when invoked', async () => {
+    test('should sendUnauthorized when invoked', async () => {
       // arrange
       req.session = {
         destroy: jest.fn(),
@@ -100,7 +110,7 @@ describe('AuthController', () => {
       // act
       await AuthController.refreshTokens(req, res);
       // assert
-      expect(req.session.destroy).toHaveBeenCalled();
+      expect(sendUnauthorized).toHaveBeenCalled();
     });
   });
 

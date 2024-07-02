@@ -6,18 +6,21 @@ import {
 import { AuthService } from './auth.service';
 import {
   sendBadRequest,
-  sendOK
+  sendOK,
+  sendNoContent,
+  sendUnauthorized
 } from '@dx/server';
 import {
   AccountCreationPayloadType,
   LoginPaylodType,
-  OtpLockoutResponseType,
   UserLookupQueryType
 } from '../model/auth.types';
 import { TokenService } from './token.service';
+import { CookeiService } from '@dx/server';
 import { UserProfileStateType } from '@dx/user';
 import { ApiLoggingClass } from '@dx/logger';
 import { AUTH_TOKEN_NAMES } from '../model/auth.consts';
+import { UserModel } from '@dx/user';
 
 export const AuthController = {
   authLookup: async function(req: Request, res: Response) {
@@ -33,20 +36,23 @@ export const AuthController = {
   createAccount: async function(req: Request, res: Response) {
     try {
       const service = new AuthService();
-      const result = await service.createAccount(
+      const profile = await service.createAccount(
         req.body as AccountCreationPayloadType,
         req.session
       ) as UserProfileStateType;
 
-      req.session.userId = result.id;
+      req.session.userId = profile.id;
 
-      const Token = new TokenService(req, res);
-      const tokenSetup = await Token.issueAll(result.hasSecuredAccount);
-      if (!tokenSetup) {
-        throw new Error('Could not create Auth Tokens!');
+      const tokens = TokenService.generateTokens(profile.id);
+      if (tokens.refreshToken) {
+        CookeiService.setCookies(res, profile.hasSecuredAccount, tokens.refreshToken, tokens.refreshTokenExp);
+        await UserModel.updateRefreshToken(profile.id, tokens.refreshToken, true);
       }
 
-      sendOK(req, res, result);
+      sendOK(req, res, {
+        profile,
+        token: tokens.accessToken
+      });
     } catch (err) {
       sendBadRequest(req, res, err.message);
     }
@@ -55,55 +61,87 @@ export const AuthController = {
   login: async function(req: Request, res: Response) {
     try {
       const service = new AuthService();
-      const result = await service.login(req.body as LoginPaylodType) as UserProfileStateType;
+      const profile = await service.login(req.body as LoginPaylodType) as UserProfileStateType;
 
-      req.session.userId = result.id;
+      req.session.userId = profile.id;
 
-      const Token = new TokenService(req, res);
-      const tokenSetup = await Token.issueAll(result.hasSecuredAccount);
-      if (!tokenSetup) {
-        throw new Error('Could not create Auth Tokens!');
+      const tokens = TokenService.generateTokens(profile.id);
+      if (tokens.refreshToken) {
+        CookeiService.setCookies(res, profile.hasSecuredAccount, tokens.refreshToken, tokens.refreshTokenExp);
+        await UserModel.updateRefreshToken(profile.id, tokens.refreshToken, true);
       }
 
-      sendOK(req, res, result);
+      sendOK(req, res, {
+        profile,
+        token: tokens.accessToken
+      });
     } catch (err) {
       sendBadRequest(req, res, err.message);
     }
   },
 
   logout: async function(req: Request, res: Response) {
-    req.session.destroy((err) => {
-      const tokenService = new TokenService(req, res);
-      tokenService.invalidateTokens(res);
-      if (err) {
-        return sendBadRequest(req, res, err.message || 'Failed to destroy session');
+    try {
+      const refreshToken = CookeiService.getCookie(req, AUTH_TOKEN_NAMES.REFRESH);
+      CookeiService.clearCookies(res);
+      if (!refreshToken) {
+        return sendNoContent(req, res, '');
       }
-      ApiLoggingClass.instance.logInfo(`Session Destroyed: ${req.sessionId}`);
+      const service = new AuthService();
+      const result = await service.logout(refreshToken);
+      if (!result) {
+        return sendNoContent(req, res, '');
+      }
+
+      req.session.destroy((err: Error) => {
+        if (err) {
+          return sendBadRequest(req, res, err.message || 'Failed to destroy session');
+        }
+        ApiLoggingClass.instance.logInfo(`Session Destroyed: ${req.sessionId}`);
+      });
+
       sendOK(req, res, { loggedOut: true });
-    });
+    } catch (err) {
+      sendBadRequest(req, res, err.message);
+    }
   },
 
   refreshTokens: async function(req: Request, res: Response) {
-    const refreshToken = req?.cookies[AUTH_TOKEN_NAMES.REFRESH] as string;
-    const isAccountSecured = req?.cookies[AUTH_TOKEN_NAMES.ACCTSECURE] === 'true';
+    const refreshToken = CookeiService.getCookie(req, AUTH_TOKEN_NAMES.REFRESH);
     if (!refreshToken) {
-      ApiLoggingClass.instance.logError('No refresh token!');
-      return AuthController.logout(req, res);
+      ApiLoggingClass.instance.logError('No refresh token.');
+      CookeiService.clearCookies(res);
+      req.session.destroy((err: Error) => {
+        if (err) {
+          return sendBadRequest(req, res, err.message || 'Failed to destroy session');
+        }
+        ApiLoggingClass.instance.logInfo(`Session Destroyed: ${req.sessionId}`);
+      });
+      return sendUnauthorized(req, res, 'no refresh token.');
     }
 
-    const tokenService = new TokenService(req, res);
-    if (await tokenService.hasRefreshBeenUsed(refreshToken)) {
-      ApiLoggingClass.instance.logError('Token has already been used.');
-      return AuthController.logout(req, res);
+    CookeiService.clearCookie(res, AUTH_TOKEN_NAMES.REFRESH);
+
+    const userId = await TokenService.isRefreshValid(refreshToken);
+    if (!userId) {
+      return sendUnauthorized(req, res, 'Invalid token.');
     }
 
-    const reissued = await tokenService.reissueFromRefresh(refreshToken, isAccountSecured);
-    if (!reissued) {
-      ApiLoggingClass.instance.logError('Unable to reissue the tokens.');
-      return AuthController.logout(req, res);
+    const tokens = TokenService.generateTokens(userId as string);
+    if (tokens.refreshToken) {
+      const accountSecured = req?.cookies[AUTH_TOKEN_NAMES.ACCTSECURE];
+      CookeiService.setCookies(res, accountSecured === 'true', tokens.refreshToken, tokens.refreshTokenExp);
+      try {
+        await UserModel.updateRefreshToken(userId as string, tokens.refreshToken);
+        return sendOK(req, res, {
+          accessToken: tokens.accessToken
+        });
+      } catch (err) {
+        ApiLoggingClass.instance.logError(err);
+      }
     }
 
-    sendOK(req, res, 'Tokens Reissued');
+    sendBadRequest(req, res, 'Could not refresh the token.');
   },
 
   sendOtpToEmail: async function(req: Request, res: Response) {
