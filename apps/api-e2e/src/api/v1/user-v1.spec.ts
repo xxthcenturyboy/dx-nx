@@ -23,10 +23,13 @@ import {
   TEST_UUID
 } from '@dx/config';
 import { UpdateUsernamePayloadType } from '@dx/user';
-import { OtpResponseType } from '@dx/auth';
+import {
+  AuthSuccessResponseType,
+  OtpResponseType
+} from '@dx/auth';
 
 describe('v1 User Routes', () => {
-  let authRes: UserProfileStateType;
+  let authRes: AuthSuccessResponseType;
   let authUtil: AuthUtilType;
   let workingUserId: string;
 
@@ -44,7 +47,7 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user/check/availabilty?username=usernameNotInSystem`,
         method: 'GET',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
       };
@@ -60,7 +63,7 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user/check/availabilty?username=admin`,
         method: 'GET',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
       };
@@ -76,7 +79,7 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user/check/availabilty?username=asshole`,
         method: 'GET',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
       };
@@ -100,7 +103,7 @@ describe('v1 User Routes', () => {
         url: '/api/v1/user/list',
         method: 'GET',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
       };
@@ -120,7 +123,7 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user/user/${TEST_EXISTING_USER_ID}`,
         method: 'GET',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
       };
@@ -136,7 +139,7 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user/user/${TEST_UUID}`,
         method: 'GET',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
       };
@@ -160,7 +163,7 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user/profile`,
         method: 'GET',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
       };
@@ -178,7 +181,7 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user`,
         method: 'POST',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
         data: TEST_USER_CREATE
@@ -197,7 +200,7 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user`,
         method: 'POST',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
         data: {
@@ -226,7 +229,7 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user/send-otp-code`,
         method: 'POST',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true
       };
@@ -249,7 +252,7 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user/${workingUserId}`,
         method: 'PUT',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
         data: payload
@@ -271,7 +274,7 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user/roles-restrictions/${workingUserId}`,
         method: 'PUT',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
         data: payload
@@ -300,7 +303,7 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user/send-otp-code`,
         method: 'POST',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true
       });
@@ -313,7 +316,7 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user/update/username/${workingUserId}`,
         method: 'PUT',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
         data: payload
@@ -336,7 +339,7 @@ describe('v1 User Routes', () => {
   //       url: `/api/v1/user/resend/invite`,
   //       method: 'PUT',
   //       headers: {
-  //         cookie: authUtil.cookeisRaw
+  //         ...authUtil.getHeaders()
   //       },
   //       withCredentials: true,
   //       data: payload
@@ -357,7 +360,7 @@ describe('v1 User Routes', () => {
   //       url: `/api/v1/user/resend/invite`,
   //       method: 'PUT',
   //       headers: {
-  //         cookie: authUtil.cookeisRaw
+  //         ...authUtil.getHeaders()
   //       },
   //       withCredentials: true,
   //       data: payload
@@ -398,7 +401,7 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user/send-otp-code`,
         method: 'POST',
         headers: {
-          cookie: authUtilUpdate.cookeisRaw
+          ...authUtilUpdate.getHeaders()
         },
         withCredentials: true
       });
@@ -416,7 +419,7 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user/update/password`,
         method: 'PUT',
         headers: {
-          cookie: authUtilUpdate.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
         data: payload
@@ -439,7 +442,7 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user/update/password`,
         method: 'PUT',
         headers: {
-          cookie: authUtilUpdate.cookeisRaw
+          ...authUtilUpdate.getHeaders()
         },
         withCredentials: true,
         data: payload
@@ -468,7 +471,7 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user/update/password`,
         method: 'PUT',
         headers: {
-          cookie: authUtilUpdate.cookeisRaw
+          ...authUtilUpdate.getHeaders()
         },
         withCredentials: true,
         data: payload
@@ -493,7 +496,7 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user/${workingUserId}`,
         method: 'DELETE',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true
       };
@@ -509,7 +512,7 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user/test/${workingUserId}`,
         method: 'DELETE',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true
       };

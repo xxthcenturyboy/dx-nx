@@ -5,14 +5,17 @@ import axios, {
   AxiosResponse
 } from 'axios';
 
-import { LoginPaylodType } from 'libs/auth/src/model/auth.types';
-import { UserProfileStateType } from '@dx/user';
+import {
+  AuthSuccessResponseType,
+  LoginPaylodType
+} from '@dx/auth';
 import {
   TEST_EXISTING_EMAIL,
   TEST_EXISTING_PASSWORD
 } from '@dx/config';
 
 export class AuthUtil {
+  accessToken: string;
   cookies: Record<string, string>;
   cookeisRaw: string[];
 
@@ -33,21 +36,23 @@ export class AuthUtil {
   public async login(
     email?: string,
     password?: string
-  ) {
-    const paylod: LoginPaylodType = {
+  ): Promise<AuthSuccessResponseType> {
+    const payload: LoginPaylodType = {
       value: email || TEST_EXISTING_EMAIL,
+      // password: password || 'akjd0023kakdj_**_('
       password: password || TEST_EXISTING_PASSWORD
     };
 
     const request: AxiosRequestConfig = {
       url: '/api/v1/auth/login',
       method: 'POST',
-      data: paylod
+      data: payload
     };
 
     try {
-      const response = await axios.request<UserProfileStateType>(request);
+      const response = await axios.request<AuthSuccessResponseType>(request);
       this.setCookies(response.headers['set-cookie']);
+      this.accessToken = response.data.accessToken;
       return response.data;
     } catch (err) {
       const typedError = err as AxiosError;
@@ -58,13 +63,16 @@ export class AuthUtil {
       );
     }
 
-    return false;
+    return {
+      accessToken: undefined,
+      profile: undefined
+    };
   }
 
   public async loginEmalPasswordless(
     email: string,
     code: string
-  ) {
+  ): Promise<AuthSuccessResponseType> {
     const request: AxiosRequestConfig = {
       url: '/api/v1/auth/login',
       method: 'POST',
@@ -75,8 +83,9 @@ export class AuthUtil {
     };
 
     try {
-      const response = await axios.request<UserProfileStateType>(request);
+      const response = await axios.request<AuthSuccessResponseType>(request);
       this.setCookies(response.headers['set-cookie']);
+      this.accessToken = response.data.accessToken;
       return response.data;
     } catch (err) {
       const typedError = err as AxiosError;
@@ -87,7 +96,17 @@ export class AuthUtil {
       );
     }
 
-    return false;
+    return {
+      accessToken: undefined,
+      profile: undefined
+    };
+  }
+
+  public getHeaders() {
+    return {
+      Authorization: `Bearer ${this.accessToken}`,
+      cookie: this.cookeisRaw
+    };
   }
 }
 

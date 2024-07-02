@@ -11,7 +11,8 @@ import {
   TokenExpiration
 } from '../model/token.types';
 import {
-  DxDateUtilClass
+  DxDateUtilClass,
+  randomId
 } from '@dx/utils';
 import {
   ApiLoggingClass
@@ -51,6 +52,7 @@ export class TokenService {
       {
         _id: userId,
         issuer: TokenService.issuer,
+        // sub: randomId().toString()
       },
       JWT_SECRET,
       {
@@ -67,6 +69,7 @@ export class TokenService {
       {
         _id: userId,
         issuer: TokenService.issuer,
+        // sub: randomId().toString()
       },
       JWT_SECRET,
       {

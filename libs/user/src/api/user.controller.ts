@@ -5,6 +5,7 @@ import {
 
 import { UserService } from './user.service';
 import {
+  HeaderService,
   sendBadRequest,
   sendOK
 } from '@dx/server';
@@ -16,6 +17,7 @@ import {
   UpdatePasswordPayloadType,
   UpdateUserPayloadType
 } from '../model/user.types';
+import { TokenService } from '@dx/auth';
 
 export const UserController = {
   checkUsernameAvailability: async function (req: Request, res: Response) {
@@ -86,7 +88,8 @@ export const UserController = {
 
   getUserProfile: async function(req: Request, res: Response) {
     try {
-      const userId = req.session?.userId || '';
+      const authToken = HeaderService.getTokenFromAuthHeader(req);
+      const userId = TokenService.getUserIdFromToken(authToken);
       const service = new UserService();
       const result = await service.getProfile(userId);
       if (result) {
@@ -113,23 +116,10 @@ export const UserController = {
     }
   },
 
-  // resendInvite: async function(req: Request, res: Response) {
-  //   try {
-  //     const service = new UserService();
-  //     const result = await service.resendInvite(req.body as ResendInvitePayloadType);
-  //     if (result) {
-  //       return sendOK(req, res, result);
-  //     }
-
-  //     sendBadRequest(req, res, `Invite could not be sent.`);
-  //   } catch (err) {
-  //     sendBadRequest(req, res, err.message);
-  //   }
-  // },
-
   sendOtpCode: async function(req: Request, res: Response) {
     try {
-      const userId = req.session?.userId || '';
+      const authToken = HeaderService.getTokenFromAuthHeader(req);
+      const userId = TokenService.getUserIdFromToken(authToken);
       const service = new UserService();
       const result = await service.sendOtpCode(userId);
       if (result) {

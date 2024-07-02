@@ -4,7 +4,10 @@ import {
   NextFunction
 } from 'express';
 import { ApiLoggingClass } from '@dx/logger';
-import { sendUnauthorized } from '@dx/server';
+import {
+  HeaderService,
+  sendUnauthorized
+} from '@dx/server';
 import {
   UserModel,
   USER_ROLE
@@ -29,12 +32,11 @@ export async function hasAdminRole(
   next: NextFunction
 ): Promise<void> {
   try {
-    const authHeader = req.headers['authorization'];
-    if (!authHeader) {
-      throw new Error('No Auth Headers Sent.');
+    const token = HeaderService.getTokenFromAuthHeader(req);
+    if (!token) {
+      throw new Error('No Token');
     }
 
-    const token = authHeader.split('Bearer ')[1];
     const userId = TokenService.getUserIdFromToken(token);
     if (!userId) {
       throw new Error('Token invalid or expired.');

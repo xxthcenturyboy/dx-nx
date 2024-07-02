@@ -1,4 +1,3 @@
-import { UserProfileStateType } from '@dx/user';
 import axios, {
   AxiosError,
   AxiosRequestConfig,
@@ -18,10 +17,13 @@ import {
   TEST_EXISTING_USER_ID,
   TEST_UUID
 } from '@dx/config';
-import { OtpResponseType } from '@dx/auth';
+import {
+  AuthSuccessResponseType,
+  OtpResponseType
+} from '@dx/auth';
 
 describe('v1 Email Routes', () => {
-  let authRes: UserProfileStateType;
+  let authRes: AuthSuccessResponseType;
   let authUtil: AuthUtilType;
   let idToUpdate: string;
 
@@ -39,7 +41,7 @@ describe('v1 Email Routes', () => {
         url: '/api/v1/email',
         method: 'POST',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
       };
@@ -68,7 +70,7 @@ describe('v1 Email Routes', () => {
         url: `/api/v1/email/`,
         method: 'POST',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
         data: payload
@@ -98,7 +100,7 @@ describe('v1 Email Routes', () => {
         url: `/api/v1/email/`,
         method: 'POST',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
         data: payload
@@ -120,7 +122,7 @@ describe('v1 Email Routes', () => {
         url: `/api/v1/user/send-otp-code`,
         method: 'POST',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true
       });
@@ -129,7 +131,7 @@ describe('v1 Email Routes', () => {
         def: false,
         email: TEST_EMAIL,
         label: 'Work',
-        userId: authRes.id
+        userId: authRes.profile.id
       };
 
       const request: AxiosRequestConfig = {
@@ -137,8 +139,7 @@ describe('v1 Email Routes', () => {
         method: 'POST',
         data: payload,
         headers: {
-          cookie: authUtil.cookeisRaw
-
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
       };
@@ -159,7 +160,7 @@ describe('v1 Email Routes', () => {
         url: `/api/v1/email/${TEST_UUID}`,
         method: 'PUT',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
       };
@@ -186,8 +187,7 @@ describe('v1 Email Routes', () => {
         method: 'PUT',
         data: payload,
         headers: {
-          cookie: authUtil.cookeisRaw
-
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
       };
@@ -206,7 +206,7 @@ describe('v1 Email Routes', () => {
         url: `/api/v1/email/${TEST_UUID}`,
         method: 'DELETE',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
       };
@@ -227,8 +227,7 @@ describe('v1 Email Routes', () => {
         url: `/api/v1/email/${idToUpdate}`,
         method: 'DELETE',
         headers: {
-          cookie: authUtil.cookeisRaw
-
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
       };
@@ -245,7 +244,7 @@ describe('v1 Email Routes', () => {
         url: `/api/v1/email/test/${idToUpdate}`,
         method: 'DELETE',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true
       };

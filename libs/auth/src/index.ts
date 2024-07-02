@@ -14,6 +14,7 @@ export {
 } from './api/ensure-role.middleware';
 export {
   AccountCreationPayloadType,
+  AuthSuccessResponseType,
   LoginPaylodType,
   OtpResponseType,
   UserLookupQueryType,

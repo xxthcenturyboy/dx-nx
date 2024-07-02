@@ -50,7 +50,7 @@ export async function configureExpress(
       tokens.status(req, res),
       tokens.res(req, res, 'content-length'), '-',
       tokens['response-time'](req, res), 'ms',
-      settings.DEBUG && `- user.id: ${req.session && req.session.userId || 'NONE'}`
+      settings.DEBUG && `- user.id: ${req.user?.id || 'NONE'}`
     ].join(' ')
   ));
 

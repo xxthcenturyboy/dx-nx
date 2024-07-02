@@ -41,8 +41,6 @@ export const AuthController = {
         req.session
       ) as UserProfileStateType;
 
-      req.session.userId = profile.id;
-
       const tokens = TokenService.generateTokens(profile.id);
       if (tokens.refreshToken) {
         CookeiService.setCookies(res, profile.hasSecuredAccount, tokens.refreshToken, tokens.refreshTokenExp);
@@ -51,7 +49,7 @@ export const AuthController = {
 
       sendOK(req, res, {
         profile,
-        token: tokens.accessToken
+        accessToken: tokens.accessToken
       });
     } catch (err) {
       sendBadRequest(req, res, err.message);
@@ -63,8 +61,6 @@ export const AuthController = {
       const service = new AuthService();
       const profile = await service.login(req.body as LoginPaylodType) as UserProfileStateType;
 
-      req.session.userId = profile.id;
-
       const tokens = TokenService.generateTokens(profile.id);
       if (tokens.refreshToken) {
         CookeiService.setCookies(res, profile.hasSecuredAccount, tokens.refreshToken, tokens.refreshTokenExp);
@@ -73,7 +69,7 @@ export const AuthController = {
 
       sendOK(req, res, {
         profile,
-        token: tokens.accessToken
+        accessToken: tokens.accessToken
       });
     } catch (err) {
       sendBadRequest(req, res, err.message);
@@ -97,7 +93,7 @@ export const AuthController = {
         if (err) {
           return sendBadRequest(req, res, err.message || 'Failed to destroy session');
         }
-        ApiLoggingClass.instance.logInfo(`Session Destroyed: ${req.sessionId}`);
+        ApiLoggingClass.instance.logInfo(`Session Destroyed: ${req.user?.id}`);
       });
 
       sendOK(req, res, { loggedOut: true });
@@ -120,17 +116,19 @@ export const AuthController = {
       return sendUnauthorized(req, res, 'no refresh token.');
     }
 
-    CookeiService.clearCookie(res, AUTH_TOKEN_NAMES.REFRESH);
-
     const userId = await TokenService.isRefreshValid(refreshToken);
     if (!userId) {
+      CookeiService.clearCookie(res, AUTH_TOKEN_NAMES.REFRESH);
       return sendUnauthorized(req, res, 'Invalid token.');
     }
 
     const tokens = TokenService.generateTokens(userId as string);
     if (tokens.refreshToken) {
-      const accountSecured = req?.cookies[AUTH_TOKEN_NAMES.ACCTSECURE];
-      CookeiService.setCookies(res, accountSecured === 'true', tokens.refreshToken, tokens.refreshTokenExp);
+      CookeiService.setRefreshCookie(
+        res,
+        tokens.refreshToken,
+        tokens.refreshTokenExp
+      );
       try {
         await UserModel.updateRefreshToken(userId as string, tokens.refreshToken);
         return sendOK(req, res, {

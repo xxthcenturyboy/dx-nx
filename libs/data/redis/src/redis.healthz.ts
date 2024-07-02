@@ -23,9 +23,9 @@ export class RedisHealthzService {
     this.logger = ApiLoggingClass.instance;
   }
 
-  private async testConnection() {
+  private async testConnection(silent: boolean) {
     const response = await this.redis.cacheHandle.ping();
-    this.logger.logInfo(`Redis PING: ${response}`);
+    !silent && this.logger.logInfo(`Redis PING: ${response}`);
     return response === 'PONG';
   }
 
@@ -58,7 +58,7 @@ export class RedisHealthzService {
   public async healthCheck() {
     this.logger.logInfo('***************************************');
     this.logger.logInfo('Checking connection to Redis');
-    const connection = await this.testConnection();
+    const connection = await this.testConnection(false);
     if (connection) {
       const readAndWrite = await this.testReadAndWrite();
       // const keys = await this.redis.getKeys();
@@ -78,7 +78,7 @@ export class RedisHealthzService {
   }
 
   public async healthz(): Promise<RedisHealthzResponse> {
-    const ping = await this.testConnection();
+    const ping = await this.testConnection(true);
     const write = await this.testWrite();
     const read = await this.testRead();
     return {

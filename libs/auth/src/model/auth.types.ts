@@ -1,3 +1,5 @@
+import { UserProfileStateType } from "@dx/user";
+
 export type AccountCreationPayloadType = {
   code: string;
   region?: string;
@@ -21,6 +23,11 @@ export type LoginPaylodType = {
   code?: string;
   region?: string;
   password?: string;
+};
+
+export type AuthSuccessResponseType = {
+  accessToken: string;
+  profile: UserProfileStateType;
 };
 
 export type OtpResponseType = {

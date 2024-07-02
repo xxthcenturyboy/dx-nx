@@ -2,6 +2,7 @@ import { ManipulateType } from "dayjs";
 
 export type JwtPayloadType = {
   _id: string;
+  exp: number;
   issuer: string;
 };
 

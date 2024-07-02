@@ -6,12 +6,16 @@ import axios, {
 
 import {
   AccountCreationPayloadType,
+  AuthSuccessResponseType,
   LoginPaylodType,
   UserLookupResponseType,
-  USER_LOOKUPS
+  USER_LOOKUPS,
+  AUTH_TOKEN_NAMES
 } from '@dx/auth';
-import { AuthUtil } from './util-v1';
-import { UserProfileStateType } from '@dx/user';
+import {
+  AuthUtil,
+  AuthUtilType
+} from './util-v1';
 import {
   TEST_EMAIL,
   TEST_EXISTING_EMAIL,
@@ -21,11 +25,20 @@ import {
 } from '@dx/config';
 
 describe('v1 Auth Flow', () => {
+  let authUtil: AuthUtilType;
   let emailAccountId: string;
+  let emailAuthToken: string;
   let otpEmail: string;
   let otpPhone: string;
   let phoneAccountId: string;
+  let phoneAuthToken: string;
+  let phoneRefreshToken: string;
   let cookies: string[];
+
+  beforeAll(async () => {
+    authUtil = new AuthUtil();
+    await authUtil.login();
+  });
 
   afterAll(async () => {
     if (
@@ -41,7 +54,7 @@ describe('v1 Auth Flow', () => {
           url: `/api/v1/user/test/${emailAccountId}`,
           method: 'DELETE',
           headers: {
-            cookie: cookies
+            ...authUtil.getHeaders()
           },
           withCredentials: true
         };
@@ -53,7 +66,7 @@ describe('v1 Auth Flow', () => {
           url: `/api/v1/user/test/${phoneAccountId}`,
           method: 'DELETE',
           headers: {
-            cookie: cookies
+            ...authUtil.getHeaders()
           },
           withCredentials: true
         };
@@ -364,11 +377,12 @@ describe('v1 Auth Flow', () => {
         data: payload
       };
 
-      const response = await axios.request<UserProfileStateType>(request);
-      emailAccountId = response.data.id;
+      const response = await axios.request<AuthSuccessResponseType>(request);
+      emailAccountId = response.data.profile.id;
 
       expect(response.status).toEqual(200);
-      expect(response.data.emails).toHaveLength(1);
+      expect(response.data.accessToken).toBeDefined();
+      expect(response.data.profile.emails).toHaveLength(1);
     });
 
     test('should return user profile when successfully create account with phone', async () => {
@@ -382,11 +396,12 @@ describe('v1 Auth Flow', () => {
         data: payload
       };
 
-      const response = await axios.request<UserProfileStateType>(request);
-      phoneAccountId = response.data.id;
+      const response = await axios.request<AuthSuccessResponseType>(request);
+      phoneAccountId = response.data.profile.id;
 
       expect(response.status).toEqual(200);
-      expect(response.data.phones).toHaveLength(1);
+      expect(response.data.accessToken).toBeDefined();
+      expect(response.data.profile.phones).toHaveLength(1);
     });
   });
 
@@ -556,10 +571,12 @@ describe('v1 Auth Flow', () => {
         data: payload
       };
 
-      const response = await axios.request<UserProfileStateType>(request);
+      const response = await axios.request<AuthSuccessResponseType>(request);
+      emailAuthToken = response.data.accessToken;
 
       expect(response.status).toEqual(200);
-      expect(response.data.emails).toHaveLength(1);
+      expect(response.data.accessToken).toBeDefined();
+      expect(response.data.profile.emails).toHaveLength(1);
     });
 
     test('should return user profile when successfully logged in with email / password', async () => {
@@ -573,10 +590,12 @@ describe('v1 Auth Flow', () => {
         data: payload
       };
 
-      const response = await axios.request<UserProfileStateType>(request);
+      const response = await axios.request<AuthSuccessResponseType>(request);
 
       expect(response.status).toEqual(200);
-      expect(response.data.emails).toHaveLength(1);
+      expect(response.data.accessToken).toBeDefined();
+      expect(response.data.profile.emails).toHaveLength(1);
+      expect(response.data.profile.phones).toHaveLength(1);
     });
 
     test('should return user profile when successfully logged in with phone', async () => {
@@ -595,38 +614,84 @@ describe('v1 Auth Flow', () => {
       const request: AxiosRequestConfig = {
         url: '/api/v1/auth/login',
         method: 'POST',
-        data: payload
+        data: payload,
+        withCredentials: true
       };
 
-      const response = await axios.request<UserProfileStateType>(request);
+      const response = await axios.request<AuthSuccessResponseType>(request);
+      phoneAuthToken = response.data.accessToken;
+      const cookie = (response.headers['set-cookie'] as string[])
+        .find(cookie => cookie.includes(AUTH_TOKEN_NAMES.REFRESH))
+        ?.match(new RegExp(`^${AUTH_TOKEN_NAMES.REFRESH}=(.+?);`))
+        ?.[1];
+      // console.log('cookie', cookie);
+      phoneRefreshToken = cookie
 
       expect(response.status).toEqual(200);
-      expect(response.data.phones).toHaveLength(1);
+      expect(response.data.accessToken).toBeDefined();
+      expect(response.data.profile.phones).toHaveLength(1);
     });
   });
 
   describe('Refresh Tokens', () => {
-    test('should logout because cannot test the refresh on this yet - need to implement', async () => {
+    test('should throw when sent with an invalid access token', async () => {
       const request: AxiosRequestConfig = {
         url: '/api/v1/auth/refresh-token',
         method: 'POST',
         headers: {
-          cookies: ['refresh=refresh-token']
+          Authorization: `Bearer ${phoneAuthToken}`,
+          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=invalid-jwt`]
         }
       };
 
-      const response = await axios.request<{ loggedOut: boolean }>(request);
+      try {
+        expect(await axios.request(request)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // console.log('got error', typedError);
+        // assert
+        expect(typedError.response.status).toBe(401);
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toEqual('Invalid token.');
+      }
+    });
+
+    test('should return a new accessToken when called with valid refresh token', async () => {
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/auth/refresh-token',
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${phoneAuthToken}`,
+          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${phoneRefreshToken}`]
+        },
+        withCredentials: true
+      };
+
+      const response = await axios.request<{ accessToken: string }>(request);
+      phoneAuthToken = response.data.accessToken;
+      // console.log(response.headers['set-cookie'] as string[]);
+      const cookie = (response.headers['set-cookie'] as string[])
+        .find(cookie => cookie.includes(AUTH_TOKEN_NAMES.REFRESH))
+        ?.match(new RegExp(`^${AUTH_TOKEN_NAMES.REFRESH}=(.+?);`))
+        ?.[1];
+      // console.log('cookie', cookie);
+      phoneRefreshToken = cookie
 
       expect(response.status).toEqual(200);
-      expect(response.data).toEqual({ loggedOut: true });
+      expect(response.data.accessToken).toBeDefined();
     });
   });
 
   describe('Logout', () => {
     test('should return true on successful logout', async () => {
+      const headers = {
+        Authorization: `Bearer ${phoneAuthToken}`,
+        cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${phoneRefreshToken}`]
+      };
       const request: AxiosRequestConfig = {
         url: '/api/v1/auth/logout',
-        method: 'POST'
+        method: 'POST',
+        headers: headers
       };
 
       const response = await axios.request<{ loggedOut: boolean }>(request);

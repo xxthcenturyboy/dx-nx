@@ -291,7 +291,8 @@ export class AuthService {
 
       const refreshTokens = user.refreshTokens.filter(token => token !== refreshToken);
       const userId = TokenService.getUserIdFromToken(refreshToken);
-      return await UserModel.updateRefreshToken(userId, refreshTokens);
+      const updated = await UserModel.updateRefreshToken(userId, refreshTokens);
+      return updated;
     } catch (err) {
       this.logger.logError(err);
     }

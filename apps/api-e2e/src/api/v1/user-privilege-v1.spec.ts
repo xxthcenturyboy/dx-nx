@@ -1,4 +1,3 @@
-import { UserProfileStateType } from '@dx/user';
 import axios, {
   AxiosError,
   AxiosRequestConfig,
@@ -15,9 +14,13 @@ import {
   TEST_EXISTING_USER_PRIVILEGE_ID,
   TEST_UUID
 } from '@dx/config';
+import {
+  AuthSuccessResponseType,
+  OtpResponseType
+} from '@dx/auth';
 
 describe('v1 User Privilege Routes', () => {
-  let authRes: UserProfileStateType;
+  let authRes: AuthSuccessResponseType;
   let authUtil: AuthUtilType;
   let initialDescription: string;
 
@@ -35,7 +38,7 @@ describe('v1 User Privilege Routes', () => {
         url: '/api/v1/privilege-set',
         method: 'GET',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
       };
@@ -58,7 +61,7 @@ describe('v1 User Privilege Routes', () => {
         url: `/api/v1/privilege-set/${TEST_UUID}`,
         method: 'PUT',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
       };
@@ -84,7 +87,7 @@ describe('v1 User Privilege Routes', () => {
         method: 'PUT',
         data: payload,
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
 
         },
         withCredentials: true,
@@ -107,8 +110,7 @@ describe('v1 User Privilege Routes', () => {
         method: 'PUT',
         data: payload,
         headers: {
-          cookie: authUtil.cookeisRaw
-
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
       };

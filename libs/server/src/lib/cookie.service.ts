@@ -22,12 +22,33 @@ export class CookeiService {
       }
     );
 
+    CookeiService.setRefreshCookie(
+      res,
+      refreshToken,
+      refreshTokenExpTimestamp
+    );
+    // res.cookie(
+    //   AUTH_TOKEN_NAMES.REFRESH,
+    //   refreshToken,
+    //   {
+    //     httpOnly: true,
+    //     maxAge: refreshTokenExpTimestamp * 1000,
+    //     secure: true
+    //   }
+    // );
+  }
+
+  public static setRefreshCookie(
+    res: Response,
+    refreshToken: string,
+    exp: number
+  ) {
     res.cookie(
       AUTH_TOKEN_NAMES.REFRESH,
       refreshToken,
       {
         httpOnly: true,
-        maxAge: refreshTokenExpTimestamp * 1000,
+        maxAge: exp * 1000,
         secure: true
       }
     );

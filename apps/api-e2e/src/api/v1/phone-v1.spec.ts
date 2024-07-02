@@ -1,4 +1,3 @@
-import { UserProfileStateType } from '@dx/user';
 import axios, {
   AxiosError,
   AxiosRequestConfig,
@@ -21,10 +20,13 @@ import {
   TEST_PHONE_VALID,
   TEST_UUID
 } from '@dx/config';
-import { OtpResponseType } from '@dx/auth';
+import {
+  AuthSuccessResponseType,
+  OtpResponseType
+} from '@dx/auth';
 
 describe('v1 Phone Routes', () => {
-  let authRes: UserProfileStateType;
+  let authRes: AuthSuccessResponseType;
   let authUtil: AuthUtilType;
   let idToUpdate: string;
   let idToUpdateItaly: string;
@@ -43,7 +45,7 @@ describe('v1 Phone Routes', () => {
         url: '/api/v1/phone',
         method: 'POST',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
       };
@@ -66,14 +68,14 @@ describe('v1 Phone Routes', () => {
         def: false,
         phone: TEST_EXISTING_PHONE,
         label: 'Work',
-        userId: authRes.id
+        userId: authRes.profile.id
       };
 
       const request: AxiosRequestConfig = {
         url: `/api/v1/phone/`,
         method: 'POST',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
         data: payload
@@ -98,14 +100,14 @@ describe('v1 Phone Routes', () => {
         def: false,
         phone: TEST_PHONE,
         label: 'Work',
-        userId: authRes.id
+        userId: authRes.profile.id
       };
 
       const request: AxiosRequestConfig = {
         url: `/api/v1/phone/`,
         method: 'POST',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
         data: payload
@@ -130,14 +132,14 @@ describe('v1 Phone Routes', () => {
         def: false,
         phone: TEST_PHONE_IT_INVALID,
         label: 'Work',
-        userId: authRes.id
+        userId: authRes.profile.id
       };
 
       const request: AxiosRequestConfig = {
         url: `/api/v1/phone/`,
         method: 'POST',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
         data: payload
@@ -159,7 +161,7 @@ describe('v1 Phone Routes', () => {
         url: `/api/v1/user/send-otp-code`,
         method: 'POST',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true
       });
@@ -170,7 +172,7 @@ describe('v1 Phone Routes', () => {
         def: false,
         phone: TEST_PHONE_IT_VALID,
         label: 'Work',
-        userId: authRes.id
+        userId: authRes.profile.id
       };
 
       const request: AxiosRequestConfig = {
@@ -178,7 +180,7 @@ describe('v1 Phone Routes', () => {
         method: 'POST',
         data: payload,
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
 
         },
         withCredentials: true,
@@ -198,7 +200,7 @@ describe('v1 Phone Routes', () => {
         url: `/api/v1/user/send-otp-code`,
         method: 'POST',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true
       });
@@ -209,7 +211,7 @@ describe('v1 Phone Routes', () => {
         def: false,
         phone: TEST_PHONE_VALID,
         label: 'Work',
-        userId: authRes.id
+        userId: authRes.profile.id
       };
 
       const request: AxiosRequestConfig = {
@@ -217,8 +219,7 @@ describe('v1 Phone Routes', () => {
         method: 'POST',
         data: payload,
         headers: {
-          cookie: authUtil.cookeisRaw
-
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
       };
@@ -239,7 +240,7 @@ describe('v1 Phone Routes', () => {
         url: `/api/v1/phone/${TEST_UUID}`,
         method: 'PUT',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
       };
@@ -266,8 +267,7 @@ describe('v1 Phone Routes', () => {
         method: 'PUT',
         data: payload,
         headers: {
-          cookie: authUtil.cookeisRaw
-
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
       };
@@ -286,7 +286,7 @@ describe('v1 Phone Routes', () => {
         url: `/api/v1/phone/${TEST_UUID}`,
         method: 'DELETE',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
       };
@@ -307,8 +307,7 @@ describe('v1 Phone Routes', () => {
         url: `/api/v1/phone/${idToUpdate}`,
         method: 'DELETE',
         headers: {
-          cookie: authUtil.cookeisRaw
-
+          ...authUtil.getHeaders()
         },
         withCredentials: true,
       };
@@ -325,7 +324,7 @@ describe('v1 Phone Routes', () => {
         url: `/api/v1/phone/test/${idToUpdate}`,
         method: 'DELETE',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true
       };
@@ -333,7 +332,7 @@ describe('v1 Phone Routes', () => {
         url: `/api/v1/phone/test/${idToUpdateItaly}`,
         method: 'DELETE',
         headers: {
-          cookie: authUtil.cookeisRaw
+          ...authUtil.getHeaders()
         },
         withCredentials: true
       };

@@ -597,8 +597,8 @@ export class UserModel extends Model<UserModel> {
     }
 
     return res
-     && Array.isArray(res)
-      && res[0] === 0;
+      && Array.isArray(res)
+      && res[0] !== 0;
   }
 
   static async getUserSessionData(id: string): Promise<UserSessionType> {

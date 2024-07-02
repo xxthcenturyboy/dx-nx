@@ -63,7 +63,7 @@ export function sendBadRequest(req: Request, res: Response, err: Error | string)
 }
 
 export function sendUnauthorized(req: Request, res: Response, message: string) {
-  ApiLoggingClass.instance.logWarn(`Unauthorized: ${req.url}, sessionId: ${req.sessionId}`);
+  ApiLoggingClass.instance.logWarn(`Unauthorized: ${req.url}, userId: ${req.user?.id || 'unavailable'}`);
   destroySession(req, res);
   send400(res, {
     description: getReasonPhrase(StatusCodes.UNAUTHORIZED),
@@ -74,7 +74,7 @@ export function sendUnauthorized(req: Request, res: Response, message: string) {
 }
 
 export function sendForbidden(req: Request, res: Response, message: string): void {
-  ApiLoggingClass.instance.logWarn(`Forbidden: ${req.url}, sessionId: ${req.sessionId}`);
+  ApiLoggingClass.instance.logWarn(`Forbidden: ${req.url}, userId: ${req.user?.id || 'unavailable'}`);
   destroySession(req, res);
   send400(res, {
     description: getReasonPhrase(StatusCodes.FORBIDDEN),

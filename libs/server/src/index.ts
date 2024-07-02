@@ -13,3 +13,4 @@ export {
 } from './lib/http-responses';
 export { handleError } from './lib/error-handler';
 export { CookeiService } from './lib/cookie.service';
+export { HeaderService } from './lib/header.service';
