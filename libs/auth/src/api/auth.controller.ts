@@ -52,18 +52,6 @@ export const AuthController = {
     }
   },
 
-  lockoutFromOtpEmail: async function(req: Request, res: Response) {
-    try {
-      const { id } = req.body as { id: string };
-      const service = new AuthService();
-      const result = await service.lockoutFromOtpEmail(id) as OtpLockoutResponseType;
-
-      sendOK(req, res, result);
-    } catch (err) {
-      sendBadRequest(req, res, err.message);
-    }
-  },
-
   login: async function(req: Request, res: Response) {
     try {
       const service = new AuthService();

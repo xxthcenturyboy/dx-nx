@@ -355,24 +355,6 @@ describe('AuthService', () => {
       });
     });
 
-    // TODO: Using?
-    describe('lockoutFromOtpEmail', () => {
-      it('should exist', () => {
-        expect(authService.lockoutFromOtpEmail).toBeDefined();
-      });
-
-      test('should throw when id does not exist', async () => {
-        // arrange
-        // act
-        try {
-          expect(await authService.lockoutFromOtpEmail('4d2269d3-9bfc-4f2d-b66c-ab63ea1d2c6f')).toThrow();
-        } catch (err) {
-          // assert
-          expect(err.message).toContain('Error in OTP Lockout handler:');
-        }
-      });
-    });
-
     describe('login', () => {
       it('should exist', () => {
         expect(authService.login).toBeDefined();
@@ -554,7 +536,6 @@ describe('AuthService', () => {
       // assert
       expect(authService.createAccount).toBeDefined();
       expect(authService.doesEmailPhoneExist).toBeDefined();
-      expect(authService.lockoutFromOtpEmail).toBeDefined();
       expect(authService.login).toBeDefined();
       expect(authService.sendOtpToEmail).toBeDefined();
       expect(authService.sendOtpToPhone).toBeDefined();

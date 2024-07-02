@@ -187,24 +187,6 @@ export class AuthService {
     }
   }
 
-  public async lockoutFromOtpEmail(id: string): Promise<OtpLockoutResponseType> {
-    if (!id) {
-      throw new Error('Request is invalid.');
-    }
-
-    try {
-      await UserModel.lockoutOtp(id);
-
-      const result: OtpLockoutResponseType = { locked: true };
-
-      return result;
-    } catch (err) {
-      const message = `Error in OTP Lockout handler: ${err.message}`;
-      this.logger.logError(message);
-      throw new Error(message);
-    }
-  }
-
   public async login(payload: LoginPaylodType): Promise<UserProfileStateType | void>  {
     const {
       biometric,

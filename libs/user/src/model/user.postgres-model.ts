@@ -87,10 +87,6 @@ export class UserModel extends Model<UserModel> {
   @Column({ field: 'token_exp', type: DataType.INTEGER })
   tokenExp: number | null;
 
-  @AllowNull(true)
-  @Column({ field: 'otp_code', type: DataType.STRING })
-  otpCode: string | null;
-
   @Column(DataType.STRING)
   hashanswer: string;
 
@@ -477,13 +473,11 @@ export class UserModel extends Model<UserModel> {
     }
 
     try {
-      const otpCode = dxEncryptionGenerateRandomValue(3).toUpperCase();
       const token = dxEncryptionGenerateRandomValue();
       const tokenExp = DxDateUtilClass.getTimestamp(2, 'days', 'ADD');
       const user = await UserModel.create({
         firstName,
         lastName,
-        otpCode,
         roles,
         token,
         tokenExp,
@@ -573,24 +567,6 @@ export class UserModel extends Model<UserModel> {
     return token;
   }
 
-  static async updateOtpCode (id: string): Promise<string> {
-    if (!id) {
-      throw new Error(`No user ID provided`);
-    }
-
-    const otpCode = dxEncryptionGenerateRandomValue(3).toUpperCase();
-
-    await UserModel.update({
-      otpCode
-    }, {
-      where: {
-        id,
-        deletedAt: null
-      }
-    });
-    return otpCode;
-  }
-
   static async setPasswordTest (
     id: string,
     password: string,
@@ -648,23 +624,6 @@ export class UserModel extends Model<UserModel> {
     await UserModel.update({ hashword }, { where: { id, deletedAt: null } });
 
     return true;
-  }
-
-  static async lockoutOtp (id: string): Promise<void> {
-    const user = await UserModel.findByPk(id);
-    if (!user) {
-      throw new Error(`could not find user with the id: ${id}`);
-    }
-
-    if (user.restrictions && Array.isArray(user.restrictions)) {
-      const restrictions = [...user.restrictions, ACCOUNT_RESTRICTIONS.OTP_LOCKOUT];
-      user.setDataValue('restrictions', restrictions);
-    } else {
-      user.setDataValue('restrictions', [ACCOUNT_RESTRICTIONS.OTP_LOCKOUT]);
-    }
-    user.setDataValue('otpCode', null);
-
-    await user.save();
   }
 
   static async removeUser (id: string): Promise<boolean> {

@@ -60,20 +60,6 @@ describe('AuthController', () => {
     expect(AuthController.authLookup).toBeDefined();
   });
 
-  describe('lockoutFromOtpEmail', () => {
-    test('should sendOk when invoked', async () => {
-      // arrange
-      const body = {
-        id: '4d2269d3-9bfc-4f2d-b66c-ab63ea1d2c6f'
-      };
-      req.body = body;
-      // act
-      await AuthController.lockoutFromOtpEmail(req, res);
-      // assert
-      expect(sendOK).toHaveBeenCalled();
-    });
-  });
-
   describe('login', () => {
     test('should sendBadRequest when invoked', async () => {
       // arrange

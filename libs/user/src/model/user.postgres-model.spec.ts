@@ -66,7 +66,6 @@ describe('User Models', () => {
         expect(attributes.isAdmin).toBeDefined();
         expect(attributes.isSuperAdmin).toBeDefined();
         expect(attributes.lastName).toBeDefined();
-        expect(attributes.otpCode).toBeDefined();
         expect(attributes.optInBeta).toBeDefined();
         expect(attributes.restrictions).toBeDefined();
         expect(attributes.roles).toBeDefined();
@@ -132,10 +131,8 @@ describe('User Models', () => {
         expect(UserModel.isUsernameAvailable).toBeDefined();
         expect(UserModel.createFromUsername).toBeDefined();
         expect(UserModel.updateToken).toBeDefined();
-        expect(UserModel.updateOtpCode).toBeDefined();
         expect(UserModel.setPasswordTest).toBeDefined();
         expect(UserModel.updatePassword).toBeDefined();
-        expect(UserModel.lockoutOtp).toBeDefined();
       });
     });
 
