@@ -61,6 +61,6 @@ describe('configureExpress', () => {
       })],
       [() => handleError]
     ]));
-    expect(app.use).toHaveBeenCalledTimes(6);
+    expect(app.use).toHaveBeenCalledTimes(7);
   });
 });

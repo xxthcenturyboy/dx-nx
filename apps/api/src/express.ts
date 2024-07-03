@@ -11,7 +11,10 @@ import { Logger as WinstonLogger } from 'winston';
 import { logger as expressWinston } from 'express-winston';
 import cookieParser from 'cookie-parser';
 import morgan, { TokenIndexer } from 'morgan';
+import cors from 'cors';
+
 import { DxDateUtilClass } from '@dx/utils';
+import { CLIENT_APP_URL } from '@dx/config';
 // import { StatusCodes } from 'http-status-codes';
 
 import {
@@ -36,6 +39,12 @@ export async function configureExpress(
   app: Express,
   settings: DxApiSettingsType
 ) {
+  app.use(
+    cors({
+      origin: CLIENT_APP_URL,
+      credentials: true
+    })
+  );
   // Support json & urlencoded requests.
   app.use(express.json({ limit: '10mb', type: 'application/json' }));
   app.use(express.urlencoded({ extended: true, limit: '10mb' }));
