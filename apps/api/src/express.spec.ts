@@ -1,4 +1,5 @@
 import express, { Express as IExpress} from 'express';
+import cors from 'cors';
 import { Express } from 'jest-express/lib/express';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
@@ -45,11 +46,14 @@ describe('configureExpress', () => {
 
   test('should configure express when invoked', async () => {
     // arrange
-    // act
     await configureExpress(app, { DEBUG: true, SESSION_SECRET: 'test-secret' });
-    // assert
+    // act
     // @ts-expect-error -ok
     expect(JSON.stringify(app.use.mock.calls)).toEqual(JSON.stringify([
+      [cors(({
+        origin: '',
+        credentials: true
+      }))],
       [express.json({ limit: '10mb', type: 'application/json' })],
       [express.urlencoded({ extended: true, limit: '10mb' })],
       [cookieParser()],
@@ -61,6 +65,7 @@ describe('configureExpress', () => {
       })],
       [() => handleError]
     ]));
+    // assert
     expect(app.use).toHaveBeenCalledTimes(7);
   });
 });
