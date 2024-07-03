@@ -20,14 +20,13 @@ export class ApiRoutes {
 
   public loadRoutes() {
     this.router.use('/healthz', DxRateLimiters.strict(), HealthzRoutes.configure());
-    this.router.use('/.well-known', WellKnownRoutes.configure());
+    this.router.use('/.well-known', DxRateLimiters.veryStrict(), WellKnownRoutes.configure());
     this.router.use('/v1', RoutesV1.configure());
 
     this.router.all('/*', endpointNotFound);
 
     if (this.app) {
-      this.app.use(DxRateLimiters.standard());
-      this.app.use('/api', this.router);
+      this.app.use('/api', DxRateLimiters.standard(), this.router);
     }
   }
 }

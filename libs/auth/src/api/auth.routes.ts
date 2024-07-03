@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { rateLimit } from 'express-rate-limit';
 
 import { AuthController } from './auth.controller';
 import { DxRateLimiters} from '@dx/server';
@@ -10,7 +9,7 @@ export class AuthRoutes {
     router.get('/lookup', DxRateLimiters.authLookup(), AuthController.authLookup);
     router.get('/validate/email/:token', DxRateLimiters.strict(), AuthController.validateEmail);
 
-    router.post('/account', DxRateLimiters.veryStrict(), AuthController.createAccount);
+    router.post('/account', DxRateLimiters.accountCreation(), AuthController.createAccount);
     router.post('/login', DxRateLimiters.login(), AuthController.login);
     router.post('/logout', AuthController.logout);
     router.post('/otp-code/send/email', DxRateLimiters.veryStrict(), AuthController.sendOtpToEmail);
