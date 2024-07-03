@@ -1,7 +1,9 @@
 import { UserProfileStateType } from "@dx/user";
+import { DeviceAuthType } from '@dx/devices';
 
 export type AccountCreationPayloadType = {
   code: string;
+  device?: DeviceAuthType;
   region?: string;
   value: string;
 };
@@ -19,7 +21,7 @@ export type UserLookupQueryType = {
 
 export type LoginPaylodType = {
   value: string;
-  biometric?: string;
+  biometricPayload?: BiometricLoginPayload;
   code?: string;
   region?: string;
   password?: string;
@@ -55,4 +57,11 @@ export type SignupPayloadType = {
   passwordConfirm: string;
   recaptcha?: string;
   redirectUrl?: string;
+};
+
+export type BiometricLoginPayload = {
+  signature: string;
+  payload: string;
+  userId: string;
+  device: DeviceAuthType | null;
 };

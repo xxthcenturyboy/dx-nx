@@ -12,6 +12,7 @@ import {
 } from '@dx/phone';
 import {
   AccountCreationPayloadType,
+  BiometricLoginPayload,
   LoginPaylodType,
   SessionData,
   UserLookupQueryType,
@@ -27,12 +28,14 @@ import {
 import { MailSendgrid } from '@dx/mail';
 import { ShortLinkModel } from '@dx/shortlink';
 import {
+  dxValidateBiometricKey,
   EmailUtil,
   PhoneUtil
 } from '@dx/utils';
 import { OtpCodeCache } from '../model/otp-code.redis-cache';
 import { TokenService } from './token.service';
 import { isProd } from '@dx/config';
+import { DevicesService } from '@dx/devices';
 
 export class AuthService {
   logger: ApiLoggingClassType;
@@ -47,6 +50,7 @@ export class AuthService {
   ) {
     const {
       code,
+      device,
       region,
       value
     } = payload;
@@ -58,9 +62,9 @@ export class AuthService {
       throw new Error('Bad data sent.');
     }
 
-    if (!session) {
-      throw new Error(`Internal server error: Missing Session.`);
-    }
+    // if (!session) {
+    //   throw new Error(`Internal server error: Missing Session.`);
+    // }
 
     let user: UserModelType;
 
@@ -121,6 +125,33 @@ export class AuthService {
       if (!user) {
         const message = `Account could not be created with payload: ${JSON.stringify(payload, null, 2)}`;
         throw new Error(message);
+      }
+
+      if (
+        device
+        && device.uniqueDeviceId
+      ) {
+        const existingDevice = await DeviceModel.findOne({
+          where: {
+            uniqueDeviceId: device.uniqueDeviceId,
+            deletedAt: null,
+          }
+        });
+
+        // Device is used but connected to another user => transfer over
+        if (
+          existingDevice &&
+          existingDevice.userId !== user.id
+        ) {
+          existingDevice.deletedAt = new Date();
+          await existingDevice.save();
+        }
+
+        await DeviceModel.create({
+          ...device,
+          userId: user.id,
+          verifiedAt: new Date(),
+        });
       }
 
       await user.getEmails();
@@ -186,9 +217,52 @@ export class AuthService {
     }
   }
 
+  public async biometricLogin(data: BiometricLoginPayload) {
+    const {
+      signature,
+      payload,
+      userId,
+      device
+    } = data;
+    if (
+      !userId
+      || !signature
+      || !payload
+    ) {
+      throw new Error('Insufficient data for Biometric login.');
+    }
+
+    try {
+      const biometricAuthPublicKey = await UserModel.getBiomAuthKey(userId);
+      if (!biometricAuthPublicKey) {
+        throw new Error(`BiometricLogin: User ${userId} has no stored public key.`);
+      }
+
+      const isSignatureValid = dxValidateBiometricKey(signature, payload, biometricAuthPublicKey);
+      if (!isSignatureValid) {
+        throw new Error(`BiometricLogin: Device signature is invalid: ${biometricAuthPublicKey}, userid: ${userId}`);
+      }
+
+      const user = await UserModel.findByPk(userId);
+      if (!user) {
+        throw new Error(`BiometricLogin: No user with that id: ${userId}`)
+      }
+
+      if (device) {
+        const deviceService = new DevicesService();
+        await deviceService.handleDevice(device, user);
+      }
+
+      return user;
+    } catch (err) {
+      this.logger.logError(err);
+      throw new Error(err.message || 'Biometric Login Faield.');
+    }
+  }
+
   public async login(payload: LoginPaylodType): Promise<UserProfileStateType | void>  {
     const {
-      biometric,
+      biometricPayload,
       code,
       region,
       password,
@@ -203,28 +277,36 @@ export class AuthService {
 
     try {
       // Authentication in order of preference
-      if (biometric) {
-        // TODO: Implement once devices are hooked up
+      // Biometric Login
+      if (
+        biometricPayload
+        && biometricPayload.userId
+        && biometricPayload.payload
+        && biometricPayload.signature
+      ) {
+        user = await this.biometricLogin(biometricPayload);
       }
 
       // Phone Number Login
-      const phoneUtil = new PhoneUtil(value, region || PHONE_DEFAULT_REGION_CODE);
-      if (
-        code
-        && phoneUtil.isValid
-        && phoneUtil.countryCode
-        && phoneUtil.nationalNumber
-      ) {
-        const otpCache = new OtpCodeCache();
-        const isCodeValid = await otpCache.validatePhoneOtp(code, phoneUtil.countryCode, phoneUtil.nationalNumber);
-        if (isCodeValid) {
-          const phone = await PhoneModel.findByPhoneAndCode(phoneUtil.nationalNumber, phoneUtil.countryCode);
-          if (
-            phone
-            && phone.isVerified
-            && phone.userId
-          ) {
-            user = await UserModel.findByPk(phone.userId);
+      if (!user) {
+        const phoneUtil = new PhoneUtil(value, region || PHONE_DEFAULT_REGION_CODE);
+        if (
+          code
+          && phoneUtil.isValid
+          && phoneUtil.countryCode
+          && phoneUtil.nationalNumber
+        ) {
+          const otpCache = new OtpCodeCache();
+          const isCodeValid = await otpCache.validatePhoneOtp(code, phoneUtil.countryCode, phoneUtil.nationalNumber);
+          if (isCodeValid) {
+            const phone = await PhoneModel.findByPhoneAndCode(phoneUtil.nationalNumber, phoneUtil.countryCode);
+            if (
+              phone
+              && phone.isVerified
+              && phone.userId
+            ) {
+              user = await UserModel.findByPk(phone.userId);
+            }
           }
         }
       }

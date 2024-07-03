@@ -1,7 +1,6 @@
 import { EmailType } from "@dx/email";
 import { PhoneType } from "@dx/phone";
 import { USER_ROLE } from "./user.consts";
-import { UserModelType } from "./user.postgres-model";
 
 export type UserType = {
   id: string;

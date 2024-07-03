@@ -72,6 +72,9 @@ export function handleError(
 }
 
 export class DxRateLimiters {
+  public static accountCreation() {
+    return () => null;
+  }
   public static authLookup() {
     return () => null;
   }

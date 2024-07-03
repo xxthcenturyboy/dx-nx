@@ -7,8 +7,13 @@ export {
   DeviceModelType
 } from './model/device.postgres-model';
 export {
-  DeviceType
+  DeviceType,
+  DeviceAuthType
 } from './model/devices.types';
+export {
+  DevicesService,
+  DevicesServiceType
+} from './api/devices.service';
 
 // Well Known
 export {

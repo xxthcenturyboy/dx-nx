@@ -9,6 +9,9 @@ import {
   dxEncryptionGgenerateOTP,
   dxEncryptionGenerateRandomValue
 } from './lib/randomValue';
+import {
+  dxValidateBiometricKey
+} from './lib/rsa.keys';
 
 export {
   dxEncryptionGetSaltFromHash,
@@ -18,4 +21,5 @@ export {
   dxEncryptionHashAnyToString,
   dxEncryptionHashString,
   dxEncryptionVerifyHash,
+  dxValidateBiometricKey
 };

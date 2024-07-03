@@ -345,39 +345,39 @@ export class UserModel extends Model<UserModel> {
    * Given a verification token, returns the prev verified device before a token.
    *
    */
-    async fetchConnectedDeviceBeforeToken(token: string): Promise<DeviceModel | null> {
-      try {
-        const device = await DeviceModel.findOne({
+  async fetchConnectedDeviceBeforeToken(token: string): Promise<DeviceModel | null> {
+    try {
+      const device = await DeviceModel.findOne({
+        where: {
+          userId: this.id,
+          verificationToken: token
+        }
+      });
+
+
+      if (device) {
+        const prev = await DeviceModel.findOne({
           where: {
+            createdAt: {
+              [Op.lt]: device.createdAt
+            },
+            verifiedAt: {
+              [Op.ne]: null
+            },
             userId: this.id,
-            verificationToken: token
-          }
+            // facialAuthState: {
+            //   [Op.ne]: 'CHALLENGE'
+            // }
+          },
+          order: [['created_at', 'DESC']]
         });
 
+        return prev;
+      }
 
-        if (device) {
-          const prev = await DeviceModel.findOne({
-            where: {
-              createdAt: {
-                [Op.lt]: device.createdAt
-              },
-              verifiedAt: {
-                [Op.ne]: null
-              },
-              userId: this.id,
-              // facialAuthState: {
-              //   [Op.ne]: 'CHALLENGE'
-              // }
-            },
-            order: [['created_at', 'DESC']]
-          });
-
-          return prev;
-        }
-
-        return null;
-      } catch (e) { throw e; }
-    }
+      return null;
+    } catch (e) { throw e; }
+  }
 
   async getPrivilegSets (): Promise<UserPrivilegeSetModelType[]> {
     if (this.roles) {

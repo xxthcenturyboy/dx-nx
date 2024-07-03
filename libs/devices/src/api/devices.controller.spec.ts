@@ -3,6 +3,16 @@ import { Request } from 'jest-express/lib/request';
 import { Response } from 'jest-express/lib/response';
 
 import { DevicesController } from './devices.controller';
+import {
+  sendOK,
+  sendBadRequest
+} from '@dx/server';
+
+jest.mock('./devices.service.ts');
+jest.mock('@dx/server', () => ({
+  sendOK: jest.fn(),
+  sendBadRequest: jest.fn()
+}));
 
 describe('DevicesController', () => {
   let req: IRequest;
@@ -24,20 +34,35 @@ describe('DevicesController', () => {
     expect(DevicesController).toBeDefined();
   });
 
-  it('should have a getData method when instantiated', () => {
-    // arrange
-    // act
-    // assert
-    expect(DevicesController.getData).toBeDefined();
-  });
-
-  describe('getData', () => {
-    it('should return a message when invoked', () => {
+  describe('disconnectDevice', () => {
+    it('should exist', () => {
       // arrange
       // act
-      DevicesController.getData(req, res);
       // assert
-      expect(res.send).toHaveBeenCalled();
+      expect(DevicesController.disconnectDevice).toBeDefined();
+    });
+    test('should sendBadRequest when invoked', async () => {
+      // arrange
+      // act
+      await  DevicesController.disconnectDevice(req, res);
+      // assert
+      expect(sendOK).toHaveBeenCalled();
+    });
+  });
+
+  describe('updateDevice', () => {
+    it('should exist', () => {
+      // arrange
+      // act
+      // assert
+      expect(DevicesController.updateDevice).toBeDefined();
+    });
+    test('should sendBadRequest when invoked', async () => {
+      // arrange
+      // act
+      await  DevicesController.updateDevice(req, res);
+      // assert
+      expect(sendOK).toHaveBeenCalled();
     });
   });
 });

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
 import { AuthRoutes } from '@dx/auth';
+import { DevicesRoutes } from '@dx/devices';
 import { EmailRoutes } from '@dx/email';
 import { PhoneRoutes } from '@dx/phone';
 import { ShortlinkRoutes } from '@dx/shortlink';
@@ -12,6 +13,7 @@ export class RoutesV1 {
   static configure() {
     const router = Router();
     router.use('/auth', AuthRoutes.configure());
+    router.use('/device', DevicesRoutes.configure());
     router.use('/email', EmailRoutes.configure());
     router.use('/phone', PhoneRoutes.configure());
     router.use('/privilege-set', UserPrivilegeRoutes.configure());

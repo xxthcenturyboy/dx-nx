@@ -18,27 +18,15 @@ describe('DevicesService', () => {
     expect(devicesService).toBeDefined();
   });
 
-  describe('getData', () => {
-    it('should be the public method getData in the class when instantiated', () => {
+  describe('handleDevice', () => {
+    it('should be the public method handleDevice in the class when instantiated', () => {
       // arrange
       const devicesService = new DevicesService();
       let response: null | DevicesResponseType = null;
       const expectedResult: DevicesResponseType = { message: 'devices' };
       // act
-      response = devicesService.getData();
       // assert
-      expect(devicesService.getData).toBeDefined();
-    });
-
-    it('should return the correct response object when called', () => {
-      // arrange
-      const devicesService = new DevicesService();
-      let response: null | DevicesResponseType = null;
-      const expectedResult: DevicesResponseType = { message: 'devices' };
-      // act
-      response = devicesService.getData();
-      // assert
-      expect(response).toEqual(expectedResult);
+      expect(devicesService.handleDevice).toBeDefined();
     });
   });
 });
