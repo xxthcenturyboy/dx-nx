@@ -3,6 +3,8 @@ import {
   logLoadedPostgresModels
 } from './dx-postgres.models';
 
+jest.mock('@dx/server');
+
 describe('getPostgresModels', () => {
   it('should exist', () => {
     // arrange
@@ -17,7 +19,7 @@ describe('getPostgresModels', () => {
     const models = getPostgresModels();
     // assert
     expect(models).toBeDefined();
-    expect(models).toHaveLength(5);
+    expect(models).toHaveLength(6);
   });
 });
 
@@ -33,11 +35,4 @@ describe('logLoadedPostgresModels', () => {
     expect(logLoadedPostgresModels).toBeDefined();
   });
 
-  // it('should print a table of models when invoked', () => {
-  //   // arrange
-  //   // act
-  //   logLoadedPostgresModels([]);
-  //   // assert
-  //   expect(console.table).toHaveBeenCalled();
-  // });
 });

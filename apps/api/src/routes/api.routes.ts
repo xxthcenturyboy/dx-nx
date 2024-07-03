@@ -7,6 +7,7 @@ import { HealthzRoutes } from '@dx/healthz';
 import { WellKnownRoutes } from '@dx/devices';
 import { RoutesV1 } from './v1.routes';
 import { endpointNotFound } from '@dx/server';
+import { DxRateLimiters} from '@dx/server';
 
 export class ApiRoutes {
   app: Express;
@@ -18,13 +19,14 @@ export class ApiRoutes {
   }
 
   public loadRoutes() {
-    this.router.use('/healthz', HealthzRoutes.configure());
+    this.router.use('/healthz', DxRateLimiters.strict(), HealthzRoutes.configure());
     this.router.use('/.well-known', WellKnownRoutes.configure());
     this.router.use('/v1', RoutesV1.configure());
 
     this.router.all('/*', endpointNotFound);
 
     if (this.app) {
+      this.app.use(DxRateLimiters.standard());
       this.app.use('/api', this.router);
     }
   }

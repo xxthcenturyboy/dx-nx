@@ -28,7 +28,7 @@ export function getRedisConfig(): RedisConfigType {
 
   return {
     port: Number(env.REDIS_PORT) || 6379,
-    prefix: `${APP_PREFIX}${REDIS_DELIMITER}${nodeEnv}` ,
+    prefix: `${APP_PREFIX}` ,
     url: env.REDIS_URL
   }
 }

@@ -1,5 +1,7 @@
 import { AuthRoutes } from './auth.routes';
 
+jest.mock('@dx/server');
+
 describe('AuthRoutes', () => {
   it('should exist when imported', () => {
     // arrange

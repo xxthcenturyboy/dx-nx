@@ -47,6 +47,16 @@ export function sendMethodNotAllowed(req: Request, res: Response, message: strin
   });
 }
 
+export function sendTooManyRequests(req: Request, res: Response, message: string): void {
+  ApiLoggingClass.instance.logWarn(`Too many requests: ${req.method} ${req.url}`);
+  send400(res, {
+    description: getReasonPhrase(StatusCodes.TOO_MANY_REQUESTS),
+    status: StatusCodes.TOO_MANY_REQUESTS,
+    message,
+    url: req.url
+  });
+}
+
 export function endpointNotFound(req: Request, res: Response, next: NextFunction): void {
   ApiLoggingClass.instance.logError(`Endpoint not found: ${req.method} ${req.url}`);
   sendMethodNotAllowed(req, res, 'API endpoint not found');

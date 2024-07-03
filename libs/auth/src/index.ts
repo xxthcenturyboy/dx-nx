@@ -22,6 +22,7 @@ export {
 } from './model/auth.types';
 export {
   AUTH_TOKEN_NAMES,
+  AUTH_ROUTES_V1_RATE_LIMIT,
   USER_LOOKUPS
 } from './model/auth.consts';
 export {

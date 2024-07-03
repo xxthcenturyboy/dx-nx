@@ -3,6 +3,8 @@ import { Express } from 'jest-express/lib/express';
 
 import { ApiRoutes } from './api.routes';
 
+jest.mock('@dx/server');
+
 describe('AuthRoutes', () => {
   it('should exist when imported', () => {
     // arrange

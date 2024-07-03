@@ -19,7 +19,8 @@ import {
   sendNoContent,
   sendNotFound,
   sendOK,
-  sendUnauthorized
+  sendUnauthorized,
+  sendTooManyRequests
 } from './http-responses';
 
 jest.mock('@dx/auth');

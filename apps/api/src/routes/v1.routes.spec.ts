@@ -1,5 +1,7 @@
 import { RoutesV1 } from './v1.routes';
 
+jest.mock('@dx/server');
+
 describe('RoutesV1', () => {
   it('should exist when imported', () => {
     expect(RoutesV1).toBeDefined();

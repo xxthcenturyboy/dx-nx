@@ -32,6 +32,7 @@ import {
 } from '@dx/utils';
 import { OtpCodeCache } from '../model/otp-code.redis-cache';
 import { TokenService } from './token.service';
+import { isProd } from '@dx/config';
 
 export class AuthService {
   logger: ApiLoggingClassType;
@@ -324,7 +325,9 @@ export class AuthService {
       }
 
 
-      return otpCode;
+      return isProd()
+        ? ''
+        : otpCode;
     } catch (err) {
       const message = err.message || 'Error sending Otp to email' + email;
       this.logger.logError(message);
@@ -350,7 +353,9 @@ export class AuthService {
         // TODO: integrate with Twilio or other to send SMS
       }
 
-      return otpCode;
+      return isProd()
+        ? ''
+        : otpCode;
     } catch (err) {
       const message = err.message || 'Error sending Otp to phone' + phone;
       this.logger.logError(message);

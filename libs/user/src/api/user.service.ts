@@ -38,7 +38,8 @@ import {
   DEFAULT_OFFSET,
   DEFAULT_SORT,
   isDebug,
-  isLocal
+  isLocal,
+  isProd
 } from '@dx/config';
 import { ShortLinkModel } from '@dx/shortlink';
 import { MailSendgrid } from '@dx/mail';
@@ -409,7 +410,9 @@ export class UserService {
 
     try {
       const code = await OtpService.generateOptCode(userId);
-      return { code };
+      return isProd()
+        ? { code: '' }
+        : { code };
     } catch (err) {
       const message = err.message || 'Could not send code.';
       this.logger.logError(message);
