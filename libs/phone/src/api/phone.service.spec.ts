@@ -8,6 +8,7 @@ import {
   PhoneServiceType
 } from './phone.service';
 import { PhoneModel } from '../model/phone.postgres-model';
+import { DeviceModel } from '@dx/devices';
 import { EmailModel } from '@dx/email';
 import { ShortLinkModel } from '@dx/shortlink';
 import {
@@ -43,6 +44,7 @@ describe('PhoneService', () => {
       const connection = new PostgresDbConnection({
         postgresUri: POSTGRES_URI,
         models: [
+          DeviceModel,
           EmailModel,
           PhoneModel,
           ShortLinkModel,

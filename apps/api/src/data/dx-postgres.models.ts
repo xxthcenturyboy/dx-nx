@@ -7,6 +7,7 @@ import {
   UserModel,
   UserPrivilegeSetModel
 } from "@dx/user";
+import { DeviceModel } from "@dx/devices";
 import { EmailModel } from "@dx/email";
 import { PhoneModel } from "@dx/phone";
 
@@ -16,6 +17,7 @@ import { logTable } from "@dx/utils";
 export function getPostgresModels(): ModelCtor[] {
   const models: ModelCtor[] = [];
 
+  models.push(DeviceModel);
   models.push(EmailModel);
   models.push(PhoneModel);
   models.push(ShortLinkModel);

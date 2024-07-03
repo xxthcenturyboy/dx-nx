@@ -11,8 +11,7 @@ import {
   TokenExpiration
 } from '../model/token.types';
 import {
-  DxDateUtilClass,
-  randomId
+  DxDateUtilClass
 } from '@dx/utils';
 import {
   ApiLoggingClass

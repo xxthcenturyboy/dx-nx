@@ -38,6 +38,18 @@ export {
   CLIENT_APP_URL
 } from './client/client-config.consts';
 
+// Mobile
+export {
+  APPLE_APP_ID,
+  APPLE_WEB_CREDENTIALS,
+  PACKAGE_NAME,
+  SHA256_CERT_FINGERPRINT
+} from './mobile/mobile-config.const';
+export {
+  AndroiodWellKnownData,
+  AppleWellKnownData
+} from './mobile/mobile-config.type';
+
 // Test Data
 export {
   TEST_COUNTRY_CODE,

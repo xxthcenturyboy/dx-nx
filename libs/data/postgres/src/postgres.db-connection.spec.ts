@@ -4,6 +4,7 @@ import { ApiLoggingClass } from '@dx/logger';
 import { PostgresDbConnection } from './postgres.db-connection';
 import { API_APP_NAME } from '@dx/config';
 import { UserModel } from '@dx/user';
+
 jest.mock('@dx/logger');
 jest.mock('@dx/user');
 

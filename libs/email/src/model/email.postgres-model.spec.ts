@@ -6,6 +6,7 @@ import {
   UserModel,
   UserPrivilegeSetModel
 } from '@dx/user';
+import { DeviceModel } from '@dx/devices';
 import { EmailModel } from './email.postgres-model';
 import { EMAIL_POSTGRES_DB_NAME } from './email.consts';
 import { PhoneModel } from '@dx/phone';
@@ -25,6 +26,7 @@ describe('EmailModel', () => {
       const connection = new PostgresDbConnection({
         postgresUri: POSTGRES_URI,
         models: [
+          DeviceModel,
           EmailModel,
           PhoneModel,
           UserPrivilegeSetModel,

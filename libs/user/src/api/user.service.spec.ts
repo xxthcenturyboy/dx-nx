@@ -8,6 +8,7 @@ import {
   UserServiceType
 } from './user.service';
 import { PhoneModel } from '@dx/phone';
+import { DeviceModel } from '@dx/devices';
 import { EmailModel } from '@dx/email';
 import { ShortLinkModel } from '@dx/shortlink';
 import { UserPrivilegeSetModel } from '../model/user-privilege.postgres-model';
@@ -42,6 +43,7 @@ describe('UserService', () => {
       const connection = new PostgresDbConnection({
         postgresUri: POSTGRES_URI,
         models: [
+          DeviceModel,
           EmailModel,
           PhoneModel,
           ShortLinkModel,

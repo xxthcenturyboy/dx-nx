@@ -7,6 +7,7 @@ import {
   EmailService,
   EmailServiceType
 } from './email.service';
+import { DeviceModel } from '@dx/devices';
 import { EmailModel } from '../model/email.postgres-model';
 import { PhoneModel } from '@dx/phone';
 import { ShortLinkModel } from '@dx/shortlink';
@@ -40,6 +41,7 @@ describe('EmailService', () => {
       const connection = new PostgresDbConnection({
         postgresUri: POSTGRES_URI,
         models: [
+          DeviceModel,
           EmailModel,
           PhoneModel,
           ShortLinkModel,

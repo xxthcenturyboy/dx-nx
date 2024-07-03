@@ -4,6 +4,7 @@ import {
   UserModelType,
   UserProfileStateType
 } from '@dx/user';
+import { DeviceModel } from '@dx/devices';
 import { EmailModel } from '@dx/email';
 import {
   PhoneModel,

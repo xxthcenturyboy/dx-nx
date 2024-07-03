@@ -5,11 +5,13 @@ import {
   Op
 } from 'sequelize';
 import {
+  BelongsTo,
   Table,
   Column,
   Model,
   DataType,
   Default,
+  ForeignKey,
   PrimaryKey,
   AllowNull,
   Unique,
@@ -34,6 +36,11 @@ import {
   PhoneModelType,
   PhoneType
 } from '@dx/phone';
+import {
+  DeviceModel,
+  DeviceModelType,
+  DeviceType
+} from '@dx/devices';
 import {
   UserPrivilegeSetModel,
   UserPrivilegeSetModelType
@@ -60,11 +67,17 @@ export class UserModel extends Model<UserModel> {
   @Column(DataType.UUID)
   id: string;
 
+  @HasMany(() => DeviceModel)
+  devices: DeviceModel[];
+
   @HasMany(() => EmailModel)
   emails: EmailModel[];
 
   @HasMany(() => PhoneModel)
   phones: PhoneModel[];
+
+  @HasMany(() => UserModel, 'referrer_user_id')
+  referredUsers: UserModel[];
 
   @Column({ field: 'hashword', type: DataType.STRING })
   hashword: string;
@@ -128,6 +141,13 @@ export class UserModel extends Model<UserModel> {
     }
   })
   restrictions: string[] | null;
+
+  @ForeignKey(() => UserModel)
+  @Column({ field: 'referrer_user_id', type: DataType.UUID })
+  referrerUserId: string;
+
+  @BelongsTo(() => UserModel, 'referrer_user_id')
+  referrer: UserModel;
 
   @Column({ field: 'refresh_tokens', type: DataType.ARRAY(DataType.STRING) })
   refreshTokens: string[] | null;
@@ -302,6 +322,62 @@ export class UserModel extends Model<UserModel> {
 
     return result || null;
   }
+
+  async fetchConnectedDevice(): Promise<DeviceModel | null> {
+    try {
+      const device = await DeviceModel.findOne({
+        where: {
+          userId: this.id,
+          deletedAt: {
+            [Op.is]: null
+          },
+          // facialAuthState: {
+          //   [Op.ne]: 'CHALLENGE'
+          // }
+        }
+      });
+
+      return device;
+    } catch (e) { throw e; }
+  }
+
+    /**
+   * Given a verification token, returns the prev verified device before a token.
+   *
+   */
+    async fetchConnectedDeviceBeforeToken(token: string): Promise<DeviceModel | null> {
+      try {
+        const device = await DeviceModel.findOne({
+          where: {
+            userId: this.id,
+            verificationToken: token
+          }
+        });
+
+
+        if (device) {
+          const prev = await DeviceModel.findOne({
+            where: {
+              createdAt: {
+                [Op.lt]: device.createdAt
+              },
+              verifiedAt: {
+                [Op.ne]: null
+              },
+              userId: this.id,
+              // facialAuthState: {
+              //   [Op.ne]: 'CHALLENGE'
+              // }
+            },
+            order: [['created_at', 'DESC']]
+          });
+
+          return prev;
+        }
+
+        return null;
+      } catch (e) { throw e; }
+    }
 
   async getPrivilegSets (): Promise<UserPrivilegeSetModelType[]> {
     if (this.roles) {
@@ -644,71 +720,12 @@ export class UserModel extends Model<UserModel> {
     return sessionData;
   }
 
-   // TODO: Remove
-   static async getByToken (token: string): Promise<UserModelType> {
-    const data = await this.findOne({
-      where: {
-        token,
-        deletedAt: null,
-      },
-      include: [
-        {
-          model: EmailModel,
-        },
-        {
-          model: PhoneModel,
-        }
-      ],
+  static async getBiomAuthKey(userId: string): Promise<string | null> {
+    const user = await UserModel.findOne({
+      where: { id: userId }
     });
-
-    if (!data) {
-      throw new Error(`No user found with that link.`);
-    }
-
-    const exp = DxDateUtilClass.getTimestamp();
-    if (data.tokenExp < exp) {
-      throw new Error(`Token has expired.`);
-    }
-
-    if (
-      data.emails
-      && Array.isArray(data.emails)
-      && data.emails.length > 0
-    ) {
-      const emailToVerify = data.emails.find(email => email.token === token);
-      await EmailModel.verifyEmail(emailToVerify.id);
-    }
-
-    return data;
-  }
-
-  // TODO: Remove
-  static async updateToken (id: string): Promise<string> {
-    if (!id) {
-      throw new Error(`No user ID provided`);
-    }
-
-    const token = dxEncryptionGenerateRandomValue() as string;
-    const tokenExp = DxDateUtilClass.getTimestamp(2, 'days', 'ADD');
-
-    const res = await UserModel.update({
-      token,
-      tokenExp
-    }, {
-      where: {
-        id,
-        deletedAt: null,
-        username: {
-          [Op.ne]: 'admin'
-        }
-      }
-    });
-
-    if (res && Array.isArray(res) && res[0] === 0) {
-      return '';
-    }
-
-    return token;
+    const device = user && await user.fetchConnectedDevice();
+    return device && device.biomAuthPubKey;
   }
 
   static async setPasswordTest (
@@ -797,6 +814,73 @@ export class UserModel extends Model<UserModel> {
     }
 
     return false;
+  }
+
+   // TODO: Remove
+   static async getByToken (token: string): Promise<UserModelType> {
+    const data = await this.findOne({
+      where: {
+        token,
+        deletedAt: null,
+      },
+      include: [
+        {
+          model: EmailModel,
+        },
+        {
+          model: PhoneModel,
+        }
+      ],
+    });
+
+    if (!data) {
+      throw new Error(`No user found with that link.`);
+    }
+
+    const exp = DxDateUtilClass.getTimestamp();
+    if (data.tokenExp < exp) {
+      throw new Error(`Token has expired.`);
+    }
+
+    if (
+      data.emails
+      && Array.isArray(data.emails)
+      && data.emails.length > 0
+    ) {
+      const emailToVerify = data.emails.find(email => email.token === token);
+      await EmailModel.verifyEmail(emailToVerify.id);
+    }
+
+    return data;
+  }
+
+  // TODO: Remove
+  static async updateToken (id: string): Promise<string> {
+    if (!id) {
+      throw new Error(`No user ID provided`);
+    }
+
+    const token = dxEncryptionGenerateRandomValue() as string;
+    const tokenExp = DxDateUtilClass.getTimestamp(2, 'days', 'ADD');
+
+    const res = await UserModel.update({
+      token,
+      tokenExp
+    }, {
+      where: {
+        id,
+        deletedAt: null,
+        username: {
+          [Op.ne]: 'admin'
+        }
+      }
+    });
+
+    if (res && Array.isArray(res) && res[0] === 0) {
+      return '';
+    }
+
+    return token;
   }
 }
 

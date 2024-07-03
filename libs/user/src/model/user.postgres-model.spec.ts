@@ -2,6 +2,7 @@ import { Sequelize } from 'sequelize-typescript';
 
 import { PostgresDbConnection } from '@dx/postgres';
 import { ApiLoggingClass } from '@dx/logger';
+import { DeviceModel } from '@dx/devices';
 import { EmailModel } from '@dx/email';
 import { PhoneModel } from '@dx/phone';
 import { UserModel } from './user.postgres-model';
@@ -26,6 +27,7 @@ describe('User Models', () => {
       const connection = new PostgresDbConnection({
         postgresUri: POSTGRES_URI,
         models: [
+          DeviceModel,
           EmailModel,
           PhoneModel,
           UserPrivilegeSetModel,
@@ -80,8 +82,22 @@ describe('User Models', () => {
         // arrange
         // act
         // assert
+        expect(UserModel.associations).toHaveProperty('devices');
         expect(UserModel.associations).toHaveProperty('emails');
         expect(UserModel.associations).toHaveProperty('phones');
+        // @ts-expect-error - prototype exists
+        expect(UserModel.prototype?.countDevices).toBeDefined();
+        // @ts-expect-error - prototype exists
+        expect(UserModel.prototype?.hasEmail).toBeDefined();
+        // @ts-expect-error - prototype exists
+        expect(UserModel.prototype?.hasDevices).toBeDefined();
+        // @ts-expect-error - prototype exists
+        expect(UserModel.prototype?.setDevices).toBeDefined();
+        // @ts-expect-error - prototype exists
+        expect(UserModel.prototype?.addDevice).toBeDefined();
+        // @ts-expect-error - prototype exists
+        expect(UserModel.prototype?.addDevices).toBeDefined();
+
         // @ts-expect-error - prototype exists
         expect(UserModel.prototype?.countEmails).toBeDefined();
         // @ts-expect-error - prototype exists
@@ -133,6 +149,7 @@ describe('User Models', () => {
         expect(UserModel.updateToken).toBeDefined();
         expect(UserModel.setPasswordTest).toBeDefined();
         expect(UserModel.updatePassword).toBeDefined();
+        expect(UserModel.getBiomAuthKey).toBeDefined();
         expect(UserModel.getByRefreshToken).toBeDefined();
         expect(UserModel.getUserSessionData).toBeDefined();
         expect(UserModel.clearRefreshTokens).toBeDefined();
