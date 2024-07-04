@@ -9,6 +9,7 @@ import {
   TEST_EXISTING_EMAIL,
   TEST_EXISTING_PASSWORD,
   TEST_EXISTING_PHONE,
+  TEST_EXISTING_USER_ID,
   TEST_PASSWORD,
   TEST_PHONE,
   TEST_PHONE_IT_INVALID,
@@ -27,6 +28,7 @@ import { PhoneModel } from '@dx/phone';
 import { ShortLinkModel } from '@dx/shortlink';
 import {
   AccountCreationPayloadType,
+  BiometricLoginPayload,
   LoginPaylodType,
   SessionData,
   UserLookupQueryType,
@@ -97,6 +99,106 @@ describe('AuthService', () => {
       // act
       // assert
       expect(authService).toBeDefined();
+    });
+
+    describe('biometricLogin', () => {
+      it('should exist', () => {
+        // arrange
+        // act
+        // assert
+        expect(authService.biometricLogin).toBeDefined();
+      });
+
+      test('should throw when payload is incomplete', async () => {
+        // arrange
+        const payload: BiometricLoginPayload = {
+          device: null,
+          payload: '',
+          signature: '',
+          userId: TEST_EXISTING_USER_ID
+        };
+        // act
+        try {
+          expect(await authService.biometricLogin(payload)).toThrow();
+        } catch (err) {
+          // assert
+          expect(err.message).toEqual('Insufficient data for Biometric login.');
+        }
+      });
+
+      test('should throw when user does not have a connected device setup for biometrics', async () => {
+        // arrange
+        const payload: BiometricLoginPayload = {
+          device: null,
+          payload: 'payload',
+          signature: 'signature',
+          userId: TEST_EXISTING_USER_ID
+        };
+        // act
+        try {
+          expect(await authService.biometricLogin(payload)).toThrow();
+        } catch (err) {
+          // assert
+          expect(err.message).toEqual(`BiometricLogin: User ${TEST_EXISTING_USER_ID} has no stored public key.`);
+        }
+      });
+
+      test('should throw when biometric public key cannot be validated', async () => {
+        // TODO: finish test
+        // arrange
+        // const payload: BiometricLoginPayload = {
+        //   device: null,
+        //   payload: 'payload',
+        //   signature: 'signature',
+        //   userId: TEST_EXISTING_USER_ID
+        // };
+        // // act
+        // try {
+        //   expect(await authService.biometricLogin(payload)).toThrow();
+        // } catch (err) {
+        //   // assert
+        //   expect(err.message).toEqual('Email is unavailable.');
+        // }
+        expect(true).toBe(true);
+      });
+
+      test('should throw when could not log in', async () => {
+        // TODO: finish test
+        // arrange
+        // const payload: BiometricLoginPayload = {
+        //   device: null,
+        //   payload: 'payload',
+        //   signature: 'signature',
+        //   userId: TEST_EXISTING_USER_ID
+        // };
+        // // act
+        // try {
+        //   expect(await authService.biometricLogin(payload)).toThrow();
+        // } catch (err) {
+        //   // assert
+        //   expect(err.message).toEqual('Email is unavailable.');
+        // }
+        expect(true).toBe(true);
+      });
+
+      test('should log in when called', async () => {
+        // TODO: finish test
+        // arrange
+        // const payload: BiometricLoginPayload = {
+        //   device: null,
+        //   payload: 'payload',
+        //   signature: 'signature',
+        //   userId: TEST_EXISTING_USER_ID
+        // };
+        // // act
+        // try {
+        //   expect(await authService.biometricLogin(payload)).toThrow();
+        // } catch (err) {
+        //   // assert
+        //   expect(err.message).toEqual('Email is unavailable.');
+        // }
+        expect(true).toBe(true);
+      });
     });
 
     describe('createAccount', () => {
@@ -214,6 +316,24 @@ describe('AuthService', () => {
         expect((user as UserProfileStateType).phones).toHaveLength(1);
         // clenup
         phoneAccountId = user.id;
+      });
+
+      test('should create an account with phone and device when called', async () => {
+        // TODO: finish test
+        // arrange
+        // const otpCode = await authService.sendOtpToPhone(TEST_PHONE_VALID, 'US');
+        // const payload: AccountCreationPayloadType = {
+        //   code: otpCode,
+        //   value: TEST_PHONE_VALID
+        // };
+        // // act
+        // const user = await authService.createAccount(payload, session);
+        // // assert
+        // expect(user).toBeDefined();
+        // expect((user as UserProfileStateType).phones).toHaveLength(1);
+        // // clenup
+        // phoneAccountId = user.id;
+        expect(true).toBe(true);
       });
     });
 
@@ -451,6 +571,23 @@ describe('AuthService', () => {
         expect(user).toBeDefined();
         expect((user as UserProfileStateType).phones).toHaveLength(1);
       });
+
+      test('should return user profile upon successful biometric login', async () => {
+        // TODO: finish test
+        // arrange
+        // const otpCode = await authService.sendOtpToPhone(TEST_PHONE_VALID, 'US');
+        // const payload: LoginPaylodType = {
+        //   value: TEST_PHONE_VALID,
+        //   code: otpCode,
+        // };
+        // // act
+        // const user = await authService.login(payload);
+        // // console.log(user);
+        // // assert
+        // expect(user).toBeDefined();
+        // expect((user as UserProfileStateType).phones).toHaveLength(1);
+        expect(true).toBe(true);
+      });
     });
 
     describe('logout', () => {
@@ -550,6 +687,7 @@ describe('AuthService', () => {
       // act
       const authService = new AuthService();
       // assert
+      expect(authService.biometricLogin).toBeDefined();
       expect(authService.createAccount).toBeDefined();
       expect(authService.doesEmailPhoneExist).toBeDefined();
       expect(authService.login).toBeDefined();

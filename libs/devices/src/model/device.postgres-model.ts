@@ -97,19 +97,15 @@ export class DeviceModel extends Model<DeviceModel> {
   //////////////// Methods //////////////////
 
   static async markDeleted(deviceId: string): Promise<void> {
-    try {
-      const device = await DeviceModel.findOne({
-        where: { id: deviceId }
-      });
-      if (!device) {
-        throw 'Device not found';
-      }
-      device.deletedAt = new Date();
-      await device.save();
-      return;
-    } catch (err) {
-      throw err;
+    const device = await DeviceModel.findOne({
+      where: { id: deviceId }
+    });
+    if (!device) {
+      throw new Error('DeviceModel.markeDeleted: Device not found.');
     }
+    device.deletedAt = new Date();
+    await device.save();
+    return;
   }
 }
 

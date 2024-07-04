@@ -2,12 +2,14 @@ import {
   ApiLoggingClass,
   ApiLoggingClassType
 } from '@dx/logger';
-import { DeviceModel } from '../model/device.postgres-model';
+import { DeviceModel, DeviceModelType } from '../model/device.postgres-model';
 import { FACIAL_AUTH_STATE } from '../model/devices.consts';
 import { DeviceAuthType } from '../model/devices.types';
 import { UserModelType } from '@dx/user';
+import { isLocal } from '@dx/config';
 
 export class DevicesService {
+  private LOCAL = isLocal();
   logger: ApiLoggingClassType;
 
   constructor() {
@@ -112,97 +114,103 @@ export class DevicesService {
     device: DeviceAuthType,
     user: UserModelType,
     bypass: boolean = false
-  ): Promise<void> {
-    // check if facial auth is possible
-    const facialAuthState = !!(await user.getVerifiedPhone())
-      ? FACIAL_AUTH_STATE.CHALLENGE
-      : FACIAL_AUTH_STATE.NOT_APPLICABLE;
-    const existingDevice = await DeviceModel.findOne({
-      where: {
-        uniqueDeviceId: device.uniqueDeviceId,
-        deletedAt: null,
-      }
-    });
-    const existingUserDevice = await user.fetchConnectedDevice();
-    // const isSameDevice = existingDevice && existingDevice.userId === user.id && existingUserDevice;
-
-    // Unused device, none on user => connect
-    // DeviceModel previously used by this user => treat as new connection
-    if (
-      !existingDevice
-      && !existingUserDevice
-    ) {
-      // console.log('Unused device, none on user => connect');
-      await DeviceModel.create({
-        ...device,
-        userId: user.id,
-        verifiedAt: new Date(),
-      });
-      return;
-    }
-
-    // Unused device, user has another connected
-    if (
-      !existingDevice &&
-      existingUserDevice &&
-      existingUserDevice.uniqueDeviceId !== device.uniqueDeviceId
-    ) {
-      // console.log('Unused device, user has another connected: send notif');
-      existingUserDevice.deletedAt = new Date();
-      await existingUserDevice.save();
-      void this.sendNewDeviceDataMessage({ fcmToken: existingUserDevice.fcmToken, device, userId: user.id });
-      void this.sendNewDeviceUpdateNotification({ fcmToken: existingUserDevice.fcmToken, device });
-
-      const addedDevice = await DeviceModel.create({
-        ...device,
-        userId: user.id,
-        facialAuthState,
-      });
-      if (bypass) {
-        addedDevice.verifiedAt = new Date();
-        addedDevice.facialAuthState = FACIAL_AUTH_STATE.NOT_APPLICABLE;
-        await addedDevice.save();
-        return;
-      }
-      // TODO: Send email and SMS to user letting them know of new device on account
-      // securityNotification(user, device, addedDevice.verificationToken);
-      return;
-    }
-
-    // DeviceModel is used but connected to another user => transfer over
-    if (
-      existingDevice &&
-      existingDevice.userId !== user.id
-    ) {
-      // console.log('DeviceModel is used but connected to another user => transfer over- send notif');
-      existingDevice.deletedAt = new Date();
-      await existingDevice.save();
-
-      // delete any existing devices for user
-      const existingUserDevices = await DeviceModel.findAll({
+  ): Promise<DeviceModelType> {
+    try {
+      // check if facial auth is possible
+      const facialAuthState = !!(await user.getVerifiedPhone())
+        ? FACIAL_AUTH_STATE.CHALLENGE
+        : FACIAL_AUTH_STATE.NOT_APPLICABLE;
+      const existingDevice = await DeviceModel.findOne({
         where: {
-          userId: user.id,
-          deletedAt: null
+          uniqueDeviceId: device.uniqueDeviceId,
+          deletedAt: null,
         }
       });
-      for (const userDevice of existingUserDevices) {
-        userDevice.deletedAt = new Date();
-        await userDevice.save()
+
+      const existingUserDevice = await user.fetchConnectedDevice();
+      // const isSameDevice = existingDevice && existingDevice.userId === user.id && existingUserDevice;
+
+      // Unused device, none on user => connect
+      // DeviceModel previously used by this user => treat as new connection
+      if (
+        !existingDevice
+        && !existingUserDevice
+      ) {
+        // console.log('Unused device, none on user => connect');
+        return await DeviceModel.create({
+          ...device,
+          userId: user.id,
+          verifiedAt: new Date(),
+        });
       }
 
-      const addedDevice = await DeviceModel.create({
-        ...device,
-        userId: user.id,
-        facialAuthState,
-      });
-      if (bypass) {
-        addedDevice.verifiedAt = new Date();
-        addedDevice.facialAuthState = FACIAL_AUTH_STATE.NOT_APPLICABLE;
-        await addedDevice.save();
-        return;
+      // Unused device, user has another connected
+      if (
+        !existingDevice &&
+        existingUserDevice &&
+        existingUserDevice.uniqueDeviceId !== device.uniqueDeviceId
+      ) {
+        // console.log('Unused device, user has another connected: send notif');
+        existingUserDevice.deletedAt = new Date();
+        await existingUserDevice.save();
+        void this.sendNewDeviceDataMessage({ fcmToken: existingUserDevice.fcmToken, device, userId: user.id });
+        void this.sendNewDeviceUpdateNotification({ fcmToken: existingUserDevice.fcmToken, device });
+
+        const addedDevice = await DeviceModel.create({
+          ...device,
+          userId: user.id,
+          facialAuthState,
+        });
+        if (bypass) {
+          addedDevice.verifiedAt = new Date();
+          addedDevice.facialAuthState = FACIAL_AUTH_STATE.NOT_APPLICABLE;
+          await addedDevice.save();
+          return addedDevice;
+        }
+        // TODO: Send email and SMS to user letting them know of new device on account
+        // securityNotification(user, device, addedDevice.verificationToken);
+        return addedDevice;
       }
-      // TODO: Send email and SMS to user letting them know of new device on account
-      // securityNotification(user, device, addedDevice.verificationToken);
+
+      // DeviceModel is used but connected to another user => transfer over
+      if (
+        existingDevice &&
+        existingDevice.userId !== user.id
+      ) {
+        // console.log('DeviceModel is used but connected to another user => transfer over- send notif');
+        existingDevice.deletedAt = new Date();
+        await existingDevice.save();
+
+        // delete any existing devices for user
+        const existingUserDevices = await DeviceModel.findAll({
+          where: {
+            userId: user.id,
+            deletedAt: null
+          }
+        });
+        for (const userDevice of existingUserDevices) {
+          userDevice.deletedAt = new Date();
+          await userDevice.save()
+        }
+
+        const addedDevice = await DeviceModel.create({
+          ...device,
+          userId: user.id,
+          facialAuthState,
+        });
+        if (bypass) {
+          addedDevice.verifiedAt = new Date();
+          addedDevice.facialAuthState = FACIAL_AUTH_STATE.NOT_APPLICABLE;
+          await addedDevice.save();
+          return addedDevice;
+        }
+        // TODO: Send email and SMS to user letting them know of new device on account
+        // securityNotification(user, device, addedDevice.verificationToken);
+        return addedDevice;
+      }
+    } catch (err) {
+      this.logger.logError(err);
+      throw new Error(err.message);
     }
   }
 
@@ -250,6 +258,18 @@ export class DevicesService {
     } catch (err) {
       this.logger.logError(err);
       throw new Error(err.message);
+    }
+  }
+
+  // TODO: Only used in test - remove when can
+  public async deleteTestDevice(id: string) {
+    if (this.LOCAL) {
+      await DeviceModel.destroy({
+        where: {
+          id,
+        },
+        force: true
+      });
     }
   }
 }

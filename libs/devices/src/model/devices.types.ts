@@ -1,7 +1,3 @@
-export type DevicesResponseType = {
-  message: string;
-};
-
 export type DeviceType = {
   biomAuthPubKey: string;
   carrier: string;
@@ -25,5 +21,5 @@ export type DeviceAuthType = {
   carrier?: string;
   deviceCountry?: string;
   name?: string;
-  multiSigPubKey: string;
+  // multiSigPubKey: string;
 };

@@ -1,7 +1,15 @@
 import { PHONE_DEFAULT_REGION_CODE } from '@dx/phone';
 import { CreateUserPayloadType } from '@dx/user';
+import { DeviceAuthType } from '@dx/devices';
 
 export const TEST_COUNTRY_CODE = '1';
+export const TEST_DEVICE: DeviceAuthType = {
+  uniqueDeviceId: 'e5a96fa3-ab58-4d27-b607-3a32d4cf7270',
+  deviceId: 'test-device-id',
+  carrier: 'ATT',
+  deviceCountry: 'US',
+  name: 'iPhone,16'
+};
 export const TEST_EMAIL = 'test@test.com';
 export const TEST_EXISTING_EMAIL = 'admin@danex.software';
 export const TEST_EXISTING_PASSWORD = 'advancedbasics1';
