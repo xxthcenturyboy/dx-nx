@@ -789,6 +789,12 @@ export class UserModel extends Model<UserModel> {
 
   static async removeUser (id: string): Promise<boolean> {
     try {
+      const deviceDeleted = await DeviceModel.destroy({
+        where: {
+          userId: id
+        },
+        force: true
+      });
       const emailDeleted = await EmailModel.destroy({
         where: {
           userId: id

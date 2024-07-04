@@ -17,6 +17,7 @@ import {
   AuthUtilType
 } from './util-v1';
 import {
+  TEST_DEVICE,
   TEST_EMAIL,
   TEST_EXISTING_EMAIL,
   TEST_EXISTING_PHONE,
@@ -26,6 +27,7 @@ import {
 
 describe('v1 Auth Flow', () => {
   let authUtil: AuthUtilType;
+
   let emailAccountId: string;
   let emailAuthToken: string;
   let otpEmail: string;
@@ -33,7 +35,6 @@ describe('v1 Auth Flow', () => {
   let phoneAccountId: string;
   let phoneAuthToken: string;
   let phoneRefreshToken: string;
-  let cookies: string[];
 
   beforeAll(async () => {
     authUtil = new AuthUtil();
@@ -47,7 +48,6 @@ describe('v1 Auth Flow', () => {
     ) {
       const authUtil = new AuthUtil();
       await authUtil.login();
-      cookies = authUtil.cookeisRaw;
 
       if (emailAccountId) {
         const removeEmailAccountRequest: AxiosRequestConfig = {
@@ -388,6 +388,7 @@ describe('v1 Auth Flow', () => {
     test('should return user profile when successfully create account with phone', async () => {
       const payload: AccountCreationPayloadType = {
         code: otpPhone,
+        device: TEST_DEVICE,
         value: TEST_PHONE_VALID
       };
       const request: AxiosRequestConfig = {
