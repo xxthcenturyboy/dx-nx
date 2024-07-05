@@ -92,6 +92,9 @@ describe('Device Model', () => {
         // arrange
         // act
         // assert
+        expect(DeviceModel.findByFcmToken).toBeDefined();
+        expect(DeviceModel.findByFcmTokenNotCurrentUser).toBeDefined();
+        expect(DeviceModel.findByVerificationToken).toBeDefined();
         expect(DeviceModel.markDeleted).toBeDefined();
       });
     });

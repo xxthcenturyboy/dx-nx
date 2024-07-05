@@ -31,6 +31,8 @@ describe('DevicesService', () => {
     let db: Sequelize
     let service: DevicesServiceType;
     let deviceIdToDelete: string;
+    let deviceIdToDelete2: string;
+    let badDeviceIdToDelete: string;
     let user: UserModelType;
 
     beforeAll(async () => {
@@ -110,18 +112,60 @@ describe('DevicesService', () => {
       });
     });
 
-    describe('updateDevice', () => {
+    describe('updateFcmToken', () => {
       test('should throw when payload is incomplete', async () => {
         // arrange
         // act
         // assert
         try {
-          expect(await service.updateDevice(
+          expect(await service.updateFcmToken(
             TEST_UUID,
             ''
           )).toThrow();
         } catch (err) {
-          expect(err.message).toContain('Update Device: Insufficient data to complete request.');
+          expect(err.message).toContain('Update FCM Token: Insufficient data to complete request.');
+        }
+      });
+
+      test('should throw when user does not exist', async () => {
+        // arrange
+        // act
+        // assert
+        try {
+          expect(await service.updateFcmToken(
+            TEST_UUID,
+            TEST_UUID
+          )).toThrow();
+        } catch (err) {
+          expect(err.message).toContain('Update FCM Token: User not found');
+        }
+      });
+
+      test('should update FCM Token when all is good', async () => {
+        // arrange
+        // act
+        const response = await service.updateFcmToken(
+          TEST_EXISTING_USER_ID,
+          TEST_UUID
+        );
+        // assert
+        expect(response.id).toBeDefined();
+        expect(response.uniqueDeviceId).toEqual(TEST_DEVICE.uniqueDeviceId);
+      });
+    });
+
+    describe('updatePublicKey', () => {
+      test('should throw when payload is incomplete', async () => {
+        // arrange
+        // act
+        // assert
+        try {
+          expect(await service.updatePublicKey(
+            TEST_UUID,
+            ''
+          )).toThrow();
+        } catch (err) {
+          expect(err.message).toContain('Update Public Key: Insufficient data to complete request.');
         }
       });
 
@@ -130,22 +174,81 @@ describe('DevicesService', () => {
         // act
         // assert
         try {
-          expect(await service.updateDevice(
+          expect(await service.updatePublicKey(
             TEST_UUID,
             'key'
           )).toThrow();
         } catch (err) {
-          expect(err.message).toContain('Update Device: Could not find the device to update.');
+          expect(err.message).toContain('Update Public Key: Could not find the device to update.');
         }
       });
 
       test('should update a device when all is good', async () => {
         // arrange
         // act
-        const response = await service.updateDevice(
+        const response = await service.updatePublicKey(
           TEST_DEVICE.uniqueDeviceId,
           'biometric-key'
         );
+        // assert
+        expect(response.id).toBeDefined();
+        expect(response.uniqueDeviceId).toEqual(TEST_DEVICE.uniqueDeviceId);
+      });
+    });
+
+    describe('rejectDevice', () => {
+      test('should throw when payload is incomplete', async () => {
+        // arrange
+        // act
+        // assert
+        try {
+          expect(await service.rejectDevice('')).toThrow();
+        } catch (err) {
+          expect(err.message).toContain('Reject Device: Token is required');
+        }
+      });
+
+      test('should throw when device cannot be found with token', async () => {
+        // arrange
+        // act
+        // assert
+        try {
+          expect(await service.rejectDevice(TEST_UUID)).toThrow();
+        } catch (err) {
+          expect(err.message).toContain('Reject Device: Invalid Token');
+        }
+      });
+
+      test('should throw when there are no previous devices', async () => {
+        // arrange
+        // act
+        await DeviceModel.update({
+          verificationToken: TEST_UUID
+        }, {
+          where: {
+            id: deviceIdToDelete
+          }
+        });
+        // assert
+        try {
+          expect(await service.rejectDevice(TEST_UUID)).toThrow();
+        } catch (err) {
+          expect(err.message).toContain('Reject Device: No previous device exists.');
+        }
+      });
+
+      test('should return previous device when successful', async () => {
+        // arrange
+        const badDevice = await DeviceModel.create({
+          ...TEST_DEVICE,
+          uniqueDeviceId: 'uniquely-bad-device-id',
+          verificationToken: 'verification-token',
+          userId: user.id,
+          verifiedAt: new Date(),
+        });
+        badDeviceIdToDelete = badDevice.id;
+        // act
+        const response = await service.rejectDevice('verification-token');
         // assert
         expect(response.id).toBeDefined();
         expect(response.uniqueDeviceId).toEqual(TEST_DEVICE.uniqueDeviceId);
@@ -171,7 +274,7 @@ describe('DevicesService', () => {
         try {
           expect(await service.disconnectDevice(TEST_EXISTING_USER_ID)).toThrow();
         } catch (err) {
-          expect(err.message).toContain(`DeviceModel.markeDeleted: Device not found.`);
+          expect(err.message).toContain(`Device not found.`);
         }
       });
 
@@ -183,10 +286,34 @@ describe('DevicesService', () => {
         expect(response.message).toEqual('Device disconnected.');
       });
 
+      test('should be able to create the exact same device when previous was deletedAt', async () => {
+        // arrange
+        // act
+        const result = await service.handleDevice(TEST_DEVICE, user);
+        deviceIdToDelete2 = result.id;
+        // assert
+        expect(result).toBeDefined();
+        expect(result.uniqueDeviceId).toEqual(TEST_DEVICE.uniqueDeviceId);
+        expect(result.deletedAt).toBe(null);
+      });
+
+      test('should NOT be able to create the exact same device when previous device is still active', async () => {
+        // arrange
+        // act
+        // assert
+        try {
+          await service.handleDevice(TEST_DEVICE, user);
+        } catch (err) {
+          expect(err).toBeDefined();
+        }
+      });
+
       test('should permantly delete device when called', async () => {
         // arrange
         // act
         await service.deleteTestDevice(deviceIdToDelete);
+        await service.deleteTestDevice(deviceIdToDelete2);
+        await service.deleteTestDevice(badDeviceIdToDelete);
         // assert
       });
     });
@@ -213,7 +340,9 @@ describe('DevicesService', () => {
       // assert
       expect(service.handleDevice).toBeDefined();
       expect(service.disconnectDevice).toBeDefined();
-      expect(service.updateDevice).toBeDefined();
+      expect(service.rejectDevice).toBeDefined();
+      expect(service.updateFcmToken).toBeDefined();
+      expect(service.updatePublicKey).toBeDefined();
     });
   }
 });

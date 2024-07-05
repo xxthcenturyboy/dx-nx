@@ -12,7 +12,7 @@ import {
 } from '@dx/phone';
 import {
   AccountCreationPayloadType,
-  BiometricLoginPayload,
+  BiometricAuthType,
   LoginPaylodType,
   SessionData,
   UserLookupQueryType,
@@ -28,7 +28,7 @@ import {
 import { MailSendgrid } from '@dx/mail';
 import { ShortLinkModel } from '@dx/shortlink';
 import {
-  dxValidateBiometricKey,
+  dxRsaValidateBiometricKey,
   EmailUtil,
   PhoneUtil
 } from '@dx/utils';
@@ -217,7 +217,7 @@ export class AuthService {
     }
   }
 
-  public async biometricLogin(data: BiometricLoginPayload) {
+  public async biometricLogin(data: BiometricAuthType) {
     const {
       signature,
       payload,
@@ -238,7 +238,7 @@ export class AuthService {
         throw new Error(`BiometricLogin: User ${userId} has no stored public key.`);
       }
 
-      const isSignatureValid = dxValidateBiometricKey(signature, payload, biometricAuthPublicKey);
+      const isSignatureValid = dxRsaValidateBiometricKey(signature, payload, biometricAuthPublicKey);
       if (!isSignatureValid) {
         throw new Error(`BiometricLogin: Device signature is invalid: ${biometricAuthPublicKey}, userid: ${userId}`);
       }
@@ -262,7 +262,7 @@ export class AuthService {
 
   public async login(payload: LoginPaylodType): Promise<UserProfileStateType | void>  {
     const {
-      biometricPayload,
+      biometric,
       code,
       region,
       password,
@@ -279,12 +279,14 @@ export class AuthService {
       // Authentication in order of preference
       // Biometric Login
       if (
-        biometricPayload
-        && biometricPayload.userId
-        && biometricPayload.payload
-        && biometricPayload.signature
+        biometric
+        && biometric.userId
+        && biometric.signature
       ) {
-        user = await this.biometricLogin(biometricPayload);
+        user = await this.biometricLogin({
+          ...biometric,
+          payload: value
+        });
       }
 
       // Phone Number Login
@@ -386,7 +388,7 @@ export class AuthService {
 
   public async sendOtpToEmail(
     email: string
-  ): Promise<string> {
+  ): Promise<{ code: string }> {
     if (!email) {
       throw new Error('No email sent.');
     }
@@ -408,8 +410,8 @@ export class AuthService {
 
 
       return isProd()
-        ? ''
-        : otpCode;
+        ? { code: '' }
+        : { code: otpCode };
     } catch (err) {
       const message = err.message || 'Error sending Otp to email' + email;
       this.logger.logError(message);
@@ -420,7 +422,7 @@ export class AuthService {
   public async sendOtpToPhone(
     phone: string,
     region?: string
-  ): Promise<string> {
+  ): Promise<{ code: string }> {
     if (!phone) {
       throw new Error('No phone sent.');
     }
@@ -436,8 +438,8 @@ export class AuthService {
       }
 
       return isProd()
-        ? ''
-        : otpCode;
+        ? { code: '' }
+        : { code: otpCode };
     } catch (err) {
       const message = err.message || 'Error sending Otp to phone' + phone;
       this.logger.logError(message);

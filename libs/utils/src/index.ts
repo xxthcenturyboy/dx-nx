@@ -36,7 +36,10 @@ export {
   dxEncryptionHashAnyToString,
   dxEncryptionHashString,
   dxEncryptionVerifyHash,
-  dxValidateBiometricKey
+  dxRsaGenerateKeyPair,
+  dxRsaSignPayload,
+  dxRsaValidateBiometricKey,
+  dxRsaValidatePayload
 } from './lib/dx-encryption';
 
 export { DxDateUtilClass } from './lib/dx-dates.util';

@@ -1,51 +1,110 @@
 import {
-  dxGenerateSignedKeyPair,
-  dxValidateBiometricKey
+  dxRsaGenerateKeyPair,
+  dxRsaSignPayload,
+  dxRsaValidateBiometricKey,
+  dxRsaValidatePayload
 } from './rsa.keys';
 
+const errorLogSpyMock = jest.spyOn(console, 'error').mockImplementation(() => {});
+
 describe('dxRSAKeys', () => {
+  const payload = JSON.stringify({ test: 'test' });
   let privateKey: string;
   let publicKey: string;
   let signature: string;
 
-  describe('dxGenerateSignedKeyPair', () => {
+  afterAll(() => {
+    errorLogSpyMock.mockRestore();
+  });
+
+  describe('dxRsaGenerateKeyPair', () => {
     it('should exist', () => {
-      expect(dxGenerateSignedKeyPair).toBeDefined();
+      expect(dxRsaGenerateKeyPair).toBeDefined();
     });
 
-    it('should create a publicKey', () => {
+    it('should create a public/private key pair', () => {
       // arrange
       // act
-      const result = dxGenerateSignedKeyPair();
+      const result = dxRsaGenerateKeyPair();
       privateKey = result.privateKey;
       publicKey = result.publicKey;
-      signature = result.signature;
       // assert
       expect(privateKey).toBeDefined();
       expect(publicKey).toBeDefined();
+    });
+  });
+
+  describe('dxRsaSignPayload', () => {
+    it('should exist', () => {
+      expect(dxRsaSignPayload).toBeDefined();
+    });
+
+    it('should sign a string payload', () => {
+      // arrange
+      // act
+      signature = dxRsaSignPayload(privateKey, payload);
+      // assert
       expect(signature).toBeDefined();
     });
   });
 
-  describe('dxValidateBiometricKey', () => {
+  describe('dxRsaValidateBiometricKey', () => {
     it('should exist', () => {
-      expect(dxValidateBiometricKey).toBeDefined();
+      expect(dxRsaValidateBiometricKey).toBeDefined();
     });
 
     it('should validate signed data', () => {
       // arrange
       // act
-      const isValid = dxValidateBiometricKey(signature, 'test', publicKey);
+      const isValid = dxRsaValidateBiometricKey(signature, payload, publicKey);
       // assert
-      expect(isValid).toBeDefined();
+      expect(isValid).toBe(true);
     });
 
-    it('should invalidate signed data', () => {
+    it('should invalidate signed data with incorrect payload', () => {
       // arrange
       // act
-      const isValid = dxValidateBiometricKey(signature, 'invalid', publicKey);
+      const isValid = dxRsaValidateBiometricKey(signature, 'invalid', publicKey);
       // assert
-      expect(isValid).toBeDefined();
+      expect(isValid).toBe(false);
+    });
+
+    it('should invalidate signed data with incorrect public key', () => {
+      // arrange
+      // act
+      const isValid = dxRsaValidateBiometricKey(signature, payload, 'bad-key');
+      // assert
+      expect(isValid).toBe(false);
+    });
+  });
+
+  describe('dxRsaValidatePayload', () => {
+    it('should exist', () => {
+      expect(dxRsaValidatePayload).toBeDefined();
+    });
+
+    it('should validate signed data', () => {
+      // arrange
+      // act
+      const isValid = dxRsaValidatePayload(signature, payload, publicKey);
+      // assert
+      expect(isValid).toBe(true);
+    });
+
+    it('should invalidate signed data with incorrect payload', () => {
+      // arrange
+      // act
+      const isValid = dxRsaValidatePayload(signature, 'invalid', publicKey);
+      // assert
+      expect(isValid).toBe(false);
+    });
+
+    it('should invalidate signed data with incorrect public key', () => {
+      // arrange
+      // act
+      const isValid = dxRsaValidatePayload(signature, payload, 'bad-key');
+      // assert
+      expect(isValid).toBe(false);
     });
   });
 });

@@ -98,6 +98,22 @@ describe('AuthController', () => {
     });
   });
 
+  describe('rejectDevice', () => {
+    it('should exist', () => {
+      // arrange
+      // act
+      // assert
+      expect(AuthController.rejectDevice).toBeDefined();
+    });
+    test('should rejectDevice when invoked', async () => {
+      // arrange
+      // act
+      await  AuthController.rejectDevice(req, res);
+      // assert
+      expect(sendBadRequest).toHaveBeenCalled();
+    });
+  });
+
   describe('refreshTokens', () => {
     test('should sendUnauthorized when invoked', async () => {
       // arrange

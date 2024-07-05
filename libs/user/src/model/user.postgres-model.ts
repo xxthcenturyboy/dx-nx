@@ -773,7 +773,7 @@ export class UserModel extends Model<UserModel> {
       throw new Error(`Bad data provided.`);
     }
 
-    const user = await UserModel.findByPk(id);
+    // const user = await UserModel.findByPk(id);
     // const oldPasswordMatch = await dxEncryptionVerifyHash(user.hashword, oldPassword);
 
     // if (!oldPasswordMatch) {

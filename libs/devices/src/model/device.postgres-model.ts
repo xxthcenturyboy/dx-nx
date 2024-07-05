@@ -1,5 +1,6 @@
 import {
-  fn
+  fn,
+  Op
 } from 'sequelize';
 import {
   Table,
@@ -53,7 +54,7 @@ export class DeviceModel extends Model<DeviceModel> {
   @Column({ field: 'deleted_at', type: DataType.DATE })
   deletedAt: Date | null;
 
-  @Unique
+  // @Unique
   @AllowNull(false)
   @Column({ field: 'unique_device_id', type: DataType.TEXT })
   /**
@@ -96,16 +97,67 @@ export class DeviceModel extends Model<DeviceModel> {
 
   //////////////// Methods //////////////////
 
-  static async markDeleted(deviceId: string): Promise<void> {
+  static async findByFcmToken(
+    fcmToken: string,
+    userId: string
+  ) {
     const device = await DeviceModel.findOne({
-      where: { id: deviceId }
+      where: {
+        fcmToken: fcmToken,
+        deletedAt: {
+          [Op.is]: null
+        },
+        userId: {
+          [Op.ne]: userId
+        }
+      }
     });
-    if (!device) {
-      throw new Error('DeviceModel.markeDeleted: Device not found.');
-    }
-    device.deletedAt = new Date();
-    await device.save();
-    return;
+
+    return device;
+  }
+
+  static async findByFcmTokenNotCurrentUser(
+    fcmToken: string,
+    userId: string
+  ) {
+    const device = await DeviceModel.findOne({
+      where: {
+        fcmToken,
+        deletedAt: {
+          [Op.is]: null
+        },
+        userId: {
+          [Op.ne]: userId
+        }
+      }
+    });
+
+    return device;
+  }
+
+  static async findByVerificationToken(
+    token: string
+  ) {
+    const device = await DeviceModel.findOne({
+      where: {
+        verificationToken: token
+      },
+      include: [UserModel]
+    });
+
+    return device;
+  }
+
+  static async markDeleted(deviceId: string): Promise<boolean> {
+    const updated = await DeviceModel.update({
+      deletedAt: new Date()
+    }, {
+      where: {
+        id: deviceId
+      }
+    });
+
+    return Array.isArray(updated) &&  updated[0] > 0;
   }
 }
 

@@ -16,6 +16,8 @@ export class AuthRoutes {
     router.post('/otp-code/send/phone', DxRateLimiters.veryStrict(), AuthController.sendOtpToPhone);
     router.post('/refresh-token', DxRateLimiters.veryStrict(), AuthController.refreshTokens);
 
+    router.delete('/reject/device/:id', DxRateLimiters.strict(), AuthController.rejectDevice);
+
     return router;
   }
 }

@@ -22,8 +22,16 @@ import {
   TEST_EXISTING_EMAIL,
   TEST_EXISTING_PHONE,
   TEST_PHONE_VALID,
-  TEST_PHONE
+  TEST_PHONE,
+  TEST_UUID
 } from '@dx/config';
+import {
+  dxRsaGenerateKeyPair,
+  dxRsaSignPayload
+} from '@dx/utils';
+import { DeviceModelType } from '@dx/devices';
+
+const errorLogSpyMock = jest.spyOn(console, 'error').mockImplementation(() => {});
 
 describe('v1 Auth Flow', () => {
   let authUtil: AuthUtilType;
@@ -35,6 +43,11 @@ describe('v1 Auth Flow', () => {
   let phoneAccountId: string;
   let phoneAuthToken: string;
   let phoneRefreshToken: string;
+  const generatedKeys = dxRsaGenerateKeyPair();
+  const rsaKeyPair = {
+    privateKey: generatedKeys.privateKey,
+    publicKey: generatedKeys.publicKey
+  };
 
   beforeAll(async () => {
     authUtil = new AuthUtil();
@@ -74,6 +87,7 @@ describe('v1 Auth Flow', () => {
       }
 
     }
+    errorLogSpyMock.mockRestore();
   });
 
   describe('Check Email or Phone for availability', () => {
@@ -184,10 +198,10 @@ describe('v1 Auth Flow', () => {
         }
       };
 
-      const response = await axios.request<string>(request);
+      const response = await axios.request<{ code: string }>(request);
 
       expect(response.status).toEqual(200);
-      expect(response.data).toEqual('');
+      expect(response.data.code).toBeUndefined();
     });
 
     test('should return code when sent with valid phone', async () => {
@@ -199,12 +213,12 @@ describe('v1 Auth Flow', () => {
         }
       };
 
-      const response = await axios.request<string>(request);
+      const response = await axios.request<{ code: string }>(request);
 
       expect(response.status).toEqual(200);
-      expect(response.data).toBeTruthy();
+      expect(response.data.code).toBeTruthy();
 
-      otpPhone = response.data;
+      otpPhone = response.data.code;
     });
 
     test('should return empty string when sent with an invalid email', async () => {
@@ -216,10 +230,10 @@ describe('v1 Auth Flow', () => {
         }
       };
 
-      const response = await axios.request<string>(request);
+      const response = await axios.request<{ code: string }>(request);
 
       expect(response.status).toEqual(200);
-      expect(response.data).toEqual('');
+      expect(response.data.code).toBeUndefined();
     });
 
     test('should return code when sent with valid email', async () => {
@@ -231,12 +245,12 @@ describe('v1 Auth Flow', () => {
         }
       };
 
-      const response = await axios.request<string>(request);
+      const response = await axios.request<{ code: string }>(request);
 
       expect(response.status).toEqual(200);
-      expect(response.data).toBeTruthy();
+      expect(response.data.code).toBeTruthy();
 
-      otpEmail = response.data;
+      otpEmail = response.data.code;
     });
   });
 
@@ -399,10 +413,110 @@ describe('v1 Auth Flow', () => {
 
       const response = await axios.request<AuthSuccessResponseType>(request);
       phoneAccountId = response.data.profile.id;
+      phoneAuthToken = response.data.accessToken;
+      const cookie = (response.headers['set-cookie'] as string[])
+        .find(cookie => cookie.includes(AUTH_TOKEN_NAMES.REFRESH))
+        ?.match(new RegExp(`^${AUTH_TOKEN_NAMES.REFRESH}=(.+?);`))
+        ?.[1];
+      // console.log('cookie', cookie);
+      phoneRefreshToken = cookie
 
       expect(response.status).toEqual(200);
       expect(response.data.accessToken).toBeDefined();
       expect(response.data.profile.phones).toHaveLength(1);
+    });
+  });
+
+  describe('Add biometric public key to device', () => {
+    test('should throw when no data is sent', async () => {
+      // arrange
+      const payload: {
+        uniqueDeviceId: string;
+        biometricPublicKey: string;
+      } = {
+        uniqueDeviceId: '',
+        biometricPublicKey: ''
+      };
+
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/device/biometric/public-key',
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${phoneAuthToken}`,
+          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${phoneRefreshToken}`]
+        },
+        data: payload
+      };
+      // act
+      try {
+        expect(await axios.request(request)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // console.log('got error', typedError);
+        // assert
+        expect(typedError.response.status).toBe(400);
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toEqual('Update Public Key: Insufficient data to complete request.');
+      }
+    });
+
+    test('should throw when no device exists with the id', async () => {
+      // arrange
+      const payload: {
+        uniqueDeviceId: string;
+        biometricPublicKey: string;
+      } = {
+        uniqueDeviceId: TEST_UUID,
+        biometricPublicKey: rsaKeyPair.publicKey
+      };
+
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/device/biometric/public-key',
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${phoneAuthToken}`,
+          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${phoneRefreshToken}`]
+        },
+        data: payload
+      };
+      // act
+      try {
+        expect(await axios.request(request)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // console.log('got error', typedError);
+        // assert
+        expect(typedError.response.status).toBe(400);
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toEqual('Update Public Key: Could not find the device to update.');
+      }
+    });
+
+    test('should return device when updated', async () => {
+      // arrange
+      const payload: {
+        uniqueDeviceId: string;
+        biometricPublicKey: string;
+      } = {
+        uniqueDeviceId: TEST_DEVICE.uniqueDeviceId,
+        biometricPublicKey: rsaKeyPair.publicKey
+      };
+
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/device/biometric/public-key',
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${phoneAuthToken}`,
+          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${phoneRefreshToken}`]
+        },
+        data: payload
+      };
+      // act
+      const response = await axios.request<DeviceModelType>(request);
+      // assert
+      expect(response.status).toEqual(200);
+      expect(response.data.uniqueDeviceId).toEqual(TEST_DEVICE.uniqueDeviceId);
+      expect(response.data.biomAuthPubKey).toEqual(rsaKeyPair.publicKey);
     });
   });
 
@@ -554,7 +668,7 @@ describe('v1 Auth Flow', () => {
     });
 
     test('should return user profile when successfully logged in with email, passwordless login', async () => {
-      const otpResponse = await axios.request<string>({
+      const otpResponse = await axios.request<{ code: string }>({
         url: '/api/v1/auth/otp-code/send/email',
         method: 'POST',
         data: {
@@ -563,7 +677,7 @@ describe('v1 Auth Flow', () => {
       });
 
       const payload: LoginPaylodType = {
-        code: otpResponse.data,
+        code: otpResponse.data.code,
         value: TEST_EMAIL
       };
       const request: AxiosRequestConfig = {
@@ -600,7 +714,7 @@ describe('v1 Auth Flow', () => {
     });
 
     test('should return user profile when successfully logged in with phone', async () => {
-      const otpResonse = await axios.request<string>({
+      const otpResonse = await axios.request<{ code: string }>({
         url: '/api/v1/auth/otp-code/send/phone',
         method: 'POST',
         data: {
@@ -609,7 +723,7 @@ describe('v1 Auth Flow', () => {
       });
 
       const payload: LoginPaylodType = {
-        code: otpResonse.data,
+        code: otpResonse.data.code,
         value: TEST_PHONE_VALID
       };
       const request: AxiosRequestConfig = {
@@ -631,6 +745,94 @@ describe('v1 Auth Flow', () => {
       expect(response.status).toEqual(200);
       expect(response.data.accessToken).toBeDefined();
       expect(response.data.profile.phones).toHaveLength(1);
+    });
+
+    test('should return user profile when successfully logged in with device biometrics', async () => {
+      const payload: LoginPaylodType = {
+        biometric: {
+          device: TEST_DEVICE,
+          signature: dxRsaSignPayload(rsaKeyPair.privateKey, TEST_PHONE_VALID),
+          userId: phoneAccountId
+        },
+        value: TEST_PHONE_VALID
+      };
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/auth/login',
+        method: 'POST',
+        data: payload,
+        withCredentials: true
+      };
+
+      const response = await axios.request<AuthSuccessResponseType>(request);
+      phoneAuthToken = response.data.accessToken;
+      const cookie = (response.headers['set-cookie'] as string[])
+        .find(cookie => cookie.includes(AUTH_TOKEN_NAMES.REFRESH))
+        ?.match(new RegExp(`^${AUTH_TOKEN_NAMES.REFRESH}=(.+?);`))
+        ?.[1];
+      // console.log('cookie', cookie);
+      phoneRefreshToken = cookie
+
+      expect(response.status).toEqual(200);
+      expect(response.data.accessToken).toBeDefined();
+      expect(response.data.profile.phones).toHaveLength(1);
+    });
+
+    test('should return an error when sent with userId that has no biometrics', async () => {
+      // arrange
+      const payload: LoginPaylodType = {
+        biometric: {
+          device: TEST_DEVICE,
+          signature: dxRsaSignPayload(rsaKeyPair.privateKey, TEST_PHONE_VALID),
+          userId: emailAccountId
+        },
+        value: TEST_PHONE_VALID
+      };
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/auth/login',
+        method: 'POST',
+        data: payload,
+        withCredentials: true
+      };
+      // act
+      try {
+        expect(await axios.request(request)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // console.log('got error', typedError);
+        // assert
+        expect(typedError.response.status).toBe(400);
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toEqual(`BiometricLogin: User ${emailAccountId} has no stored public key.`);
+      }
+    });
+
+    test('should return an error when signature cannot be validated', async () => {
+      // arrange
+      const payload: LoginPaylodType = {
+        biometric: {
+          device: TEST_DEVICE,
+          signature: dxRsaSignPayload(rsaKeyPair.privateKey, 'invalid payload'),
+          userId: phoneAccountId
+        },
+        value: TEST_PHONE_VALID
+      };
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/auth/login',
+        method: 'POST',
+        data: payload,
+        withCredentials: true
+      };
+      // act
+      try {
+        expect(await axios.request(request)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // console.log('got error', typedError);
+        // assert
+        expect(typedError.response.status).toBe(400);
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toEqual(`BiometricLogin: Device signature is invalid: ${rsaKeyPair.publicKey}, userid: ${phoneAccountId}`);
+      }
     });
   });
 

@@ -16,6 +16,7 @@ import {
   UserLookupQueryType
 } from '../model/auth.types';
 import { TokenService } from './token.service';
+import { DevicesService } from '@dx/devices';
 import { CookeiService } from '@dx/server';
 import { UserProfileStateType } from '@dx/user';
 import { ApiLoggingClass } from '@dx/logger';
@@ -140,6 +141,17 @@ export const AuthController = {
     }
 
     sendBadRequest(req, res, 'Could not refresh the token.');
+  },
+
+  rejectDevice: async function (req: Request, res: Response) {
+    try {
+      const service = new DevicesService();
+      const { token } = req.params as { token: string }
+      const result = await service.rejectDevice(token);
+      sendOK(req, res, result);
+    } catch (err) {
+      sendBadRequest(req, res, err.message);
+    }
   },
 
   sendOtpToEmail: async function(req: Request, res: Response) {

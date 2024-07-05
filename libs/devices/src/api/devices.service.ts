@@ -5,7 +5,10 @@ import {
 import { DeviceModel, DeviceModelType } from '../model/device.postgres-model';
 import { FACIAL_AUTH_STATE } from '../model/devices.consts';
 import { DeviceAuthType } from '../model/devices.types';
-import { UserModelType } from '@dx/user';
+import {
+  UserModel,
+  UserModelType
+} from '@dx/user';
 import { isLocal } from '@dx/config';
 
 export class DevicesService {
@@ -197,13 +200,8 @@ export class DevicesService {
           ...device,
           userId: user.id,
           facialAuthState,
+          verifiedAt: new Date()
         });
-        if (bypass) {
-          addedDevice.verifiedAt = new Date();
-          addedDevice.facialAuthState = FACIAL_AUTH_STATE.NOT_APPLICABLE;
-          await addedDevice.save();
-          return addedDevice;
-        }
         // TODO: Send email and SMS to user letting them know of new device on account
         // securityNotification(user, device, addedDevice.verificationToken);
         return addedDevice;
@@ -220,7 +218,10 @@ export class DevicesService {
     }
 
     try {
-      await DeviceModel.markDeleted(deviceId);
+      const discoed = await DeviceModel.markDeleted(deviceId);
+      if (!discoed) {
+        throw new Error('Device not found.');
+      }
       return { message: 'Device disconnected.' };
     } catch (err) {
       this.logger.logError(err);
@@ -228,27 +229,105 @@ export class DevicesService {
     }
   }
 
-  public async updateDevice(
-    deviceId: string,
+  public async rejectDevice(token: string) {
+    if (!token) {
+      throw new Error('Reject Device: Token is required');
+    }
+
+    try {
+      const device = await DeviceModel.findByVerificationToken(token);
+      if (!device) {
+        throw new Error('Reject Device: Invalid Token.');
+      }
+
+     if (!device.user.id) {
+      throw new Error('Reject Device: User not attached to device.');
+     }
+
+     const previousDevice = await device.user.fetchConnectedDeviceBeforeToken(token);
+     if (!previousDevice) {
+      throw new Error('Reject Device: No previous device exists.');
+     }
+
+     // delete the offending device
+     await device.destroy();
+
+     // re-animate the previous device
+     previousDevice.deletedAt = null;
+     await previousDevice.save();
+
+     // TODO - Lock user account for a period of time?
+     // TODO - send notification ?
+
+     return previousDevice;
+    } catch (err) {
+      this.logger.logError(err);
+      throw new Error(err.message);
+    }
+  }
+
+  public async updateFcmToken(
+    userId: string,
+    fcmToken: string
+  ) {
+    if (!fcmToken) {
+      throw new Error('Update FCM Token: Insufficient data to complete request.');
+    }
+
+    try {
+      const user = await UserModel.findByPk(userId);
+      if (!user) {
+        throw new Error('Update FCM Token: User not found');
+      }
+
+      const connectedDevice = await user.fetchConnectedDevice();
+      if (!connectedDevice) {
+        throw new Error('Update FCM Token: No device connected.');
+      }
+
+      if (fcmToken) {
+        const isDifferent = fcmToken !== connectedDevice.fcmToken;
+
+        if (isDifferent) {
+          // Ensure this token isnt used by another device already
+          const existing = await DeviceModel.findByFcmTokenNotCurrentUser(fcmToken, userId);
+          if (existing) {
+            throw new Error('Update FCM Token: Token in use by another user.');
+          }
+
+          connectedDevice.fcmToken = fcmToken;
+          await connectedDevice.save();
+        }
+      }
+
+      return connectedDevice;
+    } catch (err) {
+      this.logger.logError(err);
+      throw new Error(err.message);
+    }
+  }
+
+  public async updatePublicKey(
+    uniqueDeviceId: string,
     biometricPublicKey: string
   ) {
     if (
-      !deviceId
+      !uniqueDeviceId
       || !biometricPublicKey
     ) {
-      throw new Error('Update Device: Insufficient data to complete request.');
+      throw new Error('Update Public Key: Insufficient data to complete request.');
     }
 
     try {
       const existingDevice = await DeviceModel.findOne({
         where: {
-          uniqueDeviceId: deviceId,
+          uniqueDeviceId,
           deletedAt: null
         }
       });
 
       if (!existingDevice) {
-        throw new Error('Update Device: Could not find the device to update.');
+        throw new Error('Update Public Key: Could not find the device to update.');
       }
 
       existingDevice.biomAuthPubKey = biometricPublicKey;

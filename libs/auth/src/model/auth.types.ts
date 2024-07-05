@@ -21,7 +21,7 @@ export type UserLookupQueryType = {
 
 export type LoginPaylodType = {
   value: string;
-  biometricPayload?: BiometricLoginPayload;
+  biometric?: BiometricLoginParamType;
   code?: string;
   region?: string;
   password?: string;
@@ -59,7 +59,13 @@ export type SignupPayloadType = {
   redirectUrl?: string;
 };
 
-export type BiometricLoginPayload = {
+export type BiometricLoginParamType = {
+  signature: string;
+  userId: string;
+  device: DeviceAuthType | null;
+};
+
+export type BiometricAuthType = {
   signature: string;
   payload: string;
   userId: string;

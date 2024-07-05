@@ -50,17 +50,33 @@ describe('DevicesController', () => {
     });
   });
 
-  describe('updateDevice', () => {
+  describe('updateFcmToken', () => {
     it('should exist', () => {
       // arrange
       // act
       // assert
-      expect(DevicesController.updateDevice).toBeDefined();
+      expect(DevicesController.updateFcmToken).toBeDefined();
     });
     test('should sendBadRequest when invoked', async () => {
       // arrange
       // act
-      await  DevicesController.updateDevice(req, res);
+      await  DevicesController.updateFcmToken(req, res);
+      // assert
+      expect(sendOK).toHaveBeenCalled();
+    });
+  });
+
+  describe('updatePublicKey', () => {
+    it('should exist', () => {
+      // arrange
+      // act
+      // assert
+      expect(DevicesController.updatePublicKey).toBeDefined();
+    });
+    test('should sendBadRequest when invoked', async () => {
+      // arrange
+      // act
+      await  DevicesController.updatePublicKey(req, res);
       // assert
       expect(sendOK).toHaveBeenCalled();
     });

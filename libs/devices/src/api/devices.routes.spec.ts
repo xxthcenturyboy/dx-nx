@@ -1,5 +1,7 @@
 import { DevicesRoutes } from './devices.routes';
 
+jest.mock('@dx/server');
+
 describe('DevicesRoutes', () => {
   it('should exist when imported', () => {
     // arrange

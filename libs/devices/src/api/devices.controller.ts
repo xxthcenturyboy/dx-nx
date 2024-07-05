@@ -21,17 +21,33 @@ export const DevicesController = {
     }
   },
 
-  updateDevice: async function (req: Request, res: Response) {
+  updateFcmToken: async function (req: Request, res: Response) {
     try {
       const service = new DevicesService();
       const {
-        deviceId,
+        fcmToken
+      } = req.body as {
+        fcmToken: string
+      };
+      const userId = req.user?.id || '';
+      const result = await service.updateFcmToken(fcmToken, userId);
+      sendOK(req, res, result);
+    } catch (err) {
+      sendBadRequest(req, res, err.message);
+    }
+  },
+
+  updatePublicKey: async function (req: Request, res: Response) {
+    try {
+      const service = new DevicesService();
+      const {
+        uniqueDeviceId,
         biometricPublicKey
       } = req.body as {
-        deviceId: string,
+        uniqueDeviceId: string,
         biometricPublicKey: string
       };
-      const result = await service.updateDevice(deviceId, biometricPublicKey);
+      const result = await service.updatePublicKey(uniqueDeviceId, biometricPublicKey);
       sendOK(req, res, result);
     } catch (err) {
       sendBadRequest(req, res, err.message);

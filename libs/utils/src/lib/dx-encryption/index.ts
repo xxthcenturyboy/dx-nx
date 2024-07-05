@@ -10,7 +10,10 @@ import {
   dxEncryptionGenerateRandomValue
 } from './lib/randomValue';
 import {
-  dxValidateBiometricKey
+  dxRsaGenerateKeyPair,
+  dxRsaSignPayload,
+  dxRsaValidateBiometricKey,
+  dxRsaValidatePayload
 } from './lib/rsa.keys';
 
 export {
@@ -21,5 +24,8 @@ export {
   dxEncryptionHashAnyToString,
   dxEncryptionHashString,
   dxEncryptionVerifyHash,
-  dxValidateBiometricKey
+  dxRsaGenerateKeyPair,
+  dxRsaSignPayload,
+  dxRsaValidateBiometricKey,
+  dxRsaValidatePayload
 };
