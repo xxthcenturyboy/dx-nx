@@ -1,4 +1,7 @@
-import { fn } from 'sequelize';
+import {
+  fn,
+  NonAttribute
+} from 'sequelize';
 import {
   Table,
   Column,
@@ -21,7 +24,10 @@ import {
   PHONE_DEFAULT_REGION_CODE,
   PHONE_POSTGRES_DB_NAME
 } from './phone.consts';
-import { UserModel } from '@dx/user';
+import {
+  UserModel,
+  UserModelType
+} from '@dx/user';
 
 @Table({
   modelName: PHONE_POSTGRES_DB_NAME,
@@ -52,8 +58,8 @@ export class PhoneModel extends Model<PhoneModel> {
   @Column({ field: 'user_id', type: DataType.UUID })
   userId: string;
 
-  @BelongsTo(() => UserModel)
-  user: UserModel;
+  @BelongsTo(() => UserModel, 'userId')
+  declare user?: NonAttribute<UserModelType>;
 
   @AllowNull(false)
   @Column({ field: 'country_code', type: DataType.STRING(5) })

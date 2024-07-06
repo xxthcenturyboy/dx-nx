@@ -1,5 +1,6 @@
 import {
   fn,
+  NonAttribute,
   Op
 } from 'sequelize';
 import {
@@ -22,7 +23,10 @@ import {
   EMAIL_LABEL,
   EMAIL_POSTGRES_DB_NAME
 } from './email.consts';
-import { UserModel } from '@dx/user';
+import {
+  UserModel,
+  UserModelType
+} from '@dx/user';
 
 @Table({
   modelName: EMAIL_POSTGRES_DB_NAME,
@@ -56,7 +60,7 @@ export class EmailModel extends Model<EmailModel> {
   // This prevents the custom generator from running to create new library modules
   // ?? resolve by renaming moudle/
   @BelongsTo(() => UserModel, 'userId')
-  user?: UserModel;
+  declare user?: NonAttribute<UserModelType>;
 
   @IsEmail
   @AllowNull(false)

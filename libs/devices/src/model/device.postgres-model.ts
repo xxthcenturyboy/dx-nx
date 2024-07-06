@@ -1,5 +1,6 @@
 import {
   fn,
+  NonAttribute,
   Op
 } from 'sequelize';
 import {
@@ -21,7 +22,10 @@ import {
   DEVICES_POSTGRES_DB_NAME,
   FACIAL_AUTH_STATE
 } from './devices.consts';
-import { UserModel } from '@dx/user';
+import {
+  UserModel,
+  UserModelType
+} from '@dx/user';
 
 @Table({
   modelName: DEVICES_POSTGRES_DB_NAME,
@@ -41,8 +45,8 @@ export class DeviceModel extends Model<DeviceModel> {
   @Column({ field: 'user_id', type: DataType.UUID })
   userId: string;
 
-  @BelongsTo(() => UserModel)
-  user: UserModel;
+  @BelongsTo(() => UserModel, 'userId')
+  declare user?: NonAttribute<UserModelType>;
 
   @CreatedAt
   @Default(fn('now'))
