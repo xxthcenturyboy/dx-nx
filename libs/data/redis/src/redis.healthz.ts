@@ -30,7 +30,14 @@ export class RedisHealthzService {
   }
 
   private async testWrite() {
-    return await this.redis.setCacheItem(this.testKey, JSON.stringify(this.testData));
+    return await this.redis.setCacheItemWithExpiration(
+      this.testKey,
+      JSON.stringify(this.testData),
+      {
+        time: 10,
+        token: 'EX'
+      }
+    );
   }
 
   private async testRead() {
