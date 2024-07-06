@@ -29,8 +29,14 @@ export type UserSessionType = {
   restrictions: string[];
 };
 
+export type UserProfileDeviceType = {
+  id: string;
+  hasBiometricSetup: boolean;
+};
+
 export type UserProfileStateType = {
   id: string;
+  device: UserProfileDeviceType;
   emails: EmailType[];
   firstName: string;
   fullName: string;

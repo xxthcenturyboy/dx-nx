@@ -73,6 +73,7 @@ describe('Device Model', () => {
         expect(attributes.userId).toBeDefined();
         expect(attributes.verificationToken).toBeDefined();
         expect(attributes.verifiedAt).toBeDefined();
+        expect(attributes.hasBiometricSetup).toBeDefined();
       });
 
       it('should have associations', () => {

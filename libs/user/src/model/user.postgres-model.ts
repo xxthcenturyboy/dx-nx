@@ -685,6 +685,9 @@ export class UserModel extends Model<UserModel> {
       },
       include: [
         {
+          model: DeviceModel
+        },
+        {
           model: EmailModel,
         },
         {

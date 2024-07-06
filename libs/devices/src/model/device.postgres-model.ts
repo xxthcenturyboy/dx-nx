@@ -95,6 +95,12 @@ export class DeviceModel extends Model<DeviceModel> {
   })
   facialAuthState: string;
 
+  @Column(new DataType.VIRTUAL(DataType.BOOLEAN, ['biomAuthPubKey', 'deletedAt']))
+  get hasBiometricSetup (): boolean {
+    return !!this.getDataValue('biomAuthPubKey') && !this.getDataValue('deletedAt');
+  }
+
+
   //////////////// Methods //////////////////
 
   static async findByFcmToken(

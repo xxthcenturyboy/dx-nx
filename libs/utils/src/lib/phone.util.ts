@@ -7,6 +7,7 @@ import {
   ApiLoggingClass,
   ApiLoggingClassType
 } from '@dx/logger';
+import { isDebug } from '@dx/config';
 
 export class PhoneUtil {
   private phoneUtil: typeof PhoneNumberUtil.prototype;
@@ -27,7 +28,7 @@ export class PhoneUtil {
       try {
         this.phoneParsed = this.phoneUtil.parseAndKeepRawInput(phone, twoLetterRegionCode);
       } catch (err) {
-        this.logger.logError(err.message || 'PhoneUtil Constructor Error');
+        isDebug() && this.logger.logError(err.message || 'PhoneUtil Constructor Error');
       }
     }
   }

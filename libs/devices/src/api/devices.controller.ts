@@ -30,7 +30,7 @@ export const DevicesController = {
         fcmToken: string
       };
       const userId = req.user?.id || '';
-      const result = await service.updateFcmToken(fcmToken, userId);
+      const result = await service.updateFcmToken(userId, fcmToken);
       sendOK(req, res, result);
     } catch (err) {
       sendBadRequest(req, res, err.message);

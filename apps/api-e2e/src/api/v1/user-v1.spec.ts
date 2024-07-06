@@ -289,7 +289,7 @@ describe('v1 User Routes', () => {
 
   describe('PUT /api/v1/user/update/username/:id', () => {
     test('should update the username when called', async () => {
-      const otpResponse = await axios.request<string>({
+      const otpResponse = await axios.request<{ code: string }>({
         url: '/api/v1/auth/otp-code/send/email',
         method: 'POST',
         data: {
@@ -297,7 +297,7 @@ describe('v1 User Routes', () => {
         }
       });
       const authUtil = new AuthUtil();
-      await authUtil.loginEmalPasswordless(TEST_USER_CREATE.email, otpResponse.data);
+      await authUtil.loginEmalPasswordless(TEST_USER_CREATE.email, otpResponse.data.code);
 
       const otpRes = await axios.request<AxiosRequestConfig, AxiosResponse<OtpResponseType>>({
         url: `/api/v1/user/send-otp-code`,
@@ -385,7 +385,7 @@ describe('v1 User Routes', () => {
     const validPw1 = 'akjd0023kakdj_**_(';
 
     beforeAll(async () => {
-      const otpResponse = await axios.request<string>({
+      const otpResponse = await axios.request<{ code: string }>({
         url: '/api/v1/auth/otp-code/send/email',
         method: 'POST',
         data: {
@@ -393,7 +393,7 @@ describe('v1 User Routes', () => {
         }
       });
       authUtilUpdate = new AuthUtil();
-      await authUtilUpdate.loginEmalPasswordless(TEST_USER_CREATE.email, otpResponse.data);
+      await authUtilUpdate.loginEmalPasswordless(TEST_USER_CREATE.email, otpResponse.data.code);
     });
 
     beforeEach(async () => {

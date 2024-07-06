@@ -35,9 +35,10 @@ const errorLogSpyMock = jest.spyOn(console, 'error').mockImplementation(() => {}
 
 describe('v1 Auth Flow', () => {
   let authUtil: AuthUtilType;
-
+  let deviceId: string;
   let emailAccountId: string;
   let emailAuthToken: string;
+  let emailRefreshToken: string;
   let otpEmail: string;
   let otpPhone: string;
   let phoneAccountId: string;
@@ -393,6 +394,13 @@ describe('v1 Auth Flow', () => {
 
       const response = await axios.request<AuthSuccessResponseType>(request);
       emailAccountId = response.data.profile.id;
+      emailAuthToken = response.data.accessToken;
+      const cookie = (response.headers['set-cookie'] as string[])
+        .find(cookie => cookie.includes(AUTH_TOKEN_NAMES.REFRESH))
+        ?.match(new RegExp(`^${AUTH_TOKEN_NAMES.REFRESH}=(.+?);`))
+        ?.[1];
+      // console.log('cookie', cookie);
+      emailRefreshToken = cookie
 
       expect(response.status).toEqual(200);
       expect(response.data.accessToken).toBeDefined();
@@ -419,7 +427,8 @@ describe('v1 Auth Flow', () => {
         ?.match(new RegExp(`^${AUTH_TOKEN_NAMES.REFRESH}=(.+?);`))
         ?.[1];
       // console.log('cookie', cookie);
-      phoneRefreshToken = cookie
+      phoneRefreshToken = cookie;
+      deviceId = response.data.profile.device.id;
 
       expect(response.status).toEqual(200);
       expect(response.data.accessToken).toBeDefined();
@@ -427,7 +436,7 @@ describe('v1 Auth Flow', () => {
     });
   });
 
-  describe('Add biometric public key to device', () => {
+  describe('[Authenticated]: Add biometric public key to device', () => {
     test('should throw when no data is sent', async () => {
       // arrange
       const payload: {
@@ -504,6 +513,93 @@ describe('v1 Auth Flow', () => {
 
       const request: AxiosRequestConfig = {
         url: '/api/v1/device/biometric/public-key',
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${phoneAuthToken}`,
+          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${phoneRefreshToken}`]
+        },
+        data: payload
+      };
+      // act
+      const response = await axios.request<DeviceModelType>(request);
+      // assert
+      expect(response.status).toEqual(200);
+      expect(response.data.uniqueDeviceId).toEqual(TEST_DEVICE.uniqueDeviceId);
+      expect(response.data.biomAuthPubKey).toEqual(rsaKeyPair.publicKey);
+    });
+  });
+
+  describe('[Authenticated]: Add FCM Token to device', () => {
+    test('should throw when no data is sent', async () => {
+      // arrange
+      const payload: {
+        fcmToken: string
+      } = {
+        fcmToken: ''
+      };
+
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/device/fcm-token',
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${phoneAuthToken}`,
+          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${phoneRefreshToken}`]
+        },
+        data: payload
+      };
+      // act
+      try {
+        expect(await axios.request(request)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // console.log('got error', typedError);
+        // assert
+        expect(typedError.response.status).toBe(400);
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toEqual('Update FCM Token: Insufficient data to complete request.');
+      }
+    });
+
+    test('should throw when no device is connected to the user', async () => {
+      // arrange
+      const payload: {
+        fcmToken: string
+      } = {
+        fcmToken: TEST_UUID
+      };
+
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/device/fcm-token',
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${emailAuthToken}`,
+          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${emailRefreshToken}`]
+        },
+        data: payload
+      };
+      // act
+      try {
+        expect(await axios.request(request)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // console.log('got error', typedError);
+        // assert
+        expect(typedError.response.status).toBe(400);
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toEqual('Update FCM Token: No device connected.');
+      }
+    });
+
+    test('should return device when updated', async () => {
+      // arrange
+      const payload: {
+        fcmToken: string
+      } = {
+        fcmToken: TEST_UUID
+      };
+
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/device/fcm-token',
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${phoneAuthToken}`,
@@ -688,6 +784,12 @@ describe('v1 Auth Flow', () => {
 
       const response = await axios.request<AuthSuccessResponseType>(request);
       emailAuthToken = response.data.accessToken;
+      const cookie = (response.headers['set-cookie'] as string[])
+        .find(cookie => cookie.includes(AUTH_TOKEN_NAMES.REFRESH))
+        ?.match(new RegExp(`^${AUTH_TOKEN_NAMES.REFRESH}=(.+?);`))
+        ?.[1];
+      // console.log('cookie', cookie);
+      emailRefreshToken = cookie
 
       expect(response.status).toEqual(200);
       expect(response.data.accessToken).toBeDefined();
@@ -885,7 +987,49 @@ describe('v1 Auth Flow', () => {
     });
   });
 
-  describe('Logout', () => {
+  describe('[Authenticated]: Disconnect Device', () => {
+    test('should throw when no device exists', async () => {
+      // arrange
+      const request: AxiosRequestConfig = {
+        url: `/api/v1/device/disconnect/${TEST_UUID}`,
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${phoneAuthToken}`,
+          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${phoneRefreshToken}`]
+        },
+      };
+      // act
+      try {
+        expect(await axios.request(request)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // console.log('got error', typedError);
+        // assert
+        expect(typedError.response.status).toBe(400);
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toEqual('Device not found.');
+      }
+    });
+
+    test('should return message when device disconnected', async () => {
+      // arrange
+      const request: AxiosRequestConfig = {
+        url: `/api/v1/device/disconnect/${deviceId}`,
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${phoneAuthToken}`,
+          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${phoneRefreshToken}`]
+        },
+      };
+      // act
+      const response = await axios.request<{ message: string }>(request);
+      // assert
+      expect(response.status).toEqual(200);
+      expect(response.data.message).toEqual('Device disconnected.');
+    });
+  });
+
+  describe('[Authenticated]: Logout', () => {
     test('should return true on successful logout', async () => {
       const headers = {
         Authorization: `Bearer ${phoneAuthToken}`,

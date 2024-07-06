@@ -13,9 +13,14 @@ export async function getUserProfileState(
     const defaultPhone = user.phones.find(e => e.default);
     const mailVerified = !!defaultEmail?.verifiedAt;
     const phoneVerified = !!defaultPhone?.verifiedAt;
+    const connectedDevice = await user.fetchConnectedDevice();
 
     const profile: UserProfileStateType = {
       id,
+      device: {
+        id: connectedDevice?.id || '',
+        hasBiometricSetup: connectedDevice?.hasBiometricSetup || false
+      },
       emails: await user.getEmailData(),
       firstName: user.firstName,
       fullName: user.fullName,
