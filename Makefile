@@ -19,6 +19,18 @@ api-e2e:
 api-e2e-verbose:
 	docker exec -it ${MONOREPO_CONTAINER_ID} nx e2e api-e2e --run-in-band --verbose
 
+
+################### Web ###################
+## start web in nodemon
+web:
+	docker exec -it ${MONOREPO_CONTAINER_ID} nx serve web
+
+## run e2e tests for the web
+web-e2e:
+	docker exec -it ${MONOREPO_CONTAINER_ID} nx e2e web-e2e --run-in-band
+
+
+################### NX Unit Testing ###################
 ## runs all unit tests
 test-all:
 	docker exec -it ${MONOREPO_CONTAINER_ID} nx run-many -all --target=test
@@ -27,6 +39,9 @@ test-all:
 test-all-verbose:
 	docker exec -it ${MONOREPO_CONTAINER_ID} nx run-many -all --target=test --verbose
 
+
+
+################### NX Custom Generators ###################
 ## runs library module custom generator as a dry run
 lib-module-dry:
 	docker exec -it ${MONOREPO_CONTAINER_ID} nx generate @dx/plugins-nx:dx-lib-module -d
@@ -34,6 +49,8 @@ lib-module-dry:
 ## runs library module custom generator
 lib-module:
 	docker exec -it ${MONOREPO_CONTAINER_ID} nx generate @dx/plugins-nx:dx-lib-module
+
+
 
 ################### Postgres ###################
 ## start postgres docker shell
