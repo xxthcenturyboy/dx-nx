@@ -3,7 +3,9 @@ FROM node:20-alpine3.19 AS build
 # Ensure image has packages we need installed
 FROM build AS development
 RUN apk update --no-cache \
-    && apk add git bash openssh-client yarn bind-tools graphicsmagick
+&& apk add git bash openssh-client yarn bind-tools graphicsmagick \
+# below is for cypress
+libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth xvfb
     # && apk add git bash python3 make gcc g++ openssh-client yarn bind-tools graphicsmagick
 
 # set up our app
@@ -16,7 +18,7 @@ RUN yarn global add nx@latest nodemon --no-optional
 RUN --mount=type=secret,id=npmrc,target=/root/.npmrc
 RUN --mount=type=secret,id=gitconfig,target=/root/.gitconfig
 
-EXPOSE 7070 4000
+EXPOSE 7070 4000 4200
 
 # CMD ["/bin/bash"]
 CMD ["/bin/bash", "./_devops/scripts/docker-start.dev.sh"]

@@ -1,4 +1,9 @@
-import * as crypto from 'crypto';
+import {
+  createCipheriv,
+  createDecipheriv,
+  randomBytes,
+  scryptSync
+} from 'crypto';
 import { EncryptionReturnType } from './encryption.types';
 
 const ALGORITHM = {
@@ -10,19 +15,19 @@ const ALGORITHM = {
 };
 
 function getIv() {
-  return crypto.randomBytes(ALGORITHM.IV_BYTE_LEN);
+  return randomBytes(ALGORITHM.IV_BYTE_LEN);
 }
 
 function getRandomKey() {
-  return crypto.randomBytes(ALGORITHM.KEY_BYTE_LEN);
+  return randomBytes(ALGORITHM.KEY_BYTE_LEN);
 }
 
 function getSalt() {
-  return crypto.randomBytes(ALGORITHM.SALT_BYTE_LEN);
+  return randomBytes(ALGORITHM.SALT_BYTE_LEN);
 }
 
 function getKeyFromPassword(password: string, salt: string) {
-  return crypto.scryptSync(Buffer.from(password), Buffer.from(salt), ALGORITHM.KEY_BYTE_LEN);
+  return scryptSync(Buffer.from(password), Buffer.from(salt), ALGORITHM.KEY_BYTE_LEN);
 };
 
 function clearBuffers(buffers: Buffer[]) {
@@ -34,7 +39,7 @@ export function dxEncriptionEncryptString(
   key: Buffer
 ): EncryptionReturnType {
   const iv = getIv();
-  let cipher = crypto.createCipheriv(ALGORITHM.BLOCK_CIPHER, Buffer.from(key), iv);
+  let cipher = createCipheriv(ALGORITHM.BLOCK_CIPHER, Buffer.from(key), iv);
   let encrypted = cipher.update(text);
   encrypted = Buffer.concat([encrypted, cipher.final()]);
   const ivString = iv.toString('hex');
@@ -56,7 +61,7 @@ export function dxEncryptionDecryptString(
 ): string {
   let iv = Buffer.from(ivValue, 'hex');
   let encryptedText = Buffer.from(encryptedValue, 'hex');
-  let decipher = crypto.createDecipheriv(ALGORITHM.BLOCK_CIPHER, Buffer.from(key), iv);
+  let decipher = createDecipheriv(ALGORITHM.BLOCK_CIPHER, Buffer.from(key), iv);
   let decrypted = decipher.update(encryptedText);
   decrypted = Buffer.concat([decrypted, decipher.final()]);
   const result = decrypted.toString();

@@ -1,6 +1,6 @@
-import * as crypto from 'crypto';
+import { createHash } from 'crypto';
 
 export const dxEncryptionHashAnyToString = (data: any): string => {
-  const hash = crypto.createHash('sha1');
+  const hash = createHash('sha1');
   return hash.update(JSON.stringify(data)).digest('base64');
 };
