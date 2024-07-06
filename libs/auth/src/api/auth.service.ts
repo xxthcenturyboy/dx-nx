@@ -1,3 +1,5 @@
+import { randomUUID } from 'crypto';
+
 import {
   getUserProfileState,
   UserModel,
@@ -14,7 +16,7 @@ import {
   AccountCreationPayloadType,
   BiometricAuthType,
   LoginPaylodType,
-  SessionData,
+  // SessionData,
   UserLookupQueryType,
   UserLookupResponseType
 } from '../model/auth.types';
@@ -151,6 +153,7 @@ export class AuthService {
           ...device,
           userId: user.id,
           verifiedAt: new Date(),
+          verificationToken: randomUUID()
         });
       }
 
@@ -401,7 +404,7 @@ export class AuthService {
         otpCode = await otpCache.setEmailOtp(emailUtil.formattedEmail());
         const mail = new MailSendgrid();
         try {
-          const sgMessageId = await mail.sendOtp(emailUtil.formattedEmail(), otpCode, '');
+          const sgMessageId = await mail.sendOtp(emailUtil.formattedEmail(), otpCode);
           await EmailModel.updateMessageInfoValidate(emailUtil.formattedEmail(), sgMessageId);
         } catch (err) {
           this.logger.logError(err.message);

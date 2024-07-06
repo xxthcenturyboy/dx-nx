@@ -8,6 +8,7 @@ export type SendgridSendOptionsType = {
   ctaUrl: string;
   ctaTrack?: boolean;
   ipPoolName?: string;
+  templateId?: string;
   trackingSettings?: {
     clickTracking: {
       enable: boolean
@@ -16,6 +17,6 @@ export type SendgridSendOptionsType = {
       enable: boolean
     }
   };
-  customArgs?: any;
+  customArgs?: { [key: string]: string };
   unsubscribeGroup: string;
 };

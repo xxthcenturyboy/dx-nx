@@ -17,7 +17,7 @@ import {
   ApiLoggingClass,
   ApiLoggingClassType
 } from '@dx/logger';
-import { DISPOSABLE_EMAIL_DOMAINS } from '@dx/config';
+import { SendgridSendOptionsType } from './mail.sendgrid.types';
 
 export class MailSendgrid {
   private fromAddress: string;
@@ -35,22 +35,6 @@ export class MailSendgrid {
       sgMail.setApiKey(SENDGRID_API_KEY);
     }
     sgMail.setSubstitutionWrappers('%', '%');
-  }
-
-  // TODO: Do this elsewhere
-  private validate(email: string): boolean {
-    // Always return true for app domain urls
-    if (email.endsWith(`@${APP_DOMAIN}`)) {
-      return true;
-    }
-    // only run on production
-    if (isProd()) {
-      const emailDomain = email.slice(email.indexOf('@') + 1);
-      const isDisposable = DISPOSABLE_EMAIL_DOMAINS[emailDomain] as boolean;
-      return isDisposable;
-    }
-
-    return true;
   }
 
   private async sendMail(mailData: MailDataRequired): Promise<string> {
@@ -76,10 +60,6 @@ export class MailSendgrid {
 
     try {
       this.logger.logInfo(`Sending confirmation mail to ${to}`);
-      const valid = this.validate(to);
-      if (!valid) {
-        throw Error(`Email failed validation ${to}`);
-      }
 
       const sgMessageId = await this.sendMail(mailData);
 
@@ -111,10 +91,6 @@ export class MailSendgrid {
 
     try {
       this.logger.logInfo(`Sending invite mail to ${to}`);
-      const valid = this.validate(to);
-      if (!valid) {
-        throw Error(`Email failed validation ${to}`);
-      }
 
       const sgMessageId = await this.sendMail(mailData);
 
@@ -130,35 +106,25 @@ export class MailSendgrid {
     }
   }
 
-  public async sendReset(
-    to: string,
-    resetUrl: string
+  public async sendAccountAlert(
+    options: SendgridSendOptionsType
   ): Promise<string> {
-    const mailData: MailDataRequired = {
-      to,
-      from: this.fromAddress,
-      templateId: SG_TEMPLATES.RESET,
-      dynamicTemplateData: {
-        resetUrl,
-      },
-    };
-
     try {
-      this.logger.logInfo(`Sending account reset mail to ${to}`);
-      const valid = this.validate(to);
-      if (!valid) {
-        throw Error(`Email failed validation ${to}`);
-      }
+      this.logger.logInfo(`Sending account alert mail to ${options.to}`);
 
-      const sgMessageId = await this.sendMail(mailData);
+      const sgMessageId = await this.sendMail({
+        ...options,
+        from: this.fromAddress,
+        templateId: SG_TEMPLATES.ACCOUNT_ALERT
+      });
 
       if (!sgMessageId) {
-        throw new Error(`Could not send email to ${to}.`);
+        throw new Error(`Could not send email to ${options.to}.`);
       }
 
       return sgMessageId;
     } catch (err) {
-      this.logger.logError(`Error sending email to ${to}`);
+      this.logger.logError(`Error sending email to ${options.to}`);
       this.logger.logError(err);
       throw new Error(err.message);
     }
@@ -166,25 +132,19 @@ export class MailSendgrid {
 
   public async sendOtp(
     to: string,
-    otpCode: string,
-    lockoutUrl: string
+    otpCode: string
   ): Promise<string> {
     const mailData: MailDataRequired = {
       to,
       from: this.fromAddress,
       templateId: SG_TEMPLATES.OTP,
       dynamicTemplateData: {
-        lockoutUrl,
         otpCode,
       },
     };
 
     try {
       this.logger.logInfo(`Sending OTP code mail to ${to}`);
-      const valid = this.validate(to);
-      if (!valid) {
-        throw Error(`Email failed validation ${to}`);
-      }
 
       const sgMessageId = await this.sendMail(mailData);
 

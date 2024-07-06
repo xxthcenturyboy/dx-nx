@@ -244,7 +244,7 @@ describe('DevicesService', () => {
           uniqueDeviceId: 'uniquely-bad-device-id',
           verificationToken: 'verification-token',
           userId: user.id,
-          verifiedAt: new Date(),
+          verifiedAt: new Date()
         });
         badDeviceIdToDelete = badDevice.id;
         // act

@@ -30,3 +30,4 @@ export {
   OtpCodeCacheType
 } from './model/otp-code.redis-cache';
 export { OtpService } from './api/otp.service';
+export { SecurityAlertSerivice } from './api/security-alert.service';

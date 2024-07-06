@@ -1,3 +1,5 @@
+import { randomUUID } from 'crypto';
+
 import {
   ApiLoggingClass,
   ApiLoggingClassType
@@ -10,6 +12,7 @@ import {
   UserModelType
 } from '@dx/user';
 import { isLocal } from '@dx/config';
+import { SecurityAlertSerivice } from '@dx/auth';
 
 export class DevicesService {
   private LOCAL = isLocal();
@@ -144,6 +147,7 @@ export class DevicesService {
           ...device,
           userId: user.id,
           verifiedAt: new Date(),
+          verificationToken: randomUUID()
         });
       }
 
@@ -163,6 +167,7 @@ export class DevicesService {
           ...device,
           userId: user.id,
           facialAuthState,
+          verificationToken: randomUUID()
         });
         if (bypass) {
           addedDevice.verifiedAt = new Date();
@@ -170,8 +175,8 @@ export class DevicesService {
           await addedDevice.save();
           return addedDevice;
         }
-        // TODO: Send email and SMS to user letting them know of new device on account
-        // securityNotification(user, device, addedDevice.verificationToken);
+
+        await SecurityAlertSerivice.newDeviceNotification(user, device, addedDevice.verificationToken);
         return addedDevice;
       }
 
@@ -200,10 +205,11 @@ export class DevicesService {
           ...device,
           userId: user.id,
           facialAuthState,
-          verifiedAt: new Date()
+          verifiedAt: new Date(),
+          verificationToken: randomUUID()
         });
-        // TODO: Send email and SMS to user letting them know of new device on account
-        // securityNotification(user, device, addedDevice.verificationToken);
+
+        await SecurityAlertSerivice.newDeviceNotification(user, device, addedDevice.verificationToken);
         return addedDevice;
       }
     } catch (err) {
