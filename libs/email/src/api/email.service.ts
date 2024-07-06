@@ -8,8 +8,10 @@ import {
   UpdateEmailPayloadType
 } from '../model/email.types';
 import { EmailUtil } from '@dx/utils';
+import { UserModel } from '@dx/user';
 import { isLocal } from '@dx/config';
 import { OtpService } from '@dx/auth';
+import { dxRsaValidateBiometricKey } from '@dx/utils';
 
 export class EmailService {
   private LOCAL = isLocal();
@@ -25,6 +27,7 @@ export class EmailService {
       def,
       email,
       label,
+      signature,
       userId,
     } = payload;
 
@@ -49,9 +52,19 @@ export class EmailService {
       throw new Error('The email you provided is not valid.');
     }
 
-    const isCodeValid = await OtpService.validateOptCode(userId, code);
-    if (!isCodeValid) {
-      throw new Error('Invalid OTP code.');
+    if (code) {
+      const isCodeValid = await OtpService.validateOptCode(userId, code);
+      if (!isCodeValid) {
+        throw new Error('Invalid OTP code.');
+      }
+    }
+
+    if (signature) {
+      const biometricAuthPublicKey = await UserModel.getBiomAuthKey(userId);
+      const isSignatureValid = dxRsaValidateBiometricKey(signature, email, biometricAuthPublicKey);
+      if (!isSignatureValid) {
+        throw new Error(`Create Email: Device signature is invalid: ${biometricAuthPublicKey}, userid: ${userId}`);
+      }
     }
 
     if (def === true) {

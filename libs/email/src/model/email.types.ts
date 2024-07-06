@@ -8,10 +8,11 @@ export type EmailType = {
 };
 
 export type CreateEmailPayloadType = {
-  code: string;
+  code?: string;
   email: string;
   def: boolean;
   label: string;
+  signature?: string;
   userId: string;
 };
 

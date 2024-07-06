@@ -1,10 +1,11 @@
 export type CreatePhonePayloadType = {
-  code: string;
+  code?: string;
   countryCode: string;
   regionCode?: string;
   def: boolean;
   label: string;
   phone: string;
+  signature?: string;
   userId: string;
 };
 

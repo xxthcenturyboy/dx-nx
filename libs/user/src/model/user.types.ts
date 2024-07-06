@@ -84,7 +84,8 @@ export type UpdateUserPayloadType = {
 };
 
 export type UpdateUsernamePayloadType = {
-  otpCode: string;
+  otpCode?: string;
+  signature?: string;
   username: string;
 };
 
@@ -126,7 +127,8 @@ export type UpdatePasswordPayloadType = {
   id: string;
   password: string;
   passwordConfirm: string;
-  otpCode: string;
+  otpCode?: string;
+  signature?: string;
 };
 
 // User Privileges

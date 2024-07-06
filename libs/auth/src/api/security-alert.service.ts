@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 
 import { UserModelType } from '@dx/user';
 import { DeviceAuthType } from '@dx/devices';
-import { APP_URL } from 'libs/config/src/common/common-config.consts';
+import { APP_URL } from '@dx/config';
 import {
   IP_POOL_NAME,
   MailSendgrid,

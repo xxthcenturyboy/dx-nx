@@ -53,6 +53,7 @@ import {
   OtpResponseType,
   OtpService
 } from '@dx/auth';
+import { dxRsaValidateBiometricKey } from '@dx/utils';
 
 export class UserService {
   private DEBUG = isDebug();
@@ -425,14 +426,15 @@ export class UserService {
       id,
       password,
       passwordConfirm,
-      otpCode
+      otpCode,
+      signature
     } = payload;
 
     if (
       !id
       || !password
       || !passwordConfirm
-      || !otpCode
+      || !(otpCode || signature)
     ) {
       throw new Error('Request is invalid.');
     }
@@ -441,9 +443,19 @@ export class UserService {
       throw new Error('Passwords must match.');
     }
 
-    const isCodeValid = await OtpService.validateOptCode(id, otpCode);
-    if (!isCodeValid) {
-      throw new Error('Invalid OTP code.');
+    if (otpCode) {
+      const isCodeValid = await OtpService.validateOptCode(id, otpCode);
+      if (!isCodeValid) {
+        throw new Error('Invalid OTP code.');
+      }
+    }
+
+    if (signature) {
+      const biometricAuthPublicKey = await UserModel.getBiomAuthKey(id);
+      const isSignatureValid = dxRsaValidateBiometricKey(signature, password, biometricAuthPublicKey);
+      if (!isSignatureValid) {
+        throw new Error(`Update Password: Device signature is invalid: ${biometricAuthPublicKey}, userid: ${id}`);
+      }
     }
 
     // Check password strength
@@ -559,6 +571,7 @@ ${pwStrengthMsg}
   ): Promise<UpdateUserResponseType> {
     const {
       otpCode,
+      signature,
       username
     } = payload;
 
@@ -566,14 +579,29 @@ ${pwStrengthMsg}
       throw new Error('No id for update username.');
     }
 
-    const isCodeValid = await OtpService.validateOptCode(id, otpCode);
-    if (!isCodeValid) {
-      throw new Error('Invalid OTP code.');
+    if (otpCode) {
+      const isCodeValid = await OtpService.validateOptCode(id, otpCode);
+      if (!isCodeValid) {
+        throw new Error('Invalid OTP code.');
+      }
+    }
+
+    if (signature) {
+      const biometricAuthPublicKey = await UserModel.getBiomAuthKey(id);
+      const isSignatureValid = dxRsaValidateBiometricKey(signature, username, biometricAuthPublicKey);
+      if (!isSignatureValid) {
+        throw new Error(`Update Username: Device signature is invalid: ${biometricAuthPublicKey}, userid: ${id}`);
+      }
     }
 
     const isAvailable = await this.isUsernameAvailable(username);
     if (!isAvailable.available) {
       throw new Error('Username is not available.');
+    }
+
+    const profanityUtil = new ProfanityFilter();
+    if (profanityUtil.isProfane(username)) {
+      throw new Error('Profanity is not allowed');
     }
 
     try {

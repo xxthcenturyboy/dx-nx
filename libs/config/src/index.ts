@@ -16,6 +16,7 @@ export {
 export { ApiConfigType } from './api/api-config.type';
 export {
   APP_DOMAIN,
+  APP_URL,
   COMPANY_NAME,
   DEFAULT_LIMIT,
   DEFAULT_OFFSET,

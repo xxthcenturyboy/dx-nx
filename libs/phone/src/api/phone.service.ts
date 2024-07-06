@@ -11,6 +11,8 @@ import {
 import { isLocal } from '@dx/config';
 import { PhoneUtil } from '@dx/utils';
 import { OtpService } from '@dx/auth';
+import { dxRsaValidateBiometricKey } from '@dx/utils';
+import { UserModel } from '@dx/user';
 
 export class PhoneService {
   private LOCAL: boolean;
@@ -29,6 +31,7 @@ export class PhoneService {
       def,
       label,
       phone,
+      signature,
       userId,
     } = payload;
 
@@ -51,9 +54,19 @@ export class PhoneService {
       throw new Error(`This phone: ${phone} already exists.`);
     }
 
-    const isCodeValid = await OtpService.validateOptCode(userId, code);
-    if (!isCodeValid) {
-      throw new Error('Invalid OTP code.');
+    if (code) {
+      const isCodeValid = await OtpService.validateOptCode(userId, code);
+      if (!isCodeValid) {
+        throw new Error('Invalid OTP code.');
+      }
+    }
+
+    if (signature) {
+      const biometricAuthPublicKey = await UserModel.getBiomAuthKey(userId);
+      const isSignatureValid = dxRsaValidateBiometricKey(signature, phone, biometricAuthPublicKey);
+      if (!isSignatureValid) {
+        throw new Error(`Create Phone: Device signature is invalid: ${biometricAuthPublicKey}, userid: ${userId}`);
+      }
     }
 
     if (def === true) {
