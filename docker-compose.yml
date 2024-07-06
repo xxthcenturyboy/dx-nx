@@ -23,7 +23,7 @@ services:
       - '7070:3000'
     environment:
       - API_KEY=${SENDGRID_API_KEY}
-  monorepo-node-20:
+  monorepo-node-22:
     extends:
         file: ./docker-compose.base.yml
         service: base

@@ -28,7 +28,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
     volumes:
         - "db-data:/var/lib/mongo/data/mongodata"
-  monorepo-node-20:
+  monorepo-node-22:
     extends:
         file: ./docker-compose.base.yml
         service: base
@@ -43,6 +43,9 @@ services:
         - $PWD/:/app
     ports:
         - "4000:4000"
+        - "4200:4200"
+        - "8081:8081"
+        - "36439:36439"
     environment:
         - ROOT_DIR=/app
 secrets:

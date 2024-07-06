@@ -20,6 +20,16 @@ api-e2e-verbose:
 	docker exec -it ${MONOREPO_CONTAINER_ID} nx e2e api-e2e --run-in-band --verbose
 
 
+################### Mobile ###################
+## start Mobile in nodemon
+mobile:
+	docker exec -it ${MONOREPO_CONTAINER_ID} nx serve mobile
+
+## run e2e tests for Mobile
+mobile-e2e:
+	docker exec -it ${MONOREPO_CONTAINER_ID} nx e2e mobile-e2e --run-in-band
+
+
 ################### Web ###################
 ## start web in nodemon
 web:
