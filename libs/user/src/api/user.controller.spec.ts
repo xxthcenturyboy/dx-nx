@@ -80,9 +80,9 @@ describe('UserController', () => {
   describe('getUserProfile', () => {
     test('should call sendBadRequest when sent with userId', async () => {
       // arrange
-      req.session = {
-        userId: TEST_EXISTING_USER_ID
-      };
+      // req.session = {
+      //   userId: TEST_EXISTING_USER_ID
+      // };
       // act
       await UserController.getUserProfile(req, res);
       // assert
@@ -131,9 +131,9 @@ describe('UserController', () => {
   describe('sendOtpCode', () => {
     test('should call sendBadRequest when sent with userId', async () => {
       // arrange
-      req.session = {
-        userId: TEST_EXISTING_USER_ID
-      };
+      // req.session = {
+      //   userId: TEST_EXISTING_USER_ID
+      // };
       // act
       await UserController.sendOtpCode(req, res);
       // assert

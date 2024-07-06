@@ -9,7 +9,7 @@ import { StatusCodes } from 'http-status-codes';
 
 import { ApiLoggingClass } from '@dx/logger';
 import {
-  destroySession,
+  // destroySession,
   endpointNotFound,
   send400,
   sendBadRequest,
@@ -29,7 +29,7 @@ jest.mock('./http-responses', () => {
   const actual = jest.requireActual<typeof import('./http-responses')>('./http-responses');
   return {
     ...actual,
-    destroySession: jest.fn(),
+    // destroySession: jest.fn(),
     send400: jest.fn(),
   }
 });

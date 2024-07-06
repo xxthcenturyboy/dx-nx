@@ -38,8 +38,8 @@ export const AuthController = {
     try {
       const service = new AuthService();
       const profile = await service.createAccount(
-        req.body as AccountCreationPayloadType,
-        req.session
+        req.body as AccountCreationPayloadType
+        // req.session
       ) as UserProfileStateType;
 
       const tokens = TokenService.generateTokens(profile.id);
@@ -90,12 +90,12 @@ export const AuthController = {
         return sendNoContent(req, res, '');
       }
 
-      req.session.destroy((err: Error) => {
-        if (err) {
-          return sendBadRequest(req, res, err.message || 'Failed to destroy session');
-        }
-        ApiLoggingClass.instance.logInfo(`Session Destroyed: ${req.user?.id}`);
-      });
+      // req.session.destroy((err: Error) => {
+      //   if (err) {
+      //     return sendBadRequest(req, res, err.message || 'Failed to destroy session');
+      //   }
+      //   ApiLoggingClass.instance.logInfo(`Session Destroyed: ${req.user?.id}`);
+      // });
 
       sendOK(req, res, { loggedOut: true });
     } catch (err) {
@@ -108,12 +108,12 @@ export const AuthController = {
     if (!refreshToken) {
       ApiLoggingClass.instance.logError('No refresh token.');
       CookeiService.clearCookies(res);
-      req.session.destroy((err: Error) => {
-        if (err) {
-          return sendBadRequest(req, res, err.message || 'Failed to destroy session');
-        }
-        ApiLoggingClass.instance.logInfo(`Session Destroyed: ${req.sessionId}`);
-      });
+      // req.session.destroy((err: Error) => {
+      //   if (err) {
+      //     return sendBadRequest(req, res, err.message || 'Failed to destroy session');
+      //   }
+      //   ApiLoggingClass.instance.logInfo(`Session Destroyed: ${req.sessionId}`);
+      // });
       return sendUnauthorized(req, res, 'no refresh token.');
     }
 

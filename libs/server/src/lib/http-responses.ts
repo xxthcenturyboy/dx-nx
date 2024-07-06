@@ -11,10 +11,10 @@ import {
 import { ApiLoggingClass } from '@dx/logger';
 import { CookeiService } from './cookie.service';
 
-export function destroySession(req: Request, res: Response) {
-  CookeiService.clearCookies(res);
-  req.session?.destroy(() => null);
-}
+// export function destroySession(req: Request, res: Response) {
+//   CookeiService.clearCookies(res);
+//   req.session?.destroy(() => null);
+// }
 
 export function send400(res: Response, data: any): void {
   res.status(data.status).send(data).end();
@@ -74,7 +74,8 @@ export function sendBadRequest(req: Request, res: Response, err: Error | string)
 
 export function sendUnauthorized(req: Request, res: Response, message: string) {
   ApiLoggingClass.instance.logWarn(`Unauthorized: ${req.url}, userId: ${req.user?.id || 'unavailable'}`);
-  destroySession(req, res);
+  // destroySession(req, res);
+  CookeiService.clearCookies(res);
   send400(res, {
     description: getReasonPhrase(StatusCodes.UNAUTHORIZED),
     status: StatusCodes.UNAUTHORIZED,
@@ -85,7 +86,8 @@ export function sendUnauthorized(req: Request, res: Response, message: string) {
 
 export function sendForbidden(req: Request, res: Response, message: string): void {
   ApiLoggingClass.instance.logWarn(`Forbidden: ${req.url}, userId: ${req.user?.id || 'unavailable'}`);
-  destroySession(req, res);
+  // destroySession(req, res);
+  CookeiService.clearCookies(res);
   send400(res, {
     description: getReasonPhrase(StatusCodes.FORBIDDEN),
     status: StatusCodes.FORBIDDEN,

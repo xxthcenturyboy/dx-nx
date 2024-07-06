@@ -43,9 +43,9 @@ describe('ShortlinkController', () => {
       req.params = {
         id: 'test-id'
       };
-      req.session = {
-        destroy: jest.fn(),
-      };
+      // req.session = {
+      //   destroy: jest.fn(),
+      // };
       // act
       await ShortlinkController.redirectToTarget(req, res);
       // assert

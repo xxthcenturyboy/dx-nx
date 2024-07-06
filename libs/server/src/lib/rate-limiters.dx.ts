@@ -61,10 +61,10 @@ export class DxRateLimiters {
 
   static keyGenStandard(req: Request) {
     if (
-      req.session
-      && req.session.userId
+      req.user
+      && req.user.id
     ) {
-      return req.session.userId;
+      return req.user.id;
     }
 
     return req.ip;

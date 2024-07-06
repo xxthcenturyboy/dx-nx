@@ -3,7 +3,7 @@ import cors from 'cors';
 import { Express } from 'jest-express/lib/express';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
-import session from 'express-session';
+// import session from 'express-session';
 
 import { configureExpress } from './express';
 import { ApiLoggingClass } from '@dx/logger';
@@ -58,14 +58,14 @@ describe('configureExpress', () => {
       [express.urlencoded({ extended: true, limit: '10mb' })],
       [cookieParser()],
       [morgan(() => 'string')],
-      [session({
-        resave: false,
-        saveUninitialized: false,
-        secret: 'test-secret'
-      })],
+      // [session({
+      //   resave: false,
+      //   saveUninitialized: false,
+      //   secret: 'test-secret'
+      // })],
       [() => handleError]
     ]));
     // assert
-    expect(app.use).toHaveBeenCalledTimes(7);
+    expect(app.use).toHaveBeenCalledTimes(6);
   });
 });

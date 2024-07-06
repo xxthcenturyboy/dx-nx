@@ -31,7 +31,7 @@ import {
   AccountCreationPayloadType,
   BiometricAuthType,
   LoginPaylodType,
-  SessionData,
+  // SessionData,
   UserLookupQueryType,
   UserLookupResponseType
 } from '../model/auth.types';
@@ -54,7 +54,7 @@ describe('AuthService', () => {
     let db: Sequelize;
     let emailAccountId: string;
     let phoneAccountId: string;
-    let session: SessionData = {};
+    // let session: SessionData = {};
     const generatedKeys = dxRsaGenerateKeyPair();
     const rsaKeyPair = {
       privateKey: generatedKeys.privateKey,
@@ -129,7 +129,8 @@ describe('AuthService', () => {
         };
         // act
         try {
-          expect(await authService.createAccount(payload, session)).toThrow();
+          expect(await authService.createAccount(payload)).toThrow();
+          // expect(await authService.createAccount(payload, session)).toThrow();
         } catch (err) {
           // assert
           expect(err.message).toEqual('Bad data sent.');
@@ -144,7 +145,8 @@ describe('AuthService', () => {
         };
         // act
         try {
-          expect(await authService.createAccount(payload, session)).toThrow();
+          expect(await authService.createAccount(payload)).toThrow();
+          // expect(await authService.createAccount(payload, session)).toThrow();
         } catch (err) {
           // assert
           expect(err.message).toEqual('Email is unavailable.');
@@ -160,7 +162,8 @@ describe('AuthService', () => {
         };
         // act
         try {
-          expect(await authService.createAccount(payload, session)).toThrow();
+          expect(await authService.createAccount(payload)).toThrow();
+          // expect(await authService.createAccount(payload, session)).toThrow();
         } catch (err) {
           // assert
           expect(err.message).toEqual(`Account could not be created with payload: ${JSON.stringify(payload, null, 2)}`);
@@ -176,7 +179,8 @@ describe('AuthService', () => {
         };
         // act
         try {
-          expect(await authService.createAccount(payload, session)).toThrow();
+          expect(await authService.createAccount(payload)).toThrow();
+          // expect(await authService.createAccount(payload, session)).toThrow();
         } catch (err) {
           // assert
           expect(err.message).toEqual('Phone is unavailable.');
@@ -191,7 +195,8 @@ describe('AuthService', () => {
         };
         // act
         try {
-          expect(await authService.createAccount(payload, session)).toThrow();
+          expect(await authService.createAccount(payload)).toThrow();
+          // expect(await authService.createAccount(payload, session)).toThrow();
         } catch (err) {
           // assert
           expect(err.message).toEqual(`Account could not be created with payload: ${JSON.stringify(payload, null, 2)}`);
@@ -206,7 +211,8 @@ describe('AuthService', () => {
           value: TEST_EMAIL
         };
         // act
-        const user = await authService.createAccount(payload, session);
+        const user = await authService.createAccount(payload);
+        // const user = await authService.createAccount(payload, session);
         // assert
         expect(user).toBeDefined();
         expect((user as UserProfileStateType).emails).toHaveLength(1);
@@ -223,7 +229,8 @@ describe('AuthService', () => {
           value: TEST_PHONE_VALID
         };
         // act
-        const user = await authService.createAccount(payload, session);
+        const user = await authService.createAccount(payload);
+        // const user = await authService.createAccount(payload, session);
         // assert
         expect(user).toBeDefined();
         expect((user as UserProfileStateType).phones).toHaveLength(1);

@@ -1,5 +1,5 @@
 export {
-  destroySession,
+  // destroySession,
   endpointNotFound,
   send400,
   sendBadRequest,

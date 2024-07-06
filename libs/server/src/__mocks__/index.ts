@@ -4,9 +4,9 @@ import {
   Response
 } from "express";
 
-export function destroySession(req: Request, res: Response) {
-  return;
-}
+// export function destroySession(req: Request, res: Response) {
+//   return;
+// }
 
 export function send400(req: Request, res: Response) {
   res.send(400);
@@ -40,13 +40,13 @@ export function sendTooManyRequests(req: Request, res: Response, err: Error | st
 }
 
 export function sendUnauthorized(req: Request, res: Response, message: string) {
-  destroySession(req, res);
+  // destroySession(req, res);
   send400(req, res);
   return;
 }
 
 export function sendForbidden(req: Request, res: Response, message: string) {
-  destroySession(req, res);
+  // destroySession(req, res);
   send400(req, res);
   return;
 }

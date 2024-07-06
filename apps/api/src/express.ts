@@ -66,25 +66,25 @@ export async function configureExpress(
 
   // Session support
   // Must be before Rate Limiters for Express Middleware to have attached Session to req
-  const redisStore = new RedisStore({
-    client: RedisService.instance.cacheHandle,
-    prefix: `session${REDIS_DELIMITER}`
-  });
-  app.use(session({
-    name: `${APP_PREFIX}.sid`,
-    secret: settings.SESSION_SECRET,
-    store: redisStore,
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      httpOnly: true,
-      secure: false,
-      maxAge: isLocal()
-        ? DxDateUtilClass.getMilisecondsDays(1)
-        : DxDateUtilClass.getMilisecondsDays(30),
-      sameSite: false
-    }
-  }));
+  // const redisStore = new RedisStore({
+  //   client: RedisService.instance.cacheHandle,
+  //   prefix: `session${REDIS_DELIMITER}`
+  // });
+  // app.use(session({
+  //   name: `${APP_PREFIX}.sid`,
+  //   secret: settings.SESSION_SECRET,
+  //   store: redisStore,
+  //   resave: false,
+  //   saveUninitialized: true,
+  //   cookie: {
+  //     httpOnly: true,
+  //     secure: false,
+  //     maxAge: isLocal()
+  //       ? DxDateUtilClass.getMilisecondsDays(1)
+  //       : DxDateUtilClass.getMilisecondsDays(30),
+  //     sameSite: false
+  //   }
+  // }));
 
   // Setup logging
   if (!settings.DEBUG) {

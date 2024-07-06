@@ -45,8 +45,8 @@ export class AuthService {
   }
 
   public async createAccount(
-    payload: AccountCreationPayloadType,
-    session: SessionData
+    payload: AccountCreationPayloadType
+    // session: SessionData
   ) {
     const {
       code,

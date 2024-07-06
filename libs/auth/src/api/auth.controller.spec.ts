@@ -88,9 +88,9 @@ describe('AuthController', () => {
   describe('logout', () => {
     test('should sendNoContent when invoked', async () => {
       // arrange
-      req.session = {
-        destroy: jest.fn()
-      };
+      // req.session = {
+      //   destroy: jest.fn()
+      // };
       // act
       await AuthController.logout(req, res);
       // assert
@@ -117,9 +117,9 @@ describe('AuthController', () => {
   describe('refreshTokens', () => {
     test('should sendUnauthorized when invoked', async () => {
       // arrange
-      req.session = {
-        destroy: jest.fn(),
-      };
+      // req.session = {
+      //   destroy: jest.fn(),
+      // };
       req.cookies = {
         refresh: 'test-refresh-token'
       };
