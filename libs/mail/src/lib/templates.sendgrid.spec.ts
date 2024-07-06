@@ -17,6 +17,6 @@ describe('SG_TEMPLATES', () => {
     expect(SG_TEMPLATES.CONFIRM).toBeDefined();
     expect(SG_TEMPLATES.INVITE).toBeDefined();
     expect(SG_TEMPLATES.OTP).toBeDefined();
-    expect(SG_TEMPLATES.RESET).toBeDefined();
+    expect(SG_TEMPLATES.ACCOUNT_ALERT).toBeDefined();
   });
 });

@@ -4,6 +4,8 @@ import {
 } from './mail.sendgrid';
 import { ApiLoggingClass } from '@dx/logger';
 import { TEST_EMAIL } from '@dx/config';
+import { SG_TEMPLATES } from './templates.sendgrid';
+import { UNSUBSCRIBE_GROUPS } from './mail.sendgrid.const';
 
 jest.mock('@dx/logger');
 
@@ -34,7 +36,7 @@ describe('MailSendgrid', () => {
     expect(mail.sendConfirmation).toBeDefined();
     expect(mail.sendInvite).toBeDefined();
     expect(mail.sendOtp).toBeDefined();
-    expect(mail.sendReset).toBeDefined();
+    expect(mail.sendAccountAlert).toBeDefined();
   });
 
   test('should sendConfirmation when invoked', async () => {
@@ -58,7 +60,16 @@ describe('MailSendgrid', () => {
   test('should sendReset when invoked', async () => {
     // arrange
     // act
-    const result = await mail.sendReset(TEST_EMAIL, 'http://url-to-reset.com');
+    const result = await mail.sendAccountAlert({
+      to: TEST_EMAIL,
+      from: TEST_EMAIL,
+      templateId: SG_TEMPLATES.ACCOUNT_ALERT,
+      subject: '',
+      body: '',
+      cta: '',
+      ctaUrl: '',
+      unsubscribeGroup: UNSUBSCRIBE_GROUPS.TRANSACTIONAL
+    });
     // assert
     expect(result).toBeDefined();
     expect(typeof result).toEqual('string');
@@ -67,7 +78,7 @@ describe('MailSendgrid', () => {
   test('should sendOtp when invoked', async () => {
     // arrange
     // act
-    const result = await mail.sendOtp(TEST_EMAIL, 'otp-code', 'http://url-to-lockout.com');
+    const result = await mail.sendOtp(TEST_EMAIL, 'otp-code');
     // assert
     expect(result).toBeDefined();
     expect(typeof result).toEqual('string');
