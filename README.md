@@ -79,6 +79,12 @@ Currently in Makefile is
  1. run `nx reset` inside the container
  1. code away 😜
 
+## Docker Development
+Rebuild container:
+```
+docker compose up -d --build --force-recreate
+```
+
 ## Set up CI!
 
 Nx comes with local caching already built-in (check your `nx.json`). On CI you might want to go a step further.
