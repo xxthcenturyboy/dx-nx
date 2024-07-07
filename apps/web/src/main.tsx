@@ -20,12 +20,23 @@ const root = createRoot(
 
 root.render(
   <StrictMode>
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <ConnectedRouter history={history}>
-          <Route Component={App} />
+    <Provider
+      store={store}
+    >
+      <PersistGate
+        loading={null}
+        persistor={persistor}
+      >
+        <ConnectedRouter
+          history={history}
+        >
+          <Route
+            Component={App}
+          />
         </ConnectedRouter>
       </PersistGate>
     </Provider>
   </StrictMode>
 );
+
+console.log('after initial render?');

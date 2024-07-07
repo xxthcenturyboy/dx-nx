@@ -4,7 +4,7 @@ import {
 } from 'connected-react-router';
 import { ActionType } from 'typesafe-actions';
 
-import authActions from '@dx/auth';
+import { authActions } from '@dx/auth';
 
 const allActions = {
   ...authActions
