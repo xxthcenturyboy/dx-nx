@@ -36,8 +36,12 @@ export {
 // Client
 export {
   CLIENT_APP_DOMAIN,
-  CLIENT_APP_URL
+  CLIENT_APP_URL,
+  CLIENT_REDUX_DB_NAME
 } from './client/client-config.consts';
+export {
+  WebRootStateType
+} from './client/client-config.type';
 
 // Mobile
 export {

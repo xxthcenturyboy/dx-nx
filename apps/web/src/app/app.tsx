@@ -8,7 +8,7 @@ const StyledApp = styled.div`
   // Your style here
 `;
 
-export function App() {
+export const App: React.FC = () => {
   return (
     <StyledApp>
       <NxWelcome title="DX Web" />
@@ -51,6 +51,4 @@ export function App() {
       {/* END: routes */}
     </StyledApp>
   );
-}
-
-export default App;
+};

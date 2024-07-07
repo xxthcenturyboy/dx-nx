@@ -31,3 +31,20 @@ export {
 } from './model/otp-code.redis-cache';
 export { OtpService } from './api/otp.service';
 export { SecurityAlertSerivice } from './api/security-alert.service';
+
+
+// Client
+import * as authActions from './client/actions';
+export {
+  authActions
+};
+export {
+  authInitialState,
+  authPersistConfig
+} from './client/auth-initial-state';
+export {
+  authReducer
+} from './client/auth.reducer';
+export {
+  getAuthToken
+} from './client/auth.selector';

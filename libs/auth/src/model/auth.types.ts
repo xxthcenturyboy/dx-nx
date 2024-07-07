@@ -71,3 +71,7 @@ export type BiometricAuthType = {
   userId: string;
   device: DeviceAuthType | null;
 };
+
+export type AuthStateType = {
+  token: string;
+}
