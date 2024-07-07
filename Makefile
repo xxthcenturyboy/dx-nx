@@ -37,7 +37,7 @@ web:
 
 ## run e2e tests for the web
 web-e2e:
-	docker exec -it ${MONOREPO_CONTAINER_ID} nx e2e web-e2e --run-in-band
+	docker exec -it ${MONOREPO_CONTAINER_ID} nx e2e web-e2e
 
 
 ################### NX Unit Testing ###################
