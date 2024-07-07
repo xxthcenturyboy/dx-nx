@@ -18,6 +18,7 @@
     "baseUrl": ".",
     "paths": {
       "@dx/auth": ["libs/auth/src/index.ts"],
+      "@dx/axios": ["libs/data/axios/src/index.ts"],
       "@dx/config": ["libs/config/src/index.ts"],
       "@dx/devices": ["libs/devices/src/index.ts"],
       "@dx/email": ["libs/email/src/index.ts"],
