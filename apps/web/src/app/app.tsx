@@ -11,7 +11,7 @@ const StyledApp = styled.div`
 export function App() {
   return (
     <StyledApp>
-      <NxWelcome title="web" />
+      <NxWelcome title="DX Web" />
 
       {/* START: routes */}
       {/* These routes and navigation have been generated for you */}

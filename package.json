@@ -58,6 +58,7 @@
     "@expo/cli": "~0.17.8",
     "@expo/metro-config": "~0.18.1",
     "@expo/metro-runtime": "~3.2.1",
+    "@expo/ngrok": "^4.1.0",
     "@nx/cypress": "19.1.1",
     "@nx/devkit": "19.1.1",
     "@nx/esbuild": "19.1.1",
