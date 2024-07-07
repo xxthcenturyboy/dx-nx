@@ -1,4 +1,4 @@
-MONOREPO_CONTAINER_ID := $(shell docker compose ps -q monorepo-node-20)
+MONOREPO_CONTAINER_ID := $(shell docker compose ps -q monorepo-node-22)
 CONTAINER_PG := $(shell docker compose ps -q postgres)
 POSGRES_SEED_FILE := pg-seed.dump
 
@@ -23,7 +23,7 @@ api-e2e-verbose:
 ################### Mobile ###################
 ## start Mobile in nodemon
 mobile:
-	docker exec -it ${MONOREPO_CONTAINER_ID} nx serve mobile
+	docker exec -it ${MONOREPO_CONTAINER_ID} nx start mobile
 
 ## run e2e tests for Mobile
 mobile-e2e:
