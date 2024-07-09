@@ -1,8 +1,8 @@
 import { Sequelize } from 'sequelize-typescript';
 
 import { ApiLoggingClass } from '@dx/logger';
-import { PostgresDbConnection } from '@dx/postgres';
-import { RedisService } from '@dx/redis';
+import { PostgresDbConnection } from '@dx/data-access-api-postgres';
+import { RedisService } from '@dx/data-access-api-redis';
 import { UserService, UserServiceType } from './user.service';
 import { PhoneModel } from '@dx/phone';
 import { DeviceModel } from '@dx/devices';

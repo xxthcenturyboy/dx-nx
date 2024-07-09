@@ -1,7 +1,7 @@
 import { Sequelize } from 'sequelize-typescript';
 
 import { ApiLoggingClassType } from '@dx/logger';
-import { RedisServiceType } from '@dx/redis';
+import { RedisServiceType } from '@dx/data-access-api-redis';
 
 export type AuthConfigType = {
   jwtSecret: string;

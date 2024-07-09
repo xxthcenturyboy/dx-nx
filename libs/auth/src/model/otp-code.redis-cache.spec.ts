@@ -1,11 +1,7 @@
 import { ApiLoggingClass } from '@dx/logger';
 import { OtpCodeCache, OtpCodeCacheType } from './otp-code.redis-cache';
-import { RedisService } from '@dx/redis';
-import {
-  TEST_COUNTRY_CODE,
-  TEST_EMAIL,
-  TEST_PHONE,
-} from '@dx/config-shared';
+import { RedisService } from '@dx/data-access-api-redis';
+import { TEST_COUNTRY_CODE, TEST_EMAIL, TEST_PHONE } from '@dx/config-shared';
 import { getRedisConfig } from '@dx/config-api';
 
 jest.mock('@dx/logger');

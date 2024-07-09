@@ -1,17 +1,14 @@
-import {
-  Request as IRequest,
-  Response as IResponse
-} from 'express';
+import { Request as IRequest, Response as IResponse } from 'express';
 import { Request } from 'jest-express/lib/request';
 import { Response } from 'jest-express/lib/response';
 
-import { RedisService } from '@dx/redis';
+import { RedisService } from '@dx/data-access-api-redis';
 import { DxRateLimiters } from './rate-limiters.dx';
 
 jest.mock('@dx/server', () => ({
   sendOK: jest.fn(),
   sendBadRequest: jest.fn(),
-  sendTooManyRequests: jest.fn()
+  sendTooManyRequests: jest.fn(),
 }));
 
 describe('DxRateLimiters', () => {
@@ -25,8 +22,8 @@ describe('DxRateLimiters', () => {
       redis: {
         port: 6379,
         prefix: 'dx',
-        url: 'redis://redis'
-      }
+        url: 'redis://redis',
+      },
     });
   });
 

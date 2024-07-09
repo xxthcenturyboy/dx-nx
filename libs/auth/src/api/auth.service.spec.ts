@@ -16,8 +16,8 @@ import {
   TEST_PHONE_VALID,
 } from '@dx/config-shared';
 import { POSTGRES_URI } from '@dx/config-api';
-import { PostgresDbConnection } from '@dx/postgres';
-import { RedisService } from '@dx/redis';
+import { PostgresDbConnection } from '@dx/data-access-api-postgres';
+import { RedisService } from '@dx/data-access-api-redis';
 import {
   UserModel,
   UserPrivilegeSetModel,

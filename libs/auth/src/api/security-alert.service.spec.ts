@@ -10,7 +10,7 @@ import {
   TEST_EXISTING_USER_ID,
   TEST_UUID,
 } from '@dx/config-shared';
-import { PostgresDbConnection } from '@dx/postgres';
+import { PostgresDbConnection } from '@dx/data-access-api-postgres';
 import { UserModel, UserPrivilegeSetModel } from '@dx/user';
 import { DeviceModel } from '@dx/devices';
 import { EmailModel } from '@dx/email';

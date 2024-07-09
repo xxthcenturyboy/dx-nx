@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { rateLimit } from 'express-rate-limit';
 import { RedisStore } from 'rate-limit-redis';
 
-import { RedisService, REDIS_DELIMITER } from '@dx/redis';
+import { RedisService, REDIS_DELIMITER } from '@dx/data-access-api-redis';
 import { RATE_LIMIT_MESSAGE, RATE_LIMITS } from '../model/server.const';
 import { AUTH_ROUTES_V1_RATE_LIMIT } from '@dx/auth';
 import { sendOK, sendTooManyRequests } from './http-responses';
@@ -41,14 +41,12 @@ export class DxRateLimiters {
     // Send email / SMS depending upon type, etc
     // Don't handle in this file
     res.setHeader('Content-Type', 'application/json');
-    res
-      .status(200)
-      .send(
-        JSON.stringify({
-          error:
-            'Your account has been locked. Check your email for instructions.',
-        })
-      );
+    res.status(200).send(
+      JSON.stringify({
+        error:
+          'Your account has been locked. Check your email for instructions.',
+      })
+    );
   }
 
   static keyGenStandard(req: Request) {

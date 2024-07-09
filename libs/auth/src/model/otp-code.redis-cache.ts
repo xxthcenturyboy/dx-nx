@@ -1,4 +1,8 @@
-import { RedisService, RedisServiceType, REDIS_DELIMITER } from '@dx/redis';
+import {
+  RedisService,
+  RedisServiceType,
+  REDIS_DELIMITER,
+} from '@dx/data-access-api-redis';
 import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger';
 import {
   dxEncryptionGgenerateOTP,

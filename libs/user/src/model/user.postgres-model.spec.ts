@@ -1,6 +1,6 @@
 import { Sequelize } from 'sequelize-typescript';
 
-import { PostgresDbConnection } from '@dx/postgres';
+import { PostgresDbConnection } from '@dx/data-access-api-postgres';
 import { ApiLoggingClass } from '@dx/logger';
 import { DeviceModel } from '@dx/devices';
 import { EmailModel } from '@dx/email';

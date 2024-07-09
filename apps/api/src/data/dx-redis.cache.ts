@@ -2,8 +2,8 @@ import { ApiLoggingClass } from '@dx/logger';
 import {
   RedisHealthzService,
   RedisService,
-  RedisServiceType
-} from '@dx/redis';
+  RedisServiceType,
+} from '@dx/data-access-api-redis';
 import { getRedisConfig } from '@dx/config-api';
 import { isLocal } from '@dx/config-shared';
 

@@ -1,5 +1,5 @@
 import { ApiLoggingClass } from '@dx/logger';
-import { RedisService } from '@dx/redis';
+import { RedisService } from '@dx/data-access-api-redis';
 import { OtpService } from './otp.service';
 
 /**
@@ -14,8 +14,8 @@ describe('OtpService', () => {
       redis: {
         port: 6379,
         prefix: 'dx',
-        url: 'redis://redis'
-      }
+        url: 'redis://redis',
+      },
     });
   });
 

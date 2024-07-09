@@ -1,14 +1,11 @@
 import {
   RedisService,
   RedisServiceType,
-  REDIS_DELIMITER
-} from "@dx/redis";
-import {
-  ApiLoggingClass,
-  ApiLoggingClassType
-} from "@dx/logger";
-import { USER_ROLE } from "./user.consts";
-import { UserPrivilegeSetModel } from "./user-privilege.postgres-model";
+  REDIS_DELIMITER,
+} from '@dx/data-access-api-redis';
+import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger';
+import { USER_ROLE } from './user.consts';
+import { UserPrivilegeSetModel } from './user-privilege.postgres-model';
 
 export class UserPrivilegeSetCache {
   cache: RedisServiceType;
@@ -31,10 +28,7 @@ export class UserPrivilegeSetCache {
     privilegeSetName: keyof typeof USER_ROLE,
     privilegeSet: UserPrivilegeSetModel
   ): Promise<boolean> {
-    if (
-      !privilegeSetName
-      || !privilegeSet
-    ) {
+    if (!privilegeSetName || !privilegeSet) {
       return false;
     }
 
