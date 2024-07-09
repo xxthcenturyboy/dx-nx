@@ -9,7 +9,7 @@ import {
   SENDGRID_API_KEY,
   SENDGRID_URL,
 } from './api-config.consts';
-import { RedisConfigType, RedisServiceType } from '@dx/data-access-api-redis';
+import { RedisConfigType, RedisServiceType } from '@dx/data-access-redis';
 
 export function getRedisConfig(): RedisConfigType {
   const env = getEnvironment();

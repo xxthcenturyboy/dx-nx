@@ -5,7 +5,7 @@ import {
 } from './user-privilege.redis-cache';
 import { UserPrivilegeSetModelType } from './user-privilege.postgres-model';
 import { randomUUID } from 'crypto';
-import { RedisService } from '@dx/data-access-api-redis';
+import { RedisService } from '@dx/data-access-redis';
 import { getRedisConfig } from '@dx/config-api';
 
 jest.mock('@dx/logger');

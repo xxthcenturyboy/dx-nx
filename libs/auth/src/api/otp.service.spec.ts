@@ -1,5 +1,5 @@
 import { ApiLoggingClass } from '@dx/logger';
-import { RedisService } from '@dx/data-access-api-redis';
+import { RedisService } from '@dx/data-access-redis';
 import { OtpService } from './otp.service';
 
 /**

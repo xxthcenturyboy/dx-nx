@@ -2,7 +2,7 @@ import {
   RedisService,
   RedisServiceType,
   REDIS_DELIMITER,
-} from '@dx/data-access-api-redis';
+} from '@dx/data-access-redis';
 import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger';
 import { USER_ROLE } from './user.consts';
 import { UserPrivilegeSetModel } from './user-privilege.postgres-model';

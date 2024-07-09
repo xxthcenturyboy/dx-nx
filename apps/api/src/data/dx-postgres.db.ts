@@ -6,7 +6,7 @@ import {
 } from './dx-postgres.models';
 import { POSTGRES_URI } from '@dx/config-api';
 import { ApiLoggingClass } from '@dx/logger';
-import { PostgresDbConnection } from '@dx/data-access-api-postgres';
+import { PostgresDbConnection } from '@dx/data-access-postgres';
 
 export class DxPostgresDb {
   public static async getPostgresConnection(): Promise<

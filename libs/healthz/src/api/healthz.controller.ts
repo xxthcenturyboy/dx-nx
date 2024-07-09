@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import process from 'process';
 
 import { HttpHealthzService } from './http-healthz.service';
-import { RedisHealthzService } from '@dx/data-access-api-redis';
-import { PostgresDbConnection } from '@dx/data-access-api-postgres';
+import { RedisHealthzService } from '@dx/data-access-redis';
+import { PostgresDbConnection } from '@dx/data-access-postgres';
 import { sendOK } from '@dx/server';
 import { STATUS_ERROR, STATUS_OK } from '../model/healthz.const';
 import {

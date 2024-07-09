@@ -3,7 +3,7 @@ import {
   RedisHealthzService,
   RedisService,
   RedisServiceType,
-} from '@dx/data-access-api-redis';
+} from '@dx/data-access-redis';
 import { getRedisConfig } from '@dx/config-api';
 import { isLocal } from '@dx/config-shared';
 

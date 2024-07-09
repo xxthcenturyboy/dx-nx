@@ -1,8 +1,8 @@
 import { Sequelize } from 'sequelize-typescript';
 
 import { ApiLoggingClass } from '@dx/logger';
-import { PostgresDbConnection } from '@dx/data-access-api-postgres';
-import { RedisService } from '@dx/data-access-api-redis';
+import { PostgresDbConnection } from '@dx/data-access-postgres';
+import { RedisService } from '@dx/data-access-redis';
 import { EmailService, EmailServiceType } from './email.service';
 import { DeviceModel } from '@dx/devices';
 import { EmailModel } from '../model/email.postgres-model';

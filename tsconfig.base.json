@@ -22,10 +22,10 @@
       "@dx/config-mobile": ["libs/mobile/config/src/index.ts"],
       "@dx/config-shared": ["libs/shared/config/src/index.ts"],
       "@dx/config-web": ["libs/web/config/src/index.ts"],
-      "@dx/data-access-api-postgres": [
-        "libs/api/data-access/postgres/src/index.ts"
+      "@dx/data-access-postgres": [
+        "libs/shared/data-access/postgres/src/index.ts"
       ],
-      "@dx/data-access-api-redis": ["libs/api/data-access/redis/src/index.ts"],
+      "@dx/data-access-redis": ["libs/shared/data-access/redis/src/index.ts"],
       "@dx/data-access-web-axios": ["libs/web/data-access/axios/src/index.ts"],
       "@dx/devices": ["libs/devices/src/index.ts"],
       "@dx/email": ["libs/email/src/index.ts"],

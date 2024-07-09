@@ -70,15 +70,15 @@ shell-pg:
 ## creates the db and initial tables
 initialize-pg:
 	docker exec -it ${CONTAINER_PG} createdb -T template0 dx-nx --username=pguser
-	docker cp ./libs/data/postgres/src/dump/${POSGRES_SEED_FILE} ${CONTAINER_PG}:/
+	docker cp ./libs/shared/data-access/postgres/src/dump/${POSGRES_SEED_FILE} ${CONTAINER_PG}:/
 	docker exec -it ${CONTAINER_PG} pg_restore --username=pguser -d dx-nx ./${POSGRES_SEED_FILE}
 
 ## seeds the database
 seed-pg:
-	docker cp ./libs/data/postgres/src/dump/${POSGRES_SEED_FILE} ${CONTAINER_PG}:/
+	docker cp ./libs/shared/data-access/postgres/src/dump/${POSGRES_SEED_FILE} ${CONTAINER_PG}:/
 	docker exec -it ${CONTAINER_PG} pg_restore --username=pguser -d dx-nx ./${POSGRES_SEED_FILE}
 
 ## creates the seed file
 dump-pg:
 	docker exec -it ${CONTAINER_PG} sh -c "pg_dump --username=pguser -Fc dx-nx > /${POSGRES_SEED_FILE}"
-	docker cp ${CONTAINER_PG}:/${POSGRES_SEED_FILE} ./libs/data/postgres/src/dump/${POSGRES_SEED_FILE}
+	docker cp ${CONTAINER_PG}:/${POSGRES_SEED_FILE} ./libs/shared/data-access/postgres/src/dump/${POSGRES_SEED_FILE}

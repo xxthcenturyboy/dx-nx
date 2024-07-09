@@ -1,7 +1,7 @@
 import { Sequelize } from 'sequelize-typescript';
 
 import { ApiLoggingClass } from '@dx/logger';
-import { PostgresDbConnection } from '@dx/data-access-api-postgres';
+import { PostgresDbConnection } from '@dx/data-access-postgres';
 import {
   UserPrivilegeService,
   UserPrivilegeServiceType,
@@ -15,7 +15,7 @@ import { UserModel } from '../model/user.postgres-model';
 import { USER_ROLE } from '../model/user.consts';
 import { isLocal } from '@dx/config-shared';
 import { UpdatePrivilegeSetPayloadType } from '../model/user.types';
-import { RedisService } from '@dx/data-access-api-redis';
+import { RedisService } from '@dx/data-access-redis';
 import { getRedisConfig, POSTGRES_URI } from '@dx/config-api';
 
 jest.mock('@dx/logger');

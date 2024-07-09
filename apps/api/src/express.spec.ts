@@ -7,7 +7,7 @@ import morgan from 'morgan';
 
 import { configureExpress } from './express';
 import { ApiLoggingClass } from '@dx/logger';
-import { RedisService } from '@dx/data-access-api-redis';
+import { RedisService } from '@dx/data-access-redis';
 import { handleError } from '@dx/server';
 
 let app: IExpress;

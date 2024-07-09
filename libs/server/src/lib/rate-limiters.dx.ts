@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { rateLimit } from 'express-rate-limit';
 import { RedisStore } from 'rate-limit-redis';
 
-import { RedisService, REDIS_DELIMITER } from '@dx/data-access-api-redis';
+import { RedisService, REDIS_DELIMITER } from '@dx/data-access-redis';
 import { RATE_LIMIT_MESSAGE, RATE_LIMITS } from '../model/server.const';
 import { AUTH_ROUTES_V1_RATE_LIMIT } from '@dx/auth';
 import { sendOK, sendTooManyRequests } from './http-responses';
