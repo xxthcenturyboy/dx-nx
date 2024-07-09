@@ -3,14 +3,14 @@ import { createRoot } from 'react-dom/client';
 import { Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
-import { PersistGate } from 'redux-persist/lib/integration/react';
+import { PersistGate } from 'reduxjs-toolkit-persist/integration/react';
 
 import { App } from './app/app';
-import { history } from './app/store/history';
 import {
+  history,
   persistor,
   store
-} from './app/store/redux';
+} from './app/store.redux';
 
 (window as any).store = store;
 

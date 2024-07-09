@@ -2,10 +2,6 @@ export {
   AuthRoutes,
   AuthRoutesType
 } from './api/auth.routes';
-export {
-  TokenService,
-  TokenServiceType
-} from './api/token.service';
 export { ensureLoggedIn } from './api/ensure-logged-in.middleware';
 export {
   hasAdminRole,
@@ -34,17 +30,20 @@ export { SecurityAlertSerivice } from './api/security-alert.service';
 
 
 // Client
-import * as authActions from './client/actions';
-export {
-  authActions
-};
 export {
   authInitialState,
   authPersistConfig
-} from './client/auth-initial-state';
+} from './client/auth.state';
 export {
+  authActions,
   authReducer
 } from './client/auth.reducer';
 export {
   getAuthToken
 } from './client/auth.selector';
+
+// shared
+export {
+  TokenService,
+  TokenServiceType
+} from './shared/token.service';

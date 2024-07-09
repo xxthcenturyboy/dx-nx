@@ -4,7 +4,7 @@ import {
   NextFunction
 } from 'express';
 import { ApiLoggingClass } from '@dx/logger';
-import { TokenService } from './token.service';
+import { TokenService } from '../shared/token.service';
 import {
   CookeiService,
   HeaderService,

@@ -49,6 +49,7 @@
     "redux": "^5.0.1",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^3.1.0",
+    "reduxjs-toolkit-persist": "^7.2.1",
     "reflect-metadata": "^0.2.2",
     "reselect": "^5.1.1",
     "sequelize": "^6.37.3",

@@ -73,5 +73,6 @@ export type BiometricAuthType = {
 };
 
 export type AuthStateType = {
-  token: string;
+  token: string | null;
+  userId: string | null;
 }

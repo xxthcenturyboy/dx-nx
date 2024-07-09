@@ -15,7 +15,7 @@ import {
   LoginPaylodType,
   UserLookupQueryType
 } from '../model/auth.types';
-import { TokenService } from './token.service';
+import { TokenService } from '../shared/token.service';
 import { DevicesService } from '@dx/devices';
 import { CookeiService } from '@dx/server';
 import { UserProfileStateType } from '@dx/user';

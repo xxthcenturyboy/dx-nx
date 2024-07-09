@@ -10,7 +10,7 @@ import { next } from 'jest-express/lib/next';
 import { ensureLoggedIn } from './ensure-logged-in.middleware';
 import { ApiLoggingClass } from '@dx/logger';
 import { sendUnauthorized } from '@dx/server';
-import { TokenService } from './token.service';
+import { TokenService } from '../shared/token.service';
 import { CookeiService } from '@dx/server';
 import { TEST_EXISTING_USER_ID, TEST_UUID } from '@dx/config';
 import { UserModel } from '@dx/user';

@@ -12,7 +12,7 @@ import {
   UserModel,
   USER_ROLE
 } from '@dx/user';
-import { TokenService } from './token.service';
+import { TokenService } from '../shared/token.service';
 
 export async function userHasRole(
   userId: string,

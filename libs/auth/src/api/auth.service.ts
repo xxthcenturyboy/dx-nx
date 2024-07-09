@@ -35,7 +35,7 @@ import {
   PhoneUtil
 } from '@dx/utils';
 import { OtpCodeCache } from '../model/otp-code.redis-cache';
-import { TokenService } from './token.service';
+import { TokenService } from '../shared/token.service';
 import { isProd } from '@dx/config';
 import { DevicesService } from '@dx/devices';
 

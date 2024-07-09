@@ -1,30 +1,25 @@
-import {
-  getType,
-  ActionType
-} from 'typesafe-actions';
-import * as authActions from './actions';
-import { AuthStateType } from '../model/auth.types';
-import {
-  authInitialState,
-  authPersistConfig
-} from './auth-initial-state';
+import { createSlice } from '@reduxjs/toolkit';
 
-type AuthActionType = ActionType<typeof authActions>;
-export {
-  AuthActionType,
-  AuthStateType,
-  authInitialState,
-  authPersistConfig
-};
+import { AUTH_ENTITY_NAME } from '../model/auth.consts';
+import { authInitialState } from './auth.state';
+// import { TokenService } from '../shared/token.service';
 
-export const authReducer = (
-  state: AuthStateType = authInitialState,
-  action: AuthActionType
-): AuthStateType => {
-  switch (action.type) {
-    case getType(authActions.setToken): return {
-      ...state,
-      token: action.payload
+const authSlice = createSlice({
+  name: AUTH_ENTITY_NAME,
+  initialState: authInitialState,
+  reducers: {
+    tokenAdded(state, action) {
+      state.token = action.payload;
+      state.userId = action.payload
+      // state.userId = TokenService.getUserIdFromToken(action.payload)
+    },
+    tokenRemoved(state, action) {
+      state.token = null;
+      state.userId = null;
     }
   }
-};
+});
+
+export const authActions = authSlice.actions;
+
+export const authReducer = authSlice.reducer;
