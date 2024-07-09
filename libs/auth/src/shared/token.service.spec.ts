@@ -1,8 +1,6 @@
 import { ApiLoggingClass } from '@dx/logger';
-import {
-  TokenService
-} from './token.service';
-import { TEST_UUID } from '@dx/config';
+import { TokenService } from './token.service';
+import { TEST_UUID } from '@dx/config-shared';
 
 jest.mock('@dx/logger');
 

@@ -1,7 +1,4 @@
-import sgMail,
-{
-  MailDataRequired
-} from '@sendgrid/mail';
+import sgMail, { MailDataRequired } from '@sendgrid/mail';
 import sgClient from '@sendgrid/client';
 
 import { SG_TEMPLATES } from './templates.sendgrid';
@@ -9,14 +6,13 @@ import {
   APP_DOMAIN,
   COMPANY_NAME,
   isProd,
-  isTest,
-  SENDGRID_API_KEY,
-  SENDGRID_URL
-} from '@dx/config';
+  isTest
+} from '@dx/config-shared';
 import {
-  ApiLoggingClass,
-  ApiLoggingClassType
-} from '@dx/logger';
+  SENDGRID_API_KEY,
+  SENDGRID_URL,
+} from '@dx/config-api';
+import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger';
 import { SendgridSendOptionsType } from './mail.sendgrid.types';
 
 export class MailSendgrid {
@@ -41,7 +37,7 @@ export class MailSendgrid {
     const res = await sgMail.send(mailData);
     const sgId = isTest()
       ? res[0].headers['etag']
-      : res[0].headers['x-message-id']
+      : res[0].headers['x-message-id'];
     return sgId || 'no-id-for-sendgrid';
   }
 
@@ -54,8 +50,8 @@ export class MailSendgrid {
       from: this.fromAddress,
       templateId: SG_TEMPLATES.CONFIRM,
       dynamicTemplateData: {
-        confirmUrl
-      }
+        confirmUrl,
+      },
     };
 
     try {
@@ -85,8 +81,8 @@ export class MailSendgrid {
       from: from || this.fromAddress,
       templateId: SG_TEMPLATES.INVITE,
       dynamicTemplateData: {
-        inviteUrl
-      }
+        inviteUrl,
+      },
     };
 
     try {
@@ -115,7 +111,7 @@ export class MailSendgrid {
       const sgMessageId = await this.sendMail({
         ...options,
         from: this.fromAddress,
-        templateId: SG_TEMPLATES.ACCOUNT_ALERT
+        templateId: SG_TEMPLATES.ACCOUNT_ALERT,
       });
 
       if (!sgMessageId) {
@@ -130,10 +126,7 @@ export class MailSendgrid {
     }
   }
 
-  public async sendOtp(
-    to: string,
-    otpCode: string
-  ): Promise<string> {
+  public async sendOtp(to: string, otpCode: string): Promise<string> {
     const mailData: MailDataRequired = {
       to,
       from: this.fromAddress,

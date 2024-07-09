@@ -1,16 +1,6 @@
-import axios, {
-  AxiosError,
-  AxiosRequestConfig,
-  AxiosResponse
-} from 'axios';
-import {
-  AuthUtil,
-  AuthUtilType
-} from './util-v1';
-import {
-  CreatePhonePayloadType,
-  UpdatePhonePayloadType
-} from '@dx/phone';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { AuthUtil, AuthUtilType } from './util-v1';
+import { CreatePhonePayloadType, UpdatePhonePayloadType } from '@dx/phone';
 import {
   TEST_COUNTRY_CODE,
   TEST_EXISTING_PHONE,
@@ -18,12 +8,9 @@ import {
   TEST_PHONE_IT_INVALID,
   TEST_PHONE_IT_VALID,
   TEST_PHONE_VALID,
-  TEST_UUID
-} from '@dx/config';
-import {
-  AuthSuccessResponseType,
-  OtpResponseType
-} from '@dx/auth';
+  TEST_UUID,
+} from '@dx/config-shared';
+import { AuthSuccessResponseType, OtpResponseType } from '@dx/auth';
 
 describe('v1 Phone Routes', () => {
   let authRes: AuthSuccessResponseType;
@@ -45,7 +32,7 @@ describe('v1 Phone Routes', () => {
         url: '/api/v1/phone',
         method: 'POST',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
       };
@@ -55,9 +42,11 @@ describe('v1 Phone Routes', () => {
       } catch (err) {
         const typedError = err as AxiosError;
         // assert
-        expect(typedError.response.status).toBe(400)
+        expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual('Not enough information to create a phone.');
+        expect(typedError.response.data.message).toEqual(
+          'Not enough information to create a phone.'
+        );
       }
     });
 
@@ -68,17 +57,17 @@ describe('v1 Phone Routes', () => {
         def: false,
         phone: TEST_EXISTING_PHONE,
         label: 'Work',
-        userId: authRes.profile.id
+        userId: authRes.profile.id,
       };
 
       const request: AxiosRequestConfig = {
         url: `/api/v1/phone/`,
         method: 'POST',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
-        data: payload
+        data: payload,
       };
 
       try {
@@ -86,9 +75,11 @@ describe('v1 Phone Routes', () => {
       } catch (err) {
         const typedError = err as AxiosError;
         // assert
-        expect(typedError.response.status).toBe(400)
+        expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual(`This phone: ${TEST_EXISTING_PHONE} already exists.`);
+        expect(typedError.response.data.message).toEqual(
+          `This phone: ${TEST_EXISTING_PHONE} already exists.`
+        );
       }
     });
 
@@ -100,17 +91,17 @@ describe('v1 Phone Routes', () => {
         def: false,
         phone: TEST_PHONE,
         label: 'Work',
-        userId: authRes.profile.id
+        userId: authRes.profile.id,
       };
 
       const request: AxiosRequestConfig = {
         url: `/api/v1/phone/`,
         method: 'POST',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
-        data: payload
+        data: payload,
       };
 
       try {
@@ -118,9 +109,11 @@ describe('v1 Phone Routes', () => {
       } catch (err) {
         const typedError = err as AxiosError;
         // assert
-        expect(typedError.response.status).toBe(400)
+        expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual(`This phone cannot be used.`);
+        expect(typedError.response.data.message).toEqual(
+          `This phone cannot be used.`
+        );
       }
     });
 
@@ -132,17 +125,17 @@ describe('v1 Phone Routes', () => {
         def: false,
         phone: TEST_PHONE_IT_INVALID,
         label: 'Work',
-        userId: authRes.profile.id
+        userId: authRes.profile.id,
       };
 
       const request: AxiosRequestConfig = {
         url: `/api/v1/phone/`,
         method: 'POST',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
-        data: payload
+        data: payload,
       };
 
       try {
@@ -150,20 +143,25 @@ describe('v1 Phone Routes', () => {
       } catch (err) {
         const typedError = err as AxiosError;
         // assert
-        expect(typedError.response.status).toBe(400)
+        expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual(`This phone cannot be used.`);
+        expect(typedError.response.data.message).toEqual(
+          `This phone cannot be used.`
+        );
       }
     });
 
     test('should return 200 when successfuly creates Italian phone', async () => {
-      const result = await axios.request<AxiosRequestConfig, AxiosResponse<OtpResponseType>>({
+      const result = await axios.request<
+        AxiosRequestConfig,
+        AxiosResponse<OtpResponseType>
+      >({
         url: `/api/v1/user/send-otp-code`,
         method: 'POST',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
-        withCredentials: true
+        withCredentials: true,
       });
       const payload: CreatePhonePayloadType = {
         code: result.data.code,
@@ -172,7 +170,7 @@ describe('v1 Phone Routes', () => {
         def: false,
         phone: TEST_PHONE_IT_VALID,
         label: 'Work',
-        userId: authRes.profile.id
+        userId: authRes.profile.id,
       };
 
       const request: AxiosRequestConfig = {
@@ -180,8 +178,7 @@ describe('v1 Phone Routes', () => {
         method: 'POST',
         data: payload,
         headers: {
-          ...authUtil.getHeaders()
-
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
       };
@@ -196,13 +193,16 @@ describe('v1 Phone Routes', () => {
     });
 
     test('should return 200 when successfuly creates phone', async () => {
-      const result = await axios.request<AxiosRequestConfig, AxiosResponse<OtpResponseType>>({
+      const result = await axios.request<
+        AxiosRequestConfig,
+        AxiosResponse<OtpResponseType>
+      >({
         url: `/api/v1/user/send-otp-code`,
         method: 'POST',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
-        withCredentials: true
+        withCredentials: true,
       });
       const payload: CreatePhonePayloadType = {
         code: result.data.code,
@@ -211,7 +211,7 @@ describe('v1 Phone Routes', () => {
         def: false,
         phone: TEST_PHONE_VALID,
         label: 'Work',
-        userId: authRes.profile.id
+        userId: authRes.profile.id,
       };
 
       const request: AxiosRequestConfig = {
@@ -219,7 +219,7 @@ describe('v1 Phone Routes', () => {
         method: 'POST',
         data: payload,
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
       };
@@ -240,7 +240,7 @@ describe('v1 Phone Routes', () => {
         url: `/api/v1/phone/${TEST_UUID}`,
         method: 'PUT',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
       };
@@ -250,9 +250,11 @@ describe('v1 Phone Routes', () => {
       } catch (err) {
         const typedError = err as AxiosError;
         // assert
-        expect(typedError.response.status).toBe(400)
+        expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual(`Phone could not be found with the id: ${TEST_UUID}`);
+        expect(typedError.response.data.message).toEqual(
+          `Phone could not be found with the id: ${TEST_UUID}`
+        );
       }
     });
 
@@ -267,7 +269,7 @@ describe('v1 Phone Routes', () => {
         method: 'PUT',
         data: payload,
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
       };
@@ -286,7 +288,7 @@ describe('v1 Phone Routes', () => {
         url: `/api/v1/phone/${TEST_UUID}`,
         method: 'DELETE',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
       };
@@ -296,9 +298,11 @@ describe('v1 Phone Routes', () => {
       } catch (err) {
         const typedError = err as AxiosError;
         // assert
-        expect(typedError.response.status).toBe(400)
+        expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual(`Phone could not be found with the id: ${TEST_UUID}`);
+        expect(typedError.response.data.message).toEqual(
+          `Phone could not be found with the id: ${TEST_UUID}`
+        );
       }
     });
 
@@ -307,7 +311,7 @@ describe('v1 Phone Routes', () => {
         url: `/api/v1/phone/${idToUpdate}`,
         method: 'DELETE',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
       };
@@ -324,21 +328,27 @@ describe('v1 Phone Routes', () => {
         url: `/api/v1/phone/test/${idToUpdate}`,
         method: 'DELETE',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
-        withCredentials: true
+        withCredentials: true,
       };
       const request2: AxiosRequestConfig = {
         url: `/api/v1/phone/test/${idToUpdateItaly}`,
         method: 'DELETE',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
-        withCredentials: true
+        withCredentials: true,
       };
 
-      const result1 = await axios.request<AxiosRequestConfig, AxiosResponse<void>>(request1);
-      const result2 = await axios.request<AxiosRequestConfig, AxiosResponse<void>>(request2);
+      const result1 = await axios.request<
+        AxiosRequestConfig,
+        AxiosResponse<void>
+      >(request1);
+      const result2 = await axios.request<
+        AxiosRequestConfig,
+        AxiosResponse<void>
+      >(request2);
 
       expect(result1.status).toBe(200);
       expect(result2.status).toBe(200);

@@ -1,7 +1,7 @@
 import { Sequelize } from 'sequelize-typescript';
 import { DxPostgresDb } from './dx-postgres.db';
 import { ApiLoggingClass } from '@dx/logger';
-import { isLocal } from '@dx/config';
+import { isLocal } from '@dx/config-shared';
 
 // jest.mock('@dx/postgres');
 jest.mock('@dx/logger');
@@ -17,7 +17,7 @@ describe('dx-postgres.db', () => {
 
   afterAll(() => {
     isLocal() && dbHandle.close();
-  })
+  });
 
   it('should exist', () => {
     // arrange
@@ -40,7 +40,9 @@ describe('dx-postgres.db', () => {
       dbHandle = await DxPostgresDb.getPostgresConnection();
       // assert
       expect(dbHandle).toBeDefined();
-      expect(logInfoSpy).toHaveBeenCalledWith('Successfully Connected to Postgres');
+      expect(logInfoSpy).toHaveBeenCalledWith(
+        'Successfully Connected to Postgres'
+      );
     });
   }
 });

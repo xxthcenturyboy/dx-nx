@@ -3,8 +3,8 @@ import {
   APPLE_APP_ID,
   APPLE_WEB_CREDENTIALS,
   PACKAGE_NAME,
-  SHA256_CERT_FINGERPRINT
-} from '@dx/config';
+  SHA256_CERT_FINGERPRINT,
+} from '@dx/config-mobile';
 
 describe('WellKnownSourcesService', () => {
   it('should exist', () => {
@@ -23,10 +23,14 @@ describe('WellKnownSourcesService', () => {
       // assert
       expect(data).toBeDefined();
       expect(Array.isArray(data)).toBe(true);
-      expect(data[0].relation).toEqual(['delegate_permission/common.handle_all_urls']);
+      expect(data[0].relation).toEqual([
+        'delegate_permission/common.handle_all_urls',
+      ]);
       expect(data[0].target.namespace).toEqual('android_app');
       expect(data[0].target.package_name).toEqual(PACKAGE_NAME);
-      expect(data[0].target.sha256_cert_fingerprints).toEqual([SHA256_CERT_FINGERPRINT]);
+      expect(data[0].target.sha256_cert_fingerprints).toEqual([
+        SHA256_CERT_FINGERPRINT,
+      ]);
     });
   });
 

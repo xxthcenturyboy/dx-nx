@@ -1,9 +1,5 @@
-
-import { maliciousUrlCheck } from "./malicious-url-check";
-import {
-  CLIENT_APP_DOMAIN,
-  CLIENT_APP_URL
-} from '@dx/config';
+import { maliciousUrlCheck } from './malicious-url-check';
+import { CLIENT_APP_DOMAIN, CLIENT_APP_URL } from '@dx/config-web';
 
 describe('maliciousUrlCheck', () => {
   it('should throw on a potentially maliciouls url', () => {
@@ -14,7 +10,9 @@ describe('maliciousUrlCheck', () => {
     try {
       expect(maliciousUrlCheck(urlToCheck)).toThrow();
     } catch (err) {
-      expect(err.message).toEqual(`Possible malicious attack - check URL: ${urlToCheck}`);
+      expect(err.message).toEqual(
+        `Possible malicious attack - check URL: ${urlToCheck}`
+      );
     }
   });
 

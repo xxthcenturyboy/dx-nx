@@ -1,15 +1,12 @@
-import {
-  ApiLoggingClass,
-  ApiLoggingClassType
-} from '@dx/logger';
+import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger';
 import { EmailModel } from '../model/email.postgres-model';
 import {
   CreateEmailPayloadType,
-  UpdateEmailPayloadType
+  UpdateEmailPayloadType,
 } from '../model/email.types';
 import { EmailUtil } from '@dx/utils';
 import { UserModel } from '@dx/user';
-import { isLocal } from '@dx/config';
+import { isLocal } from '@dx/config-shared';
 import { OtpService } from '@dx/auth';
 import { dxRsaValidateBiometricKey } from '@dx/utils';
 
@@ -22,31 +19,25 @@ export class EmailService {
   }
 
   public async createEmail(payload: CreateEmailPayloadType) {
-    const {
-      code,
-      def,
-      email,
-      label,
-      signature,
-      userId,
-    } = payload;
+    const { code, def, email, label, signature, userId } = payload;
 
-    if (
-      !userId
-      || !email
-    ) {
+    if (!userId || !email) {
       throw new Error('Not enough information to create an email.');
     }
 
     const emailUtil = new EmailUtil(email);
-    const isEmailAvailable = await EmailModel.isEmailAvailable(emailUtil.formattedEmail());
+    const isEmailAvailable = await EmailModel.isEmailAvailable(
+      emailUtil.formattedEmail()
+    );
     if (!isEmailAvailable) {
       throw new Error(`This email: ${email} already exists.`);
     }
 
     if (!emailUtil.validate()) {
       if (emailUtil.isDisposableDomain()) {
-        throw new Error('The email you provided is not valid. Please note that we do not allow disposable emails or emails that do not exist, so make sure to use a real email address.');
+        throw new Error(
+          'The email you provided is not valid. Please note that we do not allow disposable emails or emails that do not exist, so make sure to use a real email address.'
+        );
       }
 
       throw new Error('The email you provided is not valid.');
@@ -61,9 +52,15 @@ export class EmailService {
 
     if (signature) {
       const biometricAuthPublicKey = await UserModel.getBiomAuthKey(userId);
-      const isSignatureValid = dxRsaValidateBiometricKey(signature, email, biometricAuthPublicKey);
+      const isSignatureValid = dxRsaValidateBiometricKey(
+        signature,
+        email,
+        biometricAuthPublicKey
+      );
       if (!isSignatureValid) {
-        throw new Error(`Create Email: Device signature is invalid: ${biometricAuthPublicKey}, userid: ${userId}`);
+        throw new Error(
+          `Create Email: Device signature is invalid: ${biometricAuthPublicKey}, userid: ${userId}`
+        );
       }
     }
 
@@ -109,14 +106,8 @@ export class EmailService {
     }
   }
 
-  public async updateEmail(
-    id: string,
-    payload: UpdateEmailPayloadType
-  ) {
-    const {
-      def,
-      label,
-    } = payload;
+  public async updateEmail(id: string, payload: UpdateEmailPayloadType) {
+    const { def, label } = payload;
 
     if (!id) {
       throw new Error('No id for update email.');
@@ -163,7 +154,7 @@ export class EmailService {
         where: {
           id,
         },
-        force: true
+        force: true,
       });
     }
   }

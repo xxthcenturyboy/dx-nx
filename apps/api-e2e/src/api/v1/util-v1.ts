@@ -2,17 +2,11 @@ import axios, {
   AxiosError,
   AxiosHeaders,
   AxiosRequestConfig,
-  AxiosResponse
+  AxiosResponse,
 } from 'axios';
 
-import {
-  AuthSuccessResponseType,
-  LoginPaylodType
-} from '@dx/auth';
-import {
-  TEST_EXISTING_EMAIL,
-  TEST_EXISTING_PASSWORD
-} from '@dx/config';
+import { AuthSuccessResponseType, LoginPaylodType } from '@dx/auth';
+import { TEST_EXISTING_EMAIL, TEST_EXISTING_PASSWORD } from '@dx/config-shared';
 
 export class AuthUtil {
   accessToken: string;
@@ -27,8 +21,8 @@ export class AuthUtil {
         let value = cookie.slice(cookie.indexOf('=') + 1);
         this.cookies = {
           ...this.cookies,
-          [property]: value
-        }
+          [property]: value,
+        };
       }
     }
   }
@@ -40,13 +34,13 @@ export class AuthUtil {
     const payload: LoginPaylodType = {
       value: email || TEST_EXISTING_EMAIL,
       // password: password || 'akjd0023kakdj_**_('
-      password: password || TEST_EXISTING_PASSWORD
+      password: password || TEST_EXISTING_PASSWORD,
     };
 
     const request: AxiosRequestConfig = {
       url: '/api/v1/auth/login',
       method: 'POST',
-      data: payload
+      data: payload,
     };
 
     try {
@@ -65,7 +59,7 @@ export class AuthUtil {
 
     return {
       accessToken: undefined,
-      profile: undefined
+      profile: undefined,
     };
   }
 
@@ -78,8 +72,8 @@ export class AuthUtil {
       method: 'POST',
       data: {
         code: code,
-        value: email
-      }
+        value: email,
+      },
     };
 
     try {
@@ -98,14 +92,14 @@ export class AuthUtil {
 
     return {
       accessToken: undefined,
-      profile: undefined
+      profile: undefined,
     };
   }
 
   public getHeaders() {
     return {
       Authorization: `Bearer ${this.accessToken}`,
-      cookie: this.cookeisRaw
+      cookie: this.cookeisRaw,
     };
   }
 }

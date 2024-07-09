@@ -3,7 +3,6 @@ import { Sequelize } from 'sequelize-typescript';
 import { ApiLoggingClass } from '@dx/logger';
 import {
   isLocal,
-  POSTGRES_URI,
   TEST_COUNTRY_CODE,
   TEST_DEVICE,
   TEST_EMAIL,
@@ -14,14 +13,15 @@ import {
   TEST_PASSWORD,
   TEST_PHONE,
   TEST_PHONE_IT_INVALID,
-  TEST_PHONE_VALID
-} from '@dx/config';
+  TEST_PHONE_VALID,
+} from '@dx/config-shared';
+import { POSTGRES_URI } from '@dx/config-api';
 import { PostgresDbConnection } from '@dx/postgres';
 import { RedisService } from '@dx/redis';
 import {
   UserModel,
   UserPrivilegeSetModel,
-  UserProfileStateType
+  UserProfileStateType,
 } from '@dx/user';
 import { DeviceModel, DevicesService } from '@dx/devices';
 import { EmailModel } from '@dx/email';
@@ -33,20 +33,16 @@ import {
   LoginPaylodType,
   // SessionData,
   UserLookupQueryType,
-  UserLookupResponseType
+  UserLookupResponseType,
 } from '../model/auth.types';
-import {
-  AuthService,
-  AuthServiceType
-} from './auth.service';
+import { AuthService, AuthServiceType } from './auth.service';
 import { USER_LOOKUPS } from '../model/auth.consts';
-import {
-  dxRsaGenerateKeyPair,
-  dxRsaSignPayload
-} from '@dx/utils';
+import { dxRsaGenerateKeyPair, dxRsaSignPayload } from '@dx/utils';
 
 jest.mock('@dx/logger');
-const errorLogSpyMock = jest.spyOn(console, 'error').mockImplementation(() => {});
+const errorLogSpyMock = jest
+  .spyOn(console, 'error')
+  .mockImplementation(() => {});
 
 describe('AuthService', () => {
   if (isLocal()) {
@@ -58,7 +54,7 @@ describe('AuthService', () => {
     const generatedKeys = dxRsaGenerateKeyPair();
     const rsaKeyPair = {
       privateKey: generatedKeys.privateKey,
-      publicKey: generatedKeys.publicKey
+      publicKey: generatedKeys.publicKey,
     };
 
     beforeAll(async () => {
@@ -71,8 +67,8 @@ describe('AuthService', () => {
           PhoneModel,
           ShortLinkModel,
           UserPrivilegeSetModel,
-          UserModel
-        ]
+          UserModel,
+        ],
       });
       await connection.initialize();
       db = PostgresDbConnection.dbHandle;
@@ -81,8 +77,8 @@ describe('AuthService', () => {
         redis: {
           port: 6379,
           prefix: 'dx',
-          url: 'redis://redis'
-        }
+          url: 'redis://redis',
+        },
       });
     });
 
@@ -125,7 +121,7 @@ describe('AuthService', () => {
         // arrange
         const payload: AccountCreationPayloadType = {
           code: '',
-          value: ''
+          value: '',
         };
         // act
         try {
@@ -141,7 +137,7 @@ describe('AuthService', () => {
         // arrange
         const payload: AccountCreationPayloadType = {
           code: 'OU812',
-          value: TEST_EXISTING_EMAIL
+          value: TEST_EXISTING_EMAIL,
         };
         // act
         try {
@@ -158,7 +154,7 @@ describe('AuthService', () => {
         const payload: AccountCreationPayloadType = {
           code: 'OU812',
           value: 'not-a-valid-email',
-          region: 'US'
+          region: 'US',
         };
         // act
         try {
@@ -166,7 +162,13 @@ describe('AuthService', () => {
           // expect(await authService.createAccount(payload, session)).toThrow();
         } catch (err) {
           // assert
-          expect(err.message).toEqual(`Account could not be created with payload: ${JSON.stringify(payload, null, 2)}`);
+          expect(err.message).toEqual(
+            `Account could not be created with payload: ${JSON.stringify(
+              payload,
+              null,
+              2
+            )}`
+          );
         }
       });
 
@@ -175,7 +177,7 @@ describe('AuthService', () => {
         const payload: AccountCreationPayloadType = {
           code: 'OU812',
           value: TEST_EXISTING_PHONE,
-          region: 'US'
+          region: 'US',
         };
         // act
         try {
@@ -191,7 +193,7 @@ describe('AuthService', () => {
         // arrange
         const payload: AccountCreationPayloadType = {
           code: 'OU812',
-          value: TEST_PHONE
+          value: TEST_PHONE,
         };
         // act
         try {
@@ -199,7 +201,13 @@ describe('AuthService', () => {
           // expect(await authService.createAccount(payload, session)).toThrow();
         } catch (err) {
           // assert
-          expect(err.message).toEqual(`Account could not be created with payload: ${JSON.stringify(payload, null, 2)}`);
+          expect(err.message).toEqual(
+            `Account could not be created with payload: ${JSON.stringify(
+              payload,
+              null,
+              2
+            )}`
+          );
         }
       });
 
@@ -208,7 +216,7 @@ describe('AuthService', () => {
         const otpCode = await authService.sendOtpToEmail(TEST_EMAIL);
         const payload: AccountCreationPayloadType = {
           code: otpCode.code,
-          value: TEST_EMAIL
+          value: TEST_EMAIL,
         };
         // act
         const user = await authService.createAccount(payload);
@@ -222,11 +230,14 @@ describe('AuthService', () => {
 
       test('should create an account with phone and device when called', async () => {
         // arrange
-        const otpCode = await authService.sendOtpToPhone(TEST_PHONE_VALID, 'US');
+        const otpCode = await authService.sendOtpToPhone(
+          TEST_PHONE_VALID,
+          'US'
+        );
         const payload: AccountCreationPayloadType = {
           code: otpCode.code,
           device: TEST_DEVICE,
-          value: TEST_PHONE_VALID
+          value: TEST_PHONE_VALID,
         };
         // act
         const user = await authService.createAccount(payload);
@@ -253,7 +264,7 @@ describe('AuthService', () => {
           device: null,
           payload: '',
           signature: '',
-          userId: TEST_EXISTING_USER_ID
+          userId: TEST_EXISTING_USER_ID,
         };
         // act
         try {
@@ -270,47 +281,60 @@ describe('AuthService', () => {
           device: null,
           payload: 'payload',
           signature: 'signature',
-          userId: TEST_EXISTING_USER_ID
+          userId: TEST_EXISTING_USER_ID,
         };
         // act
         try {
           expect(await authService.biometricLogin(payload)).toThrow();
         } catch (err) {
           // assert
-          expect(err.message).toEqual(`BiometricLogin: User ${TEST_EXISTING_USER_ID} has no stored public key.`);
+          expect(err.message).toEqual(
+            `BiometricLogin: User ${TEST_EXISTING_USER_ID} has no stored public key.`
+          );
         }
       });
 
       test('should throw when signed payload cannot be validated', async () => {
         // arrange
         const deviceService = new DevicesService();
-        await deviceService.updatePublicKey(TEST_DEVICE.uniqueDeviceId, rsaKeyPair.publicKey);
+        await deviceService.updatePublicKey(
+          TEST_DEVICE.uniqueDeviceId,
+          rsaKeyPair.publicKey
+        );
 
         const payload: BiometricAuthType = {
           device: TEST_DEVICE,
           payload: 'payload',
-          signature: dxRsaSignPayload(rsaKeyPair.privateKey, 'not a valid payload'),
-          userId: phoneAccountId
+          signature: dxRsaSignPayload(
+            rsaKeyPair.privateKey,
+            'not a valid payload'
+          ),
+          userId: phoneAccountId,
         };
         // act
         try {
           expect(await authService.biometricLogin(payload)).toThrow();
         } catch (err) {
           // assert
-          expect(err.message).toEqual(`BiometricLogin: Device signature is invalid: ${rsaKeyPair.publicKey}, userid: ${phoneAccountId}`);
+          expect(err.message).toEqual(
+            `BiometricLogin: Device signature is invalid: ${rsaKeyPair.publicKey}, userid: ${phoneAccountId}`
+          );
         }
       });
 
       test('should return user when passes signature validation', async () => {
         // arrange
         const deviceService = new DevicesService();
-        await deviceService.updatePublicKey(TEST_DEVICE.uniqueDeviceId, rsaKeyPair.publicKey);
+        await deviceService.updatePublicKey(
+          TEST_DEVICE.uniqueDeviceId,
+          rsaKeyPair.publicKey
+        );
 
         const payload: BiometricAuthType = {
           device: TEST_DEVICE,
           payload: 'payload',
           signature: dxRsaSignPayload(rsaKeyPair.privateKey, 'payload'),
-          userId: phoneAccountId
+          userId: phoneAccountId,
         };
         // act
         const result = await authService.biometricLogin(payload);
@@ -333,8 +357,8 @@ describe('AuthService', () => {
           code: '1',
           region: 'US',
           value: '8586844802',
-          type: USER_LOOKUPS.PHONE
-        }
+          type: USER_LOOKUPS.PHONE,
+        };
         // act
         response = await authService.doesEmailPhoneExist(query);
         // assert
@@ -348,7 +372,7 @@ describe('AuthService', () => {
         const query: UserLookupQueryType = {
           code: TEST_COUNTRY_CODE,
           value: TEST_EXISTING_PHONE,
-          type: USER_LOOKUPS.PHONE
+          type: USER_LOOKUPS.PHONE,
         };
         // act
         response = await authService.doesEmailPhoneExist(query);
@@ -361,14 +385,16 @@ describe('AuthService', () => {
         const query: UserLookupQueryType = {
           region: 'IT',
           value: TEST_PHONE_IT_INVALID,
-          type: USER_LOOKUPS.PHONE
+          type: USER_LOOKUPS.PHONE,
         };
         // act
         // assert
-        try  {
+        try {
           expect(await authService.doesEmailPhoneExist(query)).toThrow();
         } catch (err) {
-          expect(err.message).toEqual('Error in auth lookup handler: This phone cannot be used.');
+          expect(err.message).toEqual(
+            'Error in auth lookup handler: This phone cannot be used.'
+          );
         }
       });
 
@@ -378,7 +404,7 @@ describe('AuthService', () => {
         const expectedResult: UserLookupResponseType = { available: true };
         const query: UserLookupQueryType = {
           value: 'dud.dx.software@gmail.com',
-          type: USER_LOOKUPS.EMAIL
+          type: USER_LOOKUPS.EMAIL,
         };
         // act
         response = await authService.doesEmailPhoneExist(query);
@@ -392,8 +418,8 @@ describe('AuthService', () => {
         const expectedResult: UserLookupResponseType = { available: false };
         const query: UserLookupQueryType = {
           value: TEST_EXISTING_EMAIL,
-          type: USER_LOOKUPS.EMAIL
-        }
+          type: USER_LOOKUPS.EMAIL,
+        };
         // act
         response = await authService.doesEmailPhoneExist(query);
         // assert
@@ -404,14 +430,16 @@ describe('AuthService', () => {
         // arrange
         const query: UserLookupQueryType = {
           value: 'email@080mail.com',
-          type: USER_LOOKUPS.EMAIL
+          type: USER_LOOKUPS.EMAIL,
         };
         // act
         // assert
-        try  {
+        try {
           expect(await authService.doesEmailPhoneExist(query)).toThrow();
         } catch (err) {
-          expect(err.message).toEqual('Error in auth lookup handler: Invalid email domain.');
+          expect(err.message).toEqual(
+            'Error in auth lookup handler: Invalid email domain.'
+          );
         }
       });
 
@@ -419,14 +447,16 @@ describe('AuthService', () => {
         // arrange
         const query: UserLookupQueryType = {
           value: 'not a valid email',
-          type: USER_LOOKUPS.EMAIL
+          type: USER_LOOKUPS.EMAIL,
         };
         // act
         // assert
-        try  {
+        try {
           expect(await authService.doesEmailPhoneExist(query)).toThrow();
         } catch (err) {
-          expect(err.message).toEqual('Error in auth lookup handler: Invalid Email.');
+          expect(err.message).toEqual(
+            'Error in auth lookup handler: Invalid Email.'
+          );
         }
       });
     });
@@ -449,7 +479,8 @@ describe('AuthService', () => {
 
       test('should throw when token is expired', async () => {
         // arrange
-        const token = '413c78fb890955a86d3971828dd05a9b2d844e44d8a30d406f80bf6e79612bb97e8b3b5834c8dbebdf5c4dadc767a579';
+        const token =
+          '413c78fb890955a86d3971828dd05a9b2d844e44d8a30d406f80bf6e79612bb97e8b3b5834c8dbebdf5c4dadc767a579';
         // act
         try {
           expect(await authService.validateEmail(token)).toThrow();
@@ -542,7 +573,10 @@ describe('AuthService', () => {
 
       test('should return user profile upon successful phone login', async () => {
         // arrange
-        const otpCode = await authService.sendOtpToPhone(TEST_PHONE_VALID, 'US');
+        const otpCode = await authService.sendOtpToPhone(
+          TEST_PHONE_VALID,
+          'US'
+        );
         const payload: LoginPaylodType = {
           value: TEST_PHONE_VALID,
           code: otpCode.code,
@@ -559,9 +593,12 @@ describe('AuthService', () => {
         // arrange
         const payload: LoginPaylodType = {
           biometric: {
-            signature: dxRsaSignPayload(rsaKeyPair.privateKey, TEST_PHONE_VALID),
+            signature: dxRsaSignPayload(
+              rsaKeyPair.privateKey,
+              TEST_PHONE_VALID
+            ),
             device: TEST_DEVICE,
-            userId: phoneAccountId
+            userId: phoneAccountId,
           },
           value: TEST_PHONE_VALID,
         };

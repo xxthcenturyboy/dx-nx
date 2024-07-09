@@ -1,14 +1,8 @@
 import zxcvbn from 'zxcvbn';
 import { Op } from 'sequelize';
-import {
-  FindOptions,
-  WhereOptions
-} from 'sequelize/types';
+import { FindOptions, WhereOptions } from 'sequelize/types';
 
-import {
-  ApiLoggingClass,
-  ApiLoggingClassType
-} from '@dx/logger';
+import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger';
 import { UserModel } from '../model/user.postgres-model';
 import { getUserProfileState } from './user-profile';
 import {
@@ -22,37 +16,24 @@ import {
   UpdateUserPayloadType,
   UpdateUsernamePayloadType,
   UpdateUserResponseType,
-  UpdatePasswordPayloadType
+  UpdatePasswordPayloadType,
 } from '../model/user.types';
-import {
-  USER_FIND_ATTRIBUTES,
-  USER_SORT_FIELDS
-} from '../model/user.consts';
+import { USER_FIND_ATTRIBUTES, USER_SORT_FIELDS } from '../model/user.consts';
 import { EMAIL_MODEL_OPTIONS } from '@dx/email';
-import {
-  PHONE_DEFAULT_REGION_CODE,
-  PHONE_MODEL_OPTIONS
-} from '@dx/phone';
+import { PHONE_DEFAULT_REGION_CODE, PHONE_MODEL_OPTIONS } from '@dx/phone';
 import {
   DEFAULT_LIMIT,
   DEFAULT_OFFSET,
   DEFAULT_SORT,
   isDebug,
   isLocal,
-  isProd
-} from '@dx/config';
+  isProd,
+} from '@dx/config-shared';
 import { ShortLinkModel } from '@dx/shortlink';
 import { MailSendgrid } from '@dx/mail';
 import { EmailModel } from '@dx/email';
-import {
-  EmailUtil,
-  PhoneUtil,
-  ProfanityFilter
-} from '@dx/utils';
-import {
-  OtpResponseType,
-  OtpService
-} from '@dx/auth';
+import { EmailUtil, PhoneUtil, ProfanityFilter } from '@dx/utils';
+import { OtpResponseType, OtpService } from '@dx/auth';
 import { dxRsaValidateBiometricKey } from '@dx/utils';
 
 export class UserService {
@@ -68,29 +49,16 @@ export class UserService {
     orderBy?: string,
     sortDir?: string
   ): FindOptions['order'] {
-    if (
-      orderBy
-      && USER_SORT_FIELDS.includes(orderBy)
-    ) {
-      return [
-        [
-          orderBy,
-          sortDir || DEFAULT_SORT
-        ]
-      ];
+    if (orderBy && USER_SORT_FIELDS.includes(orderBy)) {
+      return [[orderBy, sortDir || DEFAULT_SORT]];
     }
 
-    return [
-      [
-        USER_SORT_FIELDS[0],
-        DEFAULT_SORT
-      ]
-    ];
+    return [[USER_SORT_FIELDS[0], DEFAULT_SORT]];
   }
 
-  private getLikeFilter(filterValue: string): {[Op.iLike]: string} {
+  private getLikeFilter(filterValue: string): { [Op.iLike]: string } {
     return {
-      [Op.iLike]: `%${filterValue}%`
+      [Op.iLike]: `%${filterValue}%`,
     };
   }
 
@@ -107,19 +75,21 @@ export class UserService {
             lastName: likeFilter,
             username: likeFilter,
           },
-          deletedAt: null
-        }
+          deletedAt: null,
+        },
       };
     }
 
     return {
       where: {
-        deletedAt: null
-      }
+        deletedAt: null,
+      },
     };
   }
 
-  public async createUser(payload: CreateUserPayloadType): Promise<CreateUserResponseType> {
+  public async createUser(
+    payload: CreateUserPayloadType
+  ): Promise<CreateUserResponseType> {
     const {
       countryCode,
       regionCode,
@@ -129,13 +99,10 @@ export class UserService {
       lastName,
       phone,
       roles,
-      isTest
+      isTest,
     } = payload;
 
-    if (
-      !username
-      || !email
-    ) {
+    if (!username || !email) {
       throw new Error('Not enough information to create a user.');
     }
 
@@ -152,7 +119,10 @@ export class UserService {
     let phoneValue: string;
     let countryCodeValue: string = countryCode;
     if (phone) {
-      const phoneUtil = new PhoneUtil(phone, regionCode || PHONE_DEFAULT_REGION_CODE);
+      const phoneUtil = new PhoneUtil(
+        phone,
+        regionCode || PHONE_DEFAULT_REGION_CODE
+      );
       if (!phoneUtil.isValid) {
         throw new Error('Invalid Phone');
       }
@@ -182,20 +152,25 @@ export class UserService {
       const shortLink = await ShortLinkModel.generateShortlink(inviteUrl);
 
       try {
-        const inviteMessageId = await mail.sendInvite(emailUtil.formattedEmail(), shortLink);
-        await EmailModel.updateMessageInfoValidate(emailUtil.formattedEmail(), inviteMessageId);
+        const inviteMessageId = await mail.sendInvite(
+          emailUtil.formattedEmail(),
+          shortLink
+        );
+        await EmailModel.updateMessageInfoValidate(
+          emailUtil.formattedEmail(),
+          inviteMessageId
+        );
         return {
           id: user.id,
-          invited: !!inviteMessageId
+          invited: !!inviteMessageId,
         };
       } catch (err) {
         this.logger.logError(err.message);
       }
 
-
       return {
         id: user.id,
-        invited: false
+        invited: false,
       };
     } catch (err) {
       const message = err.message || 'Could not create user.';
@@ -220,7 +195,7 @@ export class UserService {
       await user.save();
 
       return {
-        userId: user.id
+        userId: user.id,
       };
     } catch (err) {
       const message = err.message || 'Could not delete user.';
@@ -237,7 +212,7 @@ export class UserService {
 
   public async getProfile(userId: string) {
     const profile: GetUserProfileReturnType = {
-      profile: null
+      profile: null,
     };
 
     if (!userId) {
@@ -256,7 +231,6 @@ export class UserService {
       profile.profile = await getUserProfileState(user, true);
 
       return profile;
-
     } catch (err) {
       const message = err.message || 'Could not get user profile';
       this.logger.logError(message);
@@ -273,11 +247,11 @@ export class UserService {
       const user = await UserModel.findOne({
         where: {
           id,
-          deletedAt: null
+          deletedAt: null,
         },
         include: [EMAIL_MODEL_OPTIONS, PHONE_MODEL_OPTIONS],
         attributes: USER_FIND_ATTRIBUTES,
-        logging: this.DEBUG && console.log
+        logging: this.DEBUG && console.log,
       });
 
       if (!user) {
@@ -292,14 +266,10 @@ export class UserService {
     }
   }
 
-  public async getUserList(query: GetUsersListQueryType): Promise<GetUserListResponseType> {
-    const {
-      filterValue,
-      limit,
-      offset,
-      orderBy,
-      sortDir
-    } = query;
+  public async getUserList(
+    query: GetUsersListQueryType
+  ): Promise<GetUserListResponseType> {
+    const { filterValue, limit, offset, orderBy, sortDir } = query;
 
     const orderArgs = this.getSortListOptions(orderBy, sortDir);
 
@@ -314,7 +284,7 @@ export class UserService {
         offset: offset ? Number(offset) : DEFAULT_OFFSET,
         order: orderArgs,
         attributes: USER_FIND_ATTRIBUTES,
-        logging: this.DEBUG && console.log
+        logging: this.DEBUG && console.log,
       });
 
       if (!users) {
@@ -411,9 +381,7 @@ export class UserService {
 
     try {
       const code = await OtpService.generateOptCode(userId);
-      return isProd()
-        ? { code: '' }
-        : { code };
+      return isProd() ? { code: '' } : { code };
     } catch (err) {
       const message = err.message || 'Could not send code.';
       this.logger.logError(message);
@@ -422,20 +390,9 @@ export class UserService {
   }
 
   public async updatePassword(payload: UpdatePasswordPayloadType) {
-    const {
-      id,
-      password,
-      passwordConfirm,
-      otpCode,
-      signature
-    } = payload;
+    const { id, password, passwordConfirm, otpCode, signature } = payload;
 
-    if (
-      !id
-      || !password
-      || !passwordConfirm
-      || !(otpCode || signature)
-    ) {
+    if (!id || !password || !passwordConfirm || !(otpCode || signature)) {
       throw new Error('Request is invalid.');
     }
 
@@ -452,16 +409,27 @@ export class UserService {
 
     if (signature) {
       const biometricAuthPublicKey = await UserModel.getBiomAuthKey(id);
-      const isSignatureValid = dxRsaValidateBiometricKey(signature, password, biometricAuthPublicKey);
+      const isSignatureValid = dxRsaValidateBiometricKey(
+        signature,
+        password,
+        biometricAuthPublicKey
+      );
       if (!isSignatureValid) {
-        throw new Error(`Update Password: Device signature is invalid: ${biometricAuthPublicKey}, userid: ${id}`);
+        throw new Error(
+          `Update Password: Device signature is invalid: ${biometricAuthPublicKey}, userid: ${id}`
+        );
       }
     }
 
     // Check password strength
     const pwStrength = zxcvbn(password);
     if (pwStrength.score < 3) {
-      const pwStrengthMsg = `${pwStrength.feedback && pwStrength.feedback.warning && pwStrength.feedback.warning || ''}`;
+      const pwStrengthMsg = `${
+        (pwStrength.feedback &&
+          pwStrength.feedback.warning &&
+          pwStrength.feedback.warning) ||
+        ''
+      }`;
       throw new Error(`Please choose a stronger password.
 ${pwStrengthMsg}
       `);
@@ -483,10 +451,7 @@ ${pwStrengthMsg}
     id: string,
     payload: UpdateUserPayloadType
   ): Promise<UpdateUserResponseType> {
-    const {
-      restrictions,
-      roles,
-    } = payload;
+    const { restrictions, roles } = payload;
 
     if (!id) {
       throw new Error('No id for update user.');
@@ -509,7 +474,7 @@ ${pwStrengthMsg}
       await user.save();
 
       return {
-        userId: user.id
+        userId: user.id,
       };
     } catch (err) {
       const message = err.message || 'Could not update user.';
@@ -522,10 +487,7 @@ ${pwStrengthMsg}
     id: string,
     payload: UpdateUserPayloadType
   ): Promise<UpdateUserResponseType> {
-    const {
-      firstName,
-      lastName
-    } = payload;
+    const { firstName, lastName } = payload;
 
     if (!id) {
       throw new Error('No id for update user.');
@@ -542,13 +504,19 @@ ${pwStrengthMsg}
 
       if (firstName !== undefined && typeof firstName === 'string') {
         if (profanityFilter.isProfane(firstName)) {
-          user.setDataValue('firstName', profanityFilter.cleanProfanity(firstName));
+          user.setDataValue(
+            'firstName',
+            profanityFilter.cleanProfanity(firstName)
+          );
         }
         user.setDataValue('firstName', firstName);
       }
       if (lastName !== undefined && typeof lastName === 'string') {
         if (profanityFilter.isProfane(lastName)) {
-          user.setDataValue('lastName', profanityFilter.cleanProfanity(lastName));
+          user.setDataValue(
+            'lastName',
+            profanityFilter.cleanProfanity(lastName)
+          );
         }
         user.setDataValue('lastName', lastName);
       }
@@ -556,7 +524,7 @@ ${pwStrengthMsg}
       await user.save();
 
       return {
-        userId: user.id
+        userId: user.id,
       };
     } catch (err) {
       const message = err.message || 'Could not update user.';
@@ -569,11 +537,7 @@ ${pwStrengthMsg}
     id: string,
     payload: UpdateUsernamePayloadType
   ): Promise<UpdateUserResponseType> {
-    const {
-      otpCode,
-      signature,
-      username
-    } = payload;
+    const { otpCode, signature, username } = payload;
 
     if (!id) {
       throw new Error('No id for update username.');
@@ -588,9 +552,15 @@ ${pwStrengthMsg}
 
     if (signature) {
       const biometricAuthPublicKey = await UserModel.getBiomAuthKey(id);
-      const isSignatureValid = dxRsaValidateBiometricKey(signature, username, biometricAuthPublicKey);
+      const isSignatureValid = dxRsaValidateBiometricKey(
+        signature,
+        username,
+        biometricAuthPublicKey
+      );
       if (!isSignatureValid) {
-        throw new Error(`Update Username: Device signature is invalid: ${biometricAuthPublicKey}, userid: ${id}`);
+        throw new Error(
+          `Update Username: Device signature is invalid: ${biometricAuthPublicKey}, userid: ${id}`
+        );
       }
     }
 
@@ -616,7 +586,7 @@ ${pwStrengthMsg}
       await user.save();
 
       return {
-        userId: user.id
+        userId: user.id,
       };
     } catch (err) {
       const message = err.message || 'Could not update username.';

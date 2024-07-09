@@ -3,14 +3,9 @@ import { Sequelize } from 'sequelize-typescript';
 import { ApiLoggingClass } from '@dx/logger';
 import { PostgresDbConnection } from '@dx/postgres';
 import { ShortLinkModel } from '../model/shortlink.postgres-model';
-import {
-  ShortlinkService,
-  ShortlinkServiceType
-} from './shortlink.service';
-import {
-  isLocal,
-  POSTGRES_URI
-} from '@dx/config';
+import { ShortlinkService, ShortlinkServiceType } from './shortlink.service';
+import { isLocal } from '@dx/config-shared';
+import { POSTGRES_URI } from '@dx/config-api';
 
 jest.mock('@dx/logger');
 
@@ -23,9 +18,7 @@ describe('ShortlinkService', () => {
       new ApiLoggingClass({ appName: 'Unit-Test' });
       const connection = new PostgresDbConnection({
         postgresUri: POSTGRES_URI,
-        models: [
-          ShortLinkModel
-        ]
+        models: [ShortLinkModel],
       });
       await connection.initialize();
       db = PostgresDbConnection.dbHandle;
@@ -67,7 +60,6 @@ describe('ShortlinkService', () => {
         expect(result).toBeNull();
       });
     });
-
   } else {
     it('should exist when imported', () => {
       // arrange

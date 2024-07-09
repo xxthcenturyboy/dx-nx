@@ -3,32 +3,25 @@ import { Sequelize } from 'sequelize-typescript';
 import { ApiLoggingClass } from '@dx/logger';
 import { PostgresDbConnection } from '@dx/postgres';
 import { RedisService } from '@dx/redis';
-import {
-  DevicesService,
-  DevicesServiceType
-} from './devices.service';
+import { DevicesService, DevicesServiceType } from './devices.service';
 import { DeviceModel } from '../model/device.postgres-model';
 import { EmailModel } from '@dx/email';
 import { PhoneModel } from '@dx/phone';
 import { ShortLinkModel } from '@dx/shortlink';
-import {
-  UserModel,
-  UserModelType,
-  UserPrivilegeSetModel
-} from '@dx/user';
+import { UserModel, UserModelType, UserPrivilegeSetModel } from '@dx/user';
 import {
   isLocal,
-  POSTGRES_URI,
   TEST_DEVICE,
   TEST_EXISTING_USER_ID,
-  TEST_UUID
-} from '@dx/config';
+  TEST_UUID,
+} from '@dx/config-shared';
+import { POSTGRES_URI } from '@dx/config-api';
 
 jest.mock('@dx/logger');
 
 describe('DevicesService', () => {
   if (isLocal()) {
-    let db: Sequelize
+    let db: Sequelize;
     let service: DevicesServiceType;
     let deviceIdToDelete: string;
     let deviceIdToDelete2: string;
@@ -45,8 +38,8 @@ describe('DevicesService', () => {
           PhoneModel,
           ShortLinkModel,
           UserPrivilegeSetModel,
-          UserModel
-        ]
+          UserModel,
+        ],
       });
       await connection.initialize();
       db = PostgresDbConnection.dbHandle;
@@ -55,8 +48,8 @@ describe('DevicesService', () => {
         redis: {
           port: 6379,
           prefix: 'dx',
-          url: 'redis://redis'
-        }
+          url: 'redis://redis',
+        },
       });
       user = await UserModel.findByPk(TEST_EXISTING_USER_ID);
     });
@@ -90,22 +83,20 @@ describe('DevicesService', () => {
         // act
         // assert
         try {
-          expect(await service.handleDevice(
-            TEST_DEVICE,
-            {} as UserModelType
-          )).toThrow();
+          expect(
+            await service.handleDevice(TEST_DEVICE, {} as UserModelType)
+          ).toThrow();
         } catch (err) {
-          expect(err.message).toContain('user.getVerifiedPhone is not a function');
+          expect(err.message).toContain(
+            'user.getVerifiedPhone is not a function'
+          );
         }
       });
 
       test('should create a device when all is good', async () => {
         // arrange
         // act
-        const response = await service.handleDevice(
-          TEST_DEVICE,
-          user
-        );
+        const response = await service.handleDevice(TEST_DEVICE, user);
         // assert
         expect(response.id).toBeTruthy();
         deviceIdToDelete = response.id;
@@ -118,12 +109,11 @@ describe('DevicesService', () => {
         // act
         // assert
         try {
-          expect(await service.updateFcmToken(
-            TEST_UUID,
-            ''
-          )).toThrow();
+          expect(await service.updateFcmToken(TEST_UUID, '')).toThrow();
         } catch (err) {
-          expect(err.message).toContain('Update FCM Token: Insufficient data to complete request.');
+          expect(err.message).toContain(
+            'Update FCM Token: Insufficient data to complete request.'
+          );
         }
       });
 
@@ -132,10 +122,7 @@ describe('DevicesService', () => {
         // act
         // assert
         try {
-          expect(await service.updateFcmToken(
-            TEST_UUID,
-            TEST_UUID
-          )).toThrow();
+          expect(await service.updateFcmToken(TEST_UUID, TEST_UUID)).toThrow();
         } catch (err) {
           expect(err.message).toContain('Update FCM Token: User not found');
         }
@@ -160,12 +147,11 @@ describe('DevicesService', () => {
         // act
         // assert
         try {
-          expect(await service.updatePublicKey(
-            TEST_UUID,
-            ''
-          )).toThrow();
+          expect(await service.updatePublicKey(TEST_UUID, '')).toThrow();
         } catch (err) {
-          expect(err.message).toContain('Update Public Key: Insufficient data to complete request.');
+          expect(err.message).toContain(
+            'Update Public Key: Insufficient data to complete request.'
+          );
         }
       });
 
@@ -174,12 +160,11 @@ describe('DevicesService', () => {
         // act
         // assert
         try {
-          expect(await service.updatePublicKey(
-            TEST_UUID,
-            'key'
-          )).toThrow();
+          expect(await service.updatePublicKey(TEST_UUID, 'key')).toThrow();
         } catch (err) {
-          expect(err.message).toContain('Update Public Key: Could not find the device to update.');
+          expect(err.message).toContain(
+            'Update Public Key: Could not find the device to update.'
+          );
         }
       });
 
@@ -222,18 +207,23 @@ describe('DevicesService', () => {
       test('should throw when there are no previous devices', async () => {
         // arrange
         // act
-        await DeviceModel.update({
-          verificationToken: TEST_UUID
-        }, {
-          where: {
-            id: deviceIdToDelete
+        await DeviceModel.update(
+          {
+            verificationToken: TEST_UUID,
+          },
+          {
+            where: {
+              id: deviceIdToDelete,
+            },
           }
-        });
+        );
         // assert
         try {
           expect(await service.rejectDevice(TEST_UUID)).toThrow();
         } catch (err) {
-          expect(err.message).toContain('Reject Device: No previous device exists.');
+          expect(err.message).toContain(
+            'Reject Device: No previous device exists.'
+          );
         }
       });
 
@@ -244,7 +234,7 @@ describe('DevicesService', () => {
           uniqueDeviceId: 'uniquely-bad-device-id',
           verificationToken: 'verification-token',
           userId: user.id,
-          verifiedAt: new Date()
+          verifiedAt: new Date(),
         });
         badDeviceIdToDelete = badDevice.id;
         // act
@@ -263,7 +253,9 @@ describe('DevicesService', () => {
         try {
           expect(await service.disconnectDevice('')).toThrow();
         } catch (err) {
-          expect(err.message).toEqual('DisconnectDevice: Not enough data to execute.');
+          expect(err.message).toEqual(
+            'DisconnectDevice: Not enough data to execute.'
+          );
         }
       });
 
@@ -272,7 +264,9 @@ describe('DevicesService', () => {
         // act
         // assert
         try {
-          expect(await service.disconnectDevice(TEST_EXISTING_USER_ID)).toThrow();
+          expect(
+            await service.disconnectDevice(TEST_EXISTING_USER_ID)
+          ).toThrow();
         } catch (err) {
           expect(err.message).toContain(`Device not found.`);
         }

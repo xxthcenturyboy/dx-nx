@@ -1,25 +1,11 @@
 import { Redis } from 'ioredis';
 import ioRedisMock from 'ioredis-mock';
 
-import {
-  ApiLoggingClass,
-  ApiLoggingClassType
-} from '@dx/logger';
-import {
-  REDIS_DELIMITER
-} from './redis.consts';
-import {
-  RedisConstructorType,
-  RedisExpireOptions
-} from './redis.types';
-import {
-  isNumber,
-  parseJson
-} from '@dx/utils';
-import {
-  getRedisConfig,
-  isTest
-} from '@dx/config';
+import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger';
+import { REDIS_DELIMITER } from './redis.consts';
+import { RedisConstructorType, RedisExpireOptions } from './redis.types';
+import { isNumber, parseJson } from '@dx/utils';
+import { getRedisConfig, isTest } from '@dx/config-shared';
 
 export class RedisService {
   cacheHandle: typeof Redis.Cluster.prototype | typeof Redis.prototype;
@@ -38,7 +24,7 @@ export class RedisService {
     if (params.isLocal) {
       const url = `${params.redis.url}:${params.redis.port}/0`;
       this.cacheHandle = new Redis(url, {
-        keyPrefix: `${params.redis.prefix}${REDIS_DELIMITER}`
+        keyPrefix: `${params.redis.prefix}${REDIS_DELIMITER}`,
       });
       return;
     }
@@ -48,11 +34,11 @@ export class RedisService {
     this.cacheHandle = new Redis.Cluster(hosts, {
       redisOptions: {
         tls: {
-          checkServerIdentity: () => undefined
-        }
+          checkServerIdentity: () => undefined,
+        },
       },
       scaleReads: 'slave',
-      keyPrefix: `${params.redis.prefix}${REDIS_DELIMITER}`
+      keyPrefix: `${params.redis.prefix}${REDIS_DELIMITER}`,
     });
   }
 
@@ -60,14 +46,8 @@ export class RedisService {
     return this.#instance;
   }
 
-  public async setCacheItem(
-    key: string,
-    data: string
-  ) {
-    if (
-      !key
-      && !data
-    ) {
+  public async setCacheItem(key: string, data: string) {
+    if (!key && !data) {
       return false;
     }
 
@@ -85,16 +65,18 @@ export class RedisService {
     data: string,
     expireOptions: RedisExpireOptions
   ) {
-    if (
-      !key
-      && !data
-    ) {
+    if (!key && !data) {
       return false;
     }
 
     try {
       // @ts-expect-error - types are ok here
-      const save = await this.cacheHandle.set(key, data, expireOptions.token, expireOptions.time);
+      const save = await this.cacheHandle.set(
+        key,
+        data,
+        expireOptions.token,
+        expireOptions.time
+      );
       return save === 'OK';
     } catch (error) {
       this.logger.logError((error as Error).message, error);

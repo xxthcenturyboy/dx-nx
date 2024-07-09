@@ -1,4 +1,5 @@
-import axios, {
+import axios,
+{
   AxiosResponse
 } from 'axios';
 
@@ -9,7 +10,7 @@ import {
 import {
   AndroiodWellKnownData,
   AppleWellKnownData
-} from '@dx/config'
+} from '@dx/config-mobile';
 
 describe('Root Routes', () => {
   describe('GET /api/healthz', () => {

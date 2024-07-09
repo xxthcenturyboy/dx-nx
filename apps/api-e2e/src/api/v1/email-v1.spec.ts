@@ -1,26 +1,13 @@
-import axios, {
-  AxiosError,
-  AxiosRequestConfig,
-  AxiosResponse
-} from 'axios';
-import {
-  AuthUtil,
-  AuthUtilType
-} from './util-v1';
-import {
-  CreateEmailPayloadType,
-  UpdateEmailPayloadType
-} from '@dx/email';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { AuthUtil, AuthUtilType } from './util-v1';
+import { CreateEmailPayloadType, UpdateEmailPayloadType } from '@dx/email';
 import {
   TEST_EMAIL,
   TEST_EXISTING_EMAIL,
   TEST_EXISTING_USER_ID,
-  TEST_UUID
-} from '@dx/config';
-import {
-  AuthSuccessResponseType,
-  OtpResponseType
-} from '@dx/auth';
+  TEST_UUID,
+} from '@dx/config-shared';
+import { AuthSuccessResponseType, OtpResponseType } from '@dx/auth';
 
 describe('v1 Email Routes', () => {
   let authRes: AuthSuccessResponseType;
@@ -41,7 +28,7 @@ describe('v1 Email Routes', () => {
         url: '/api/v1/email',
         method: 'POST',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
       };
@@ -51,9 +38,11 @@ describe('v1 Email Routes', () => {
       } catch (err) {
         const typedError = err as AxiosError;
         // assert
-        expect(typedError.response.status).toBe(400)
+        expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual('Not enough information to create an email.');
+        expect(typedError.response.data.message).toEqual(
+          'Not enough information to create an email.'
+        );
       }
     });
 
@@ -63,17 +52,17 @@ describe('v1 Email Routes', () => {
         def: false,
         email: TEST_EXISTING_EMAIL,
         label: 'Work',
-        userId: TEST_EXISTING_USER_ID
+        userId: TEST_EXISTING_USER_ID,
       };
 
       const request: AxiosRequestConfig = {
         url: `/api/v1/email/`,
         method: 'POST',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
-        data: payload
+        data: payload,
       };
 
       try {
@@ -81,9 +70,11 @@ describe('v1 Email Routes', () => {
       } catch (err) {
         const typedError = err as AxiosError;
         // assert
-        expect(typedError.response.status).toBe(400)
+        expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual(`This email: ${TEST_EXISTING_EMAIL} already exists.`);
+        expect(typedError.response.data.message).toEqual(
+          `This email: ${TEST_EXISTING_EMAIL} already exists.`
+        );
       }
     });
 
@@ -93,17 +84,17 @@ describe('v1 Email Routes', () => {
         def: false,
         email: 'test@080mail.com',
         label: 'Work',
-        userId: TEST_EXISTING_USER_ID
+        userId: TEST_EXISTING_USER_ID,
       };
 
       const request: AxiosRequestConfig = {
         url: `/api/v1/email/`,
         method: 'POST',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
-        data: payload
+        data: payload,
       };
 
       try {
@@ -111,27 +102,32 @@ describe('v1 Email Routes', () => {
       } catch (err) {
         const typedError = err as AxiosError;
         // assert
-        expect(typedError.response.status).toBe(400)
+        expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual(`The email you provided is not valid. Please note that we do not allow disposable emails or emails that do not exist, so make sure to use a real email address.`);
+        expect(typedError.response.data.message).toEqual(
+          `The email you provided is not valid. Please note that we do not allow disposable emails or emails that do not exist, so make sure to use a real email address.`
+        );
       }
     });
 
     test('should return 200 when successfuly creates email', async () => {
-      const result = await axios.request<AxiosRequestConfig, AxiosResponse<OtpResponseType>>({
+      const result = await axios.request<
+        AxiosRequestConfig,
+        AxiosResponse<OtpResponseType>
+      >({
         url: `/api/v1/user/send-otp-code`,
         method: 'POST',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
-        withCredentials: true
+        withCredentials: true,
       });
       const payload: CreateEmailPayloadType = {
         code: result.data.code,
         def: false,
         email: TEST_EMAIL,
         label: 'Work',
-        userId: authRes.profile.id
+        userId: authRes.profile.id,
       };
 
       const request: AxiosRequestConfig = {
@@ -139,7 +135,7 @@ describe('v1 Email Routes', () => {
         method: 'POST',
         data: payload,
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
       };
@@ -160,7 +156,7 @@ describe('v1 Email Routes', () => {
         url: `/api/v1/email/${TEST_UUID}`,
         method: 'PUT',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
       };
@@ -170,9 +166,11 @@ describe('v1 Email Routes', () => {
       } catch (err) {
         const typedError = err as AxiosError;
         // assert
-        expect(typedError.response.status).toBe(400)
+        expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual(`Email could not be found with the id: ${TEST_UUID}`);
+        expect(typedError.response.data.message).toEqual(
+          `Email could not be found with the id: ${TEST_UUID}`
+        );
       }
     });
 
@@ -187,7 +185,7 @@ describe('v1 Email Routes', () => {
         method: 'PUT',
         data: payload,
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
       };
@@ -206,7 +204,7 @@ describe('v1 Email Routes', () => {
         url: `/api/v1/email/${TEST_UUID}`,
         method: 'DELETE',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
       };
@@ -216,9 +214,11 @@ describe('v1 Email Routes', () => {
       } catch (err) {
         const typedError = err as AxiosError;
         // assert
-        expect(typedError.response.status).toBe(400)
+        expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual(`Email could not be found with the id: ${TEST_UUID}`);
+        expect(typedError.response.data.message).toEqual(
+          `Email could not be found with the id: ${TEST_UUID}`
+        );
       }
     });
 
@@ -227,7 +227,7 @@ describe('v1 Email Routes', () => {
         url: `/api/v1/email/${idToUpdate}`,
         method: 'DELETE',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
       };
@@ -244,12 +244,15 @@ describe('v1 Email Routes', () => {
         url: `/api/v1/email/test/${idToUpdate}`,
         method: 'DELETE',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
-        withCredentials: true
+        withCredentials: true,
       };
 
-      const result = await axios.request<AxiosRequestConfig, AxiosResponse<void>>(request);
+      const result = await axios.request<
+        AxiosRequestConfig,
+        AxiosResponse<void>
+      >(request);
 
       expect(result.status).toBe(200);
     });

@@ -9,14 +9,11 @@ import {
   ForeignKey,
   PrimaryKey,
   AllowNull,
-  Unique
+  Unique,
 } from 'sequelize-typescript';
-import { CLIENT_APP_URL } from '@dx/config';
+import { CLIENT_APP_URL } from '@dx/config-web';
 import { ApiLoggingClass } from '@dx/logger';
-import {
-  randomId,
-  maliciousUrlCheck
-} from '@dx/utils';
+import { randomId, maliciousUrlCheck } from '@dx/utils';
 import { SHORTLINK_POSTGRES_DB_NAME } from '../model/shortlink.consts';
 
 @Table({
@@ -46,8 +43,8 @@ export class ShortLinkModel extends Model<ShortLinkModel> {
       // Check if we have this already
       const existing = await ShortLinkModel.findOne({
         where: {
-          target: url
-        }
+          target: url,
+        },
       });
 
       if (existing) {
@@ -56,7 +53,7 @@ export class ShortLinkModel extends Model<ShortLinkModel> {
 
       // Create a new short link
       const shortlink = await ShortLinkModel.create({
-        target: url
+        target: url,
       });
 
       return `${CLIENT_APP_URL}/l/${shortlink.id}`;
@@ -70,8 +67,8 @@ export class ShortLinkModel extends Model<ShortLinkModel> {
     try {
       const link = await ShortLinkModel.findOne({
         where: {
-          id
-        }
+          id,
+        },
       });
 
       if (link) {

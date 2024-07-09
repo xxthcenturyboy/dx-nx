@@ -1,9 +1,6 @@
-import {
-  MailSendgrid,
-  MailSendgridType
-} from './mail.sendgrid';
+import { MailSendgrid, MailSendgridType } from './mail.sendgrid';
 import { ApiLoggingClass } from '@dx/logger';
-import { TEST_EMAIL } from '@dx/config';
+import { TEST_EMAIL } from '@dx/config-shared';
 import { SG_TEMPLATES } from './templates.sendgrid';
 import { UNSUBSCRIBE_GROUPS } from './mail.sendgrid.const';
 
@@ -42,7 +39,10 @@ describe('MailSendgrid', () => {
   test('should sendConfirmation when invoked', async () => {
     // arrange
     // act
-    const result = await mail.sendConfirmation(TEST_EMAIL, 'http://url-to-comfirm.com');
+    const result = await mail.sendConfirmation(
+      TEST_EMAIL,
+      'http://url-to-comfirm.com'
+    );
     // assert
     expect(result).toBeDefined();
     expect(typeof result).toEqual('string');
@@ -51,7 +51,10 @@ describe('MailSendgrid', () => {
   test('should sendInvite when invoked', async () => {
     // arrange
     // act
-    const result = await mail.sendInvite(TEST_EMAIL, 'http://url-to-invite.com');
+    const result = await mail.sendInvite(
+      TEST_EMAIL,
+      'http://url-to-invite.com'
+    );
     // assert
     expect(result).toBeDefined();
     expect(typeof result).toEqual('string');
@@ -68,7 +71,7 @@ describe('MailSendgrid', () => {
       body: '',
       cta: '',
       ctaUrl: '',
-      unsubscribeGroup: UNSUBSCRIBE_GROUPS.TRANSACTIONAL
+      unsubscribeGroup: UNSUBSCRIBE_GROUPS.TRANSACTIONAL,
     });
     // assert
     expect(result).toBeDefined();

@@ -1,14 +1,11 @@
 import express from 'express';
 
-import {
-  API_APP_NAME,
-  getApiConfig
-} from '@dx/config';
+import { API_APP_NAME, getApiConfig } from '@dx/config-shared';
 import { ApiLoggingClass } from '@dx/logger';
 import { DxPostgresDb } from './data/dx-postgres.db';
 import { DxRedisCache } from './data/dx-redis.cache';
 import { ApiRoutes } from './routes/api.routes';
-import { configureExpress } from'./express';
+import { configureExpress } from './express';
 
 const app = express();
 
@@ -31,7 +28,7 @@ async function run() {
 
   await configureExpress(app, {
     DEBUG: config.debug,
-    SESSION_SECRET: config.sessionSecret
+    SESSION_SECRET: config.sessionSecret,
   });
 
   const apiRoutes = new ApiRoutes(app);

@@ -8,21 +8,24 @@ import {
   POSTGRES_URI,
   TEST_DEVICE,
   TEST_EXISTING_USER_ID,
-  TEST_UUID
-} from '@dx/config';
+  TEST_UUID,
+} from '@dx/config-shared';
 import { PostgresDbConnection } from '@dx/postgres';
-import {
-  UserModel,
-  UserPrivilegeSetModel
-} from '@dx/user';
+import { UserModel, UserPrivilegeSetModel } from '@dx/user';
 import { DeviceModel } from '@dx/devices';
 import { EmailModel } from '@dx/email';
 import { PhoneModel } from '@dx/phone';
 
-const spyFetchConnectedDevice = jest.spyOn(UserModel.prototype, 'fetchConnectedDeviceBeforeToken');
+const spyFetchConnectedDevice = jest.spyOn(
+  UserModel.prototype,
+  'fetchConnectedDeviceBeforeToken'
+);
 const spyVerifiedEmail = jest.spyOn(UserModel.prototype, 'getVerifiedEmail');
 const spyVerifiedPhone = jest.spyOn(UserModel.prototype, 'getVerifiedPhone');
-const spySendAccountAlert = jest.spyOn(MailSendgrid.prototype, 'sendAccountAlert');
+const spySendAccountAlert = jest.spyOn(
+  MailSendgrid.prototype,
+  'sendAccountAlert'
+);
 
 jest.mock('@dx/logger');
 
@@ -39,8 +42,8 @@ describe('SecurityAlertSerivice', () => {
           EmailModel,
           PhoneModel,
           UserPrivilegeSetModel,
-          UserModel
-        ]
+          UserModel,
+        ],
       });
       await connection.initialize();
       db = PostgresDbConnection.dbHandle;
@@ -66,7 +69,11 @@ describe('SecurityAlertSerivice', () => {
         // arrange
         const user = await UserModel.findByPk(TEST_EXISTING_USER_ID);
         // act
-        const result = await SecurityAlertSerivice.newDeviceNotification(user, TEST_DEVICE, TEST_UUID);
+        const result = await SecurityAlertSerivice.newDeviceNotification(
+          user,
+          TEST_DEVICE,
+          TEST_UUID
+        );
         // assert
         expect(spyFetchConnectedDevice).toHaveBeenCalled();
         expect(spyVerifiedEmail).toHaveBeenCalled();

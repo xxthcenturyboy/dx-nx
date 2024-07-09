@@ -1,12 +1,5 @@
-import axios, {
-  AxiosError,
-  AxiosRequestConfig,
-  AxiosResponse
-} from 'axios';
-import {
-  AuthUtil,
-  AuthUtilType
-} from './util-v1';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { AuthUtil, AuthUtilType } from './util-v1';
 import {
   CreateUserResponseType,
   GetUserProfileReturnType,
@@ -15,18 +8,15 @@ import {
   UserProfileStateType,
   UpdateUserPayloadType,
   UpdateUserResponseType,
-  UpdatePasswordPayloadType
+  UpdatePasswordPayloadType,
 } from '@dx/user';
 import {
   TEST_EXISTING_USER_ID,
   TEST_USER_CREATE,
-  TEST_UUID
-} from '@dx/config';
+  TEST_UUID,
+} from '@dx/config-shared';
 import { UpdateUsernamePayloadType } from '@dx/user';
-import {
-  AuthSuccessResponseType,
-  OtpResponseType
-} from '@dx/auth';
+import { AuthSuccessResponseType, OtpResponseType } from '@dx/auth';
 
 describe('v1 User Routes', () => {
   let authRes: AuthSuccessResponseType;
@@ -47,12 +37,15 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user/check/availabilty?username=usernameNotInSystem`,
         method: 'GET',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
       };
 
-      const result = await axios.request<AxiosRequestConfig, AxiosResponse<{ available: boolean}>>(request);
+      const result = await axios.request<
+        AxiosRequestConfig,
+        AxiosResponse<{ available: boolean }>
+      >(request);
 
       expect(result.status).toBe(200);
       expect(result.data.available).toBe(true);
@@ -63,12 +56,15 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user/check/availabilty?username=admin`,
         method: 'GET',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
       };
 
-      const result = await axios.request<AxiosRequestConfig, AxiosResponse<{ available: boolean}>>(request);
+      const result = await axios.request<
+        AxiosRequestConfig,
+        AxiosResponse<{ available: boolean }>
+      >(request);
 
       expect(result.status).toBe(200);
       expect(result.data.available).toBe(false);
@@ -79,7 +75,7 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user/check/availabilty?username=asshole`,
         method: 'GET',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
       };
@@ -92,7 +88,9 @@ describe('v1 User Routes', () => {
         // assert
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual('Profanity is not allowed');
+        expect(typedError.response.data.message).toEqual(
+          'Profanity is not allowed'
+        );
       }
     });
   });
@@ -103,12 +101,15 @@ describe('v1 User Routes', () => {
         url: '/api/v1/user/list',
         method: 'GET',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
       };
 
-      const result = await axios.request<AxiosRequestConfig, AxiosResponse<GetUserListResponseType>>(request);
+      const result = await axios.request<
+        AxiosRequestConfig,
+        AxiosResponse<GetUserListResponseType>
+      >(request);
 
       expect(result.status).toBe(200);
       expect(result.data.count).toBeTruthy();
@@ -123,12 +124,15 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user/user/${TEST_EXISTING_USER_ID}`,
         method: 'GET',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
       };
 
-      const result = await axios.request<AxiosRequestConfig, AxiosResponse<GetUserResponseType>>(request);
+      const result = await axios.request<
+        AxiosRequestConfig,
+        AxiosResponse<GetUserResponseType>
+      >(request);
 
       expect(result.status).toBe(200);
       expect(result.data.id).toEqual(TEST_EXISTING_USER_ID);
@@ -139,7 +143,7 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user/user/${TEST_UUID}`,
         method: 'GET',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
       };
@@ -152,7 +156,9 @@ describe('v1 User Routes', () => {
         // assert
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual('Search for user failed.');
+        expect(typedError.response.data.message).toEqual(
+          'Search for user failed.'
+        );
       }
     });
   });
@@ -163,15 +169,20 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user/profile`,
         method: 'GET',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
       };
 
-      const result = await axios.request<AxiosRequestConfig, AxiosResponse<GetUserProfileReturnType>>(request);
+      const result = await axios.request<
+        AxiosRequestConfig,
+        AxiosResponse<GetUserProfileReturnType>
+      >(request);
 
       expect(result.status).toBe(200);
-      expect((result.data.profile as UserProfileStateType).id).toEqual(TEST_EXISTING_USER_ID);
+      expect((result.data.profile as UserProfileStateType).id).toEqual(
+        TEST_EXISTING_USER_ID
+      );
     });
   });
 
@@ -181,13 +192,16 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user`,
         method: 'POST',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
-        data: TEST_USER_CREATE
+        data: TEST_USER_CREATE,
       };
 
-      const result = await axios.request<AxiosRequestConfig, AxiosResponse<CreateUserResponseType>>(request);
+      const result = await axios.request<
+        AxiosRequestConfig,
+        AxiosResponse<CreateUserResponseType>
+      >(request);
 
       expect(result.status).toBe(200);
       expect(result.data.id).toBeDefined();
@@ -200,14 +214,14 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user`,
         method: 'POST',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
         data: {
           ...TEST_USER_CREATE,
           email: '',
-          username: ''
-        }
+          username: '',
+        },
       };
 
       try {
@@ -218,7 +232,9 @@ describe('v1 User Routes', () => {
         // assert
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual('Not enough information to create a user.');
+        expect(typedError.response.data.message).toEqual(
+          'Not enough information to create a user.'
+        );
       }
     });
   });
@@ -229,12 +245,15 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user/send-otp-code`,
         method: 'POST',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
-        withCredentials: true
+        withCredentials: true,
       };
 
-      const result = await axios.request<AxiosRequestConfig, AxiosResponse<OtpResponseType>>(request);
+      const result = await axios.request<
+        AxiosRequestConfig,
+        AxiosResponse<OtpResponseType>
+      >(request);
 
       expect(result.status).toBe(200);
       expect(result.data.code).toBeDefined();
@@ -246,19 +265,22 @@ describe('v1 User Routes', () => {
     test('should update a user when called', async () => {
       const payload: UpdateUserPayloadType = {
         firstName: 'John',
-        lastName: 'Hancock'
+        lastName: 'Hancock',
       };
       const request: AxiosRequestConfig = {
         url: `/api/v1/user/${workingUserId}`,
         method: 'PUT',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
-        data: payload
+        data: payload,
       };
 
-      const result = await axios.request<AxiosRequestConfig, AxiosResponse<UpdateUserResponseType>>(request);
+      const result = await axios.request<
+        AxiosRequestConfig,
+        AxiosResponse<UpdateUserResponseType>
+      >(request);
 
       expect(result.status).toBe(200);
       expect(result.data.userId).toEqual(workingUserId);
@@ -268,19 +290,22 @@ describe('v1 User Routes', () => {
   describe('PUT /api/v1/user/roles-restrictions/:id', () => {
     test('should update user role when called', async () => {
       const payload: UpdateUserPayloadType = {
-        roles: ['USER']
+        roles: ['USER'],
       };
       const request: AxiosRequestConfig = {
         url: `/api/v1/user/roles-restrictions/${workingUserId}`,
         method: 'PUT',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
-        data: payload
+        data: payload,
       };
 
-      const result = await axios.request<AxiosRequestConfig, AxiosResponse<UpdateUserResponseType>>(request);
+      const result = await axios.request<
+        AxiosRequestConfig,
+        AxiosResponse<UpdateUserResponseType>
+      >(request);
 
       expect(result.status).toBe(200);
       expect(result.data.userId).toEqual(workingUserId);
@@ -293,36 +318,45 @@ describe('v1 User Routes', () => {
         url: '/api/v1/auth/otp-code/send/email',
         method: 'POST',
         data: {
-          email: TEST_USER_CREATE.email
-        }
+          email: TEST_USER_CREATE.email,
+        },
       });
       const authUtil = new AuthUtil();
-      await authUtil.loginEmalPasswordless(TEST_USER_CREATE.email, otpResponse.data.code);
+      await authUtil.loginEmalPasswordless(
+        TEST_USER_CREATE.email,
+        otpResponse.data.code
+      );
 
-      const otpRes = await axios.request<AxiosRequestConfig, AxiosResponse<OtpResponseType>>({
+      const otpRes = await axios.request<
+        AxiosRequestConfig,
+        AxiosResponse<OtpResponseType>
+      >({
         url: `/api/v1/user/send-otp-code`,
         method: 'POST',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
-        withCredentials: true
+        withCredentials: true,
       });
 
       const payload: UpdateUsernamePayloadType = {
         otpCode: otpRes.data.code,
-        username: 'test-username'
+        username: 'test-username',
       };
       const request: AxiosRequestConfig = {
         url: `/api/v1/user/update/username/${workingUserId}`,
         method: 'PUT',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
-        data: payload
+        data: payload,
       };
 
-      const result = await axios.request<AxiosRequestConfig, AxiosResponse<UpdateUserResponseType>>(request);
+      const result = await axios.request<
+        AxiosRequestConfig,
+        AxiosResponse<UpdateUserResponseType>
+      >(request);
 
       expect(result.status).toBe(200);
       expect(result.data.userId).toEqual(workingUserId);
@@ -389,21 +423,27 @@ describe('v1 User Routes', () => {
         url: '/api/v1/auth/otp-code/send/email',
         method: 'POST',
         data: {
-          email: TEST_USER_CREATE.email
-        }
+          email: TEST_USER_CREATE.email,
+        },
       });
       authUtilUpdate = new AuthUtil();
-      await authUtilUpdate.loginEmalPasswordless(TEST_USER_CREATE.email, otpResponse.data.code);
+      await authUtilUpdate.loginEmalPasswordless(
+        TEST_USER_CREATE.email,
+        otpResponse.data.code
+      );
     });
 
     beforeEach(async () => {
-      const otpResponse = await axios.request<AxiosRequestConfig, AxiosResponse<OtpResponseType>>({
+      const otpResponse = await axios.request<
+        AxiosRequestConfig,
+        AxiosResponse<OtpResponseType>
+      >({
         url: `/api/v1/user/send-otp-code`,
         method: 'POST',
         headers: {
-          ...authUtilUpdate.getHeaders()
+          ...authUtilUpdate.getHeaders(),
         },
-        withCredentials: true
+        withCredentials: true,
       });
       otpCode = otpResponse.data.code;
     });
@@ -413,19 +453,22 @@ describe('v1 User Routes', () => {
         id: workingUserId,
         password: validPw1,
         passwordConfirm: validPw1,
-        otpCode: otpCode
+        otpCode: otpCode,
       };
       const request: AxiosRequestConfig = {
         url: `/api/v1/user/update/password`,
         method: 'PUT',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
-        data: payload
+        data: payload,
       };
 
-      const result = await axios.request<AxiosRequestConfig, AxiosResponse<{ success: boolean }>>(request);
+      const result = await axios.request<
+        AxiosRequestConfig,
+        AxiosResponse<{ success: boolean }>
+      >(request);
 
       expect(result.status).toBe(200);
       expect(result.data.success).toBe(true);
@@ -436,16 +479,16 @@ describe('v1 User Routes', () => {
         id: workingUserId,
         password: '',
         passwordConfirm: '',
-        otpCode: ''
+        otpCode: '',
       };
       const request: AxiosRequestConfig = {
         url: `/api/v1/user/update/password`,
         method: 'PUT',
         headers: {
-          ...authUtilUpdate.getHeaders()
+          ...authUtilUpdate.getHeaders(),
         },
         withCredentials: true,
-        data: payload
+        data: payload,
       };
 
       try {
@@ -465,16 +508,16 @@ describe('v1 User Routes', () => {
         id: workingUserId,
         password: 'password',
         passwordConfirm: 'password',
-        otpCode: otpCode
+        otpCode: otpCode,
       };
       const request: AxiosRequestConfig = {
         url: `/api/v1/user/update/password`,
         method: 'PUT',
         headers: {
-          ...authUtilUpdate.getHeaders()
+          ...authUtilUpdate.getHeaders(),
         },
         withCredentials: true,
-        data: payload
+        data: payload,
       };
 
       try {
@@ -485,7 +528,9 @@ describe('v1 User Routes', () => {
         // assert
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toContain('Please choose a stronger password');
+        expect(typedError.response.data.message).toContain(
+          'Please choose a stronger password'
+        );
       }
     });
   });
@@ -496,12 +541,15 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user/${workingUserId}`,
         method: 'DELETE',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
-        withCredentials: true
+        withCredentials: true,
       };
 
-      const result = await axios.request<AxiosRequestConfig, AxiosResponse<{ userId: string }>>(request);
+      const result = await axios.request<
+        AxiosRequestConfig,
+        AxiosResponse<{ userId: string }>
+      >(request);
 
       expect(result.status).toBe(200);
       expect(result.data.userId).toEqual(workingUserId);
@@ -512,12 +560,15 @@ describe('v1 User Routes', () => {
         url: `/api/v1/user/test/${workingUserId}`,
         method: 'DELETE',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
-        withCredentials: true
+        withCredentials: true,
       };
 
-      const result = await axios.request<AxiosRequestConfig, AxiosResponse<void>>(request);
+      const result = await axios.request<
+        AxiosRequestConfig,
+        AxiosResponse<void>
+      >(request);
 
       expect(result.status).toBe(200);
     });

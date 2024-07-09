@@ -4,7 +4,7 @@ import { ApiLoggingClass } from '@dx/logger';
 import { PostgresDbConnection } from '@dx/postgres';
 import {
   UserPrivilegeService,
-  UserPrivilegeServiceType
+  UserPrivilegeServiceType,
 } from './user-privilege.service';
 import { PhoneModel } from '@dx/phone';
 import { DeviceModel } from '@dx/devices';
@@ -13,19 +13,19 @@ import { ShortLinkModel } from '@dx/shortlink';
 import { UserPrivilegeSetModel } from '../model/user-privilege.postgres-model';
 import { UserModel } from '../model/user.postgres-model';
 import { USER_ROLE } from '../model/user.consts';
-import {
-  isLocal,
-  POSTGRES_URI
-} from '@dx/config';
+import { isLocal } from '@dx/config-shared';
 import { UpdatePrivilegeSetPayloadType } from '../model/user.types';
 import { RedisService } from '@dx/redis';
-import { getRedisConfig } from '@dx/config';
+import {
+  getRedisConfig,
+  POSTGRES_URI
+} from '@dx/config-api';
 
 jest.mock('@dx/logger');
 
 describe('UserPrivilegeSetCache', () => {
   if (isLocal()) {
-    let db: Sequelize
+    let db: Sequelize;
     let service: UserPrivilegeServiceType;
     let idToUpdate: string;
     let initialDescription: string;
@@ -40,8 +40,8 @@ describe('UserPrivilegeSetCache', () => {
           PhoneModel,
           ShortLinkModel,
           UserPrivilegeSetModel,
-          UserModel
-        ]
+          UserModel,
+        ],
       });
       await connection.initialize();
       db = PostgresDbConnection.dbHandle;
@@ -49,7 +49,7 @@ describe('UserPrivilegeSetCache', () => {
       new RedisService({
         isLocal: true,
         isTest: true,
-        redis: redisConfig
+        redis: redisConfig,
       });
     });
 
@@ -85,7 +85,9 @@ describe('UserPrivilegeSetCache', () => {
         expect(Array.isArray(result)).toBe(true);
         expect(result).toHaveLength(3);
 
-        const toUpdate = result.find(privilgeSet => privilgeSet.name === USER_ROLE.USER);
+        const toUpdate = result.find(
+          (privilgeSet) => privilgeSet.name === USER_ROLE.USER
+        );
         if (toUpdate) {
           idToUpdate = toUpdate.id;
           initialDescription = toUpdate.description;
@@ -98,7 +100,7 @@ describe('UserPrivilegeSetCache', () => {
         // arrange
         // act
         // assert
-        try  {
+        try {
           expect(await service.updatePrivilegeSet('', null)).toThrow();
         } catch (err) {
           expect(err.message).toEqual('No id provided.');
@@ -108,7 +110,7 @@ describe('UserPrivilegeSetCache', () => {
       test('should update privilege set when all is good.', async () => {
         // arrange
         const data: UpdatePrivilegeSetPayloadType = {
-          description: 'Full App Access'
+          description: 'Full App Access',
         };
         // act
         const result = await service.updatePrivilegeSet(idToUpdate, data);
@@ -119,7 +121,7 @@ describe('UserPrivilegeSetCache', () => {
       test('should update privilege set when all is good.', async () => {
         // arrange
         const data: UpdatePrivilegeSetPayloadType = {
-          description: initialDescription
+          description: initialDescription,
         };
         // act
         const result = await service.updatePrivilegeSet(idToUpdate, data);

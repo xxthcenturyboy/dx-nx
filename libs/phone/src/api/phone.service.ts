@@ -1,14 +1,11 @@
-import {
-  ApiLoggingClass,
-  ApiLoggingClassType
-} from '@dx/logger';
+import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger';
 import { PhoneModel } from '../model/phone.postgres-model';
 import { PHONE_DEFAULT_REGION_CODE } from '../model/phone.consts';
 import {
   CreatePhonePayloadType,
-  UpdatePhonePayloadType
+  UpdatePhonePayloadType,
 } from '../model/phone.types';
-import { isLocal } from '@dx/config';
+import { isLocal } from '@dx/config-shared';
 import { PhoneUtil } from '@dx/utils';
 import { OtpService } from '@dx/auth';
 import { dxRsaValidateBiometricKey } from '@dx/utils';
@@ -35,21 +32,25 @@ export class PhoneService {
       userId,
     } = payload;
 
-    if (
-      !userId
-      || !phone
-      || !countryCode
-    ) {
+    if (!userId || !phone || !countryCode) {
       throw new Error('Not enough information to create a phone.');
     }
 
-    const phoneUtil = new PhoneUtil(phone, regionCode || PHONE_DEFAULT_REGION_CODE);
+    const phoneUtil = new PhoneUtil(
+      phone,
+      regionCode || PHONE_DEFAULT_REGION_CODE
+    );
     if (!phoneUtil.isValid) {
-      this.logger.logError(`invalid phone: ${phone}, ${regionCode || PHONE_DEFAULT_REGION_CODE}`);
+      this.logger.logError(
+        `invalid phone: ${phone}, ${regionCode || PHONE_DEFAULT_REGION_CODE}`
+      );
       throw new Error('This phone cannot be used.');
     }
 
-    const isPhoneAvailable = await PhoneModel.isPhoneAvailable(phoneUtil.nationalNumber, countryCode);
+    const isPhoneAvailable = await PhoneModel.isPhoneAvailable(
+      phoneUtil.nationalNumber,
+      countryCode
+    );
     if (!isPhoneAvailable) {
       throw new Error(`This phone: ${phone} already exists.`);
     }
@@ -63,9 +64,15 @@ export class PhoneService {
 
     if (signature) {
       const biometricAuthPublicKey = await UserModel.getBiomAuthKey(userId);
-      const isSignatureValid = dxRsaValidateBiometricKey(signature, phone, biometricAuthPublicKey);
+      const isSignatureValid = dxRsaValidateBiometricKey(
+        signature,
+        phone,
+        biometricAuthPublicKey
+      );
       if (!isSignatureValid) {
-        throw new Error(`Create Phone: Device signature is invalid: ${biometricAuthPublicKey}, userid: ${userId}`);
+        throw new Error(
+          `Create Phone: Device signature is invalid: ${biometricAuthPublicKey}, userid: ${userId}`
+        );
       }
     }
 
@@ -123,19 +130,13 @@ export class PhoneService {
         where: {
           id,
         },
-        force: true
+        force: true,
       });
     }
   }
 
-  public async updatePhone(
-    id: string,
-    payload: UpdatePhonePayloadType
-  ) {
-    const {
-      def,
-      label,
-    } = payload;
+  public async updatePhone(id: string, payload: UpdatePhonePayloadType) {
+    const { def, label } = payload;
 
     if (!id) {
       throw new Error('No id for update phone.');

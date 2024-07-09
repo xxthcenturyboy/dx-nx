@@ -2,18 +2,13 @@ import { Sequelize } from 'sequelize-typescript';
 
 import { PostgresDbConnection } from '@dx/postgres';
 import { ApiLoggingClass } from '@dx/logger';
-import {
-  UserModel,
-  UserPrivilegeSetModel
-} from '@dx/user';
+import { UserModel, UserPrivilegeSetModel } from '@dx/user';
 import { DeviceModel } from '@dx/devices';
 import { EmailModel } from '@dx/email';
 import { PhoneModel } from './phone.postgres-model';
 import { PHONE_POSTGRES_DB_NAME } from './phone.consts';
-import {
-  isLocal,
-  POSTGRES_URI
-} from '@dx/config';
+import { isLocal } from '@dx/config-shared';
+import { POSTGRES_URI } from '@dx/config-api';
 
 jest.mock('@dx/logger');
 
@@ -30,8 +25,8 @@ describe('PhoneModel', () => {
           EmailModel,
           PhoneModel,
           UserPrivilegeSetModel,
-          UserModel
-        ]
+          UserModel,
+        ],
       });
       await connection.initialize();
       db = PostgresDbConnection.dbHandle;

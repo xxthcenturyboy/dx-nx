@@ -5,17 +5,9 @@ import { ApiLoggingClass } from '@dx/logger';
 import { EmailModel } from '@dx/email';
 import { PhoneModel } from '@dx/phone';
 import { DeviceModel } from './device.postgres-model';
-import {
-  UserModel,
-  UserPrivilegeSetModel
-} from '@dx/user';
-import {
-  DEVICES_POSTGRES_DB_NAME
-} from './devices.consts';
-import {
-  isLocal,
-  POSTGRES_URI
-} from '@dx/config';
+import { UserModel, UserPrivilegeSetModel } from '@dx/user';
+import { DEVICES_POSTGRES_DB_NAME } from './devices.consts';
+import { isLocal, POSTGRES_URI } from '@dx/config-shared';
 
 jest.mock('@dx/logger');
 
@@ -32,8 +24,8 @@ describe('Device Model', () => {
           EmailModel,
           PhoneModel,
           UserPrivilegeSetModel,
-          UserModel
-        ]
+          UserModel,
+        ],
       });
       await connection.initialize();
       db = PostgresDbConnection.dbHandle;
@@ -55,7 +47,7 @@ describe('Device Model', () => {
       });
 
       it('should have required attributes', () => {
-          // arrange
+        // arrange
         const attributes = DeviceModel.getAttributes();
         // act
         // assert
@@ -99,7 +91,6 @@ describe('Device Model', () => {
         expect(DeviceModel.markDeleted).toBeDefined();
       });
     });
-
   } else {
     describe('DeviceModel', () => {
       it('should exist when imported', () => {

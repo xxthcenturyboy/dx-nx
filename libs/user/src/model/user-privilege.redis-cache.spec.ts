@@ -1,12 +1,12 @@
 import { ApiLoggingClass } from '@dx/logger';
 import {
   UserPrivilegeSetCache,
-  UserPrivilegeSetCacheType
+  UserPrivilegeSetCacheType,
 } from './user-privilege.redis-cache';
 import { UserPrivilegeSetModelType } from './user-privilege.postgres-model';
 import { randomUUID } from 'crypto';
 import { RedisService } from '@dx/redis';
-import { getRedisConfig } from '@dx/config';
+import { getRedisConfig } from '@dx/config-api';
 
 jest.mock('@dx/logger');
 
@@ -17,21 +17,21 @@ describe('UserPrivilegeSetCache', () => {
     id: randomUUID(),
     name: 'SUPER_ADMIN',
     description: 'Sudo',
-    order: 0
+    order: 0,
   };
   // @ts-expect-error - ok for test
   const data1: UserPrivilegeSetModelType = {
     id: randomUUID(),
     name: 'ADMIN',
     description: 'Add Users',
-    order: 1
+    order: 1,
   };
   // @ts-expect-error - ok for test
   const data2: UserPrivilegeSetModelType = {
     id: randomUUID(),
     name: 'USER',
     description: 'App Access',
-    order: 2
+    order: 2,
   };
 
   beforeAll(async () => {
@@ -40,7 +40,7 @@ describe('UserPrivilegeSetCache', () => {
     new RedisService({
       isLocal: true,
       isTest: true,
-      redis: redisConfig
+      redis: redisConfig,
     });
   });
 
@@ -121,7 +121,11 @@ describe('UserPrivilegeSetCache', () => {
       const result = await cache.getAllPrivilegeSets();
       // assert
       expect(result).toHaveLength(3);
-      expect(result.sort((a, b) => a.order - b.order)).toEqual([data0, data1, data2]);
+      expect(result.sort((a, b) => a.order - b.order)).toEqual([
+        data0,
+        data1,
+        data2,
+      ]);
     });
   });
 });

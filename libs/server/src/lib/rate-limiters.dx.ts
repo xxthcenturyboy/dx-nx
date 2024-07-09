@@ -1,28 +1,13 @@
-import {
-  NextFunction,
-  Request,
-  Response
-} from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { rateLimit } from 'express-rate-limit';
 import { RedisStore } from 'rate-limit-redis';
 
-import {
-  RedisService,
-  REDIS_DELIMITER
-} from '@dx/redis';
-import {
-  RATE_LIMIT_MESSAGE,
-  RATE_LIMITS
-} from '../model/server.const';
+import { RedisService, REDIS_DELIMITER } from '@dx/redis';
+import { RATE_LIMIT_MESSAGE, RATE_LIMITS } from '../model/server.const';
 import { AUTH_ROUTES_V1_RATE_LIMIT } from '@dx/auth';
-import {
-  sendOK,
-  sendTooManyRequests
-} from './http-responses';
-import {
-  APP_PREFIX,
-  isLocal
-} from '@dx/config';
+import { sendOK, sendTooManyRequests } from './http-responses';
+import { isLocal } from '@dx/config-shared';
+import { APP_PREFIX } from '@dx/config-api';
 
 export class DxRateLimiters {
   static handleLimitCommon(
@@ -56,14 +41,18 @@ export class DxRateLimiters {
     // Send email / SMS depending upon type, etc
     // Don't handle in this file
     res.setHeader('Content-Type', 'application/json');
-    res.status(200).send(JSON.stringify({ error: 'Your account has been locked. Check your email for instructions.' }));
+    res
+      .status(200)
+      .send(
+        JSON.stringify({
+          error:
+            'Your account has been locked. Check your email for instructions.',
+        })
+      );
   }
 
   static keyGenStandard(req: Request) {
-    if (
-      req.user
-      && req.user.id
-    ) {
+    if (req.user && req.user.id) {
       return req.user.id;
     }
 
@@ -71,18 +60,11 @@ export class DxRateLimiters {
   }
 
   static keyGenLogin(req: Request) {
-    if (
-      req.body
-      && req.body.value
-    ) {
+    if (req.body && req.body.value) {
       return req.body.value;
     }
 
-    if (
-      req.body
-      && req.body.device
-      && req.body.device.uniqueDeviceId
-    ) {
+    if (req.body && req.body.device && req.body.device.uniqueDeviceId) {
       const { uniqueDeviceId } = req.body.device;
       return uniqueDeviceId;
     }
@@ -95,15 +77,16 @@ export class DxRateLimiters {
       store: new RedisStore({
         prefix: `${APP_PREFIX}${REDIS_DELIMITER}rl-account-creation${REDIS_DELIMITER}`,
         // @ts-expect-error - Known issue: the `call` function is not present in @types/ioredis
-        sendCommand: (...args: string[]) => RedisService.instance.cacheHandle.call(...args),
+        sendCommand: (...args: string[]) =>
+          RedisService.instance.cacheHandle.call(...args),
       }),
       handler: DxRateLimiters.handleLimitCommon,
       keyGenerator: DxRateLimiters.keyGenLogin,
       limit: RATE_LIMITS.AUTH_LOOKUP, // limit each IP to 20 requests
       message: 'You cannot create an account at this time.',
       standardHeaders: true,
-      windowMs: 1000 * 60 * 60 // 60 minutes
-    })
+      windowMs: 1000 * 60 * 60, // 60 minutes
+    });
   }
 
   public static authLookup() {
@@ -111,15 +94,16 @@ export class DxRateLimiters {
       store: new RedisStore({
         prefix: `${APP_PREFIX}${REDIS_DELIMITER}rl-auth-lookup${REDIS_DELIMITER}`,
         // @ts-expect-error - Known issue: the `call` function is not present in @types/ioredis
-        sendCommand: (...args: string[]) => RedisService.instance.cacheHandle.call(...args),
+        sendCommand: (...args: string[]) =>
+          RedisService.instance.cacheHandle.call(...args),
       }),
       handler: DxRateLimiters.handleLimitCommon,
       keyGenerator: DxRateLimiters.keyGenLogin,
       limit: RATE_LIMITS.AUTH_LOOKUP, // limit each IP to 20 requests
       message: 'This insanity has been stopped. Quit tryna hack us.',
       standardHeaders: true,
-      windowMs: 1000 * 60 * 3 // 3 minutes
-    })
+      windowMs: 1000 * 60 * 3, // 3 minutes
+    });
   }
 
   public static login() {
@@ -127,13 +111,14 @@ export class DxRateLimiters {
       store: new RedisStore({
         prefix: `${APP_PREFIX}${REDIS_DELIMITER}rl-login${REDIS_DELIMITER}`,
         // @ts-expect-error - Known issue: the `call` function is not present in @types/ioredis
-        sendCommand: (...args: string[]) => RedisService.instance.cacheHandle.call(...args),
+        sendCommand: (...args: string[]) =>
+          RedisService.instance.cacheHandle.call(...args),
       }),
       handler: DxRateLimiters.handleLimitLogin,
       keyGenerator: DxRateLimiters.keyGenLogin,
       limit: RATE_LIMITS.LOGIN, // limit each IP to 15 requests
       standardHeaders: true,
-      windowMs: 1000 * 60 * 5 // 5 minutes
+      windowMs: 1000 * 60 * 5, // 5 minutes
     });
   }
 
@@ -142,7 +127,8 @@ export class DxRateLimiters {
       store: new RedisStore({
         prefix: `${APP_PREFIX}${REDIS_DELIMITER}rl-std${REDIS_DELIMITER}`,
         // @ts-expect-error - Known issue: the `call` function is not present in @types/ioredis
-        sendCommand: (...args: string[]) => RedisService.instance.cacheHandle.call(...args),
+        sendCommand: (...args: string[]) =>
+          RedisService.instance.cacheHandle.call(...args),
       }),
       handler: DxRateLimiters.handleLimitCommon,
       keyGenerator: DxRateLimiters.keyGenStandard,
@@ -152,7 +138,7 @@ export class DxRateLimiters {
         return AUTH_ROUTES_V1_RATE_LIMIT.indexOf(url) > -1;
       },
       standardHeaders: true,
-      windowMs: 1000 * 60 * 1// 1 minutes
+      windowMs: 1000 * 60 * 1, // 1 minutes
     });
   }
 
@@ -161,7 +147,8 @@ export class DxRateLimiters {
       store: new RedisStore({
         prefix: `${APP_PREFIX}${REDIS_DELIMITER}rl-strict${REDIS_DELIMITER}`,
         // @ts-expect-error - Known issue: the `call` function is not present in @types/ioredis
-        sendCommand: (...args: string[]) => RedisService.instance.cacheHandle.call(...args),
+        sendCommand: (...args: string[]) =>
+          RedisService.instance.cacheHandle.call(...args),
       }),
       handler: DxRateLimiters.handleLimitCommon,
       keyGenerator: DxRateLimiters.keyGenStandard,
@@ -171,8 +158,8 @@ export class DxRateLimiters {
         return AUTH_ROUTES_V1_RATE_LIMIT.indexOf(url) > -1;
       },
       standardHeaders: true,
-      windowMs: 1000 * 60 * 3 // 3 minutes
-    })
+      windowMs: 1000 * 60 * 3, // 3 minutes
+    });
   }
 
   public static veryStrict() {
@@ -180,7 +167,8 @@ export class DxRateLimiters {
       store: new RedisStore({
         prefix: `${APP_PREFIX}${REDIS_DELIMITER}rl-very-strict${REDIS_DELIMITER}`,
         // @ts-expect-error - Known issue: the `call` function is not present in @types/ioredis
-        sendCommand: (...args: string[]) => RedisService.instance.cacheHandle.call(...args),
+        sendCommand: (...args: string[]) =>
+          RedisService.instance.cacheHandle.call(...args),
       }),
       handler: DxRateLimiters.handleLimitCommon,
       keyGenerator: DxRateLimiters.keyGenStandard,
@@ -191,6 +179,6 @@ export class DxRateLimiters {
       },
       standardHeaders: true,
       windowMs: 1000 * 60 * 10, // 10 minutes
-    })
+    });
   }
 }

@@ -1,26 +1,18 @@
-import {
-  Request as IRequest,
-  Response as IResponse
-} from 'express';
+import { Request as IRequest, Response as IResponse } from 'express';
 import { Request } from 'jest-express/lib/request';
 import { Response } from 'jest-express/lib/response';
 
 import { AuthController } from './auth.controller';
-import {
-  LoginPaylodType
-} from '../model/auth.types';
+import { LoginPaylodType } from '../model/auth.types';
 import {
   sendOK,
   sendBadRequest,
   sendNoContent,
   CookeiService,
-  sendUnauthorized
+  sendUnauthorized,
 } from '@dx/server';
 import { ApiLoggingClass } from '@dx/logger';
-import {
-  TEST_EMAIL,
-  TEST_PASSWORD
-} from '@dx/config';
+import { TEST_EMAIL, TEST_PASSWORD } from '@dx/config-shared';
 
 jest.mock('./auth.service.ts');
 jest.mock('./token.service.ts');
@@ -31,12 +23,12 @@ jest.mock('@dx/server', () => ({
     clearCookies: jest.fn(),
     getCookie: jest.fn(),
     setCookie: jest.fn(),
-    setCookies: jest.fn()
+    setCookies: jest.fn(),
   },
   sendOK: jest.fn(),
   sendBadRequest: jest.fn(),
   sendNoContent: jest.fn(),
-  sendUnauthorized: jest.fn()
+  sendUnauthorized: jest.fn(),
 }));
 
 describe('AuthController', () => {
@@ -75,7 +67,7 @@ describe('AuthController', () => {
       // arrange
       const body: LoginPaylodType = {
         value: TEST_EMAIL,
-        password: TEST_PASSWORD
+        password: TEST_PASSWORD,
       };
       req.body = body;
       // act
@@ -108,7 +100,7 @@ describe('AuthController', () => {
     test('should rejectDevice when invoked', async () => {
       // arrange
       // act
-      await  AuthController.rejectDevice(req, res);
+      await AuthController.rejectDevice(req, res);
       // assert
       expect(sendBadRequest).toHaveBeenCalled();
     });
@@ -121,7 +113,7 @@ describe('AuthController', () => {
       //   destroy: jest.fn(),
       // };
       req.cookies = {
-        refresh: 'test-refresh-token'
+        refresh: 'test-refresh-token',
       };
       // act
       await AuthController.refreshTokens(req, res);
@@ -156,7 +148,8 @@ describe('AuthController', () => {
     test('should sendOk when invoked', async () => {
       // arrange
       const query = {
-        token: '413c78fb890955a86d3971828dd05a9b2d844e44d8a30d406f80bf6e79612bb97e8b3b5834c8dbebdf5c4dadc767a579'
+        token:
+          '413c78fb890955a86d3971828dd05a9b2d844e44d8a30d406f80bf6e79612bb97e8b3b5834c8dbebdf5c4dadc767a579',
       };
       req.query = query;
       // act

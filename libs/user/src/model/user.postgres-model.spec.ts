@@ -9,12 +9,10 @@ import { UserModel } from './user.postgres-model';
 import { UserPrivilegeSetModel } from './user-privilege.postgres-model';
 import {
   USER_ENTITY_POSTGRES_DB_NAME,
-  USER_PRIVILEGES_POSTGRES_DB_NAME
+  USER_PRIVILEGES_POSTGRES_DB_NAME,
 } from './user.consts';
-import {
-  isLocal,
-  POSTGRES_URI
-} from '@dx/config';
+import { isLocal } from '@dx/config-shared';
+import { POSTGRES_URI } from '@dx/config-api';
 
 jest.mock('@dx/logger');
 
@@ -31,8 +29,8 @@ describe('User Models', () => {
           EmailModel,
           PhoneModel,
           UserPrivilegeSetModel,
-          UserModel
-        ]
+          UserModel,
+        ],
       });
       await connection.initialize();
       db = PostgresDbConnection.dbHandle;
@@ -54,7 +52,7 @@ describe('User Models', () => {
       });
 
       it('should have required attributes', () => {
-          // arrange
+        // arrange
         const attributes = UserModel.getAttributes();
         // act
         // assert
@@ -164,7 +162,9 @@ describe('User Models', () => {
         // assert
         expect(UserPrivilegeSetModel).toBeDefined();
         expect(UserPrivilegeSetModel.isInitialized).toBeTruthy();
-        expect(UserPrivilegeSetModel.name).toEqual(USER_PRIVILEGES_POSTGRES_DB_NAME);
+        expect(UserPrivilegeSetModel.name).toEqual(
+          USER_PRIVILEGES_POSTGRES_DB_NAME
+        );
         expect(UserPrivilegeSetModel.primaryKeyAttribute).toEqual('id');
       });
 
@@ -180,7 +180,6 @@ describe('User Models', () => {
         expect(attributes.updatedAt).toBeDefined();
       });
     });
-
   } else {
     describe('UserModel', () => {
       it('should exist when imported', () => {

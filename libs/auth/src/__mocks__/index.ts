@@ -1,12 +1,9 @@
-import {
-  Request,
-  Response
-} from "express";
+import { Request, Response } from 'express';
 import {
   GenerateTokenParams,
-  GenerateTokenResponse
-} from "../model/token.types";
-import { TEST_EXISTING_USER_ID } from '@dx/config';
+  GenerateTokenResponse,
+} from '../model/token.types';
+import { TEST_EXISTING_USER_ID } from '@dx/config-shared';
 
 export class TokenService {
   public static generateTokens(
@@ -17,7 +14,7 @@ export class TokenService {
       accessToken: '',
       accessTokenExp: 1,
       refreshToken: '',
-      refreshTokenExp: 1
+      refreshTokenExp: 1,
     };
   }
 

@@ -1,23 +1,8 @@
-import axios, {
-  AxiosError,
-  AxiosRequestConfig,
-  AxiosResponse
-} from 'axios';
-import {
-  AuthUtil,
-  AuthUtilType
-} from './util-v1';
-import {
-  UpdatePrivilegeSetPayloadType
-} from '@dx/user';
-import {
-  TEST_EXISTING_USER_PRIVILEGE_ID,
-  TEST_UUID
-} from '@dx/config';
-import {
-  AuthSuccessResponseType,
-  OtpResponseType
-} from '@dx/auth';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { AuthUtil, AuthUtilType } from './util-v1';
+import { UpdatePrivilegeSetPayloadType } from '@dx/user';
+import { TEST_EXISTING_USER_PRIVILEGE_ID, TEST_UUID } from '@dx/config-shared';
+import { AuthSuccessResponseType, OtpResponseType } from '@dx/auth';
 
 describe('v1 User Privilege Routes', () => {
   let authRes: AuthSuccessResponseType;
@@ -38,7 +23,7 @@ describe('v1 User Privilege Routes', () => {
         url: '/api/v1/privilege-set',
         method: 'GET',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
       };
@@ -48,10 +33,12 @@ describe('v1 User Privilege Routes', () => {
       expect(result.status).toBe(200);
       expect(Array.isArray(result.data)).toBe(true);
       expect(result.data).toHaveLength(3);
-      const toUpdate = result.data.find(privilgeSet => privilgeSet.id === TEST_EXISTING_USER_PRIVILEGE_ID);
-        if (toUpdate) {
-          initialDescription = toUpdate.description;
-        }
+      const toUpdate = result.data.find(
+        (privilgeSet) => privilgeSet.id === TEST_EXISTING_USER_PRIVILEGE_ID
+      );
+      if (toUpdate) {
+        initialDescription = toUpdate.description;
+      }
     });
   });
 
@@ -61,7 +48,7 @@ describe('v1 User Privilege Routes', () => {
         url: `/api/v1/privilege-set/${TEST_UUID}`,
         method: 'PUT',
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
       };
@@ -71,9 +58,11 @@ describe('v1 User Privilege Routes', () => {
       } catch (err) {
         const typedError = err as AxiosError;
         // assert
-        expect(typedError.response.status).toBe(400)
+        expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual('No Privilege Set Found!');
+        expect(typedError.response.data.message).toEqual(
+          'No Privilege Set Found!'
+        );
       }
     });
 
@@ -87,8 +76,7 @@ describe('v1 User Privilege Routes', () => {
         method: 'PUT',
         data: payload,
         headers: {
-          ...authUtil.getHeaders()
-
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
       };
@@ -110,7 +98,7 @@ describe('v1 User Privilege Routes', () => {
         method: 'PUT',
         data: payload,
         headers: {
-          ...authUtil.getHeaders()
+          ...authUtil.getHeaders(),
         },
         withCredentials: true,
       };

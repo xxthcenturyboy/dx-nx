@@ -3,10 +3,7 @@ import { Sequelize } from 'sequelize-typescript';
 import { ApiLoggingClass } from '@dx/logger';
 import { PostgresDbConnection } from '@dx/postgres';
 import { RedisService } from '@dx/redis';
-import {
-  UserService,
-  UserServiceType
-} from './user.service';
+import { UserService, UserServiceType } from './user.service';
 import { PhoneModel } from '@dx/phone';
 import { DeviceModel } from '@dx/devices';
 import { EmailModel } from '@dx/email';
@@ -15,18 +12,18 @@ import { UserPrivilegeSetModel } from '../model/user-privilege.postgres-model';
 import { UserModel } from '../model/user.postgres-model';
 import {
   isLocal,
-  POSTGRES_URI,
   TEST_EXISTING_EMAIL,
   TEST_EXISTING_USER_ID,
   TEST_PASSWORD,
   TEST_USER_CREATE,
-  TEST_UUID
-} from '@dx/config';
+  TEST_UUID,
+} from '@dx/config-shared';
+import { POSTGRES_URI } from '@dx/config-api';
 import {
   UpdatePasswordPayloadType,
   UpdateUserPayloadType,
   UpdateUsernamePayloadType,
-  UserProfileStateType
+  UserProfileStateType,
 } from '../model/user.types';
 
 jest.mock('@dx/logger');
@@ -48,8 +45,8 @@ describe('UserService', () => {
           PhoneModel,
           ShortLinkModel,
           UserPrivilegeSetModel,
-          UserModel
-        ]
+          UserModel,
+        ],
       });
       await connection.initialize();
       db = PostgresDbConnection.dbHandle;
@@ -58,8 +55,8 @@ describe('UserService', () => {
         redis: {
           port: 6379,
           prefix: 'dx',
-          url: 'redis://redis'
-        }
+          url: 'redis://redis',
+        },
       });
     });
 
@@ -105,7 +102,9 @@ describe('UserService', () => {
         // assert
         expect(result).toBeDefined();
         expect(result.profile).toBeDefined();
-        expect((result.profile as UserProfileStateType).id).toEqual(TEST_EXISTING_USER_ID);
+        expect((result.profile as UserProfileStateType).id).toEqual(
+          TEST_EXISTING_USER_ID
+        );
       });
     });
 
@@ -115,14 +114,16 @@ describe('UserService', () => {
         const payload = {
           ...TEST_USER_CREATE,
           username: '',
-          email: ''
+          email: '',
         };
         // act
         // assert
-        try  {
+        try {
           expect(await service.createUser(payload)).toThrow();
         } catch (err) {
-          expect(err.message).toEqual('Not enough information to create a user.');
+          expect(err.message).toEqual(
+            'Not enough information to create a user.'
+          );
         }
       });
 
@@ -144,7 +145,7 @@ describe('UserService', () => {
         // arrange
         // act
         // assert
-        try  {
+        try {
           expect(await service.updateRolesAndRestrictions('', {})).toThrow();
         } catch (err) {
           expect(err.message).toEqual('No id for update user.');
@@ -155,10 +156,13 @@ describe('UserService', () => {
         // arrange
         const payload: UpdateUserPayloadType = {
           roles: ['USER'],
-          restrictions: []
+          restrictions: [],
         };
         // act
-        const result = await service.updateRolesAndRestrictions(idToUpdate, payload);
+        const result = await service.updateRolesAndRestrictions(
+          idToUpdate,
+          payload
+        );
         // assert
         expect(result).toBeDefined();
         expect(result.userId).toEqual(idToUpdate);
@@ -170,7 +174,7 @@ describe('UserService', () => {
         // arrange
         // act
         // assert
-        try  {
+        try {
           expect(await service.updateUser('', {})).toThrow();
         } catch (err) {
           expect(err.message).toEqual('No id for update user.');
@@ -181,7 +185,7 @@ describe('UserService', () => {
         // arrange
         const payload: UpdateUserPayloadType = {
           firstName: 'Thomas',
-          lastName: 'Jefferson'
+          lastName: 'Jefferson',
         };
         // act
         const result = await service.updateUser(idToUpdate, payload);
@@ -196,7 +200,7 @@ describe('UserService', () => {
         // arrange
         // act
         // assert
-        try  {
+        try {
           expect(await service.getUser('')).toThrow();
         } catch (err) {
           expect(err.message).toEqual('No id provided searching users.');
@@ -208,7 +212,7 @@ describe('UserService', () => {
         const log = jest.spyOn(console, 'log').mockImplementation(() => {});
         // act
         // assert
-        try  {
+        try {
           expect(await service.getUser(TEST_UUID)).toThrow();
         } catch (err) {
           expect(err.message).toEqual('Search for user failed.');
@@ -263,7 +267,7 @@ describe('UserService', () => {
         // arrange
         // act
         // assert
-        try  {
+        try {
           expect(await service.isUsernameAvailable('asshole')).toThrow();
         } catch (err) {
           expect(err.message).toEqual('Profanity is not allowed');
@@ -286,11 +290,11 @@ describe('UserService', () => {
         // arrange
         const payload: UpdateUsernamePayloadType = {
           otpCode: 'code',
-          username: 'username'
+          username: 'username',
         };
         // act
         // assert
-        try  {
+        try {
           expect(await service.updateUserName('', payload)).toThrow();
         } catch (err) {
           expect(err.message).toEqual('No id for update username.');
@@ -302,11 +306,11 @@ describe('UserService', () => {
         otpEmail = (await service.sendOtpCode(idToUpdate)).code;
         const payload: UpdateUsernamePayloadType = {
           otpCode: otpEmail,
-          username: 'Asshole'
+          username: 'Asshole',
         };
         // act
         // assert
-        try  {
+        try {
           expect(await service.updateUserName(idToUpdate, payload)).toThrow();
         } catch (err) {
           expect(err.message).toEqual('Profanity is not allowed');
@@ -318,11 +322,11 @@ describe('UserService', () => {
         otpEmail = (await service.sendOtpCode(idToUpdate)).code;
         const payload: UpdateUsernamePayloadType = {
           otpCode: otpEmail,
-          username: 'admin'
+          username: 'admin',
         };
         // act
         // assert
-        try  {
+        try {
           expect(await service.updateUserName(idToUpdate, payload)).toThrow();
         } catch (err) {
           expect(err.message).toEqual('Username is not available.');
@@ -334,7 +338,7 @@ describe('UserService', () => {
         otpEmail = (await service.sendOtpCode(idToUpdate)).code;
         const payload: UpdateUsernamePayloadType = {
           otpCode: otpEmail,
-          username: 'Superman'
+          username: 'Superman',
         };
         // act
         const result = await service.updateUserName(idToUpdate, payload);
@@ -390,7 +394,7 @@ describe('UserService', () => {
         // arrange
         // act
         // assert
-        try  {
+        try {
           expect(await service.sendOtpCode('')).toThrow();
         } catch (err) {
           expect(err.message).toEqual('Request is invalid.');
@@ -431,11 +435,11 @@ describe('UserService', () => {
           id: '',
           password: '',
           passwordConfirm: '',
-          otpCode: ''
+          otpCode: '',
         };
         // act
         // assert
-        try  {
+        try {
           expect(await service.updatePassword(payload)).toThrow();
         } catch (err) {
           expect(err.message).toEqual('Request is invalid.');
@@ -448,11 +452,11 @@ describe('UserService', () => {
           id: idToUpdate,
           password: 'password',
           passwordConfirm: 'password',
-          otpCode: otpEmail
+          otpCode: otpEmail,
         };
         // act
         // assert
-        try  {
+        try {
           expect(await service.updatePassword(payload)).toThrow();
         } catch (err) {
           expect(err.message).toContain('Please choose a stronger password.');
@@ -467,7 +471,7 @@ describe('UserService', () => {
           id: idToUpdate,
           password: 'JS(*#Jlal__lld9iqe',
           passwordConfirm: 'JS(*#Jlal__lld9iqe',
-          otpCode: otpEmail
+          otpCode: otpEmail,
         };
         // act
         const result = await service.updatePassword(payload);
@@ -482,7 +486,7 @@ describe('UserService', () => {
         // arrange
         // act
         // assert
-        try  {
+        try {
           expect(await service.deleteUser('')).toThrow();
         } catch (err) {
           expect(err.message).toEqual('No id for delete user.');
@@ -498,7 +502,6 @@ describe('UserService', () => {
         expect(result.userId).toEqual(idToUpdate);
       });
     });
-
   } else {
     it('should exist when imported', () => {
       expect(UserService).toBeDefined();

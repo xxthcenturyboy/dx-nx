@@ -1,31 +1,23 @@
-import express,
-{
-  Response,
-  Express,
-  Request
-} from 'express';
+import express, { Response, Express, Request } from 'express';
 import { NextFunction } from 'express-serve-static-core';
-import session from 'express-session';
-import RedisStore from 'connect-redis';
+// import session from 'express-session';
+// import RedisStore from 'connect-redis';
 import { Logger as WinstonLogger } from 'winston';
 import { logger as expressWinston } from 'express-winston';
 import cookieParser from 'cookie-parser';
 import morgan, { TokenIndexer } from 'morgan';
 import cors from 'cors';
 
-import { DxDateUtilClass } from '@dx/utils';
-import { CLIENT_APP_URL } from '@dx/config';
+// import { DxDateUtilClass } from '@dx/utils';
+import { CLIENT_APP_URL } from '@dx/config-web';
 // import { StatusCodes } from 'http-status-codes';
 
-import {
-  RedisService,
-  REDIS_DELIMITER
-} from '@dx/redis';
-import {
-  API_ROOT,
-  APP_PREFIX,
-  isLocal
-} from '@dx/config';
+// import { RedisService, REDIS_DELIMITER } from '@dx/redis';
+// import {
+//   API_ROOT,
+//   APP_PREFIX
+// } from '@dx/config-api';
+// import { isLocal } from '@dx/config-shared';
 
 import { handleError } from '@dx/server';
 
@@ -34,7 +26,6 @@ type DxApiSettingsType = {
   SESSION_SECRET: string;
 };
 
-
 export async function configureExpress(
   app: Express,
   settings: DxApiSettingsType
@@ -42,7 +33,7 @@ export async function configureExpress(
   app.use(
     cors({
       origin: CLIENT_APP_URL,
-      credentials: true
+      credentials: true,
     })
   );
   // Support json & urlencoded requests.
@@ -53,16 +44,21 @@ export async function configureExpress(
   app.use(cookieParser());
 
   // Log HTTP requests
-  app.use(morgan((tokens: TokenIndexer<Request, Response>, req: Request, res: Response) => [
-      tokens.method(req, res),
-      tokens.url(req, res),
-      tokens.status(req, res),
-      tokens.res(req, res, 'content-length'), '-',
-      tokens['response-time'](req, res), 'ms',
-      settings.DEBUG && `- user.id: ${req.user?.id || 'NONE'}`
-    ].join(' ')
-  ));
-
+  app.use(
+    morgan(
+      (tokens: TokenIndexer<Request, Response>, req: Request, res: Response) =>
+        [
+          tokens.method(req, res),
+          tokens.url(req, res),
+          tokens.status(req, res),
+          tokens.res(req, res, 'content-length'),
+          '-',
+          tokens['response-time'](req, res),
+          'ms',
+          settings.DEBUG && `- user.id: ${req.user?.id || 'NONE'}`,
+        ].join(' ')
+    )
+  );
 
   // Session support
   // Must be before Rate Limiters for Express Middleware to have attached Session to req
@@ -88,9 +84,11 @@ export async function configureExpress(
 
   // Setup logging
   if (!settings.DEBUG) {
-    app.use(expressWinston({
-      winstonInstance: new WinstonLogger()
-    }));
+    app.use(
+      expressWinston({
+        winstonInstance: new WinstonLogger(),
+      })
+    );
   }
 
   // Serve files in the /public directory as static files.
@@ -100,7 +98,6 @@ export async function configureExpress(
   // Setup CSRF
   // any resource after this utilizes
   // app.use(csurf);
-
 
   // Redirect HTTP to HTTPS (if enabled)
   // if (settings.REDIRECT_HTTPS) {
@@ -165,6 +162,7 @@ export async function configureExpress(
   // });
 
   // General Error Handling
-  app.use((err: Error, req: Request, res: Response, next: NextFunction) => handleError(req, res, err, ''));
-
+  app.use((err: Error, req: Request, res: Response, next: NextFunction) =>
+    handleError(req, res, err, '')
+  );
 }

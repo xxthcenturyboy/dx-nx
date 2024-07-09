@@ -2,18 +2,13 @@ import { Sequelize } from 'sequelize-typescript';
 
 import { PostgresDbConnection } from '@dx/postgres';
 import { ApiLoggingClass } from '@dx/logger';
-import {
-  UserModel,
-  UserPrivilegeSetModel
-} from '@dx/user';
+import { UserModel, UserPrivilegeSetModel } from '@dx/user';
 import { DeviceModel } from '@dx/devices';
 import { EmailModel } from './email.postgres-model';
 import { EMAIL_POSTGRES_DB_NAME } from './email.consts';
 import { PhoneModel } from '@dx/phone';
-import {
-  isLocal,
-  POSTGRES_URI
-} from '@dx/config';
+import { isLocal } from '@dx/config-shared';
+import { POSTGRES_URI } from '@dx/config-api';
 
 jest.mock('@dx/logger');
 
@@ -30,8 +25,8 @@ describe('EmailModel', () => {
           EmailModel,
           PhoneModel,
           UserPrivilegeSetModel,
-          UserModel
-        ]
+          UserModel,
+        ],
       });
       await connection.initialize();
       db = PostgresDbConnection.dbHandle;
@@ -98,7 +93,6 @@ describe('EmailModel', () => {
       // @ts-expect-error - prototype exists
       expect(EmailModel.prototype?.createUser).toBeDefined();
     });
-
   } else {
     describe('EmailModel', () => {
       it('should exist when imported', () => {

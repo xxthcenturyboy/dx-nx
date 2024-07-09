@@ -3,31 +3,25 @@ import { Sequelize } from 'sequelize-typescript';
 import { ApiLoggingClass } from '@dx/logger';
 import { PostgresDbConnection } from '@dx/postgres';
 import { RedisService } from '@dx/redis';
-import {
-  PhoneService,
-  PhoneServiceType
-} from './phone.service';
+import { PhoneService, PhoneServiceType } from './phone.service';
 import { PhoneModel } from '../model/phone.postgres-model';
 import { DeviceModel } from '@dx/devices';
 import { EmailModel } from '@dx/email';
 import { ShortLinkModel } from '@dx/shortlink';
-import {
-  UserModel,
-  UserPrivilegeSetModel
-} from '@dx/user';
+import { UserModel, UserPrivilegeSetModel } from '@dx/user';
 import {
   isLocal,
-  POSTGRES_URI,
   TEST_COUNTRY_CODE,
   TEST_EXISTING_PHONE,
   TEST_EXISTING_USER_ID,
   TEST_PHONE,
   TEST_PHONE_VALID,
-  TEST_UUID
-} from '@dx/config';
+  TEST_UUID,
+} from '@dx/config-shared';
+import { POSTGRES_URI } from '@dx/config-api';
 import {
   CreatePhonePayloadType,
-  UpdatePhonePayloadType
+  UpdatePhonePayloadType,
 } from '../model/phone.types';
 import { UserService } from '@dx/user';
 
@@ -35,7 +29,7 @@ jest.mock('@dx/logger');
 
 describe('PhoneService', () => {
   if (isLocal()) {
-    let db: Sequelize
+    let db: Sequelize;
     let phoneService: PhoneServiceType;
     let idToDelete: string;
 
@@ -49,8 +43,8 @@ describe('PhoneService', () => {
           PhoneModel,
           ShortLinkModel,
           UserPrivilegeSetModel,
-          UserModel
-        ]
+          UserModel,
+        ],
       });
       await connection.initialize();
       db = PostgresDbConnection.dbHandle;
@@ -59,8 +53,8 @@ describe('PhoneService', () => {
         redis: {
           port: 6379,
           prefix: 'dx',
-          url: 'redis://redis'
-        }
+          url: 'redis://redis',
+        },
       });
     });
 
@@ -96,14 +90,16 @@ describe('PhoneService', () => {
           def: false,
           phone: '',
           label: '',
-          userId: ''
+          userId: '',
         };
         // act
         // assert
         try {
           expect(await phoneService.createPhone(payload)).toThrow();
         } catch (err) {
-          expect(err.message).toEqual('Not enough information to create a phone.');
+          expect(err.message).toEqual(
+            'Not enough information to create a phone.'
+          );
         }
       });
 
@@ -115,14 +111,16 @@ describe('PhoneService', () => {
           def: false,
           phone: TEST_EXISTING_PHONE,
           label: 'Work',
-          userId: TEST_EXISTING_USER_ID
+          userId: TEST_EXISTING_USER_ID,
         };
         // act
         // assert
         try {
           expect(await phoneService.createPhone(payload)).toThrow();
         } catch (err) {
-          expect(err.message).toEqual(`This phone: ${payload.phone} already exists.`);
+          expect(err.message).toEqual(
+            `This phone: ${payload.phone} already exists.`
+          );
         }
       });
 
@@ -134,7 +132,7 @@ describe('PhoneService', () => {
           def: false,
           phone: TEST_PHONE,
           label: 'Work',
-          userId: TEST_EXISTING_USER_ID
+          userId: TEST_EXISTING_USER_ID,
         };
         // act
         // assert
@@ -155,7 +153,7 @@ describe('PhoneService', () => {
           def: false,
           phone: TEST_PHONE_VALID,
           label: 'Work',
-          userId: TEST_EXISTING_USER_ID
+          userId: TEST_EXISTING_USER_ID,
         };
         // act
         const response = await phoneService.createPhone(payload);
@@ -184,14 +182,16 @@ describe('PhoneService', () => {
         try {
           expect(await phoneService.updatePhone(TEST_UUID, {})).toThrow();
         } catch (err) {
-          expect(err.message).toEqual(`Phone could not be found with the id: ${TEST_UUID}`);
+          expect(err.message).toEqual(
+            `Phone could not be found with the id: ${TEST_UUID}`
+          );
         }
       });
 
       test('should update a phone when all is good', async () => {
         // arrange
         const payload: UpdatePhonePayloadType = {
-          label: 'Test Label'
+          label: 'Test Label',
         };
         // act
         const response = await phoneService.updatePhone(idToDelete, payload);
@@ -219,7 +219,9 @@ describe('PhoneService', () => {
         try {
           expect(await phoneService.deletePhone(TEST_UUID)).toThrow();
         } catch (err) {
-          expect(err.message).toEqual(`Phone could not be found with the id: ${TEST_UUID}`);
+          expect(err.message).toEqual(
+            `Phone could not be found with the id: ${TEST_UUID}`
+          );
         }
       });
 

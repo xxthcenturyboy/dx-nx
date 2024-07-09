@@ -1,10 +1,7 @@
-import {
-  ApiLoggingClass,
-  ApiLoggingClassType
-} from '@dx/logger';
+import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger';
 import { UserPrivilegeSetModel } from '../model/user-privilege.postgres-model';
 import { UpdatePrivilegeSetPayloadType } from '../model/user.types';
-import { SORT_DIR } from '@dx/config';
+import { SORT_DIR } from '@dx/config-shared';
 import { UserPrivilegeSetCache } from '../model/user-privilege.redis-cache';
 
 export class UserPrivilegeService {
@@ -27,31 +24,28 @@ export class UserPrivilegeService {
 
   private async setAllToCache(data: UserPrivilegeSetModel[]) {
     try {
-      const promises: Promise<void>[] = []
+      const promises: Promise<void>[] = [];
       const cache = new UserPrivilegeSetCache();
       for (const privilege of data) {
         promises.push(void cache.setCache(privilege.name, privilege.toJSON()));
       }
       await Promise.all(promises);
     } catch (err) {
-      this.logger.logError(err.message || 'failed to write all privilege sets to cache.');
+      this.logger.logError(
+        err.message || 'failed to write all privilege sets to cache.'
+      );
     }
   }
 
   public async getAllPrivilegeSets() {
     try {
       const cacheSets = await this.getAllFromCache();
-      if (
-        Array.isArray(cacheSets)
-        && cacheSets.length > 0
-      ) {
+      if (Array.isArray(cacheSets) && cacheSets.length > 0) {
         return cacheSets;
       }
 
       const privilegeSets = await UserPrivilegeSetModel.findAll({
-        order: [
-          ['order', SORT_DIR.ASC]
-        ]
+        order: [['order', SORT_DIR.ASC]],
       });
 
       void this.setAllToCache(privilegeSets);
@@ -72,11 +66,7 @@ export class UserPrivilegeService {
       throw new Error('No id provided.');
     }
 
-    const {
-      description,
-      name,
-      order
-    } = payload;
+    const { description, name, order } = payload;
 
     const set = await UserPrivilegeSetModel.findByPk(id);
     if (!set) {

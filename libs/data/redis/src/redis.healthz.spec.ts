@@ -1,14 +1,8 @@
 import { ApiLoggingClass } from '@dx/logger';
-import { API_APP_NAME } from '@dx/config';
+import { API_APP_NAME } from '@dx/config-api';
 import { RedisService } from './redis.service';
-import {
-  RedisHealthzService,
-  RedisHealthzServiceType
-} from './redis.healthz';
-import {
-  REDIS_HEALTHZ_DATA,
-  REDIS_HEALTHZ_KEY
-} from './redis.consts';
+import { RedisHealthzService, RedisHealthzServiceType } from './redis.healthz';
+import { REDIS_HEALTHZ_DATA, REDIS_HEALTHZ_KEY } from './redis.consts';
 
 jest.mock('@dx/logger');
 
@@ -16,8 +10,14 @@ describe('RedisHealthzService', () => {
   let redisHealthz: RedisHealthzServiceType;
   const logInfoSpy = jest.spyOn(ApiLoggingClass.prototype, 'logInfo');
   // @ts-expect-error - private method
-  const testConnectionSpy = jest.spyOn(RedisHealthzService.prototype, 'testConnection');
-  const testReadAndWriteSpy = jest.spyOn(RedisHealthzService.prototype, 'testReadAndWrite');
+  const testConnectionSpy = jest.spyOn(
+    RedisHealthzService.prototype,
+    'testConnection'
+  );
+  const testReadAndWriteSpy = jest.spyOn(
+    RedisHealthzService.prototype,
+    'testReadAndWrite'
+  );
 
   beforeAll(() => {
     new ApiLoggingClass({ appName: API_APP_NAME });
@@ -27,8 +27,8 @@ describe('RedisHealthzService', () => {
       redis: {
         port: 6379,
         prefix: 'test',
-        url: 'redis://redis'
-      }
+        url: 'redis://redis',
+      },
     });
     redisHealthz = new RedisHealthzService();
   });

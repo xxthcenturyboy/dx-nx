@@ -1,7 +1,4 @@
-import {
-  CLIENT_APP_DOMAIN,
-  CLIENT_APP_URL
-} from '@dx/config';
+import { CLIENT_APP_DOMAIN, CLIENT_APP_URL } from '@dx/config-web';
 
 export function maliciousUrlCheck(urlToCheck: string) {
   const TRANSFORMED_APP_DOMAIN = CLIENT_APP_DOMAIN.replace(/\./g, '\\.');
@@ -11,15 +8,15 @@ export function maliciousUrlCheck(urlToCheck: string) {
 
   const PATTERN_REQUIRES_TEST = new RegExp('^(http|https)://\\S|^//\\S', 'i');
   const PATTERN_APP_URL = new RegExp(`^${TRANSFORMED_APP_URL}`);
-  const PATTERN_MAIN_DOMAIN = new RegExp(`^(http|https):\/\/${TRANSFORMED_APP_DOMAIN}/`, 'i');
+  const PATTERN_MAIN_DOMAIN = new RegExp(
+    `^(http|https):\/\/${TRANSFORMED_APP_DOMAIN}/`,
+    'i'
+  );
 
   // always allow
   if (PATTERN_MAIN_DOMAIN.test(urlToCheck)) return;
 
-  if (
-    urlToCheck
-    && PATTERN_REQUIRES_TEST.test(urlToCheck)
-  ) {
+  if (urlToCheck && PATTERN_REQUIRES_TEST.test(urlToCheck)) {
     if (!urlToCheck.match(PATTERN_APP_URL)) {
       throw new Error(`Possible malicious attack - check URL: ${urlToCheck}`);
     }

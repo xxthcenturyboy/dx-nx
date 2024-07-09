@@ -3,28 +3,22 @@ import { Sequelize } from 'sequelize-typescript';
 import { ApiLoggingClass } from '@dx/logger';
 import { PostgresDbConnection } from '@dx/postgres';
 import { RedisService } from '@dx/redis';
-import {
-  EmailService,
-  EmailServiceType
-} from './email.service';
+import { EmailService, EmailServiceType } from './email.service';
 import { DeviceModel } from '@dx/devices';
 import { EmailModel } from '../model/email.postgres-model';
 import { PhoneModel } from '@dx/phone';
 import { ShortLinkModel } from '@dx/shortlink';
-import {
-  UserModel,
-  UserPrivilegeSetModel
-} from '@dx/user';
+import { UserModel, UserPrivilegeSetModel } from '@dx/user';
 import {
   isLocal,
-  POSTGRES_URI,
   TEST_EMAIL,
   TEST_EXISTING_EMAIL,
-  TEST_EXISTING_USER_ID
-} from '@dx/config';
+  TEST_EXISTING_USER_ID,
+} from '@dx/config-shared';
+import { POSTGRES_URI } from '@dx/config-api';
 import {
   CreateEmailPayloadType,
-  UpdateEmailPayloadType
+  UpdateEmailPayloadType,
 } from '../model/email.types';
 import { UserService } from '@dx/user';
 
@@ -32,7 +26,7 @@ jest.mock('@dx/logger');
 
 describe('EmailService', () => {
   if (isLocal()) {
-    let db: Sequelize
+    let db: Sequelize;
     let emailService: EmailServiceType;
     let emailIdToDelete: string;
 
@@ -46,8 +40,8 @@ describe('EmailService', () => {
           PhoneModel,
           ShortLinkModel,
           UserPrivilegeSetModel,
-          UserModel
-        ]
+          UserModel,
+        ],
       });
       await connection.initialize();
       db = PostgresDbConnection.dbHandle;
@@ -56,8 +50,8 @@ describe('EmailService', () => {
         redis: {
           port: 6379,
           prefix: 'dx',
-          url: 'redis://redis'
-        }
+          url: 'redis://redis',
+        },
       });
     });
 
@@ -92,14 +86,16 @@ describe('EmailService', () => {
           def: false,
           email: '',
           label: '',
-          userId: ''
+          userId: '',
         };
         // act
         // assert
         try {
           expect(await emailService.createEmail(payload)).toThrow();
         } catch (err) {
-          expect(err.message).toEqual('Not enough information to create an email.');
+          expect(err.message).toEqual(
+            'Not enough information to create an email.'
+          );
         }
       });
 
@@ -110,14 +106,16 @@ describe('EmailService', () => {
           def: false,
           email: TEST_EXISTING_EMAIL,
           label: 'Work',
-          userId: TEST_EXISTING_USER_ID
+          userId: TEST_EXISTING_USER_ID,
         };
         // act
         // assert
         try {
           expect(await emailService.createEmail(payload)).toThrow();
         } catch (err) {
-          expect(err.message).toEqual(`This email: ${payload.email} already exists.`);
+          expect(err.message).toEqual(
+            `This email: ${payload.email} already exists.`
+          );
         }
       });
 
@@ -128,7 +126,7 @@ describe('EmailService', () => {
           def: false,
           email: 'not a valid email',
           label: 'Work',
-          userId: TEST_EXISTING_USER_ID
+          userId: TEST_EXISTING_USER_ID,
         };
         // act
         // assert
@@ -148,7 +146,7 @@ describe('EmailService', () => {
           def: false,
           email: TEST_EMAIL,
           label: 'Work',
-          userId: TEST_EXISTING_USER_ID
+          userId: TEST_EXISTING_USER_ID,
         };
         // act
         const response = await emailService.createEmail(payload);
@@ -178,17 +176,22 @@ describe('EmailService', () => {
         try {
           expect(await emailService.updateEmail(id, {})).toThrow();
         } catch (err) {
-          expect(err.message).toEqual(`Email could not be found with the id: ${id}`);
+          expect(err.message).toEqual(
+            `Email could not be found with the id: ${id}`
+          );
         }
       });
 
       test('should update an email when all is good', async () => {
         // arrange
         const payload: UpdateEmailPayloadType = {
-          label: 'Test Label'
+          label: 'Test Label',
         };
         // act
-        const response = await emailService.updateEmail(emailIdToDelete, payload);
+        const response = await emailService.updateEmail(
+          emailIdToDelete,
+          payload
+        );
         // assert
         expect(response.id).toEqual(emailIdToDelete);
       });
@@ -214,7 +217,9 @@ describe('EmailService', () => {
         try {
           expect(await emailService.deleteEmail(id)).toThrow();
         } catch (err) {
-          expect(err.message).toEqual(`Email could not be found with the id: ${id}`);
+          expect(err.message).toEqual(
+            `Email could not be found with the id: ${id}`
+          );
         }
       });
 

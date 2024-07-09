@@ -1,15 +1,12 @@
 import cp from 'child_process';
 
-import {
-  ApiLoggingClass,
-  ApiLoggingClassType
-} from '@dx/logger';
+import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger';
 import { regexEmail } from './regex-patterns';
-import { APP_DOMAIN } from '@dx/config';
+import { APP_DOMAIN } from '@dx/config-shared';
 import {
   DISPOSABLE_EMAIL_DOMAINS,
-  INVALID_EMAIL_NAMES
-} from '@dx/config';
+  INVALID_EMAIL_NAMES,
+} from '@dx/config-shared';
 
 export class EmailUtil {
   logger: ApiLoggingClassType;
@@ -49,17 +46,19 @@ export class EmailUtil {
   }
 
   hasInvalidName() {
-    const regexInvalidName = new RegExp(`^(${INVALID_EMAIL_NAMES.join('|')})`, 'i');
+    const regexInvalidName = new RegExp(
+      `^(${INVALID_EMAIL_NAMES.join('|')})`,
+      'i'
+    );
     return regexInvalidName.test(this.name);
   }
 
   strippedName() {
-    return this.name
-      && this.name.replace(/[.]/g, '');
+    return this.name && this.name.replace(/[.]/g, '');
   }
 
   digMxRecord() {
-    try  {
+    try {
       return cp.execSync(`dig ${this.domain} MX`).toString();
     } catch (err) {
       this.logger.logError(`Could not dig MX for: ${this.domain}`);
@@ -70,17 +69,14 @@ export class EmailUtil {
   isMaybeBadGmail() {
     const digRecord = this.digMxRecord();
     return (
-      this.domain === 'gmail.com'
-      || digRecord.includes('aspmx.l.google.com')
-    )
-      && this.name.includes('.');
+      (this.domain === 'gmail.com' ||
+        digRecord.includes('aspmx.l.google.com')) &&
+      this.name.includes('.')
+    );
   }
 
   formattedName() {
-    if (
-      this.name
-      && this.hasConsecutiveDots()
-    ) {
+    if (this.name && this.hasConsecutiveDots()) {
       return this.strippedName();
     }
 
@@ -89,14 +85,14 @@ export class EmailUtil {
 
   stripPlusN(namePart: string) {
     const plusOneIndex = namePart.indexOf('+');
-    const endIndex = plusOneIndex > -1
-      ? plusOneIndex
-      : namePart.length;
+    const endIndex = plusOneIndex > -1 ? plusOneIndex : namePart.length;
     return namePart.slice(0, endIndex);
   }
 
   strippedEmailForIndex() {
-    const strippedEmail = `${this.stripPlusN(this.strippedName())}@${this.domain}`;
+    const strippedEmail = `${this.stripPlusN(this.strippedName())}@${
+      this.domain
+    }`;
     return strippedEmail.toLowerCase().trim();
   }
 
@@ -142,9 +138,7 @@ export class EmailUtil {
       return false;
     }
 
-    if (
-      this.whitelistedEmail()
-    ) {
+    if (this.whitelistedEmail()) {
       return true;
     }
 

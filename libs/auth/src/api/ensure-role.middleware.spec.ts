@@ -1,7 +1,7 @@
 import {
   Request as IRequest,
   Response as IResponse,
-  NextFunction as INextFunction
+  NextFunction as INextFunction,
 } from 'express';
 import { Request } from 'jest-express/lib/request';
 import { Response } from 'jest-express/lib/response';
@@ -10,17 +10,14 @@ import { next } from 'jest-express/lib/next';
 import {
   hasAdminRole,
   hasSuperAdminRole,
-  userHasRole
+  userHasRole,
 } from './ensure-role.middleware';
 import { ApiLoggingClass } from '@dx/logger';
 import { sendUnauthorized } from '@dx/server';
 import { USER_ROLE } from '@dx/user';
 import { TokenService } from '../shared/token.service';
 import { CookeiService } from '@dx/server';
-import {
-  TEST_EXISTING_USER_ID,
-  TEST_UUID
-} from '@dx/config';
+import { TEST_EXISTING_USER_ID, TEST_UUID } from '@dx/config-shared';
 
 jest.mock('@dx/logger');
 jest.mock('@dx/server', () => ({
@@ -29,12 +26,12 @@ jest.mock('@dx/server', () => ({
     clearCookies: jest.fn(),
     getCookie: jest.fn(),
     setCookie: jest.fn(),
-    setCookies: jest.fn()
+    setCookies: jest.fn(),
   },
   HeaderService: {
-    getTokenFromAuthHeader: jest.fn()
+    getTokenFromAuthHeader: jest.fn(),
   },
-  sendUnauthorized: jest.fn()
+  sendUnauthorized: jest.fn(),
 }));
 jest.mock('@dx/user');
 
@@ -53,14 +50,19 @@ describe('ensureLoggedIn', () => {
     res = new Response() as unknown as IResponse;
     req.url = 'http://test-url.com';
     const tokens = TokenService.generateTokens(TEST_EXISTING_USER_ID);
-    CookeiService.setCookies(res, true, tokens.refreshToken, tokens.refreshTokenExp);
+    CookeiService.setCookies(
+      res,
+      true,
+      tokens.refreshToken,
+      tokens.refreshTokenExp
+    );
     req.cookies = {
       refresh: tokens.refreshToken,
-      token: tokens.accessToken
+      token: tokens.accessToken,
     };
     req.headers = {
-      authorization: `Bearer ${tokens.accessToken}`
-    }
+      authorization: `Bearer ${tokens.accessToken}`,
+    };
   });
 
   afterAll(() => {
@@ -86,7 +88,7 @@ describe('ensureLoggedIn', () => {
     test('should sendUnauthorized when token is invalid', async () => {
       // arrange
       req.headers = {
-        authorization: `Bearer ${TEST_UUID}`
+        authorization: `Bearer ${TEST_UUID}`,
       };
       // act
       await hasAdminRole(req, res, next);
@@ -124,7 +126,7 @@ describe('ensureLoggedIn', () => {
     test('should sendUnauthorized when token is invalid', async () => {
       // arrange
       req.headers = {
-        authorization: `Bearer ${TEST_UUID}`
+        authorization: `Bearer ${TEST_UUID}`,
       };
       // act
       await hasSuperAdminRole(req, res, next);

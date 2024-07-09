@@ -1,8 +1,4 @@
-import axios, {
-  AxiosError,
-  AxiosRequestConfig,
-  AxiosResponse
-} from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 import {
   AccountCreationPayloadType,
@@ -10,12 +6,9 @@ import {
   LoginPaylodType,
   UserLookupResponseType,
   USER_LOOKUPS,
-  AUTH_TOKEN_NAMES
+  AUTH_TOKEN_NAMES,
 } from '@dx/auth';
-import {
-  AuthUtil,
-  AuthUtilType
-} from './util-v1';
+import { AuthUtil, AuthUtilType } from './util-v1';
 import {
   TEST_DEVICE,
   TEST_EMAIL,
@@ -23,15 +16,14 @@ import {
   TEST_EXISTING_PHONE,
   TEST_PHONE_VALID,
   TEST_PHONE,
-  TEST_UUID
-} from '@dx/config';
-import {
-  dxRsaGenerateKeyPair,
-  dxRsaSignPayload
-} from '@dx/utils';
+  TEST_UUID,
+} from '@dx/config-shared';
+import { dxRsaGenerateKeyPair, dxRsaSignPayload } from '@dx/utils';
 import { DeviceModelType } from '@dx/devices';
 
-const errorLogSpyMock = jest.spyOn(console, 'error').mockImplementation(() => {});
+const errorLogSpyMock = jest
+  .spyOn(console, 'error')
+  .mockImplementation(() => {});
 
 describe('v1 Auth Flow', () => {
   let authUtil: AuthUtilType;
@@ -47,7 +39,7 @@ describe('v1 Auth Flow', () => {
   const generatedKeys = dxRsaGenerateKeyPair();
   const rsaKeyPair = {
     privateKey: generatedKeys.privateKey,
-    publicKey: generatedKeys.publicKey
+    publicKey: generatedKeys.publicKey,
   };
 
   beforeAll(async () => {
@@ -56,10 +48,7 @@ describe('v1 Auth Flow', () => {
   });
 
   afterAll(async () => {
-    if (
-      emailAccountId
-      || phoneAccountId
-    ) {
+    if (emailAccountId || phoneAccountId) {
       const authUtil = new AuthUtil();
       await authUtil.login();
 
@@ -68,11 +57,13 @@ describe('v1 Auth Flow', () => {
           url: `/api/v1/user/test/${emailAccountId}`,
           method: 'DELETE',
           headers: {
-            ...authUtil.getHeaders()
+            ...authUtil.getHeaders(),
           },
-          withCredentials: true
+          withCredentials: true,
         };
-        await axios.request<AxiosRequestConfig, AxiosResponse<void>>(removeEmailAccountRequest);
+        await axios.request<AxiosRequestConfig, AxiosResponse<void>>(
+          removeEmailAccountRequest
+        );
       }
 
       if (phoneAccountId) {
@@ -80,13 +71,14 @@ describe('v1 Auth Flow', () => {
           url: `/api/v1/user/test/${phoneAccountId}`,
           method: 'DELETE',
           headers: {
-            ...authUtil.getHeaders()
+            ...authUtil.getHeaders(),
           },
-          withCredentials: true
+          withCredentials: true,
         };
-        await axios.request<AxiosRequestConfig, AxiosResponse<void>>(removePhoneAccountRequest);
+        await axios.request<AxiosRequestConfig, AxiosResponse<void>>(
+          removePhoneAccountRequest
+        );
       }
-
     }
     errorLogSpyMock.mockRestore();
   });
@@ -96,7 +88,7 @@ describe('v1 Auth Flow', () => {
       // arrange
       let response: AxiosResponse<string, UserLookupResponseType>;
       const expectedResult: UserLookupResponseType = { available: true };
-      const url = `/api/v1/auth/lookup?code=1&value=${TEST_PHONE_VALID}&type=${USER_LOOKUPS.PHONE}`
+      const url = `/api/v1/auth/lookup?code=1&value=${TEST_PHONE_VALID}&type=${USER_LOOKUPS.PHONE}`;
       // act
       response = await axios.get(url);
       // assert
@@ -128,7 +120,9 @@ describe('v1 Auth Flow', () => {
         // assert
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual('Error in auth lookup handler: This phone cannot be used.');
+        expect(typedError.response.data.message).toEqual(
+          'Error in auth lookup handler: This phone cannot be used.'
+        );
       }
     });
 
@@ -136,7 +130,7 @@ describe('v1 Auth Flow', () => {
       // arrange
       let response: AxiosResponse<string, UserLookupResponseType>;
       const expectedResult: UserLookupResponseType = { available: true };
-      const url = `/api/v1/auth/lookup?value=${TEST_EMAIL}&type=${USER_LOOKUPS.EMAIL}`
+      const url = `/api/v1/auth/lookup?value=${TEST_EMAIL}&type=${USER_LOOKUPS.EMAIL}`;
       // act
       response = await axios.get(url);
       // assert
@@ -168,7 +162,9 @@ describe('v1 Auth Flow', () => {
         // assert
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual('Error in auth lookup handler: Invalid Email.');
+        expect(typedError.response.data.message).toEqual(
+          'Error in auth lookup handler: Invalid Email.'
+        );
       }
     });
 
@@ -184,7 +180,9 @@ describe('v1 Auth Flow', () => {
         // assert
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual('Error in auth lookup handler: Invalid email domain.');
+        expect(typedError.response.data.message).toEqual(
+          'Error in auth lookup handler: Invalid email domain.'
+        );
       }
     });
   });
@@ -195,8 +193,8 @@ describe('v1 Auth Flow', () => {
         url: '/api/v1/auth/otp-code/send/phone',
         method: 'POST',
         data: {
-          phone: TEST_PHONE
-        }
+          phone: TEST_PHONE,
+        },
       };
 
       const response = await axios.request<{ code: string }>(request);
@@ -210,8 +208,8 @@ describe('v1 Auth Flow', () => {
         url: '/api/v1/auth/otp-code/send/phone',
         method: 'POST',
         data: {
-          phone: TEST_PHONE_VALID
-        }
+          phone: TEST_PHONE_VALID,
+        },
       };
 
       const response = await axios.request<{ code: string }>(request);
@@ -227,8 +225,8 @@ describe('v1 Auth Flow', () => {
         url: '/api/v1/auth/otp-code/send/email',
         method: 'POST',
         data: {
-          email: 'not-a-valid-email'
-        }
+          email: 'not-a-valid-email',
+        },
       };
 
       const response = await axios.request<{ code: string }>(request);
@@ -242,8 +240,8 @@ describe('v1 Auth Flow', () => {
         url: '/api/v1/auth/otp-code/send/email',
         method: 'POST',
         data: {
-          email: TEST_EMAIL
-        }
+          email: TEST_EMAIL,
+        },
       };
 
       const response = await axios.request<{ code: string }>(request);
@@ -260,13 +258,13 @@ describe('v1 Auth Flow', () => {
       // arrange
       const payload: AccountCreationPayloadType = {
         code: '',
-        value: ''
+        value: '',
       };
 
       const request: AxiosRequestConfig = {
         url: '/api/v1/auth/account',
         method: 'POST',
-        data: payload
+        data: payload,
       };
       // act
       try {
@@ -285,13 +283,13 @@ describe('v1 Auth Flow', () => {
       // arrange
       const payload: AccountCreationPayloadType = {
         code: 'OU812',
-        value: 'not-a-valid-email'
+        value: 'not-a-valid-email',
       };
 
       const request: AxiosRequestConfig = {
         url: '/api/v1/auth/account',
         method: 'POST',
-        data: payload
+        data: payload,
       };
       // act
       try {
@@ -302,7 +300,13 @@ describe('v1 Auth Flow', () => {
         // assert
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual(`Account could not be created with payload: ${JSON.stringify(payload, null, 2)}`);
+        expect(typedError.response.data.message).toEqual(
+          `Account could not be created with payload: ${JSON.stringify(
+            payload,
+            null,
+            2
+          )}`
+        );
       }
     });
 
@@ -310,13 +314,13 @@ describe('v1 Auth Flow', () => {
       // arrange
       const payload: AccountCreationPayloadType = {
         code: 'OU812',
-        value: TEST_EXISTING_EMAIL
+        value: TEST_EXISTING_EMAIL,
       };
 
       const request: AxiosRequestConfig = {
         url: '/api/v1/auth/account',
         method: 'POST',
-        data: payload
+        data: payload,
       };
       // act
       try {
@@ -327,7 +331,9 @@ describe('v1 Auth Flow', () => {
         // assert
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual('Email is unavailable.');
+        expect(typedError.response.data.message).toEqual(
+          'Email is unavailable.'
+        );
       }
     });
 
@@ -335,13 +341,13 @@ describe('v1 Auth Flow', () => {
       // arrange
       const payload: AccountCreationPayloadType = {
         code: 'OU812',
-        value: TEST_PHONE
+        value: TEST_PHONE,
       };
 
       const request: AxiosRequestConfig = {
         url: '/api/v1/auth/account',
         method: 'POST',
-        data: payload
+        data: payload,
       };
       // act
       try {
@@ -352,7 +358,13 @@ describe('v1 Auth Flow', () => {
         // assert
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual(`Account could not be created with payload: ${JSON.stringify(payload, null, 2)}`);
+        expect(typedError.response.data.message).toEqual(
+          `Account could not be created with payload: ${JSON.stringify(
+            payload,
+            null,
+            2
+          )}`
+        );
       }
     });
 
@@ -360,13 +372,13 @@ describe('v1 Auth Flow', () => {
       // arrange
       const payload: AccountCreationPayloadType = {
         code: 'OU812',
-        value: TEST_EXISTING_PHONE
+        value: TEST_EXISTING_PHONE,
       };
 
       const request: AxiosRequestConfig = {
         url: '/api/v1/auth/account',
         method: 'POST',
-        data: payload
+        data: payload,
       };
       // act
       try {
@@ -377,30 +389,31 @@ describe('v1 Auth Flow', () => {
         // assert
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual('Phone is unavailable.');
+        expect(typedError.response.data.message).toEqual(
+          'Phone is unavailable.'
+        );
       }
     });
 
     test('should return user profile when successfully create account with email', async () => {
       const payload: AccountCreationPayloadType = {
         code: otpEmail,
-        value: TEST_EMAIL
+        value: TEST_EMAIL,
       };
       const request: AxiosRequestConfig = {
         url: '/api/v1/auth/account',
         method: 'POST',
-        data: payload
+        data: payload,
       };
 
       const response = await axios.request<AuthSuccessResponseType>(request);
       emailAccountId = response.data.profile.id;
       emailAuthToken = response.data.accessToken;
       const cookie = (response.headers['set-cookie'] as string[])
-        .find(cookie => cookie.includes(AUTH_TOKEN_NAMES.REFRESH))
-        ?.match(new RegExp(`^${AUTH_TOKEN_NAMES.REFRESH}=(.+?);`))
-        ?.[1];
+        .find((cookie) => cookie.includes(AUTH_TOKEN_NAMES.REFRESH))
+        ?.match(new RegExp(`^${AUTH_TOKEN_NAMES.REFRESH}=(.+?);`))?.[1];
       // console.log('cookie', cookie);
-      emailRefreshToken = cookie
+      emailRefreshToken = cookie;
 
       expect(response.status).toEqual(200);
       expect(response.data.accessToken).toBeDefined();
@@ -411,21 +424,20 @@ describe('v1 Auth Flow', () => {
       const payload: AccountCreationPayloadType = {
         code: otpPhone,
         device: TEST_DEVICE,
-        value: TEST_PHONE_VALID
+        value: TEST_PHONE_VALID,
       };
       const request: AxiosRequestConfig = {
         url: '/api/v1/auth/account',
         method: 'POST',
-        data: payload
+        data: payload,
       };
 
       const response = await axios.request<AuthSuccessResponseType>(request);
       phoneAccountId = response.data.profile.id;
       phoneAuthToken = response.data.accessToken;
       const cookie = (response.headers['set-cookie'] as string[])
-        .find(cookie => cookie.includes(AUTH_TOKEN_NAMES.REFRESH))
-        ?.match(new RegExp(`^${AUTH_TOKEN_NAMES.REFRESH}=(.+?);`))
-        ?.[1];
+        .find((cookie) => cookie.includes(AUTH_TOKEN_NAMES.REFRESH))
+        ?.match(new RegExp(`^${AUTH_TOKEN_NAMES.REFRESH}=(.+?);`))?.[1];
       // console.log('cookie', cookie);
       phoneRefreshToken = cookie;
       deviceId = response.data.profile.device.id;
@@ -444,7 +456,7 @@ describe('v1 Auth Flow', () => {
         biometricPublicKey: string;
       } = {
         uniqueDeviceId: '',
-        biometricPublicKey: ''
+        biometricPublicKey: '',
       };
 
       const request: AxiosRequestConfig = {
@@ -452,9 +464,9 @@ describe('v1 Auth Flow', () => {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${phoneAuthToken}`,
-          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${phoneRefreshToken}`]
+          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${phoneRefreshToken}`],
         },
-        data: payload
+        data: payload,
       };
       // act
       try {
@@ -465,7 +477,9 @@ describe('v1 Auth Flow', () => {
         // assert
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual('Update Public Key: Insufficient data to complete request.');
+        expect(typedError.response.data.message).toEqual(
+          'Update Public Key: Insufficient data to complete request.'
+        );
       }
     });
 
@@ -476,7 +490,7 @@ describe('v1 Auth Flow', () => {
         biometricPublicKey: string;
       } = {
         uniqueDeviceId: TEST_UUID,
-        biometricPublicKey: rsaKeyPair.publicKey
+        biometricPublicKey: rsaKeyPair.publicKey,
       };
 
       const request: AxiosRequestConfig = {
@@ -484,9 +498,9 @@ describe('v1 Auth Flow', () => {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${phoneAuthToken}`,
-          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${phoneRefreshToken}`]
+          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${phoneRefreshToken}`],
         },
-        data: payload
+        data: payload,
       };
       // act
       try {
@@ -497,7 +511,9 @@ describe('v1 Auth Flow', () => {
         // assert
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual('Update Public Key: Could not find the device to update.');
+        expect(typedError.response.data.message).toEqual(
+          'Update Public Key: Could not find the device to update.'
+        );
       }
     });
 
@@ -508,7 +524,7 @@ describe('v1 Auth Flow', () => {
         biometricPublicKey: string;
       } = {
         uniqueDeviceId: TEST_DEVICE.uniqueDeviceId,
-        biometricPublicKey: rsaKeyPair.publicKey
+        biometricPublicKey: rsaKeyPair.publicKey,
       };
 
       const request: AxiosRequestConfig = {
@@ -516,9 +532,9 @@ describe('v1 Auth Flow', () => {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${phoneAuthToken}`,
-          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${phoneRefreshToken}`]
+          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${phoneRefreshToken}`],
         },
-        data: payload
+        data: payload,
       };
       // act
       const response = await axios.request<DeviceModelType>(request);
@@ -533,9 +549,9 @@ describe('v1 Auth Flow', () => {
     test('should throw when no data is sent', async () => {
       // arrange
       const payload: {
-        fcmToken: string
+        fcmToken: string;
       } = {
-        fcmToken: ''
+        fcmToken: '',
       };
 
       const request: AxiosRequestConfig = {
@@ -543,9 +559,9 @@ describe('v1 Auth Flow', () => {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${phoneAuthToken}`,
-          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${phoneRefreshToken}`]
+          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${phoneRefreshToken}`],
         },
-        data: payload
+        data: payload,
       };
       // act
       try {
@@ -556,16 +572,18 @@ describe('v1 Auth Flow', () => {
         // assert
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual('Update FCM Token: Insufficient data to complete request.');
+        expect(typedError.response.data.message).toEqual(
+          'Update FCM Token: Insufficient data to complete request.'
+        );
       }
     });
 
     test('should throw when no device is connected to the user', async () => {
       // arrange
       const payload: {
-        fcmToken: string
+        fcmToken: string;
       } = {
-        fcmToken: TEST_UUID
+        fcmToken: TEST_UUID,
       };
 
       const request: AxiosRequestConfig = {
@@ -573,9 +591,9 @@ describe('v1 Auth Flow', () => {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${emailAuthToken}`,
-          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${emailRefreshToken}`]
+          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${emailRefreshToken}`],
         },
-        data: payload
+        data: payload,
       };
       // act
       try {
@@ -586,16 +604,18 @@ describe('v1 Auth Flow', () => {
         // assert
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual('Update FCM Token: No device connected.');
+        expect(typedError.response.data.message).toEqual(
+          'Update FCM Token: No device connected.'
+        );
       }
     });
 
     test('should return device when updated', async () => {
       // arrange
       const payload: {
-        fcmToken: string
+        fcmToken: string;
       } = {
-        fcmToken: TEST_UUID
+        fcmToken: TEST_UUID,
       };
 
       const request: AxiosRequestConfig = {
@@ -603,9 +623,9 @@ describe('v1 Auth Flow', () => {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${phoneAuthToken}`,
-          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${phoneRefreshToken}`]
+          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${phoneRefreshToken}`],
         },
-        data: payload
+        data: payload,
       };
       // act
       const response = await axios.request<DeviceModelType>(request);
@@ -642,13 +662,13 @@ describe('v1 Auth Flow', () => {
       // arrange
       const payload: LoginPaylodType = {
         code: otpPhone,
-        value: '8584846802'
+        value: '8584846802',
       };
 
       const request: AxiosRequestConfig = {
         url: '/api/v1/auth/login',
         method: 'POST',
-        data: payload
+        data: payload,
       };
       // act
       try {
@@ -659,7 +679,9 @@ describe('v1 Auth Flow', () => {
         // assert
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual('Could not log you in.');
+        expect(typedError.response.data.message).toEqual(
+          'Could not log you in.'
+        );
       }
     });
 
@@ -667,13 +689,13 @@ describe('v1 Auth Flow', () => {
       // arrange
       const payload: LoginPaylodType = {
         code: 'InvalidCode',
-        value: TEST_PHONE_VALID
+        value: TEST_PHONE_VALID,
       };
 
       const request: AxiosRequestConfig = {
         url: '/api/v1/auth/login',
         method: 'POST',
-        data: payload
+        data: payload,
       };
       // act
       try {
@@ -684,7 +706,9 @@ describe('v1 Auth Flow', () => {
         // assert
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual('Could not log you in.');
+        expect(typedError.response.data.message).toEqual(
+          'Could not log you in.'
+        );
       }
     });
 
@@ -692,13 +716,13 @@ describe('v1 Auth Flow', () => {
       // arrange
       const payload: LoginPaylodType = {
         code: otpEmail,
-        value: 'not-in-this-system@useless.com'
+        value: 'not-in-this-system@useless.com',
       };
 
       const request: AxiosRequestConfig = {
         url: '/api/v1/auth/login',
         method: 'POST',
-        data: payload
+        data: payload,
       };
       // act
       try {
@@ -709,7 +733,9 @@ describe('v1 Auth Flow', () => {
         // assert
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual('Could not log you in.');
+        expect(typedError.response.data.message).toEqual(
+          'Could not log you in.'
+        );
       }
     });
 
@@ -717,13 +743,13 @@ describe('v1 Auth Flow', () => {
       // arrange
       const payload: LoginPaylodType = {
         code: 'InvalidCode',
-        value: TEST_EMAIL
+        value: TEST_EMAIL,
       };
 
       const request: AxiosRequestConfig = {
         url: '/api/v1/auth/login',
         method: 'POST',
-        data: payload
+        data: payload,
       };
       // act
       try {
@@ -734,7 +760,9 @@ describe('v1 Auth Flow', () => {
         // assert
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual('Could not log you in.');
+        expect(typedError.response.data.message).toEqual(
+          'Could not log you in.'
+        );
       }
     });
 
@@ -742,13 +770,13 @@ describe('v1 Auth Flow', () => {
       // arrange
       const payload: LoginPaylodType = {
         value: TEST_EXISTING_EMAIL,
-        password: 'bad-password'
+        password: 'bad-password',
       };
 
       const request: AxiosRequestConfig = {
         url: '/api/v1/auth/login',
         method: 'POST',
-        data: payload
+        data: payload,
       };
       // act
       try {
@@ -759,7 +787,9 @@ describe('v1 Auth Flow', () => {
         // assert
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual('Could not log you in.');
+        expect(typedError.response.data.message).toEqual(
+          'Could not log you in.'
+        );
       }
     });
 
@@ -768,28 +798,27 @@ describe('v1 Auth Flow', () => {
         url: '/api/v1/auth/otp-code/send/email',
         method: 'POST',
         data: {
-          email: TEST_EMAIL
-        }
+          email: TEST_EMAIL,
+        },
       });
 
       const payload: LoginPaylodType = {
         code: otpResponse.data.code,
-        value: TEST_EMAIL
+        value: TEST_EMAIL,
       };
       const request: AxiosRequestConfig = {
         url: '/api/v1/auth/login',
         method: 'POST',
-        data: payload
+        data: payload,
       };
 
       const response = await axios.request<AuthSuccessResponseType>(request);
       emailAuthToken = response.data.accessToken;
       const cookie = (response.headers['set-cookie'] as string[])
-        .find(cookie => cookie.includes(AUTH_TOKEN_NAMES.REFRESH))
-        ?.match(new RegExp(`^${AUTH_TOKEN_NAMES.REFRESH}=(.+?);`))
-        ?.[1];
+        .find((cookie) => cookie.includes(AUTH_TOKEN_NAMES.REFRESH))
+        ?.match(new RegExp(`^${AUTH_TOKEN_NAMES.REFRESH}=(.+?);`))?.[1];
       // console.log('cookie', cookie);
-      emailRefreshToken = cookie
+      emailRefreshToken = cookie;
 
       expect(response.status).toEqual(200);
       expect(response.data.accessToken).toBeDefined();
@@ -799,12 +828,12 @@ describe('v1 Auth Flow', () => {
     test('should return user profile when successfully logged in with email / password', async () => {
       const payload: LoginPaylodType = {
         value: TEST_EXISTING_EMAIL,
-        password: 'advancedbasics1'
+        password: 'advancedbasics1',
       };
       const request: AxiosRequestConfig = {
         url: '/api/v1/auth/login',
         method: 'POST',
-        data: payload
+        data: payload,
       };
 
       const response = await axios.request<AuthSuccessResponseType>(request);
@@ -820,29 +849,28 @@ describe('v1 Auth Flow', () => {
         url: '/api/v1/auth/otp-code/send/phone',
         method: 'POST',
         data: {
-          phone: TEST_PHONE_VALID
-        }
+          phone: TEST_PHONE_VALID,
+        },
       });
 
       const payload: LoginPaylodType = {
         code: otpResonse.data.code,
-        value: TEST_PHONE_VALID
+        value: TEST_PHONE_VALID,
       };
       const request: AxiosRequestConfig = {
         url: '/api/v1/auth/login',
         method: 'POST',
         data: payload,
-        withCredentials: true
+        withCredentials: true,
       };
 
       const response = await axios.request<AuthSuccessResponseType>(request);
       phoneAuthToken = response.data.accessToken;
       const cookie = (response.headers['set-cookie'] as string[])
-        .find(cookie => cookie.includes(AUTH_TOKEN_NAMES.REFRESH))
-        ?.match(new RegExp(`^${AUTH_TOKEN_NAMES.REFRESH}=(.+?);`))
-        ?.[1];
+        .find((cookie) => cookie.includes(AUTH_TOKEN_NAMES.REFRESH))
+        ?.match(new RegExp(`^${AUTH_TOKEN_NAMES.REFRESH}=(.+?);`))?.[1];
       // console.log('cookie', cookie);
-      phoneRefreshToken = cookie
+      phoneRefreshToken = cookie;
 
       expect(response.status).toEqual(200);
       expect(response.data.accessToken).toBeDefined();
@@ -854,25 +882,24 @@ describe('v1 Auth Flow', () => {
         biometric: {
           device: TEST_DEVICE,
           signature: dxRsaSignPayload(rsaKeyPair.privateKey, TEST_PHONE_VALID),
-          userId: phoneAccountId
+          userId: phoneAccountId,
         },
-        value: TEST_PHONE_VALID
+        value: TEST_PHONE_VALID,
       };
       const request: AxiosRequestConfig = {
         url: '/api/v1/auth/login',
         method: 'POST',
         data: payload,
-        withCredentials: true
+        withCredentials: true,
       };
 
       const response = await axios.request<AuthSuccessResponseType>(request);
       phoneAuthToken = response.data.accessToken;
       const cookie = (response.headers['set-cookie'] as string[])
-        .find(cookie => cookie.includes(AUTH_TOKEN_NAMES.REFRESH))
-        ?.match(new RegExp(`^${AUTH_TOKEN_NAMES.REFRESH}=(.+?);`))
-        ?.[1];
+        .find((cookie) => cookie.includes(AUTH_TOKEN_NAMES.REFRESH))
+        ?.match(new RegExp(`^${AUTH_TOKEN_NAMES.REFRESH}=(.+?);`))?.[1];
       // console.log('cookie', cookie);
-      phoneRefreshToken = cookie
+      phoneRefreshToken = cookie;
 
       expect(response.status).toEqual(200);
       expect(response.data.accessToken).toBeDefined();
@@ -885,15 +912,15 @@ describe('v1 Auth Flow', () => {
         biometric: {
           device: TEST_DEVICE,
           signature: dxRsaSignPayload(rsaKeyPair.privateKey, TEST_PHONE_VALID),
-          userId: emailAccountId
+          userId: emailAccountId,
         },
-        value: TEST_PHONE_VALID
+        value: TEST_PHONE_VALID,
       };
       const request: AxiosRequestConfig = {
         url: '/api/v1/auth/login',
         method: 'POST',
         data: payload,
-        withCredentials: true
+        withCredentials: true,
       };
       // act
       try {
@@ -904,7 +931,9 @@ describe('v1 Auth Flow', () => {
         // assert
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual(`BiometricLogin: User ${emailAccountId} has no stored public key.`);
+        expect(typedError.response.data.message).toEqual(
+          `BiometricLogin: User ${emailAccountId} has no stored public key.`
+        );
       }
     });
 
@@ -914,15 +943,15 @@ describe('v1 Auth Flow', () => {
         biometric: {
           device: TEST_DEVICE,
           signature: dxRsaSignPayload(rsaKeyPair.privateKey, 'invalid payload'),
-          userId: phoneAccountId
+          userId: phoneAccountId,
         },
-        value: TEST_PHONE_VALID
+        value: TEST_PHONE_VALID,
       };
       const request: AxiosRequestConfig = {
         url: '/api/v1/auth/login',
         method: 'POST',
         data: payload,
-        withCredentials: true
+        withCredentials: true,
       };
       // act
       try {
@@ -933,7 +962,9 @@ describe('v1 Auth Flow', () => {
         // assert
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
-        expect(typedError.response.data.message).toEqual(`BiometricLogin: Device signature is invalid: ${rsaKeyPair.publicKey}, userid: ${phoneAccountId}`);
+        expect(typedError.response.data.message).toEqual(
+          `BiometricLogin: Device signature is invalid: ${rsaKeyPair.publicKey}, userid: ${phoneAccountId}`
+        );
       }
     });
   });
@@ -945,8 +976,8 @@ describe('v1 Auth Flow', () => {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${phoneAuthToken}`,
-          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=invalid-jwt`]
-        }
+          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=invalid-jwt`],
+        },
       };
 
       try {
@@ -967,20 +998,19 @@ describe('v1 Auth Flow', () => {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${phoneAuthToken}`,
-          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${phoneRefreshToken}`]
+          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${phoneRefreshToken}`],
         },
-        withCredentials: true
+        withCredentials: true,
       };
 
       const response = await axios.request<{ accessToken: string }>(request);
       phoneAuthToken = response.data.accessToken;
       // console.log(response.headers['set-cookie'] as string[]);
       const cookie = (response.headers['set-cookie'] as string[])
-        .find(cookie => cookie.includes(AUTH_TOKEN_NAMES.REFRESH))
-        ?.match(new RegExp(`^${AUTH_TOKEN_NAMES.REFRESH}=(.+?);`))
-        ?.[1];
+        .find((cookie) => cookie.includes(AUTH_TOKEN_NAMES.REFRESH))
+        ?.match(new RegExp(`^${AUTH_TOKEN_NAMES.REFRESH}=(.+?);`))?.[1];
       // console.log('cookie', cookie);
-      phoneRefreshToken = cookie
+      phoneRefreshToken = cookie;
 
       expect(response.status).toEqual(200);
       expect(response.data.accessToken).toBeDefined();
@@ -995,7 +1025,7 @@ describe('v1 Auth Flow', () => {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${phoneAuthToken}`,
-          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${phoneRefreshToken}`]
+          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${phoneRefreshToken}`],
         },
       };
       // act
@@ -1018,7 +1048,7 @@ describe('v1 Auth Flow', () => {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${phoneAuthToken}`,
-          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${phoneRefreshToken}`]
+          cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${phoneRefreshToken}`],
         },
       };
       // act
@@ -1033,12 +1063,12 @@ describe('v1 Auth Flow', () => {
     test('should return true on successful logout', async () => {
       const headers = {
         Authorization: `Bearer ${phoneAuthToken}`,
-        cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${phoneRefreshToken}`]
+        cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${phoneRefreshToken}`],
       };
       const request: AxiosRequestConfig = {
         url: '/api/v1/auth/logout',
         method: 'POST',
-        headers: headers
+        headers: headers,
       };
 
       const response = await axios.request<{ loggedOut: boolean }>(request);

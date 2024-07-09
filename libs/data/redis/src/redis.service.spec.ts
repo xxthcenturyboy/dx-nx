@@ -1,15 +1,9 @@
 import { Redis } from 'ioredis';
 
 import { ApiLoggingClass } from '@dx/logger';
-import { API_APP_NAME } from '@dx/config';
-import {
-  RedisService,
-  RedisServiceType
-} from './redis.service';
-import {
-  REDIS_HEALTHZ_DATA,
-  REDIS_HEALTHZ_KEY
-} from './redis.consts';
+import { API_APP_NAME } from '@dx/config-api';
+import { RedisService, RedisServiceType } from './redis.service';
+import { REDIS_HEALTHZ_DATA, REDIS_HEALTHZ_KEY } from './redis.consts';
 
 jest.mock('@dx/logger');
 
@@ -24,8 +18,8 @@ describe('RedisService', () => {
       redis: {
         port: 6379,
         prefix: 'test:',
-        url: 'redis://redis'
-      }
+        url: 'redis://redis',
+      },
     });
   });
 
@@ -73,7 +67,7 @@ describe('RedisService', () => {
       JSON.stringify(REDIS_HEALTHZ_DATA),
       {
         token: 'EXAT',
-        time: new Date().getTime() + 20
+        time: new Date().getTime() + 20,
       }
     );
     // assert

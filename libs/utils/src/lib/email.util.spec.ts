@@ -1,12 +1,6 @@
-import { ApiLoggingClass } from "@dx/logger";
-import {
-  EmailUtil,
-  EmailUtilType
-} from './email.util';
-import {
-  APP_DOMAIN,
-  TEST_EMAIL
-} from "@dx/config";
+import { ApiLoggingClass } from '@dx/logger';
+import { EmailUtil, EmailUtilType } from './email.util';
+import { APP_DOMAIN, TEST_EMAIL } from '@dx/config-shared';
 
 describe('email.util', () => {
   let emailUtil: EmailUtilType;

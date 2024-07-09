@@ -2,7 +2,7 @@ import { Sequelize } from 'sequelize-typescript';
 
 import { ApiLoggingClass } from '@dx/logger';
 import { PostgresDbConnection } from './postgres.db-connection';
-import { API_APP_NAME } from '@dx/config';
+import { API_APP_NAME } from '@dx/config-api';
 import { UserModel } from '@dx/user';
 
 jest.mock('@dx/logger');
@@ -19,10 +19,8 @@ describe('PostgresDbConnection', () => {
     new ApiLoggingClass({ appName: API_APP_NAME });
     try {
       dbConnection = new PostgresDbConnection({
-        models: [
-          UserModel
-        ],
-        postgresUri
+        models: [UserModel],
+        postgresUri,
       });
       postgres = PostgresDbConnection.dbHandle;
     } catch (err) {

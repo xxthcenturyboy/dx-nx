@@ -1,24 +1,17 @@
-import {
-  RedisService,
-  RedisServiceType,
-  REDIS_DELIMITER
-} from "@dx/redis";
-import {
-  ApiLoggingClass,
-  ApiLoggingClassType
-} from "@dx/logger";
+import { RedisService, RedisServiceType, REDIS_DELIMITER } from '@dx/redis';
+import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger';
 import {
   dxEncryptionGgenerateOTP,
-  dxEncryptionGenerateHashWithSalt
+  dxEncryptionGenerateHashWithSalt,
 } from '@dx/utils';
-import { OTP_SALT } from '@dx/config';
-import { RedisExpireOptions } from "libs/data/redis/src/redis.types";
+import { OTP_SALT } from '@dx/config-api';
+import { RedisExpireOptions } from 'libs/data/redis/src/redis.types';
 
 export class OtpCodeCache {
   cache: RedisServiceType;
   cacheExpirationOptions: RedisExpireOptions = {
     token: 'EX',
-    time: 2 * 60 // 2 minutes
+    time: 2 * 60, // 2 minutes
   };
   keyPrefix = 'otp';
   logger: ApiLoggingClassType;
@@ -39,15 +32,14 @@ export class OtpCodeCache {
     countryCode: string,
     nationalNumber: string
   ) {
-    return await dxEncryptionGenerateHashWithSalt(`${countryCode}${nationalNumber}`, OTP_SALT);
+    return await dxEncryptionGenerateHashWithSalt(
+      `${countryCode}${nationalNumber}`,
+      OTP_SALT
+    );
   }
 
-  public async setEmailOtp(
-    email: string
-  ): Promise<string> {
-    if (
-      !email
-    ) {
+  public async setEmailOtp(email: string): Promise<string> {
+    if (!email) {
       return '';
     }
 
@@ -55,7 +47,11 @@ export class OtpCodeCache {
     const hashedValue = await dxEncryptionGenerateHashWithSalt(email, OTP_SALT);
     const key = this.getFormattedKeyName(`${code}_${hashedValue}`);
     try {
-      await this.cache.setCacheItemWithExpiration(key, code, this.cacheExpirationOptions);
+      await this.cache.setCacheItemWithExpiration(
+        key,
+        code,
+        this.cacheExpirationOptions
+      );
       return code;
     } catch (err) {
       this.logger.logError(err);
@@ -67,18 +63,22 @@ export class OtpCodeCache {
     countryCode: string,
     nationalNumber: string
   ): Promise<string> {
-    if (
-      !countryCode
-      || !nationalNumber
-    ) {
+    if (!countryCode || !nationalNumber) {
       return '';
     }
 
     const code = dxEncryptionGgenerateOTP(6).toString();
-    const hashedValue = await this.getHashedPhoneValue(countryCode, nationalNumber);
+    const hashedValue = await this.getHashedPhoneValue(
+      countryCode,
+      nationalNumber
+    );
     const key = this.getFormattedKeyName(`${code}_${hashedValue}`);
     try {
-      await this.cache.setCacheItemWithExpiration(key, code, this.cacheExpirationOptions);
+      await this.cache.setCacheItemWithExpiration(
+        key,
+        code,
+        this.cacheExpirationOptions
+      );
       return code;
     } catch (err) {
       this.logger.logError(err);
@@ -86,14 +86,8 @@ export class OtpCodeCache {
     }
   }
 
-  public async validateEmailOtp(
-    code: string,
-    email: string
-  ): Promise<boolean> {
-    if (
-      !email
-      || !code
-    ) {
+  public async validateEmailOtp(code: string, email: string): Promise<boolean> {
+    if (!email || !code) {
       return false;
     }
 
@@ -118,15 +112,14 @@ export class OtpCodeCache {
     countryCode: string,
     nationalNumber: string
   ): Promise<boolean> {
-    if (
-      !countryCode
-      || !nationalNumber
-      || !code
-    ) {
+    if (!countryCode || !nationalNumber || !code) {
       return false;
     }
 
-    const hashedValue = await this.getHashedPhoneValue(countryCode, nationalNumber);
+    const hashedValue = await this.getHashedPhoneValue(
+      countryCode,
+      nationalNumber
+    );
     const key = this.getFormattedKeyName(`${code}_${hashedValue}`);
     try {
       const data = await this.cache.getCacheItemSimple(key);

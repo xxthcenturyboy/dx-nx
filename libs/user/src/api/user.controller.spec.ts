@@ -1,27 +1,21 @@
-import {
-  Request as IRequest,
-  Response as IResponse
-} from 'express';
+import { Request as IRequest, Response as IResponse } from 'express';
 import { Request } from 'jest-express/lib/request';
 import { Response } from 'jest-express/lib/response';
 
 import { UserController } from './user.controller';
-import {
-  sendOK,
-  sendBadRequest
-} from '@dx/server';
+import { sendOK, sendBadRequest } from '@dx/server';
 import {
   TEST_EMAIL,
   TEST_EXISTING_USER_ID,
   TEST_PASSWORD,
   TEST_USER_CREATE,
-  TEST_UUID
-} from '@dx/config';
+  TEST_UUID,
+} from '@dx/config-shared';
 
 jest.mock('./user.service.ts');
 jest.mock('@dx/server', () => ({
   sendOK: jest.fn(),
-  sendBadRequest: jest.fn()
+  sendBadRequest: jest.fn(),
 }));
 
 describe('UserController', () => {
@@ -94,7 +88,7 @@ describe('UserController', () => {
     test('should call sendBadRequest when sent with userId', async () => {
       // arrange
       req.params = {
-        id: TEST_EXISTING_USER_ID
+        id: TEST_EXISTING_USER_ID,
       };
       // act
       await UserController.getUser(req, res);
@@ -148,7 +142,7 @@ describe('UserController', () => {
         id: TEST_UUID,
         password: TEST_PASSWORD,
         oldPassword: TEST_PASSWORD,
-        otpCode: '323432'
+        otpCode: '323432',
       };
       // act
       await UserController.updatePassword(req, res);
@@ -162,7 +156,7 @@ describe('UserController', () => {
       // arrange
       req.params = { id: TEST_UUID };
       req.body = {
-        roles: ['Test']
+        roles: ['Test'],
       };
       // act
       await UserController.updateRolesRestrictions(req, res);
@@ -177,7 +171,7 @@ describe('UserController', () => {
       req.params = { id: TEST_UUID };
       req.body = {
         code: 'code',
-        username: 'Test'
+        username: 'Test',
       };
       // act
       await UserController.updateUserName(req, res);
@@ -190,7 +184,7 @@ describe('UserController', () => {
       // arrange
       req.params = { id: TEST_UUID };
       req.body = {
-        firstName: 'Test'
+        firstName: 'Test',
       };
       // act
       await UserController.updateUser(req, res);

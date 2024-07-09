@@ -4,10 +4,8 @@ import {
   RedisService,
   RedisServiceType
 } from '@dx/redis';
-import {
-  isLocal,
-  getRedisConfig
-} from '@dx/config';
+import { getRedisConfig } from '@dx/config-api';
+import { isLocal } from '@dx/config-shared';
 
 export class DxRedisCache {
   public static async getRedisConnection(): Promise<RedisServiceType | null> {
@@ -17,7 +15,7 @@ export class DxRedisCache {
     try {
       new RedisService({
         isLocal: isLocal(),
-        redis: redisConfig
+        redis: redisConfig,
       });
 
       const healthz = new RedisHealthzService();
@@ -27,7 +25,7 @@ export class DxRedisCache {
       return RedisService.instance;
     } catch (err) {
       logger.logError((err as Error).message, err);
-      return null
+      return null;
     }
   }
 }

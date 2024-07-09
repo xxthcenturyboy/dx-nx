@@ -1,15 +1,12 @@
 import { ApiLoggingClass } from '@dx/logger';
-import {
-  OtpCodeCache,
-  OtpCodeCacheType
-} from './otp-code.redis-cache';
+import { OtpCodeCache, OtpCodeCacheType } from './otp-code.redis-cache';
 import { RedisService } from '@dx/redis';
 import {
-  getRedisConfig,
   TEST_COUNTRY_CODE,
   TEST_EMAIL,
-  TEST_PHONE
-} from '@dx/config';
+  TEST_PHONE,
+} from '@dx/config-shared';
+import { getRedisConfig } from '@dx/config-api';
 
 jest.mock('@dx/logger');
 
@@ -24,7 +21,7 @@ describe('OtpCodeCache', () => {
     new RedisService({
       isLocal: true,
       isTest: true,
-      redis: redisConfig
+      redis: redisConfig,
     });
   });
 
@@ -114,14 +111,22 @@ describe('OtpCodeCache', () => {
     test('return false when code not passed', async () => {
       // arrange
       // act
-      const result = await cache.validatePhoneOtp('', TEST_COUNTRY_CODE, TEST_PHONE);
+      const result = await cache.validatePhoneOtp(
+        '',
+        TEST_COUNTRY_CODE,
+        TEST_PHONE
+      );
       // assert
       expect(result).toBe(false);
     });
     test('should return false when code is incorrect', async () => {
       // arrange
       // act
-      const result = await cache.validatePhoneOtp('OU812', TEST_COUNTRY_CODE, TEST_PHONE);
+      const result = await cache.validatePhoneOtp(
+        'OU812',
+        TEST_COUNTRY_CODE,
+        TEST_PHONE
+      );
       // assert
       expect(result).toBe(false);
     });
@@ -130,7 +135,11 @@ describe('OtpCodeCache', () => {
       // arrange
       let otpCache = new OtpCodeCache();
       // act
-      const result = await otpCache.validatePhoneOtp(otpPhone, TEST_COUNTRY_CODE, TEST_PHONE);
+      const result = await otpCache.validatePhoneOtp(
+        otpPhone,
+        TEST_COUNTRY_CODE,
+        TEST_PHONE
+      );
       // assert
       expect(result).toBe(true);
     });

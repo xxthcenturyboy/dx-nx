@@ -1,23 +1,16 @@
-import {
-  Request,
-  Response
-} from 'express';
+import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 import {
   GenerateTokenParams,
   GenerateTokenResponse,
   JwtPayloadType,
-  TokenExpiration
+  TokenExpiration,
 } from '../model/token.types';
-import {
-  DxDateUtilClass
-} from '@dx/utils';
-import {
-  ApiLoggingClass
-} from '@dx/logger';
-import { APP_DOMAIN } from '@dx/config';
-import { JWT_SECRET } from '@dx/config';
+import { DxDateUtilClass } from '@dx/utils';
+import { ApiLoggingClass } from '@dx/logger';
+import { APP_DOMAIN } from '@dx/config-shared';
+import { JWT_SECRET } from '@dx/config-api';
 import { UserModel } from '@dx/user';
 
 export class TokenService {
@@ -30,17 +23,17 @@ export class TokenService {
     const accessExpOptions: TokenExpiration = params?.accessToken
       ? params?.accessToken
       : {
-        time: 30,
-        unit: 'minutes',
-        addSub: 'ADD'
-      };
+          time: 30,
+          unit: 'minutes',
+          addSub: 'ADD',
+        };
     const refreshExpOptions: TokenExpiration = params?.refreshToken
       ? params?.refreshToken
       : {
-        time: 2,
-        unit: 'days',
-        addSub: 'ADD'
-      };
+          time: 2,
+          unit: 'days',
+          addSub: 'ADD',
+        };
 
     const accessTokenExp = DxDateUtilClass.getTimestamp(
       accessExpOptions.time,
@@ -55,7 +48,7 @@ export class TokenService {
       },
       JWT_SECRET,
       {
-        expiresIn: `${accessExpOptions.time} ${accessExpOptions.unit}`
+        expiresIn: `${accessExpOptions.time} ${accessExpOptions.unit}`,
       }
     );
 
@@ -72,7 +65,7 @@ export class TokenService {
       },
       JWT_SECRET,
       {
-        expiresIn: `${refreshExpOptions.time} ${refreshExpOptions.unit}`
+        expiresIn: `${refreshExpOptions.time} ${refreshExpOptions.unit}`,
       }
     );
 
@@ -80,7 +73,7 @@ export class TokenService {
       accessToken,
       accessTokenExp,
       refreshToken,
-      refreshTokenExp
+      refreshTokenExp,
     };
   }
 
@@ -94,7 +87,9 @@ export class TokenService {
     return '';
   }
 
-  public static async isRefreshValid(refreshToken: string): Promise<string | boolean> {
+  public static async isRefreshValid(
+    refreshToken: string
+  ): Promise<string | boolean> {
     try {
       const user = await UserModel.getByRefreshToken(refreshToken);
       if (!user) {

@@ -1,10 +1,7 @@
 import BadWordsFilter from 'bad-words';
 
-import {
-  ApiLoggingClass,
-  ApiLoggingClassType
-} from '@dx/logger';
-import { CUSTOM_PROFANE_WORDS } from '@dx/config';
+import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger';
+import { CUSTOM_PROFANE_WORDS } from '@dx/config-shared';
 
 export class ProfanityFilter {
   filter: typeof BadWordsFilter.prototype;
@@ -44,7 +41,6 @@ export class ProfanityFilter {
 
     return '';
   }
-
 }
 
 export type ProfanityFilterType = typeof ProfanityFilter.prototype;

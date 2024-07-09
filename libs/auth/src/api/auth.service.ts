@@ -4,39 +4,27 @@ import {
   getUserProfileState,
   UserModel,
   UserModelType,
-  UserProfileStateType
+  UserProfileStateType,
 } from '@dx/user';
 import { DeviceModel } from '@dx/devices';
 import { EmailModel } from '@dx/email';
-import {
-  PhoneModel,
-  PHONE_DEFAULT_REGION_CODE
-} from '@dx/phone';
+import { PhoneModel, PHONE_DEFAULT_REGION_CODE } from '@dx/phone';
 import {
   AccountCreationPayloadType,
   BiometricAuthType,
   LoginPaylodType,
   // SessionData,
   UserLookupQueryType,
-  UserLookupResponseType
+  UserLookupResponseType,
 } from '../model/auth.types';
-import {
-  USER_LOOKUPS
-} from '../model/auth.consts';
-import {
-  ApiLoggingClass,
-  ApiLoggingClassType
-} from '@dx/logger';
+import { USER_LOOKUPS } from '../model/auth.consts';
+import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger';
 import { MailSendgrid } from '@dx/mail';
 import { ShortLinkModel } from '@dx/shortlink';
-import {
-  dxRsaValidateBiometricKey,
-  EmailUtil,
-  PhoneUtil
-} from '@dx/utils';
+import { dxRsaValidateBiometricKey, EmailUtil, PhoneUtil } from '@dx/utils';
 import { OtpCodeCache } from '../model/otp-code.redis-cache';
 import { TokenService } from '../shared/token.service';
-import { isProd } from '@dx/config';
+import { isProd } from '@dx/config-shared';
 import { DevicesService } from '@dx/devices';
 
 export class AuthService {
@@ -50,17 +38,9 @@ export class AuthService {
     payload: AccountCreationPayloadType
     // session: SessionData
   ) {
-    const {
-      code,
-      device,
-      region,
-      value
-    } = payload;
+    const { code, device, region, value } = payload;
 
-    if (
-      !value
-      || !code
-    ) {
+    if (!value || !code) {
       throw new Error('Bad data sent.');
     }
 
@@ -71,23 +51,35 @@ export class AuthService {
     let user: UserModelType;
 
     try {
-      const phoneUtil = new PhoneUtil(value, region || PHONE_DEFAULT_REGION_CODE);
+      const phoneUtil = new PhoneUtil(
+        value,
+        region || PHONE_DEFAULT_REGION_CODE
+      );
       if (
-        phoneUtil.isValid
-        && phoneUtil.countryCode
-        && phoneUtil.nationalNumber
+        phoneUtil.isValid &&
+        phoneUtil.countryCode &&
+        phoneUtil.nationalNumber
       ) {
         if (!phoneUtil.isValidMobile) {
-          throw new Error('This phone number cannot be used to create an account.');
+          throw new Error(
+            'This phone number cannot be used to create an account.'
+          );
         }
 
-        const isAvailable = await PhoneModel.isPhoneAvailable(phoneUtil.nationalNumber, phoneUtil.countryCode);
+        const isAvailable = await PhoneModel.isPhoneAvailable(
+          phoneUtil.nationalNumber,
+          phoneUtil.countryCode
+        );
         if (!isAvailable) {
           throw new Error(`Phone is unavailable.`);
         }
 
         const otpCache = new OtpCodeCache();
-        const isCodeValid = await otpCache.validatePhoneOtp(code, phoneUtil.countryCode, phoneUtil.nationalNumber);
+        const isCodeValid = await otpCache.validatePhoneOtp(
+          code,
+          phoneUtil.countryCode,
+          phoneUtil.nationalNumber
+        );
         if (isCodeValid) {
           user = await UserModel.registerAndCreateFromPhone(
             phoneUtil.nationalNumber,
@@ -100,22 +92,38 @@ export class AuthService {
       if (!user) {
         const emailUtil = new EmailUtil(value);
         if (emailUtil.validate()) {
-          const isAvailable = await EmailModel.isEmailAvailable(emailUtil.formattedEmail());
+          const isAvailable = await EmailModel.isEmailAvailable(
+            emailUtil.formattedEmail()
+          );
           if (!isAvailable) {
             throw new Error(`Email is unavailable.`);
           }
           const otpCache = new OtpCodeCache();
-          const isCodeValid = await otpCache.validateEmailOtp(code, emailUtil.formattedEmail());
+          const isCodeValid = await otpCache.validateEmailOtp(
+            code,
+            emailUtil.formattedEmail()
+          );
           if (isCodeValid) {
-            user = await UserModel.registerAndCreateFromEmail(emailUtil.formattedEmail(), true);
+            user = await UserModel.registerAndCreateFromEmail(
+              emailUtil.formattedEmail(),
+              true
+            );
 
             if (user) {
               const mail = new MailSendgrid();
               const inviteUrl = `/auth/z?route=validate&token=${user.token}`;
-              const shortLink = await ShortLinkModel.generateShortlink(inviteUrl);
-              try  {
-                const inviteMessageId = await mail.sendConfirmation(emailUtil.formattedEmail(), shortLink);
-                await EmailModel.updateMessageInfoValidate(emailUtil.formattedEmail(), inviteMessageId);
+              const shortLink = await ShortLinkModel.generateShortlink(
+                inviteUrl
+              );
+              try {
+                const inviteMessageId = await mail.sendConfirmation(
+                  emailUtil.formattedEmail(),
+                  shortLink
+                );
+                await EmailModel.updateMessageInfoValidate(
+                  emailUtil.formattedEmail(),
+                  inviteMessageId
+                );
               } catch (err) {
                 this.logger.logError(err.message);
               }
@@ -125,26 +133,24 @@ export class AuthService {
       }
 
       if (!user) {
-        const message = `Account could not be created with payload: ${JSON.stringify(payload, null, 2)}`;
+        const message = `Account could not be created with payload: ${JSON.stringify(
+          payload,
+          null,
+          2
+        )}`;
         throw new Error(message);
       }
 
-      if (
-        device
-        && device.uniqueDeviceId
-      ) {
+      if (device && device.uniqueDeviceId) {
         const existingDevice = await DeviceModel.findOne({
           where: {
             uniqueDeviceId: device.uniqueDeviceId,
             deletedAt: null,
-          }
+          },
         });
 
         // Device is used but connected to another user => transfer over
-        if (
-          existingDevice &&
-          existingDevice.userId !== user.id
-        ) {
+        if (existingDevice && existingDevice.userId !== user.id) {
           existingDevice.deletedAt = new Date();
           await existingDevice.save();
         }
@@ -153,7 +159,7 @@ export class AuthService {
           ...device,
           userId: user.id,
           verifiedAt: new Date(),
-          verificationToken: randomUUID()
+          verificationToken: randomUUID(),
         });
       }
 
@@ -173,17 +179,9 @@ export class AuthService {
   }
 
   public async doesEmailPhoneExist(query: UserLookupQueryType) {
-    const {
-      code,
-      region,
-      type,
-      value
-    } = query;
+    const { code, region, type, value } = query;
 
-    if (
-      !type
-      || !value
-    ) {
+    if (!type || !value) {
       throw new Error('Incorrect query parameters.');
     }
 
@@ -198,18 +196,26 @@ export class AuthService {
           }
           throw new Error('Invalid Email.');
         }
-        result.available = await EmailModel.isEmailAvailable(emailUtil.formattedEmail());
+        result.available = await EmailModel.isEmailAvailable(
+          emailUtil.formattedEmail()
+        );
       }
 
-      if (
-        type === USER_LOOKUPS.PHONE
-      ) {
-        const phoneUtil = new PhoneUtil(value, region || PHONE_DEFAULT_REGION_CODE);
+      if (type === USER_LOOKUPS.PHONE) {
+        const phoneUtil = new PhoneUtil(
+          value,
+          region || PHONE_DEFAULT_REGION_CODE
+        );
         if (!phoneUtil.isValid) {
-          this.logger.logError(`invalid phone: ${value}, ${region || PHONE_DEFAULT_REGION_CODE}`);
+          this.logger.logError(
+            `invalid phone: ${value}, ${region || PHONE_DEFAULT_REGION_CODE}`
+          );
           throw new Error('This phone cannot be used.');
         }
-        result.available = await PhoneModel.isPhoneAvailable(phoneUtil.nationalNumber, phoneUtil.countryCode);
+        result.available = await PhoneModel.isPhoneAvailable(
+          phoneUtil.nationalNumber,
+          phoneUtil.countryCode
+        );
       }
 
       return result;
@@ -221,34 +227,33 @@ export class AuthService {
   }
 
   public async biometricLogin(data: BiometricAuthType) {
-    const {
-      signature,
-      payload,
-      userId,
-      device
-    } = data;
-    if (
-      !userId
-      || !signature
-      || !payload
-    ) {
+    const { signature, payload, userId, device } = data;
+    if (!userId || !signature || !payload) {
       throw new Error('Insufficient data for Biometric login.');
     }
 
     try {
       const biometricAuthPublicKey = await UserModel.getBiomAuthKey(userId);
       if (!biometricAuthPublicKey) {
-        throw new Error(`BiometricLogin: User ${userId} has no stored public key.`);
+        throw new Error(
+          `BiometricLogin: User ${userId} has no stored public key.`
+        );
       }
 
-      const isSignatureValid = dxRsaValidateBiometricKey(signature, payload, biometricAuthPublicKey);
+      const isSignatureValid = dxRsaValidateBiometricKey(
+        signature,
+        payload,
+        biometricAuthPublicKey
+      );
       if (!isSignatureValid) {
-        throw new Error(`BiometricLogin: Device signature is invalid: ${biometricAuthPublicKey}, userid: ${userId}`);
+        throw new Error(
+          `BiometricLogin: Device signature is invalid: ${biometricAuthPublicKey}, userid: ${userId}`
+        );
       }
 
       const user = await UserModel.findByPk(userId);
       if (!user) {
-        throw new Error(`BiometricLogin: No user with that id: ${userId}`)
+        throw new Error(`BiometricLogin: No user with that id: ${userId}`);
       }
 
       if (device) {
@@ -263,14 +268,10 @@ export class AuthService {
     }
   }
 
-  public async login(payload: LoginPaylodType): Promise<UserProfileStateType | void>  {
-    const {
-      biometric,
-      code,
-      region,
-      password,
-      value
-    } = payload;
+  public async login(
+    payload: LoginPaylodType
+  ): Promise<UserProfileStateType | void> {
+    const { biometric, code, region, password, value } = payload;
 
     if (!value) {
       throw new Error('No data sent.');
@@ -281,35 +282,37 @@ export class AuthService {
     try {
       // Authentication in order of preference
       // Biometric Login
-      if (
-        biometric
-        && biometric.userId
-        && biometric.signature
-      ) {
+      if (biometric && biometric.userId && biometric.signature) {
         user = await this.biometricLogin({
           ...biometric,
-          payload: value
+          payload: value,
         });
       }
 
       // Phone Number Login
       if (!user) {
-        const phoneUtil = new PhoneUtil(value, region || PHONE_DEFAULT_REGION_CODE);
+        const phoneUtil = new PhoneUtil(
+          value,
+          region || PHONE_DEFAULT_REGION_CODE
+        );
         if (
-          code
-          && phoneUtil.isValid
-          && phoneUtil.countryCode
-          && phoneUtil.nationalNumber
+          code &&
+          phoneUtil.isValid &&
+          phoneUtil.countryCode &&
+          phoneUtil.nationalNumber
         ) {
           const otpCache = new OtpCodeCache();
-          const isCodeValid = await otpCache.validatePhoneOtp(code, phoneUtil.countryCode, phoneUtil.nationalNumber);
+          const isCodeValid = await otpCache.validatePhoneOtp(
+            code,
+            phoneUtil.countryCode,
+            phoneUtil.nationalNumber
+          );
           if (isCodeValid) {
-            const phone = await PhoneModel.findByPhoneAndCode(phoneUtil.nationalNumber, phoneUtil.countryCode);
-            if (
-              phone
-              && phone.isVerified
-              && phone.userId
-            ) {
+            const phone = await PhoneModel.findByPhoneAndCode(
+              phoneUtil.nationalNumber,
+              phoneUtil.countryCode
+            );
+            if (phone && phone.isVerified && phone.userId) {
               user = await UserModel.findByPk(phone.userId);
             }
           }
@@ -321,22 +324,23 @@ export class AuthService {
         const emailUtil = new EmailUtil(value);
         if (emailUtil.validate()) {
           if (password) {
-            user = await UserModel.loginWithPassword(emailUtil.formattedEmail(), password);
+            user = await UserModel.loginWithPassword(
+              emailUtil.formattedEmail(),
+              password
+            );
           }
 
-          if (
-            !user
-            && !password
-            && code
-          ) {
+          if (!user && !password && code) {
             const otpCache = new OtpCodeCache();
-            const isCodeValid = await otpCache.validateEmailOtp(code, emailUtil.formattedEmail());
+            const isCodeValid = await otpCache.validateEmailOtp(
+              code,
+              emailUtil.formattedEmail()
+            );
             if (isCodeValid) {
-              const email = await EmailModel.findByEmail(emailUtil.formattedEmail());
-              if (
-                email
-                && email.userId
-              ) {
+              const email = await EmailModel.findByEmail(
+                emailUtil.formattedEmail()
+              );
+              if (email && email.userId) {
                 user = await UserModel.findByPk(email.userId);
               }
             }
@@ -348,11 +352,14 @@ export class AuthService {
         throw new Error('Could not log you in.');
       }
 
-      if (
-        user.deletedAt
-        || user.accountLocked
-      ) {
-        this.logger.logError(`Attempted login by a locked account: ${JSON.stringify(user, null, 2)}`);
+      if (user.deletedAt || user.accountLocked) {
+        this.logger.logError(
+          `Attempted login by a locked account: ${JSON.stringify(
+            user,
+            null,
+            2
+          )}`
+        );
         throw new Error('Could not log you in.');
       }
 
@@ -365,7 +372,11 @@ export class AuthService {
 
       return userProfile;
     } catch (err) {
-      const message = `Could not log in with payload: ${JSON.stringify(payload, null, 2)}`;
+      const message = `Could not log in with payload: ${JSON.stringify(
+        payload,
+        null,
+        2
+      )}`;
       this.logger.logError(message);
       throw new Error(err.message);
     }
@@ -378,7 +389,9 @@ export class AuthService {
         return false;
       }
 
-      const refreshTokens = user.refreshTokens.filter(token => token !== refreshToken);
+      const refreshTokens = user.refreshTokens.filter(
+        (token) => token !== refreshToken
+      );
       const userId = TokenService.getUserIdFromToken(refreshToken);
       const updated = await UserModel.updateRefreshToken(userId, refreshTokens);
       return updated;
@@ -389,9 +402,7 @@ export class AuthService {
     return false;
   }
 
-  public async sendOtpToEmail(
-    email: string
-  ): Promise<{ code: string }> {
+  public async sendOtpToEmail(email: string): Promise<{ code: string }> {
     if (!email) {
       throw new Error('No email sent.');
     }
@@ -404,17 +415,20 @@ export class AuthService {
         otpCode = await otpCache.setEmailOtp(emailUtil.formattedEmail());
         const mail = new MailSendgrid();
         try {
-          const sgMessageId = await mail.sendOtp(emailUtil.formattedEmail(), otpCode);
-          await EmailModel.updateMessageInfoValidate(emailUtil.formattedEmail(), sgMessageId);
+          const sgMessageId = await mail.sendOtp(
+            emailUtil.formattedEmail(),
+            otpCode
+          );
+          await EmailModel.updateMessageInfoValidate(
+            emailUtil.formattedEmail(),
+            sgMessageId
+          );
         } catch (err) {
           this.logger.logError(err.message);
         }
       }
 
-
-      return isProd()
-        ? { code: '' }
-        : { code: otpCode };
+      return isProd() ? { code: '' } : { code: otpCode };
     } catch (err) {
       const message = err.message || 'Error sending Otp to email' + email;
       this.logger.logError(message);
@@ -433,16 +447,20 @@ export class AuthService {
     let otpCode: string;
 
     try {
-      const phoneUtil = new PhoneUtil(phone, region || PHONE_DEFAULT_REGION_CODE);
+      const phoneUtil = new PhoneUtil(
+        phone,
+        region || PHONE_DEFAULT_REGION_CODE
+      );
       if (phoneUtil.isValid) {
         const otpCache = new OtpCodeCache();
-        otpCode = await otpCache.setPhoneOtp(phoneUtil.countryCode, phoneUtil.nationalNumber);
+        otpCode = await otpCache.setPhoneOtp(
+          phoneUtil.countryCode,
+          phoneUtil.nationalNumber
+        );
         // TODO: integrate with Twilio or other to send SMS
       }
 
-      return isProd()
-        ? { code: '' }
-        : { code: otpCode };
+      return isProd() ? { code: '' } : { code: otpCode };
     } catch (err) {
       const message = err.message || 'Error sending Otp to phone' + phone;
       this.logger.logError(message);
@@ -464,7 +482,6 @@ export class AuthService {
       this.logger.logError(message);
       throw new Error(message);
     }
-
   }
 }
 

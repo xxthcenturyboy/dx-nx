@@ -1,36 +1,41 @@
-
 import dayjs from 'dayjs';
 
 import { UserModelType } from '@dx/user';
 import { DeviceAuthType } from '@dx/devices';
-import { APP_URL } from '@dx/config';
+import { APP_URL } from '@dx/config-shared';
 import {
   IP_POOL_NAME,
   MailSendgrid,
   SendgridSendOptionsType,
-  UNSUBSCRIBE_GROUPS
+  UNSUBSCRIBE_GROUPS,
 } from '@dx/mail';
 
 export class SecurityAlertSerivice {
   /**
-  * when a new device is connected to a user that already had one connected,
-  * notify them via email and text.
-  */
+   * when a new device is connected to a user that already had one connected,
+   * notify them via email and text.
+   */
   public static async newDeviceNotification(
     user: UserModelType,
     device: DeviceAuthType,
     token: string
   ) {
     const time = dayjs().format('dddd, MMMM D YYYY, h:mm:ss a');
-    const email = await user.getVerifiedEmail() || await user.getDefaultEmail();
-    const phone = await user.getVerifiedPhone() || await user.getDefaultPhone();
+    const email =
+      (await user.getVerifiedEmail()) || (await user.getDefaultEmail());
+    const phone =
+      (await user.getVerifiedPhone()) || (await user.getDefaultPhone());
     const currentDevice = await user.fetchConnectedDeviceBeforeToken(token);
-    const rejectionUrl = `${APP_URL}/confirm-device-rejection?token=${token}&dn=${encodeURIComponent(currentDevice && currentDevice.name || '')}`;
+    const rejectionUrl = `${APP_URL}/confirm-device-rejection?token=${token}&dn=${encodeURIComponent(
+      (currentDevice && currentDevice.name) || ''
+    )}`;
 
     if (email) {
       const sgOptions: SendgridSendOptionsType = {
         to: email,
-        subject: `Device Connection Request [${dayjs().format('YYYY-MM-DD HH:mm:ss')}]`,
+        subject: `Device Connection Request [${dayjs().format(
+          'YYYY-MM-DD HH:mm:ss'
+        )}]`,
         body: `
           A new device connection was initiated to your account on ${time}.
           <br /><br />
@@ -49,7 +54,7 @@ export class SecurityAlertSerivice {
         ipPoolName: IP_POOL_NAME.TRANSACTIONAL,
         cta: 'Reject Device',
         ctaUrl: rejectionUrl,
-        unsubscribeGroup: UNSUBSCRIBE_GROUPS.TRANSACTIONAL
+        unsubscribeGroup: UNSUBSCRIBE_GROUPS.TRANSACTIONAL,
       };
       const mail = new MailSendgrid();
       await mail.sendAccountAlert(sgOptions);
