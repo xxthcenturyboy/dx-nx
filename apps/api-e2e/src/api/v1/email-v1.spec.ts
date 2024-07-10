@@ -1,13 +1,13 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { AuthUtil, AuthUtilType } from './util-v1';
-import { CreateEmailPayloadType, UpdateEmailPayloadType } from '@dx/email';
+import { CreateEmailPayloadType, UpdateEmailPayloadType } from '@dx/email-api';
 import {
   TEST_EMAIL,
   TEST_EXISTING_EMAIL,
   TEST_EXISTING_USER_ID,
   TEST_UUID,
 } from '@dx/config-shared';
-import { AuthSuccessResponseType, OtpResponseType } from '@dx/auth';
+import { AuthSuccessResponseType, OtpResponseType } from '@dx/auth-api';
 
 describe('v1 Email Routes', () => {
   let authRes: AuthSuccessResponseType;

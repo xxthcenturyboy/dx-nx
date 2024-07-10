@@ -1,7 +1,7 @@
 import express from 'express';
 
 import { API_APP_NAME, getApiConfig } from '@dx/config-shared';
-import { ApiLoggingClass } from '@dx/logger';
+import { ApiLoggingClass } from '@dx/logger-api';
 import { DxPostgresDb } from './data/dx-postgres.db';
 import { DxRedisCache } from './data/dx-redis.cache';
 import { ApiRoutes } from './routes/api.routes';

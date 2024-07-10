@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../../dist/out-tsc",
+    "module": "commonjs",
+    "types": ["jest", "node"]
+  },
+  "include": [
+    "jest.config.ts",
+    "src/**/*.test.ts",
+    "src/**/*.spec.ts",
+    "src/**/*.d.ts",
+    "../../../types/express.d.ts"
+, "../../user-privilege/api/src/user-privilege.controller.spec.ts", "../../user-privilege/api/src/user-privilege.redis-cache.spec.ts", "../../user-privilege/api/src/user-privilege.routes.spec.ts", "../../user-privilege/api/src/user-privilege.service.spec.ts"  ]
+}

@@ -3,7 +3,7 @@ import {
   logLoadedPostgresModels
 } from './dx-postgres.models';
 
-jest.mock('@dx/server');
+jest.mock('@dx/api-error-handler');
 
 describe('getPostgresModels', () => {
   it('should exist', () => {

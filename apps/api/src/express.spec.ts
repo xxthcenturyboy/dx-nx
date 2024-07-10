@@ -6,16 +6,16 @@ import morgan from 'morgan';
 // import session from 'express-session';
 
 import { configureExpress } from './express';
-import { ApiLoggingClass } from '@dx/logger';
+import { ApiLoggingClass } from '@dx/logger-api';
 import { RedisService } from '@dx/data-access-redis';
-import { handleError } from '@dx/server';
+import { handleError } from '@dx/utils-api-error-handler';
 
 let app: IExpress;
 
 jest.mock('connect-redis');
 jest.mock('@dx/logger');
 jest.mock('@dx/redis');
-jest.mock('@dx/server');
+jest.mock('@dx/api-error-handler');
 
 describe('configureExpress', () => {
   const logInfoSpy = jest.spyOn(ApiLoggingClass.prototype, 'logInfo');

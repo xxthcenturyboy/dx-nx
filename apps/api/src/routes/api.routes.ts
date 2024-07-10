@@ -1,13 +1,10 @@
-import {
-  Express,
-  Router
-} from 'express';
+import { Express, Router } from 'express';
 
-import { HealthzRoutes } from '@dx/healthz';
-import { WellKnownRoutes } from '@dx/devices';
+import { HealthzRoutes } from '@dx/healthz-api';
+import { WellKnownRoutes } from '@dx/devices-api';
 import { RoutesV1 } from './v1.routes';
-import { endpointNotFound } from '@dx/server';
-import { DxRateLimiters} from '@dx/server';
+import { endpointNotFound } from '@dx/utils-api-http-response';
+import { DxRateLimiters } from '@dx/utils-api-rate-limiters';
 
 export class ApiRoutes {
   app: Express;
@@ -19,8 +16,16 @@ export class ApiRoutes {
   }
 
   public loadRoutes() {
-    this.router.use('/healthz', DxRateLimiters.strict(), HealthzRoutes.configure());
-    this.router.use('/.well-known', DxRateLimiters.veryStrict(), WellKnownRoutes.configure());
+    this.router.use(
+      '/healthz',
+      DxRateLimiters.strict(),
+      HealthzRoutes.configure()
+    );
+    this.router.use(
+      '/.well-known',
+      DxRateLimiters.veryStrict(),
+      WellKnownRoutes.configure()
+    );
     this.router.use('/v1', RoutesV1.configure());
 
     this.router.all('/*', endpointNotFound);

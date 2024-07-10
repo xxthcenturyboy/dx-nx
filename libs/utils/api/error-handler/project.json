@@ -1,0 +1,9 @@
+{
+  "name": "utils-api-error-handler",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/utils/api/error-handler/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project utils-api-error-handler --web",
+  "targets": {}
+}

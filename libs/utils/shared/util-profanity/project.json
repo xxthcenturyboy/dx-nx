@@ -1,0 +1,9 @@
+{
+  "name": "util-profanity",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/utils/shared/util-profanity/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project util-profanity --web",
+  "targets": {}
+}

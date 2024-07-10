@@ -1,6 +1,6 @@
 import { Sequelize } from 'sequelize-typescript';
 import { DxPostgresDb } from './dx-postgres.db';
-import { ApiLoggingClass } from '@dx/logger';
+import { ApiLoggingClass } from '@dx/logger-api';
 import { isLocal } from '@dx/config-shared';
 
 // jest.mock('@dx/postgres');

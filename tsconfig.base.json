@@ -17,27 +17,46 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@dx/auth": ["libs/auth/src/index.ts"],
-      "@dx/config-api": ["libs/api/config/src/index.ts"],
-      "@dx/config-mobile": ["libs/mobile/config/src/index.ts"],
-      "@dx/config-shared": ["libs/shared/config/src/index.ts"],
-      "@dx/config-web": ["libs/web/config/src/index.ts"],
-      "@dx/data-access-postgres": [
-        "libs/shared/data-access/postgres/src/index.ts"
-      ],
-      "@dx/data-access-redis": ["libs/shared/data-access/redis/src/index.ts"],
-      "@dx/data-access-web-axios": ["libs/web/data-access/axios/src/index.ts"],
-      "@dx/devices": ["libs/devices/src/index.ts"],
-      "@dx/email": ["libs/email/src/index.ts"],
-      "@dx/healthz": ["libs/healthz/src/index.ts"],
-      "@dx/logger": ["libs/logger/src/index.ts"],
-      "@dx/mail": ["libs/mail/src/index.ts"],
-      "@dx/phone": ["libs/phone/src/index.ts"],
+      "@dx/auth-api": ["libs/auth/api/src/index.ts"],
+      "@dx/auth-shared": ["libs/auth/shared/src/index.ts"],
+      "@dx/auth-web": ["libs/auth/web/src/index.ts"],
+      "@dx/config-api": ["libs/config/api/src/index.ts"],
+      "@dx/config-mobile": ["libs/config/mobile/src/index.ts"],
+      "@dx/config-shared": ["libs/config/shared/src/index.ts"],
+      "@dx/config-web": ["libs/config/web/src/index.ts"],
+      "@dx/data-access-axios": ["libs/data-access/axios/src/index.ts"],
+      "@dx/data-access-postgres": ["libs/data-access/postgres/src/index.ts"],
+      "@dx/data-access-redis": ["libs/data-access/redis/src/index.ts"],
+      "@dx/devices-api": ["libs/devices/api/src/index.ts"],
+      "@dx/email-api": ["libs/email/api/src/index.ts"],
+      "@dx/healthz-api": ["libs/healthz/api/src/index.ts"],
+      "@dx/logger-api": ["libs/logger/api/src/index.ts"],
+      "@dx/mail-api": ["libs/mail/api/src/index.ts"],
+      "@dx/phone-api": ["libs/phone/api/src/index.ts"],
       "@dx/plugins-nx": ["libs/plugins-nx/src/index.ts"],
-      "@dx/server": ["libs/server/src/index.ts"],
-      "@dx/shortlink": ["libs/shortlink/src/index.ts"],
-      "@dx/user": ["libs/user/src/index.ts"],
-      "@dx/utils": ["libs/utils/src/index.ts"]
+      "@dx/shortlink-api": ["libs/shortlink/api/src/index.ts"],
+      "@dx/user-api": ["libs/user/api/src/index.ts"],
+      "@dx/user-privilege-api": ["libs/user-privilege/api/src/index.ts"],
+      "@dx/util-dates": ["libs/utils/shared/util-dates/src/index.ts"],
+      "@dx/util-emails": ["libs/utils/shared/util-emails/src/index.ts"],
+      "@dx/util-encryption": ["libs/utils/shared/util-encryption/src/index.ts"],
+      "@dx/util-numbers": ["libs/utils/shared/util-numbers/src/index.ts"],
+      "@dx/util-phones": ["libs/utils/shared/util-phones/src/index.ts"],
+      "@dx/util-profanity": ["libs/utils/shared/util-profanity/src/index.ts"],
+      "@dx/util-regex": ["libs/utils/shared/util-regex/src/index.ts"],
+      "@dx/util-strings": ["libs/utils/shared/util-strings/src/index.ts"],
+      "@dx/utils-api-cookies": ["libs/utils/api/cookies/src/index.ts"],
+      "@dx/utils-api-error-handler": [
+        "libs/utils/api/error-handler/src/index.ts"
+      ],
+      "@dx/utils-api-headers": ["libs/utils/api/headers/src/index.ts"],
+      "@dx/utils-api-http-response": [
+        "libs/utils/api/http-response/src/index.ts"
+      ],
+      "@dx/utils-api-rate-limiters": [
+        "libs/utils/api/rate-limiters/src/index.ts"
+      ],
+      "@dx/utils-shared-misc": ["libs/utils/shared/misc/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

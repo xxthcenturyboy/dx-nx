@@ -3,7 +3,7 @@ import {
   formatFiles,
   generateFiles,
   Tree,
-  updateJson
+  updateJson,
 } from '@nx/devkit';
 import * as path from 'path';
 import { DxLibModuleGeneratorSchema } from './schema';
@@ -11,13 +11,15 @@ import {
   convertpHyphensToUnderscores,
   hyphenatedToTilteCaseConcatenated,
   stripHyphens,
-  uppercase
-} from '@dx/utils';
+  uppercase,
+} from '@dx/util-strings';
 
 async function updateTsConfig(tree: Tree, schema: DxLibModuleGeneratorSchema) {
   updateJson(tree, 'tsconfig.base.json', (tsconfig) => {
     tsconfig.compilerOptions.paths = tsconfig.compilerOptions.paths ?? {};
-    tsconfig.compilerOptions.paths[`@dx/${schema.name}`] = [`${schema.directory}/${schema.name}/src/index.ts`];
+    tsconfig.compilerOptions.paths[`@dx/${schema.name}`] = [
+      `${schema.directory}/${schema.name}/src/index.ts`,
+    ];
     return tsconfig;
   });
 }
@@ -38,8 +40,8 @@ export async function dxLibModuleGenerator(
     hyphenatedToTilteCaseConcatenated,
     stripHyphens,
     uppercase,
-    ...options
-});
+    ...options,
+  });
   await formatFiles(tree);
   await updateTsConfig(tree, options);
 }

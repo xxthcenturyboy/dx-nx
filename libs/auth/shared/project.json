@@ -1,0 +1,9 @@
+{
+  "name": "auth-shared",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/auth/shared/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project auth-shared --web",
+  "targets": {}
+}

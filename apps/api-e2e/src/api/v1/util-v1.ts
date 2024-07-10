@@ -5,7 +5,7 @@ import axios, {
   AxiosResponse,
 } from 'axios';
 
-import { AuthSuccessResponseType, LoginPaylodType } from '@dx/auth';
+import { AuthSuccessResponseType, LoginPaylodType } from '@dx/auth-api';
 import { TEST_EXISTING_EMAIL, TEST_EXISTING_PASSWORD } from '@dx/config-shared';
 
 export class AuthUtil {

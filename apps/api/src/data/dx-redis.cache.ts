@@ -1,4 +1,4 @@
-import { ApiLoggingClass } from '@dx/logger';
+import { ApiLoggingClass } from '@dx/logger-api';
 import {
   RedisHealthzService,
   RedisService,

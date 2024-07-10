@@ -9,14 +9,14 @@ import {
   UpdateUserPayloadType,
   UpdateUserResponseType,
   UpdatePasswordPayloadType,
-} from '@dx/user';
+} from '@dx/user-api';
 import {
   TEST_EXISTING_USER_ID,
   TEST_USER_CREATE,
   TEST_UUID,
 } from '@dx/config-shared';
-import { UpdateUsernamePayloadType } from '@dx/user';
-import { AuthSuccessResponseType, OtpResponseType } from '@dx/auth';
+import { UpdateUsernamePayloadType } from '@dx/user-api';
+import { AuthSuccessResponseType, OtpResponseType } from '@dx/auth-api';
 
 describe('v1 User Routes', () => {
   let authRes: AuthSuccessResponseType;

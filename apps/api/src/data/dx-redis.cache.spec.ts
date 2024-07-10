@@ -1,5 +1,5 @@
 import { DxRedisCache } from './dx-redis.cache';
-import { ApiLoggingClass } from '@dx/logger';
+import { ApiLoggingClass } from '@dx/logger-api';
 
 jest.mock('@dx/redis');
 jest.mock('@dx/logger');

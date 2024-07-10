@@ -1,0 +1,9 @@
+{
+  "name": "utils-api-rate-limiters",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/utils/api/rate-limiters/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project utils-api-rate-limiters --web",
+  "targets": {}
+}

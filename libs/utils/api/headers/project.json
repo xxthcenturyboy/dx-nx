@@ -1,0 +1,9 @@
+{
+  "name": "utils-api-headers",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/utils/api/headers/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project utils-api-headers --web",
+  "targets": {}
+}

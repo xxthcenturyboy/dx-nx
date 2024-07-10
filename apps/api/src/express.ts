@@ -8,7 +8,7 @@ import cookieParser from 'cookie-parser';
 import morgan, { TokenIndexer } from 'morgan';
 import cors from 'cors';
 
-// import { DxDateUtilClass } from '@dx/utils';
+// import { DxDateUtilClass } from '@dx/util-dates';
 import { CLIENT_APP_URL } from '@dx/config-web';
 // import { StatusCodes } from 'http-status-codes';
 
@@ -19,7 +19,7 @@ import { CLIENT_APP_URL } from '@dx/config-web';
 // } from '@dx/config-api';
 // import { isLocal } from '@dx/config-shared';
 
-import { handleError } from '@dx/server';
+import { handleError } from '@dx/utils-api-error-handler';
 
 type DxApiSettingsType = {
   DEBUG: boolean;

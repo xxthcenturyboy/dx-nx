@@ -1,0 +1,9 @@
+{
+  "name": "util-regex",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/utils/shared/util-regex/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project util-regex --web",
+  "targets": {}
+}

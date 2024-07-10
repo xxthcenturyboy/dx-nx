@@ -1,13 +1,12 @@
 import { Router } from 'express';
 
-import { AuthRoutes } from '@dx/auth';
-import { DevicesRoutes } from '@dx/devices';
-import { EmailRoutes } from '@dx/email';
-import { PhoneRoutes } from '@dx/phone';
-import { ShortlinkRoutes } from '@dx/shortlink';
-import { UserPrivilegeRoutes } from '@dx/user';
-import { UserRoutes } from '@dx/user';
-// import { DxRateLimiters} from '@dx/server';
+import { AuthRoutes } from '@dx/auth-api';
+import { DevicesRoutes } from '@dx/devices-api';
+import { EmailRoutes } from '@dx/email-api';
+import { PhoneRoutes } from '@dx/phone-api';
+import { ShortlinkRoutes } from '@dx/shortlink-api';
+import { UserPrivilegeRoutes } from '@dx/user-privilege-api';
+import { UserRoutes } from '@dx/user-api';
 
 export class RoutesV1 {
   static configure() {

@@ -1,0 +1,9 @@
+{
+  "name": "utils-api-http-response",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/utils/api/http-response/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project utils-api-http-response --web",
+  "targets": {}
+}

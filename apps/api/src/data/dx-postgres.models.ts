@@ -1,18 +1,13 @@
-import {
-  Model,
-  ModelCtor
-} from "sequelize-typescript";
+import { Model, ModelCtor } from 'sequelize-typescript';
 
-import {
-  UserModel,
-  UserPrivilegeSetModel
-} from "@dx/user";
-import { DeviceModel } from "@dx/devices";
-import { EmailModel } from "@dx/email";
-import { PhoneModel } from "@dx/phone";
+import { UserModel } from '@dx/user-api';
+import { UserPrivilegeSetModel } from '@dx/user-privilege-api';
+import { DeviceModel } from '@dx/devices-api';
+import { EmailModel } from '@dx/email-api';
+import { PhoneModel } from '@dx/phone-api';
 
-import { ShortLinkModel } from "@dx/shortlink";
-import { logTable } from "@dx/utils";
+import { ShortLinkModel } from '@dx/shortlink-api';
+import { logTable } from '@dx/utils-shared-misc';
 
 export function getPostgresModels(): ModelCtor[] {
   const models: ModelCtor[] = [];
@@ -27,7 +22,9 @@ export function getPostgresModels(): ModelCtor[] {
   return models;
 }
 
-export function logLoadedPostgresModels(pgModels: { [key: string]: ModelCtor<Model> }): void {
+export function logLoadedPostgresModels(pgModels: {
+  [key: string]: ModelCtor<Model>;
+}): void {
   const MODEL_PROP_NAME = 'Model Name';
   const TABLE_PROP_NAME = 'Table Name';
   const tableNames = Object.keys(pgModels);
@@ -35,7 +32,7 @@ export function logLoadedPostgresModels(pgModels: { [key: string]: ModelCtor<Mod
   for (const tableName of tableNames) {
     models.push({
       [MODEL_PROP_NAME]: pgModels[tableName].name,
-      [TABLE_PROP_NAME]: pgModels[tableName].tableName
+      [TABLE_PROP_NAME]: pgModels[tableName].tableName,
     });
   }
 

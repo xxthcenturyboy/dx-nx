@@ -1,16 +1,7 @@
-import axios,
-{
-  AxiosResponse
-} from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
-import {
-  HealthzStatusType,
-  STATUS_OK
-} from '@dx/healthz';
-import {
-  AndroiodWellKnownData,
-  AppleWellKnownData
-} from '@dx/config-mobile';
+import { HealthzStatusType, STATUS_OK } from '@dx/healthz-api';
+import { AndroiodWellKnownData, AppleWellKnownData } from '@dx/config-mobile';
 
 describe('Root Routes', () => {
   describe('GET /api/healthz', () => {
