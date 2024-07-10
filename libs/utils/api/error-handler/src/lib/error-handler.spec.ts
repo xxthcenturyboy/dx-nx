@@ -8,7 +8,7 @@ import { sendBadRequest, sendForbidden } from '@dx/utils-api-http-response';
 import { handleError } from './error-handler';
 
 jest.mock('@dx/logger-api');
-jest.mock('./http-responses.ts');
+jest.mock('@dx/utils-api-http-response');
 
 describe('handleError', () => {
   let req: IRequest;

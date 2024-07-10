@@ -72,10 +72,10 @@ export class RedisService {
     }
 
     try {
-      // @ts-expect-error - types are ok here
       const save = await this.cacheHandle.set(
         key,
         data,
+        // @ts-expect-error - types are ok here
         expireOptions.token,
         expireOptions.time
       );

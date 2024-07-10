@@ -6,7 +6,7 @@ import { authActions } from '@dx/auth-web';
 
 const backendURI = 'http://localhost:5000';
 
-const AxiosInstance = ({ headers }) => {
+export const AxiosInstance = ({ headers }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const accessToken = useSelector((state) => state.authToken.token);

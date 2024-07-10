@@ -1,7 +1,7 @@
-import { axios } from './axios';
+import { AxiosInstance } from './axios';
 
-describe('axios', () => {
+describe('AxiosInstance', () => {
   it('should work', () => {
-    expect(axios()).toEqual('axios');
+    expect(AxiosInstance).toBeDefined();
   });
 });

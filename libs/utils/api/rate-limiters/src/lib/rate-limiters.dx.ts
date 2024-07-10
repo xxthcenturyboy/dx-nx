@@ -75,8 +75,7 @@ export class DxRateLimiters {
       store: new RedisStore({
         prefix: `${APP_PREFIX}${REDIS_DELIMITER}rl-account-creation${REDIS_DELIMITER}`,
         // @ts-expect-error - Known issue: the `call` function is not present in @types/ioredis
-        sendCommand: (...args: string[]) =>
-          RedisService.instance.cacheHandle.call(...args),
+        sendCommand: (...args: string[]) => RedisService.instance.cacheHandle.call(...args),
       }),
       handler: DxRateLimiters.handleLimitCommon,
       keyGenerator: DxRateLimiters.keyGenLogin,
@@ -92,8 +91,7 @@ export class DxRateLimiters {
       store: new RedisStore({
         prefix: `${APP_PREFIX}${REDIS_DELIMITER}rl-auth-lookup${REDIS_DELIMITER}`,
         // @ts-expect-error - Known issue: the `call` function is not present in @types/ioredis
-        sendCommand: (...args: string[]) =>
-          RedisService.instance.cacheHandle.call(...args),
+        sendCommand: (...args: string[]) => RedisService.instance.cacheHandle.call(...args),
       }),
       handler: DxRateLimiters.handleLimitCommon,
       keyGenerator: DxRateLimiters.keyGenLogin,
@@ -109,8 +107,7 @@ export class DxRateLimiters {
       store: new RedisStore({
         prefix: `${APP_PREFIX}${REDIS_DELIMITER}rl-login${REDIS_DELIMITER}`,
         // @ts-expect-error - Known issue: the `call` function is not present in @types/ioredis
-        sendCommand: (...args: string[]) =>
-          RedisService.instance.cacheHandle.call(...args),
+        sendCommand: (...args: string[]) => RedisService.instance.cacheHandle.call(...args),
       }),
       handler: DxRateLimiters.handleLimitLogin,
       keyGenerator: DxRateLimiters.keyGenLogin,
@@ -125,8 +122,7 @@ export class DxRateLimiters {
       store: new RedisStore({
         prefix: `${APP_PREFIX}${REDIS_DELIMITER}rl-std${REDIS_DELIMITER}`,
         // @ts-expect-error - Known issue: the `call` function is not present in @types/ioredis
-        sendCommand: (...args: string[]) =>
-          RedisService.instance.cacheHandle.call(...args),
+        sendCommand: (...args: string[]) => RedisService.instance.cacheHandle.call(...args),
       }),
       handler: DxRateLimiters.handleLimitCommon,
       keyGenerator: DxRateLimiters.keyGenStandard,
@@ -145,8 +141,7 @@ export class DxRateLimiters {
       store: new RedisStore({
         prefix: `${APP_PREFIX}${REDIS_DELIMITER}rl-strict${REDIS_DELIMITER}`,
         // @ts-expect-error - Known issue: the `call` function is not present in @types/ioredis
-        sendCommand: (...args: string[]) =>
-          RedisService.instance.cacheHandle.call(...args),
+        sendCommand: (...args: string[]) => RedisService.instance.cacheHandle.call(...args),
       }),
       handler: DxRateLimiters.handleLimitCommon,
       keyGenerator: DxRateLimiters.keyGenStandard,
@@ -165,8 +160,7 @@ export class DxRateLimiters {
       store: new RedisStore({
         prefix: `${APP_PREFIX}${REDIS_DELIMITER}rl-very-strict${REDIS_DELIMITER}`,
         // @ts-expect-error - Known issue: the `call` function is not present in @types/ioredis
-        sendCommand: (...args: string[]) =>
-          RedisService.instance.cacheHandle.call(...args),
+        sendCommand: (...args: string[]) => RedisService.instance.cacheHandle.call(...args),
       }),
       handler: DxRateLimiters.handleLimitCommon,
       keyGenerator: DxRateLimiters.keyGenStandard,

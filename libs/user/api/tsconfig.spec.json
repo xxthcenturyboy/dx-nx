@@ -11,5 +11,5 @@
     "src/**/*.spec.ts",
     "src/**/*.d.ts",
     "../../../types/express.d.ts"
-, "../../user-privilege/api/src/user-privilege.controller.spec.ts", "../../user-privilege/api/src/user-privilege.redis-cache.spec.ts", "../../user-privilege/api/src/user-privilege.routes.spec.ts", "../../user-privilege/api/src/user-privilege.service.spec.ts"  ]
+  ]
 }
