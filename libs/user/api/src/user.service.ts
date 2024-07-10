@@ -3,22 +3,6 @@ import { Op } from 'sequelize';
 import { FindOptions, WhereOptions } from 'sequelize/types';
 
 import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger-api';
-import { UserModel } from './user.postgres-model';
-import { getUserProfileState } from './user-profile';
-import {
-  CreateUserPayloadType,
-  CreateUserResponseType,
-  GetUserProfileReturnType,
-  GetUserListResponseType,
-  GetUsersListQueryType,
-  GetUserResponseType,
-  UserType,
-  UpdateUserPayloadType,
-  UpdateUsernamePayloadType,
-  UpdateUserResponseType,
-  UpdatePasswordPayloadType,
-} from './user.types';
-import { USER_FIND_ATTRIBUTES, USER_SORT_FIELDS } from './user.consts';
 import { EMAIL_MODEL_OPTIONS } from '@dx/email-api';
 import { PHONE_DEFAULT_REGION_CODE, PHONE_MODEL_OPTIONS } from '@dx/phone-api';
 import {
@@ -37,6 +21,22 @@ import { PhoneUtil } from '@dx/util-phones';
 import { ProfanityFilter } from '@dx/util-profanity';
 import { OtpResponseType, OtpService } from '@dx/auth-api';
 import { dxRsaValidateBiometricKey } from '@dx/util-encryption';
+import { UserModel } from './user.postgres-model';
+import { getUserProfileState } from './user-profile';
+import {
+  CreateUserPayloadType,
+  CreateUserResponseType,
+  GetUserProfileReturnType,
+  GetUserListResponseType,
+  GetUsersListQueryType,
+  GetUserResponseType,
+  UserType,
+  UpdateUserPayloadType,
+  UpdateUsernamePayloadType,
+  UpdateUserResponseType,
+  UpdatePasswordPayloadType,
+} from './user.types';
+import { USER_FIND_ATTRIBUTES, USER_SORT_FIELDS } from './user.consts';
 
 export class UserService {
   private DEBUG = isDebug();

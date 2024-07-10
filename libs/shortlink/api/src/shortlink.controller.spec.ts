@@ -2,11 +2,11 @@ import { Request as IRequest, Response as IResponse } from 'express';
 import { Request } from 'jest-express/lib/request';
 import { Response } from 'jest-express/lib/response';
 
-import { ShortlinkController } from './shortlink.controller';
 import { sendOK, sendBadRequest } from '@dx/utils-api-http-response';
+import { ShortlinkController } from './shortlink.controller';
 
 jest.mock('./shortlink.service.ts');
-jest.mock('@dx/api-http-response', () => ({
+jest.mock('@dx/utils-api-http-response', () => ({
   sendOK: jest.fn(),
   sendBadRequest: jest.fn(),
 }));

@@ -19,8 +19,8 @@ import { TokenService } from './token.service';
 import { CookeiService } from '@dx/utils-api-cookies';
 import { TEST_EXISTING_USER_ID, TEST_UUID } from '@dx/config-shared';
 
-jest.mock('@dx/logger');
-jest.mock('@dx/api-cookies', () => ({
+jest.mock('@dx/logger-api');
+jest.mock('@dx/utils-api-cookies', () => ({
   CookeiService: {
     clearCookie: jest.fn(),
     clearCookies: jest.fn(),
@@ -29,13 +29,13 @@ jest.mock('@dx/api-cookies', () => ({
     setCookies: jest.fn(),
   },
 }));
-jest.mock('@dx/api-headers', () => ({
+jest.mock('@dx/utils-api-headers', () => ({
   sendUnauthorized: jest.fn(),
 }));
-jest.mock('@dx/api-http-response', () => ({
+jest.mock('@dx/utils-api-http-response', () => ({
   sendUnauthorized: jest.fn(),
 }));
-jest.mock('@dx/user');
+jest.mock('@dx/user-api');
 
 describe('ensureLoggedIn', () => {
   let req: IRequest;

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
-import { ShortlinkService } from './shortlink.service';
 import { sendBadRequest, sendOK } from '@dx/utils-api-http-response';
+import { ShortlinkService } from './shortlink.service';
 
 export const ShortlinkController = {
   redirectToTarget: async function (req: Request, res: Response) {

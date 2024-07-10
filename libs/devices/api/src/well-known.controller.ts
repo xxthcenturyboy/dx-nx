@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
-import { WellKnownSourcesService } from './well-known.dx-mobile.service';
 import { sendOK } from '@dx/utils-api-http-response';
+import { WellKnownSourcesService } from './well-known.dx-mobile.service';
 
 export const WellKnownController = {
   getAndroidData: function (req: Request, res: Response) {

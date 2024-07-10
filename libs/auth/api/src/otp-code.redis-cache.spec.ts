@@ -1,10 +1,10 @@
 import { ApiLoggingClass } from '@dx/logger-api';
-import { OtpCodeCache, OtpCodeCacheType } from './otp-code.redis-cache';
 import { RedisService } from '@dx/data-access-redis';
 import { TEST_COUNTRY_CODE, TEST_EMAIL, TEST_PHONE } from '@dx/config-shared';
 import { getRedisConfig } from '@dx/config-api';
+import { OtpCodeCache, OtpCodeCacheType } from './otp-code.redis-cache';
 
-jest.mock('@dx/logger');
+jest.mock('@dx/logger-api');
 
 describe('OtpCodeCache', () => {
   let cache: OtpCodeCacheType;

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { authActions } from '@dx/auth-api';
+import { authActions } from '@dx/auth-web';
 
 const backendURI = 'http://localhost:5000';
 

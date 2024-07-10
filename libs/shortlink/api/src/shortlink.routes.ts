@@ -1,4 +1,5 @@
 import { Router } from 'express';
+
 import { ShortlinkController } from './shortlink.controller';
 
 export class ShortlinkRoutes {

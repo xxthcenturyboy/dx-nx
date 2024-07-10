@@ -7,7 +7,7 @@ import { ApiLoggingClass } from '@dx/logger-api';
 import { sendBadRequest, sendForbidden } from '@dx/utils-api-http-response';
 import { handleError } from './error-handler';
 
-jest.mock('@dx/logger');
+jest.mock('@dx/logger-api');
 jest.mock('./http-responses.ts');
 
 describe('handleError', () => {

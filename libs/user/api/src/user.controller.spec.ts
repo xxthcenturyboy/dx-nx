@@ -2,7 +2,6 @@ import { Request as IRequest, Response as IResponse } from 'express';
 import { Request } from 'jest-express/lib/request';
 import { Response } from 'jest-express/lib/response';
 
-import { UserController } from './user.controller';
 import { sendOK, sendBadRequest } from '@dx/utils-api-http-response';
 import {
   TEST_EMAIL,
@@ -11,9 +10,10 @@ import {
   TEST_USER_CREATE,
   TEST_UUID,
 } from '@dx/config-shared';
+import { UserController } from './user.controller';
 
 jest.mock('./user.service.ts');
-jest.mock('@dx/api-http-response', () => ({
+jest.mock('@dx/utils-api-http-response', () => ({
   sendOK: jest.fn(),
   sendBadRequest: jest.fn(),
 }));

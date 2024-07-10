@@ -5,15 +5,13 @@ import { ApiLoggingClass } from '@dx/logger-api';
 import { DeviceModel } from '@dx/devices-api';
 import { EmailModel } from '@dx/email-api';
 import { PhoneModel } from '@dx/phone-api';
-import { UserModel } from './user.postgres-model';
 import { UserPrivilegeSetModel, USER_PRIVILEGES_POSTGRES_DB_NAME } from '@dx/user-privilege-api';
-import {
-  USER_ENTITY_POSTGRES_DB_NAME,
-} from './user.consts';
 import { isLocal } from '@dx/config-shared';
 import { POSTGRES_URI } from '@dx/config-api';
+import { USER_ENTITY_POSTGRES_DB_NAME } from './user.consts';
+import { UserModel } from './user.postgres-model';
 
-jest.mock('@dx/logger');
+jest.mock('@dx/logger-api');
 
 describe('User Models', () => {
   if (isLocal()) {

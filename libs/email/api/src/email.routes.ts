@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import { EmailController } from './email.controller';
+
 import { ensureLoggedIn, hasAdminRole, hasSuperAdminRole } from '@dx/auth-api';
+import { EmailController } from './email.controller';
 
 export class EmailRoutes {
   static configure() {

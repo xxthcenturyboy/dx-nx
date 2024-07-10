@@ -1,4 +1,5 @@
 import { Model } from 'sequelize-typescript';
+
 import { USER_ROLE } from '@dx/user-privilege-api';
 
 const mockUsers = {

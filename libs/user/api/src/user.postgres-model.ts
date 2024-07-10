@@ -28,13 +28,13 @@ import {
   UserPrivilegeSetModel,
   UserPrivilegeSetModelType,
 } from '@dx/user-privilege-api';
+import { USER_ROLE } from '@dx/user-privilege-api';
+import { ApiLoggingClass } from '@dx/logger-api';
 import {
   ACCOUNT_RESTRICTIONS,
   USER_ENTITY_POSTGRES_DB_NAME,
 } from './user.consts';
-import { USER_ROLE } from '@dx/user-privilege-api';
 import { usernameValidator } from './username.validator';
-import { ApiLoggingClass } from '@dx/logger-api';
 import { UserSessionType } from './user.types';
 
 @Table({

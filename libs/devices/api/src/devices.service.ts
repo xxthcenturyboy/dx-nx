@@ -1,12 +1,12 @@
 import { randomUUID } from 'crypto';
 
 import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger-api';
-import { DeviceModel, DeviceModelType } from './device.postgres-model';
-import { FACIAL_AUTH_STATE } from './devices.consts';
-import { DeviceAuthType } from './devices.types';
 import { UserModel, UserModelType } from '@dx/user-api';
 import { isLocal } from '@dx/config-shared';
 import { SecurityAlertSerivice } from '@dx/auth-api';
+import { DeviceModel, DeviceModelType } from './device.postgres-model';
+import { FACIAL_AUTH_STATE } from './devices.consts';
+import { DeviceAuthType } from './devices.types';
 
 export class DevicesService {
   private LOCAL = isLocal();

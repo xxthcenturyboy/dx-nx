@@ -1,5 +1,5 @@
-import { ApiLoggingClass } from './api-logging.class';
 import { API_APP_NAME } from '@dx/config-api';
+import { ApiLoggingClass } from './api-logging.class';
 
 describe('ApiLoggingClass', () => {
   // arrange

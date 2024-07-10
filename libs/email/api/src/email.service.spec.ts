@@ -3,9 +3,7 @@ import { Sequelize } from 'sequelize-typescript';
 import { ApiLoggingClass } from '@dx/logger-api';
 import { PostgresDbConnection } from '@dx/data-access-postgres';
 import { RedisService } from '@dx/data-access-redis';
-import { EmailService, EmailServiceType } from './email.service';
 import { DeviceModel } from '@dx/devices-api';
-import { EmailModel } from './email.postgres-model';
 import { PhoneModel } from '@dx/phone-api';
 import { ShortLinkModel } from '@dx/shortlink-api';
 import { UserModel } from '@dx/user-api';
@@ -17,10 +15,12 @@ import {
   TEST_EXISTING_USER_ID,
 } from '@dx/config-shared';
 import { POSTGRES_URI } from '@dx/config-api';
-import { CreateEmailPayloadType, UpdateEmailPayloadType } from './email.types';
 import { UserService } from '@dx/user-api';
+import { CreateEmailPayloadType, UpdateEmailPayloadType } from './email.types';
+import { EmailService, EmailServiceType } from './email.service';
+import { EmailModel } from './email.postgres-model';
 
-jest.mock('@dx/logger');
+jest.mock('@dx/logger-api');
 
 describe('EmailService', () => {
   if (isLocal()) {

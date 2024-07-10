@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 import jwt from 'jsonwebtoken';
 
+import { JwtPayloadType } from '@dx/auth-api';
 import { AUTH_ENTITY_NAME } from './auth-web.consts';
 import { authInitialState } from './auth-web.state';
-import { JwtPayloadType } from '@dx/auth-api';
 
 const authSlice = createSlice({
   name: AUTH_ENTITY_NAME,

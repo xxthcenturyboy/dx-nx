@@ -2,8 +2,6 @@ import { Request as IRequest, Response as IResponse } from 'express';
 import { Request } from 'jest-express/lib/request';
 import { Response } from 'jest-express/lib/response';
 
-import { AuthController } from './auth-api.controller';
-import { LoginPaylodType } from './auth-api.types';
 import {
   sendOK,
   sendBadRequest,
@@ -12,17 +10,19 @@ import {
 } from '@dx/utils-api-http-response';
 import { ApiLoggingClass } from '@dx/logger-api';
 import { TEST_EMAIL, TEST_PASSWORD } from '@dx/config-shared';
+import { AuthController } from './auth-api.controller';
+import { LoginPaylodType } from './auth-api.types';
 
 jest.mock('./auth.service.ts');
 jest.mock('./token.service.ts');
-jest.mock('@dx/logger');
-jest.mock('@dx/api-http-response', () => ({
+jest.mock('@dx/logger-api');
+jest.mock('@dx/utils-api-http-response', () => ({
   sendOK: jest.fn(),
   sendBadRequest: jest.fn(),
   sendNoContent: jest.fn(),
   sendUnauthorized: jest.fn(),
 }));
-jest.mock('@dx/api-cookies', () => ({
+jest.mock('@dx/utils-api-cookies', () => ({
   CookeiService: {
     clearCookie: jest.fn(),
     clearCookies: jest.fn(),

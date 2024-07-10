@@ -1,9 +1,9 @@
 // import { Request, Response } from 'express';
+import { TEST_EXISTING_USER_ID } from '@dx/config-shared';
 import {
   GenerateTokenParams,
   GenerateTokenResponse,
 } from '../token.types';
-import { TEST_EXISTING_USER_ID } from '@dx/config-shared';
 
 export class TokenService {
   public static generateTokens(

@@ -1,6 +1,6 @@
 import { RouterState } from 'connected-react-router';
 
-import { AuthStateType } from 'libs/auth/src/model/auth.types';
+import { AuthStateType } from '@dx/auth-web';
 
 export type WebRootStateType = {
   auth: AuthStateType;

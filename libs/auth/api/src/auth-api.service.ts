@@ -9,6 +9,14 @@ import {
 import { DeviceModel } from '@dx/devices-api';
 import { EmailModel } from '@dx/email-api';
 import { PhoneModel, PHONE_DEFAULT_REGION_CODE } from '@dx/phone-api';
+import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger-api';
+import { MailSendgrid } from '@dx/mail-api';
+import { ShortLinkModel } from '@dx/shortlink-api';
+import { EmailUtil } from '@dx/util-emails';
+import { PhoneUtil } from '@dx/util-phones';
+import { dxRsaValidateBiometricKey } from '@dx/util-encryption';
+import { isProd } from '@dx/config-shared';
+import { DevicesService } from '@dx/devices-api';
 import {
   AccountCreationPayloadType,
   BiometricAuthType,
@@ -18,16 +26,8 @@ import {
   UserLookupResponseType,
 } from './auth-api.types';
 import { USER_LOOKUPS } from './auth-api.consts';
-import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger-api';
-import { MailSendgrid } from '@dx/mail-api';
-import { ShortLinkModel } from '@dx/shortlink-api';
-import { EmailUtil } from '@dx/util-emails';
-import { PhoneUtil } from '@dx/util-phones';
-import { dxRsaValidateBiometricKey } from '@dx/util-encryption';
 import { OtpCodeCache } from './otp-code.redis-cache';
 import { TokenService } from './token.service';
-import { isProd } from '@dx/config-shared';
-import { DevicesService } from '@dx/devices-api';
 
 export class AuthService {
   logger: ApiLoggingClassType;

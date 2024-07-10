@@ -1,6 +1,5 @@
 import { Sequelize } from 'sequelize-typescript';
 
-import { ApiConfigType } from './api-config.type';
 import { ApiLoggingClassType } from '@dx/logger-api';
 import { isDebug, getEnvironment, LOCAL_ENV_NAME } from '@dx/config-shared';
 import {
@@ -10,6 +9,7 @@ import {
   SENDGRID_URL,
 } from './api-config.consts';
 import { RedisConfigType, RedisServiceType } from '@dx/data-access-redis';
+import { ApiConfigType } from './api-config.type';
 
 export function getRedisConfig(): RedisConfigType {
   const env = getEnvironment();

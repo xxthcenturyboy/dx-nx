@@ -1,8 +1,8 @@
 import { Redis } from 'ioredis';
 
+import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger-api';
 import { RedisConstructorType, RedisExpireOptions } from '../redis.types';
 import { REDIS_DELIMITER } from '../redis.consts';
-import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger-api';
 
 export class RedisService {
   cacheHandle: typeof Redis.Cluster.prototype | typeof Redis.prototype;

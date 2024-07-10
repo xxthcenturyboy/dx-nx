@@ -1,10 +1,10 @@
-import { MailSendgrid, MailSendgridType } from './mail.sendgrid';
 import { ApiLoggingClass } from '@dx/logger-api';
 import { TEST_EMAIL } from '@dx/config-shared';
 import { SG_TEMPLATES } from './templates.sendgrid';
 import { UNSUBSCRIBE_GROUPS } from './mail.sendgrid.const';
+import { MailSendgrid, MailSendgridType } from './mail.sendgrid';
 
-jest.mock('@dx/logger');
+jest.mock('@dx/logger-api');
 
 describe('MailSendgrid', () => {
   let mail: MailSendgridType;

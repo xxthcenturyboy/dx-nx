@@ -5,7 +5,7 @@ import { API_APP_NAME } from '@dx/config-api';
 import { RedisService, RedisServiceType } from './redis.service';
 import { REDIS_HEALTHZ_DATA, REDIS_HEALTHZ_KEY } from './redis.consts';
 
-jest.mock('@dx/logger');
+jest.mock('@dx/logger-api');
 
 describe('RedisService', () => {
   let redisService: RedisServiceType;

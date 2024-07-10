@@ -5,7 +5,7 @@ import { Response } from 'jest-express/lib/response';
 import { RedisService } from '@dx/data-access-redis';
 import { DxRateLimiters } from './rate-limiters.dx';
 
-jest.mock('@dx/api-http-response', () => ({
+jest.mock('@dx/utils-api-http-response', () => ({
   sendOK: jest.fn(),
   sendBadRequest: jest.fn(),
   sendTooManyRequests: jest.fn(),

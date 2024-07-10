@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
-import { AuthController } from './auth-api.controller';
 import { DxRateLimiters } from '@dx/utils-api-rate-limiters';
+import { AuthController } from './auth-api.controller';
 
 export class AuthRoutes {
   static configure() {

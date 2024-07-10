@@ -1,11 +1,10 @@
 import { Sequelize } from 'sequelize-typescript';
-import { DxPostgresDb } from './dx-postgres.db';
+
 import { ApiLoggingClass } from '@dx/logger-api';
 import { isLocal } from '@dx/config-shared';
+import { DxPostgresDb } from './dx-postgres.db';
 
-// jest.mock('@dx/postgres');
-jest.mock('@dx/logger');
-// jest.mock('./dx-postgres.models.ts');
+jest.mock('@dx/logger-api');
 
 describe('dx-postgres.db', () => {
   let dbHandle: Sequelize;

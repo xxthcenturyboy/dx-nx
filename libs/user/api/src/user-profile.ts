@@ -1,6 +1,6 @@
+import { ApiLoggingClass } from '@dx/logger-api';
 import { UserModel } from './user.postgres-model';
 import { UserProfileStateType } from './user.types';
-import { ApiLoggingClass } from '@dx/logger-api';
 
 export async function getUserProfileState(
   user: UserModel,

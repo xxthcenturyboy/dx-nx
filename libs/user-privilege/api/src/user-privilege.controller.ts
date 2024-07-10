@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 
+import { sendBadRequest, sendOK } from '@dx/utils-api-http-response';
 import { UserPrivilegeService } from './user-privilege.service';
 import { UpdatePrivilegeSetPayloadType } from './user-privilege.types';
-import { sendBadRequest, sendOK } from '@dx/utils-api-http-response';
 
 export const PrivilegeSetController = {
   getAllPrivilegeSets: async function (req: Request, res: Response) {

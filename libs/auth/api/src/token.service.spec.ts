@@ -1,8 +1,8 @@
 import { ApiLoggingClass } from '@dx/logger-api';
-import { TokenService } from './token.service';
 import { TEST_UUID } from '@dx/config-shared';
+import { TokenService } from './token.service';
 
-jest.mock('@dx/logger');
+jest.mock('@dx/logger-api');
 
 describe('TokenService', () => {
   beforeAll(() => {

@@ -1,5 +1,5 @@
-import { maliciousUrlCheck } from './malicious-url-check';
 import { CLIENT_APP_DOMAIN, CLIENT_APP_URL } from '@dx/config-web';
+import { maliciousUrlCheck } from './malicious-url-check';
 
 describe('maliciousUrlCheck', () => {
   it('should throw on a potentially maliciouls url', () => {

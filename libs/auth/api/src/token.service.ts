@@ -1,16 +1,16 @@
 import jwt from 'jsonwebtoken';
 
+import { DxDateUtilClass } from '@dx/util-dates';
+import { ApiLoggingClass } from '@dx/logger-api';
+import { APP_DOMAIN } from '@dx/config-shared';
+import { JWT_SECRET } from '@dx/config-api';
+import { UserModel } from '@dx/user-api';
 import {
   GenerateTokenParams,
   GenerateTokenResponse,
   JwtPayloadType,
   TokenExpiration,
 } from './token.types';
-import { DxDateUtilClass } from '@dx/util-dates';
-import { ApiLoggingClass } from '@dx/logger-api';
-import { APP_DOMAIN } from '@dx/config-shared';
-import { JWT_SECRET } from '@dx/config-api';
-import { UserModel } from '@dx/user-api';
 
 export class TokenService {
   public static issuer = `accounts.${APP_DOMAIN}`;

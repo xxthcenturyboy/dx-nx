@@ -1,6 +1,6 @@
 import { ApiLoggingClass } from '@dx/logger-api';
-import { OtpCodeCache } from './otp-code.redis-cache';
 import { UserModel } from '@dx/user-api';
+import { OtpCodeCache } from './otp-code.redis-cache';
 
 export class OtpService {
   public static async generateOptCode(userId: string): Promise<string> {

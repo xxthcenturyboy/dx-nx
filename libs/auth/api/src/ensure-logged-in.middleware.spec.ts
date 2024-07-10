@@ -7,16 +7,16 @@ import { Request } from 'jest-express/lib/request';
 import { Response } from 'jest-express/lib/response';
 import { next } from 'jest-express/lib/next';
 
-import { ensureLoggedIn } from './ensure-logged-in.middleware';
 import { ApiLoggingClass } from '@dx/logger-api';
 import { sendUnauthorized } from '@dx/utils-api-http-response';
-import { TokenService } from './token.service';
 import { CookeiService } from '@dx/utils-api-cookies';
 import { TEST_EXISTING_USER_ID, TEST_UUID } from '@dx/config-shared';
 import { UserModel } from '@dx/user-api';
+import { TokenService } from './token.service';
+import { ensureLoggedIn } from './ensure-logged-in.middleware';
 
-jest.mock('@dx/logger');
-jest.mock('@dx/api-cookies', () => ({
+jest.mock('@dx/logger-api');
+jest.mock('@dx/utils-api-cookies', () => ({
   CookeiService: {
     clearCookie: jest.fn(),
     clearCookies: jest.fn(),
@@ -25,12 +25,12 @@ jest.mock('@dx/api-cookies', () => ({
     setCookies: jest.fn(),
   },
 }));
-jest.mock('@dx/api-headers', () => ({
+jest.mock('@dx/utils-api-headers', () => ({
   HeaderService: {
     getTokenFromAuthHeader: jest.fn(),
   },
 }));
-jest.mock('@dx/api-http-response', () => ({
+jest.mock('@dx/utils-api-http-response', () => ({
   sendUnauthorized: jest.fn(),
 }));
 

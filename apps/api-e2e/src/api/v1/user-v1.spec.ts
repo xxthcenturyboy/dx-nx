@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { AuthUtil, AuthUtilType } from './util-v1';
+
 import {
   CreateUserResponseType,
   GetUserProfileReturnType,
@@ -17,6 +17,7 @@ import {
 } from '@dx/config-shared';
 import { UpdateUsernamePayloadType } from '@dx/user-api';
 import { AuthSuccessResponseType, OtpResponseType } from '@dx/auth-api';
+import { AuthUtil, AuthUtilType } from './util-v1';
 
 describe('v1 User Routes', () => {
   let authRes: AuthSuccessResponseType;

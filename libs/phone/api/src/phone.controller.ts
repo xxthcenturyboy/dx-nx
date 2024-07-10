@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
 
+import { sendBadRequest, sendOK } from '@dx/utils-api-http-response';
 import { PhoneService } from './phone.service';
 import {
   CreatePhonePayloadType,
   UpdatePhonePayloadType,
 } from './phone.types';
-import { sendBadRequest, sendOK } from '@dx/utils-api-http-response';
 
 export const PhoneController = {
   createPhone: async function (req: Request, res: Response) {

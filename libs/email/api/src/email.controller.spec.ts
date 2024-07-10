@@ -2,13 +2,13 @@ import { Request as IRequest, Response as IResponse } from 'express';
 import { Request } from 'jest-express/lib/request';
 import { Response } from 'jest-express/lib/response';
 
-import { EmailController } from './email.controller';
-// import { CreateEmailPayloadType } from '../model/email.types';
 // import { TEST_EMAIL, TEST_EXISTING_USER_ID } from '@dx/config';
 import { sendOK, sendBadRequest } from '@dx/utils-api-http-response';
+import { EmailController } from './email.controller';
+// import { CreateEmailPayloadType } from '../model/email.types';
 
 jest.mock('./email.service.ts');
-jest.mock('@dx/api-http-response', () => ({
+jest.mock('@dx/utils-api-http-response', () => ({
   sendOK: jest.fn(),
   sendBadRequest: jest.fn(),
 }));

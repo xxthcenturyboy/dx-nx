@@ -1,12 +1,12 @@
 import { Model, ModelCtor, Sequelize } from 'sequelize-typescript';
 
+import { POSTGRES_URI } from '@dx/config-api';
+import { ApiLoggingClass } from '@dx/logger-api';
+import { PostgresDbConnection } from '@dx/data-access-postgres';
 import {
   getPostgresModels,
   logLoadedPostgresModels,
 } from './dx-postgres.models';
-import { POSTGRES_URI } from '@dx/config-api';
-import { ApiLoggingClass } from '@dx/logger-api';
-import { PostgresDbConnection } from '@dx/data-access-postgres';
 
 export class DxPostgresDb {
   public static async getPostgresConnection(): Promise<

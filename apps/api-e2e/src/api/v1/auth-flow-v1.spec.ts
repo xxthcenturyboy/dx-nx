@@ -8,7 +8,6 @@ import {
   USER_LOOKUPS,
   AUTH_TOKEN_NAMES,
 } from '@dx/auth-api';
-import { AuthUtil, AuthUtilType } from './util-v1';
 import {
   TEST_DEVICE,
   TEST_EMAIL,
@@ -20,6 +19,7 @@ import {
 } from '@dx/config-shared';
 import { dxRsaGenerateKeyPair, dxRsaSignPayload } from '@dx/util-encryption';
 import { DeviceModelType } from '@dx/devices-api';
+import { AuthUtil, AuthUtilType } from './util-v1';
 
 const errorLogSpyMock = jest
   .spyOn(console, 'error')

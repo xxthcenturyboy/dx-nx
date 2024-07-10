@@ -20,8 +20,8 @@ import {
   sendTooManyRequests,
 } from './http-responses';
 
-jest.mock('@dx/auth');
-jest.mock('@dx/logger');
+jest.mock('@dx/auth-api');
+jest.mock('@dx/logger-api');
 jest.mock('./http-responses', () => {
   const actual =
     jest.requireActual<typeof import('./http-responses')>('./http-responses');

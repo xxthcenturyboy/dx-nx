@@ -1,12 +1,12 @@
 import { Sequelize } from 'sequelize-typescript';
 
 import { ApiLoggingClass } from '@dx/logger-api';
-import { PostgresDbConnection } from './postgres.db-connection';
 import { API_APP_NAME } from '@dx/config-api';
 import { UserModel } from '@dx/user-api';
+import { PostgresDbConnection } from './postgres.db-connection';
 
-jest.mock('@dx/logger');
-jest.mock('@dx/user');
+jest.mock('@dx/logger-api');
+jest.mock('@dx/user-api');
 
 describe('PostgresDbConnection', () => {
   let dbConnection: typeof PostgresDbConnection.prototype;

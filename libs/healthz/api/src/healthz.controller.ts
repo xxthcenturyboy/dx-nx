@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import process from 'process';
 
-import { HttpHealthzService } from './http-healthz.service';
+import { ApiLoggingClass } from '@dx/logger-api';
 import { RedisHealthzService } from '@dx/data-access-redis';
 import { PostgresDbConnection } from '@dx/data-access-postgres';
 import { sendOK } from '@dx/utils-api-http-response';
@@ -13,7 +13,7 @@ import {
   HealthzRedisType,
   HealthzStatusType,
 } from './healthz.types';
-import { ApiLoggingClass } from '@dx/logger-api';
+import { HttpHealthzService } from './http-healthz.service';
 
 const HttpHealth = {
   getHealth: async function (): Promise<HealthzHttpType> {

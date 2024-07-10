@@ -2,9 +2,9 @@ import { Express, Router } from 'express';
 
 import { HealthzRoutes } from '@dx/healthz-api';
 import { WellKnownRoutes } from '@dx/devices-api';
-import { RoutesV1 } from './v1.routes';
 import { endpointNotFound } from '@dx/utils-api-http-response';
 import { DxRateLimiters } from '@dx/utils-api-rate-limiters';
+import { RoutesV1 } from './v1.routes';
 
 export class ApiRoutes {
   app: Express;

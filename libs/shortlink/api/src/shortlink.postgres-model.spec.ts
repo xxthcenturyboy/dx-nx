@@ -2,12 +2,12 @@ import { Sequelize } from 'sequelize-typescript';
 
 import { PostgresDbConnection } from '@dx/data-access-postgres';
 import { ApiLoggingClass } from '@dx/logger-api';
-import { ShortLinkModel } from './shortlink.postgres-model';
-import { SHORTLINK_POSTGRES_DB_NAME } from './shortlink.consts';
 import { isLocal } from '@dx/config-shared';
 import { POSTGRES_URI } from '@dx/config-api';
+import { ShortLinkModel } from './shortlink.postgres-model';
+import { SHORTLINK_POSTGRES_DB_NAME } from './shortlink.consts';
 
-jest.mock('@dx/logger');
+jest.mock('@dx/logger-api');
 
 describe('ShortlinkModel', () => {
   if (isLocal()) {

@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
 
+import { sendBadRequest, sendOK } from '@dx/utils-api-http-response';
 import { EmailService } from './email.service';
 import {
   CreateEmailPayloadType,
   UpdateEmailPayloadType,
 } from './email.types';
-import { sendBadRequest, sendOK } from '@dx/utils-api-http-response';
 
 export const EmailController = {
   createEmail: async function (req: Request, res: Response) {

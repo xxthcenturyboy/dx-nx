@@ -3,13 +3,11 @@ import { Sequelize } from 'sequelize-typescript';
 import { ApiLoggingClass } from '@dx/logger-api';
 import { PostgresDbConnection } from '@dx/data-access-postgres';
 import { RedisService } from '@dx/data-access-redis';
-import { UserService, UserServiceType } from './user.service';
 import { PhoneModel } from '@dx/phone-api';
 import { DeviceModel } from '@dx/devices-api';
 import { EmailModel } from '@dx/email-api';
 import { ShortLinkModel } from '@dx/shortlink-api';
 import { UserPrivilegeSetModel } from '@dx/user-privilege-api';
-import { UserModel } from './user.postgres-model';
 import {
   isLocal,
   TEST_EXISTING_EMAIL,
@@ -25,8 +23,10 @@ import {
   UpdateUsernamePayloadType,
   UserProfileStateType,
 } from './user.types';
+import { UserService, UserServiceType } from './user.service';
+import { UserModel } from './user.postgres-model';
 
-jest.mock('@dx/logger');
+jest.mock('@dx/logger-api');
 
 describe('UserService', () => {
   if (isLocal()) {

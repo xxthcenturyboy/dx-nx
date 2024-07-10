@@ -1,24 +1,24 @@
 import { Request, Response } from 'express';
 
-import { AuthService } from './auth-api.service';
 import {
   sendBadRequest,
   sendOK,
   sendNoContent,
   sendUnauthorized,
 } from '@dx/utils-api-http-response';
+import { DevicesService } from '@dx/devices-api';
+import { CookeiService } from '@dx/utils-api-cookies';
+import { UserProfileStateType } from '@dx/user-api';
+import { ApiLoggingClass } from '@dx/logger-api';
+import { UserModel } from '@dx/user-api';
+import { AuthService } from './auth-api.service';
+import { AUTH_TOKEN_NAMES } from './auth-api.consts';
 import {
   AccountCreationPayloadType,
   LoginPaylodType,
   UserLookupQueryType,
 } from './auth-api.types';
 import { TokenService } from './token.service';
-import { DevicesService } from '@dx/devices-api';
-import { CookeiService } from '@dx/utils-api-cookies';
-import { UserProfileStateType } from '@dx/user-api';
-import { ApiLoggingClass } from '@dx/logger-api';
-import { AUTH_TOKEN_NAMES } from './auth-api.consts';
-import { UserModel } from '@dx/user-api';
 
 export const AuthController = {
   authLookup: async function (req: Request, res: Response) {

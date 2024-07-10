@@ -1,7 +1,7 @@
 import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger-api';
+import { SORT_DIR } from '@dx/config-shared';
 import { UserPrivilegeSetModel } from './user-privilege.postgres-model';
 import { UpdatePrivilegeSetPayloadType } from './user-privilege.types';
-import { SORT_DIR } from '@dx/config-shared';
 import { UserPrivilegeSetCache } from './user-privilege.redis-cache';
 
 export class UserPrivilegeService {

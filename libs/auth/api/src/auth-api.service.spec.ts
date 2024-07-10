@@ -36,7 +36,7 @@ import { AuthService, AuthServiceType } from './auth-api.service';
 import { USER_LOOKUPS } from './auth-api.consts';
 import { dxRsaGenerateKeyPair, dxRsaSignPayload } from '@dx/util-encryption';
 
-jest.mock('@dx/logger');
+jest.mock('@dx/logger-api');
 const errorLogSpyMock = jest
   .spyOn(console, 'error')
   .mockImplementation(() => {});

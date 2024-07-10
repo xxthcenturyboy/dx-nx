@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { UserService } from './user.service';
 import { sendBadRequest, sendOK } from '@dx/utils-api-http-response';
 import { HeaderService } from '@dx/utils-api-headers';
+import { TokenService } from '@dx/auth-api';
 import {
   CreateUserPayloadType,
   GetUserQueryType,
@@ -11,7 +12,6 @@ import {
   UpdatePasswordPayloadType,
   UpdateUserPayloadType,
 } from './user.types';
-import { TokenService } from '@dx/auth-api';
 
 export const UserController = {
   checkUsernameAvailability: async function (req: Request, res: Response) {

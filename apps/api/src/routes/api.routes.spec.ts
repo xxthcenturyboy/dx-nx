@@ -3,7 +3,7 @@ import { Express } from 'jest-express/lib/express';
 
 import { ApiRoutes } from './api.routes';
 
-jest.mock('@dx/api-error-handler');
+jest.mock('@dx/utils-api-error-handler');
 
 describe('AuthRoutes', () => {
   it('should exist when imported', () => {

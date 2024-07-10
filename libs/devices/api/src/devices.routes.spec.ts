@@ -1,6 +1,6 @@
 import { DevicesRoutes } from './devices.routes';
 
-jest.mock('@dx/api-http-response');
+jest.mock('@dx/utils-api-http-response');
 
 describe('DevicesRoutes', () => {
   it('should exist when imported', () => {

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
-import { UserController } from './user.controller';
 import { ensureLoggedIn, hasAdminRole, hasSuperAdminRole } from '@dx/auth-api';
+import { UserController } from './user.controller';
 
 export class UserRoutes {
   static configure() {

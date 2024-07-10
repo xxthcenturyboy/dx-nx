@@ -15,8 +15,9 @@ import {
   DeletedAt,
   Index,
 } from 'sequelize-typescript';
-import { EMAIL_LABEL, EMAIL_POSTGRES_DB_NAME } from './email.consts';
+
 import { UserModel, UserModelType } from '@dx/user-api';
+import { EMAIL_LABEL, EMAIL_POSTGRES_DB_NAME } from './email.consts';
 
 @Table({
   modelName: EMAIL_POSTGRES_DB_NAME,

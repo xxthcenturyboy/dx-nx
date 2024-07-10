@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
+
 import { ApiLoggingClass } from '@dx/logger-api';
-import { TokenService } from './token.service';
 import { CookeiService } from '@dx/utils-api-cookies';
 import { HeaderService } from '@dx/utils-api-headers';
 import { sendUnauthorized } from '@dx/utils-api-http-response';
 import { UserModel } from '@dx/user-api';
+import { TokenService } from './token.service';
 
 export async function ensureLoggedIn(
   req: Request,

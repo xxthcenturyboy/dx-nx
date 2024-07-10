@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { AuthUtil, AuthUtilType } from './util-v1';
+
 import { CreatePhonePayloadType, UpdatePhonePayloadType } from '@dx/phone-api';
 import {
   TEST_COUNTRY_CODE,
@@ -11,6 +11,7 @@ import {
   TEST_UUID,
 } from '@dx/config-shared';
 import { AuthSuccessResponseType, OtpResponseType } from '@dx/auth-api';
+import { AuthUtil, AuthUtilType } from './util-v1';
 
 describe('v1 Phone Routes', () => {
   let authRes: AuthSuccessResponseType;

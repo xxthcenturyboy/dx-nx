@@ -1,6 +1,6 @@
 import { AuthRoutes } from './auth-api.routes';
 
-jest.mock('@dx/api-rate-limiters');
+jest.mock('@dx/utils-api-rate-limiters');
 
 describe('AuthRoutes', () => {
   it('should exist when imported', () => {

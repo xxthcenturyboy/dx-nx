@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
-import { DevicesService } from './devices.service';
 import { sendBadRequest, sendOK } from '@dx/utils-api-http-response';
+import { DevicesService } from './devices.service';
 
 export const DevicesController = {
   disconnectDevice: async function (req: Request, res: Response) {

@@ -1,6 +1,6 @@
 import { Express } from 'express';
 
-import { RedisHealthzResponse } from 'libs/data/redis/src/redis.types';
+import { RedisHealthzResponse } from '@dx/data-access-redis';
 
 export type HealthzRoutesParams = {
   app: Express;

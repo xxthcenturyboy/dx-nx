@@ -1,7 +1,6 @@
 import { Sequelize } from 'sequelize-typescript';
 
 import { ApiLoggingClass } from '@dx/logger-api';
-import { SecurityAlertSerivice } from './security-alert.service';
 import { MailSendgrid } from '@dx/mail-api';
 import {
   isLocal,
@@ -16,6 +15,7 @@ import { UserPrivilegeSetModel } from '@dx/user-privilege-api';
 import { DeviceModel } from '@dx/devices-api';
 import { EmailModel } from '@dx/email-api';
 import { PhoneModel } from '@dx/phone-api';
+import { SecurityAlertSerivice } from './security-alert.service';
 
 const spyFetchConnectedDevice = jest.spyOn(
   UserModel.prototype,
@@ -28,7 +28,7 @@ const spySendAccountAlert = jest.spyOn(
   'sendAccountAlert'
 );
 
-jest.mock('@dx/logger');
+jest.mock('@dx/logger-api');
 
 describe('SecurityAlertSerivice', () => {
   if (isLocal()) {

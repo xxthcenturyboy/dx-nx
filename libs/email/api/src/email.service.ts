@@ -1,11 +1,11 @@
 import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger-api';
-import { EmailModel } from './email.postgres-model';
-import { CreateEmailPayloadType, UpdateEmailPayloadType } from './email.types';
 import { EmailUtil } from '@dx/util-emails';
 import { UserModel } from '@dx/user-api';
 import { isLocal } from '@dx/config-shared';
 import { OtpService } from '@dx/auth-api';
 import { dxRsaValidateBiometricKey } from '@dx/util-encryption';
+import { EmailModel } from './email.postgres-model';
+import { CreateEmailPayloadType, UpdateEmailPayloadType } from './email.types';
 
 export class EmailService {
   private LOCAL = isLocal();

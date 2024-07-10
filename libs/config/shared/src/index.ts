@@ -9,7 +9,6 @@ export {
   LOCAL_ENV_NAME,
   SORT_DIR,
 } from './lib/common-config.consts';
-export { CUSTOM_PROFANE_WORDS } from './lib/custom-profane-words.const';
 export { DISPOSABLE_EMAIL_DOMAINS } from './lib/disposable-email-providers';
 export { INVALID_EMAIL_NAMES } from './lib/email-validation.const';
 export {

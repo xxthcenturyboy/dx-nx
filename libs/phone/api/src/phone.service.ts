@@ -1,12 +1,12 @@
 import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger-api';
-import { PhoneModel } from './phone.postgres-model';
-import { PHONE_DEFAULT_REGION_CODE } from './phone.consts';
-import { CreatePhonePayloadType, UpdatePhonePayloadType } from './phone.types';
 import { isLocal } from '@dx/config-shared';
 import { PhoneUtil } from '@dx/util-phones';
 import { OtpService } from '@dx/auth-api';
 import { dxRsaValidateBiometricKey } from '@dx/util-encryption';
 import { UserModel } from '@dx/user-api';
+import { PhoneModel } from './phone.postgres-model';
+import { PHONE_DEFAULT_REGION_CODE } from './phone.consts';
+import { CreatePhonePayloadType, UpdatePhonePayloadType } from './phone.types';
 
 export class PhoneService {
   private LOCAL: boolean;

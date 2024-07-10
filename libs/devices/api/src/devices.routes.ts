@@ -1,8 +1,8 @@
 import { Router } from 'express';
 
-import { DevicesController } from './devices.controller';
 import { ensureLoggedIn } from '@dx/auth-api';
 import { DxRateLimiters } from '@dx/utils-api-rate-limiters';
+import { DevicesController } from './devices.controller';
 
 export class DevicesRoutes {
   static configure() {

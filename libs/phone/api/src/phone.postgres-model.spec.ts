@@ -6,12 +6,12 @@ import { UserModel } from '@dx/user-api';
 import { UserPrivilegeSetModel } from '@dx/user-privilege-api';
 import { DeviceModel } from '@dx/devices-api';
 import { EmailModel } from '@dx/email-api';
-import { PhoneModel } from './phone.postgres-model';
-import { PHONE_POSTGRES_DB_NAME } from './phone.consts';
 import { isLocal } from '@dx/config-shared';
 import { POSTGRES_URI } from '@dx/config-api';
+import { PhoneModel } from './phone.postgres-model';
+import { PHONE_POSTGRES_DB_NAME } from './phone.consts';
 
-jest.mock('@dx/logger');
+jest.mock('@dx/logger-api');
 
 describe('PhoneModel', () => {
   if (isLocal()) {

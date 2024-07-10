@@ -1,6 +1,6 @@
 import { RoutesV1 } from './v1.routes';
 
-jest.mock('@dx/api-rate-limiters');
+jest.mock('@dx/utils-api-rate-limiters');
 
 describe('RoutesV1', () => {
   it('should exist when imported', () => {

@@ -1,10 +1,10 @@
-import { WellKnownSourcesService } from './well-known.dx-mobile.service';
 import {
   APPLE_APP_ID,
   APPLE_WEB_CREDENTIALS,
   PACKAGE_NAME,
   SHA256_CERT_FINGERPRINT,
 } from '@dx/config-mobile';
+import { WellKnownSourcesService } from './well-known.dx-mobile.service';
 
 describe('WellKnownSourcesService', () => {
   it('should exist', () => {

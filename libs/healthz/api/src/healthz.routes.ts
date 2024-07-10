@@ -1,4 +1,5 @@
 import { Router } from 'express';
+
 import { HealthzController } from './healthz.controller';
 
 export class HealthzRoutes {

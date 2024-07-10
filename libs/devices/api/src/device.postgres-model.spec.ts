@@ -4,14 +4,14 @@ import { PostgresDbConnection } from '@dx/data-access-postgres';
 import { ApiLoggingClass } from '@dx/logger-api';
 import { EmailModel } from '@dx/email-api';
 import { PhoneModel } from '@dx/phone-api';
-import { DeviceModel } from './device.postgres-model';
 import { UserModel } from '@dx/user-api';
 import { UserPrivilegeSetModel } from '@dx/user-privilege-api';
-import { DEVICES_POSTGRES_DB_NAME } from './devices.consts';
 import { isLocal } from '@dx/config-shared';
 import { POSTGRES_URI } from '@dx/config-api';
+import { DeviceModel } from './device.postgres-model';
+import { DEVICES_POSTGRES_DB_NAME } from './devices.consts';
 
-jest.mock('@dx/logger');
+jest.mock('@dx/logger-api');
 
 describe('Device Model', () => {
   if (isLocal()) {

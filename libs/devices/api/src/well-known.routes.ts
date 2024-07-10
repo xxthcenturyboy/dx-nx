@@ -1,4 +1,5 @@
 import { Router } from 'express';
+
 import { WellKnownController } from './well-known.controller';
 
 export class WellKnownRoutes {

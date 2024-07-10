@@ -3,8 +3,6 @@ import { Sequelize } from 'sequelize-typescript';
 import { ApiLoggingClass } from '@dx/logger-api';
 import { PostgresDbConnection } from '@dx/data-access-postgres';
 import { RedisService } from '@dx/data-access-redis';
-import { DevicesService, DevicesServiceType } from './devices.service';
-import { DeviceModel } from './device.postgres-model';
 import { EmailModel } from '@dx/email-api';
 import { PhoneModel } from '@dx/phone-api';
 import { ShortLinkModel } from '@dx/shortlink-api';
@@ -17,8 +15,10 @@ import {
   TEST_UUID,
 } from '@dx/config-shared';
 import { POSTGRES_URI } from '@dx/config-api';
+import { DevicesService, DevicesServiceType } from './devices.service';
+import { DeviceModel } from './device.postgres-model';
 
-jest.mock('@dx/logger');
+jest.mock('@dx/logger-api');
 
 describe('DevicesService', () => {
   if (isLocal()) {

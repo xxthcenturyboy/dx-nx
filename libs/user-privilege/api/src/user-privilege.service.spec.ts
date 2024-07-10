@@ -2,23 +2,23 @@ import { Sequelize } from 'sequelize-typescript';
 
 import { ApiLoggingClass } from '@dx/logger-api';
 import { PostgresDbConnection } from '@dx/data-access-postgres';
-import {
-  UserPrivilegeService,
-  UserPrivilegeServiceType,
-} from './user-privilege.service';
 import { PhoneModel } from '@dx/phone-api';
 import { DeviceModel } from '@dx/devices-api';
 import { EmailModel } from '@dx/email-api';
 import { ShortLinkModel } from '@dx/shortlink-api';
-import { UserPrivilegeSetModel } from './user-privilege.postgres-model';
 import { UserModel } from '@dx/user-api';
-import { USER_ROLE } from './user-privilege.consts';
 import { isLocal } from '@dx/config-shared';
-import { UpdatePrivilegeSetPayloadType } from './user-privilege.types';
 import { RedisService } from '@dx/data-access-redis';
 import { getRedisConfig, POSTGRES_URI } from '@dx/config-api';
+import {
+  UserPrivilegeService,
+  UserPrivilegeServiceType,
+} from './user-privilege.service';
+import { UpdatePrivilegeSetPayloadType } from './user-privilege.types';
+import { UserPrivilegeSetModel } from './user-privilege.postgres-model';
+import { USER_ROLE } from './user-privilege.consts';
 
-jest.mock('@dx/logger');
+jest.mock('@dx/logger-api');
 
 describe('UserPrivilegeSetCache', () => {
   if (isLocal()) {

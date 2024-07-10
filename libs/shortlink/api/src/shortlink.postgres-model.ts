@@ -11,6 +11,7 @@ import {
   AllowNull,
   Unique,
 } from 'sequelize-typescript';
+
 import { CLIENT_APP_URL } from '@dx/config-web';
 import { ApiLoggingClass } from '@dx/logger-api';
 import { maliciousUrlCheck } from '@dx/utils-shared-misc';
