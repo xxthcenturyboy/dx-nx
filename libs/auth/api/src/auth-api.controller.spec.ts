@@ -13,7 +13,7 @@ import { TEST_EMAIL, TEST_PASSWORD } from '@dx/config-shared';
 import { AuthController } from './auth-api.controller';
 import { LoginPaylodType } from './auth-api.types';
 
-jest.mock('./auth.service.ts');
+jest.mock('./auth-api.service.ts');
 jest.mock('./token.service.ts');
 jest.mock('@dx/logger-api');
 jest.mock('@dx/utils-api-http-response', () => ({

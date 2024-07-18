@@ -9,9 +9,9 @@ jest.mock('@dx/logger-api');
 describe('RedisHealthzService', () => {
   let redisHealthz: RedisHealthzServiceType;
   const logInfoSpy = jest.spyOn(ApiLoggingClass.prototype, 'logInfo');
-  // @ts-expect-error - private method
   const testConnectionSpy = jest.spyOn(
     RedisHealthzService.prototype,
+    // @ts-expect-error - private method
     'testConnection'
   );
   const testReadAndWriteSpy = jest.spyOn(

@@ -6,7 +6,7 @@ import { RedisService, REDIS_DELIMITER } from '@dx/data-access-redis';
 import { AUTH_ROUTES_V1_RATE_LIMIT } from '@dx/auth-api';
 import { sendOK, sendTooManyRequests } from '@dx/utils-api-http-response';
 import { isLocal } from '@dx/config-shared';
-import { APP_PREFIX } from '@dx/config-api';
+import { APP_PREFIX } from '@dx/config-shared';
 import { RATE_LIMIT_MESSAGE, RATE_LIMITS } from './rate-limter.const';
 
 export class DxRateLimiters {

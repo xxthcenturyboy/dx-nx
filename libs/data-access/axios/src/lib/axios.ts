@@ -9,7 +9,8 @@ const backendURI = 'http://localhost:5000';
 export const AxiosInstance = ({ headers }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const accessToken = useSelector((state) => state.authToken.token);
+  // @ts-expect-error
+  const accessToken = useSelector((state) => state.token);
 
   const instance = axios.create({
     baseURL: backendURI,
@@ -35,7 +36,7 @@ export const AxiosInstance = ({ headers }) => {
 
             const newAccessToken = response.data;
             // Update the access token in local storage
-            dispatch(authActions.setToken(newAccessToken));
+            dispatch(authActions.tokenAdded(newAccessToken));
 
             // Retry the original request with the new access token
             error.config.headers.authorization = `Bearer ${newAccessToken}`;

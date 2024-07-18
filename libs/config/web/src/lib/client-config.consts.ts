@@ -1,4 +1,8 @@
-import { APP_NAME, getEnvironment } from '@dx/config-shared';
+import {
+  APP_NAME,
+  getEnvironment
+} from '@dx/config-shared';
+import { AUTH_ROUTES } from '@dx/auth-web';
 
 const env = getEnvironment();
 
@@ -12,3 +16,17 @@ export const CLIENT_REDUX_DB_NAME = `${APP_NAME.replace(
   /\ /g,
   ''
 ).toLowerCase()}`;
+
+export const FADE_TIMEOUT_DUR = 200;
+
+export const WEB_ROUTES = {
+  MAIN: '/',
+  AUTH: AUTH_ROUTES,
+  LOGIN: '/login',
+  SHORTLINK: null,
+  USER_PROFILE: null,
+  ADMIN: {
+  },
+  SUDO: {
+  }
+}

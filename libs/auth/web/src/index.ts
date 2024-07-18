@@ -1,4 +1,9 @@
-export { authInitialState, authPersistConfig } from './auth-web.state';
-export { authActions, authReducer } from './auth-web.reducer';
-export { getAuthToken } from './auth-web.selector';
+export {
+  authActions,
+  authInitialState,
+  authPersistConfig,
+  authReducer
+} from './auth-web.reducer';
+export { selectAuthToken } from './auth-web.selector';
 export { AuthStateType } from './auth-web.types';
+export { AUTH_ROUTES } from './auth-web.consts';

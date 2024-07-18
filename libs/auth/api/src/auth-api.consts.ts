@@ -1,4 +1,4 @@
-import { APP_PREFIX } from '@dx/config-api';
+import { APP_PREFIX } from '@dx/config-shared';
 
 export const AUTH_ENTITY_NAME = 'auth';
 
@@ -6,7 +6,7 @@ export const AUTH_TOKEN_NAMES = {
   AUTH: 'token',
   EXP: 'exp',
   REFRESH: 'jwt',
-  ACCTSECURE: `${APP_PREFIX}-accts`,
+  ACCTSECURE: `${APP_PREFIX}-accts`
 };
 
 export const USER_LOOKUPS = {

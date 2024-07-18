@@ -1,5 +1,6 @@
 import { DevicesRoutes } from './devices.routes';
 
+jest.mock('@dx/utils-api-rate-limiters');
 jest.mock('@dx/utils-api-http-response');
 
 describe('DevicesRoutes', () => {

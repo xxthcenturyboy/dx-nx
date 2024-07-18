@@ -1,7 +1,7 @@
 import {
   API_APP_NAME,
   API_ROOT,
-  APP_PREFIX,
+  // APP_PREFIX,
   CRYPT_KEY,
   JWT_SECRET,
   OTP_SALT,
@@ -25,15 +25,6 @@ describe('API_ROOT', () => {
   // assert
   it('should exist when imported', () => {
     expect(API_ROOT).toBeDefined();
-  });
-});
-
-describe('APP_PREFIX', () => {
-  // arrange
-  // act
-  // assert
-  it('should exist when imported', () => {
-    expect(APP_PREFIX).toBeDefined();
   });
 });
 

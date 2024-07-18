@@ -1,22 +1,32 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Route } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  Route,
+  RouterProvider
+} from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { ConnectedRouter } from 'connected-react-router';
 import { PersistGate } from 'reduxjs-toolkit-persist/integration/react';
 
 import { App } from './app/app';
 import {
-  history,
   persistor,
   store
-} from './app/store.redux';
+} from '@dx/store-web';
+import { ErrorBoundary } from '@dx/utils-web-error-boundary';
 
 (window as any).store = store;
 
 const root = createRoot(
   document.getElementById('root') as HTMLElement
 );
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <App />
+  }
+]);
 
 root.render(
   <StrictMode>
@@ -27,16 +37,12 @@ root.render(
         loading={null}
         persistor={persistor}
       >
-        <ConnectedRouter
-          history={history}
-        >
-          <Route
-            Component={App}
+        <ErrorBoundary fallback={<h1>Something Went Wrong.</h1>}>
+          <RouterProvider
+            router={router}
           />
-        </ConnectedRouter>
+        </ErrorBoundary>
       </PersistGate>
     </Provider>
   </StrictMode>
 );
-
-console.log('after initial render?');

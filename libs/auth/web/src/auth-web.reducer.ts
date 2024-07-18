@@ -1,20 +1,34 @@
-import { createSlice } from '@reduxjs/toolkit';
-import jwt from 'jsonwebtoken';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { jwtDecode } from "jwt-decode";
+import storage from 'reduxjs-toolkit-persist/lib/storage';
+import autoMergeLevel1 from 'reduxjs-toolkit-persist/lib/stateReconciler/autoMergeLevel1';
 
-import { JwtPayloadType } from '@dx/auth-api';
+import { AuthStateType } from './auth-web.types';
 import { AUTH_ENTITY_NAME } from './auth-web.consts';
-import { authInitialState } from './auth-web.state';
+import { JwtPayloadType } from '@dx/auth-api';
+
+export const authInitialState: AuthStateType = {
+  token: null,
+  userId: null,
+};
+
+export const authPersistConfig = {
+  key: AUTH_ENTITY_NAME,
+  blacklist: ['password', 'passwordConfirmation'],
+  storage,
+  stateReconciler: autoMergeLevel1,
+};
 
 const authSlice = createSlice({
   name: AUTH_ENTITY_NAME,
   initialState: authInitialState,
   reducers: {
-    tokenAdded(state, action) {
-      const tokenDecoded = jwt.decode(action.payload) as JwtPayloadType;
+    tokenAdded(state, action: PayloadAction<string>) {
+      const tokenDecoded = jwtDecode<JwtPayloadType>(action.payload);
       state.token = action.payload;
       state.userId = tokenDecoded?._id || null;
     },
-    tokenRemoved(state, action) {
+    tokenRemoved(state, action: PayloadAction<undefined>) {
       state.token = null;
       state.userId = null;
     },

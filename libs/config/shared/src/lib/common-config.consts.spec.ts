@@ -1,6 +1,8 @@
 import {
+  APP_DESCRIPTION,
   APP_DOMAIN,
   APP_NAME,
+  APP_PREFIX,
   APP_URL,
   COMPANY_NAME,
   DEFAULT_LIMIT,
@@ -11,6 +13,15 @@ import {
   PROD_ENV_NAME,
   SORT_DIR,
 } from './common-config.consts';
+
+describe('APP_DESCRIPTION', () => {
+  // arrange
+  // act
+  // assert
+  it('should exist when imported', () => {
+    expect(APP_DESCRIPTION).toBeDefined();
+  });
+});
 
 describe('APP_DOMAIN', () => {
   // arrange
@@ -27,6 +38,15 @@ describe('APP_NAME', () => {
   // assert
   it('should exist when imported', () => {
     expect(APP_NAME).toBeDefined();
+  });
+});
+
+describe('APP_PREFIX', () => {
+  // arrange
+  // act
+  // assert
+  it('should exist when imported', () => {
+    expect(APP_PREFIX).toBeDefined();
   });
 });
 

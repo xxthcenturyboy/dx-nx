@@ -1,10 +1,9 @@
 import { Sequelize } from 'sequelize-typescript';
 
 import { ApiLoggingClassType } from '@dx/logger-api';
-import { isDebug, getEnvironment, LOCAL_ENV_NAME } from '@dx/config-shared';
+import { APP_PREFIX, isDebug, getEnvironment, LOCAL_ENV_NAME } from '@dx/config-shared';
 import {
   API_APP_NAME,
-  APP_PREFIX,
   SENDGRID_API_KEY,
   SENDGRID_URL,
 } from './api-config.consts';

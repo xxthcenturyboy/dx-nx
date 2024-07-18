@@ -13,9 +13,9 @@ import { CLIENT_APP_URL } from '@dx/config-web';
 
 // import { RedisService, REDIS_DELIMITER } from '@dx/redis';
 // import {
-//   API_ROOT,
-//   APP_PREFIX
-// } from '@dx/config-api';
+  // API_ROOT,
+  // APP_PREFIX
+// } from '@dx/config-shared';
 // import { isLocal } from '@dx/config-shared';
 
 import { handleError } from '@dx/utils-api-error-handler';

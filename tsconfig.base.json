@@ -30,11 +30,14 @@
       "@dx/devices-api": ["libs/devices/api/src/index.ts"],
       "@dx/email-api": ["libs/email/api/src/index.ts"],
       "@dx/healthz-api": ["libs/healthz/api/src/index.ts"],
+      "@dx/home": ["libs/dmz/home/src/index.ts"],
       "@dx/logger-api": ["libs/logger/api/src/index.ts"],
       "@dx/mail-api": ["libs/mail/api/src/index.ts"],
       "@dx/phone-api": ["libs/phone/api/src/index.ts"],
       "@dx/plugins-nx": ["libs/plugins-nx/src/index.ts"],
       "@dx/shortlink-api": ["libs/shortlink/api/src/index.ts"],
+      "@dx/store-web": ["libs/store/web/src/index.ts"],
+      "@dx/ui-web": ["libs/ui/web/src/index.ts"],
       "@dx/user-api": ["libs/user/api/src/index.ts"],
       "@dx/user-privilege-api": ["libs/user-privilege/api/src/index.ts"],
       "@dx/util-dates": ["libs/utils/shared/util-dates/src/index.ts"],
@@ -56,7 +59,10 @@
       "@dx/utils-api-rate-limiters": [
         "libs/utils/api/rate-limiters/src/index.ts"
       ],
-      "@dx/utils-shared-misc": ["libs/utils/shared/misc/src/index.ts"]
+      "@dx/utils-shared-misc": ["libs/utils/shared/misc/src/index.ts"],
+      "@dx/utils-web-error-boundary": [
+        "libs/utils/web/error-boundary/src/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]
