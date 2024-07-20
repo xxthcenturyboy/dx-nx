@@ -12,7 +12,7 @@ import {
   Unique,
 } from 'sequelize-typescript';
 
-import { CLIENT_APP_URL } from '@dx/config-web';
+import { CLIENT_APP_URL } from '@dx/config-shared';
 import { ApiLoggingClass } from '@dx/logger-api';
 import { maliciousUrlCheck } from '@dx/utils-shared-misc';
 import { randomId } from '@dx/util-numbers';

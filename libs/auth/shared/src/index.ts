@@ -1,1 +1,2 @@
-export * from './lib/auth-shared';
+
+export { JwtPayloadType } from './shared.types';

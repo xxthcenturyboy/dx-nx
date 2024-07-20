@@ -1,4 +1,7 @@
-import { CLIENT_APP_DOMAIN, CLIENT_APP_URL } from '@dx/config-web';
+import {
+  CLIENT_APP_DOMAIN,
+  CLIENT_APP_URL
+} from '@dx/config-shared';
 
 export function maliciousUrlCheck(urlToCheck: string) {
   const TRANSFORMED_APP_DOMAIN = CLIENT_APP_DOMAIN.replace(/\./g, '\\.');

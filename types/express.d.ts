@@ -1,5 +1,5 @@
 import * as Express from 'express';
-import { UserSessionType } from '@dx/user';
+import { UserSessionType } from '../libs/user/api/src';
 
 // interface SessionData {
 //   userId?: string;

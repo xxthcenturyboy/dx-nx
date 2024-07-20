@@ -2,7 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   createBrowserRouter,
-  Route,
+  // Route,
   RouterProvider
 } from 'react-router-dom';
 import { Provider } from 'react-redux';
@@ -14,8 +14,13 @@ import {
   store
 } from '@dx/store-web';
 import { ErrorBoundary } from '@dx/utils-web-error-boundary';
+import {
+  NotFoundComponent,
+  UiLoadingComponent
+} from '@dx/ui-web';
 
-(window as any).store = store;
+// @ts-expect-error - store won't exist until we create it here.
+window.store = store;
 
 const root = createRoot(
   document.getElementById('root') as HTMLElement
@@ -34,10 +39,10 @@ root.render(
       store={store}
     >
       <PersistGate
-        loading={null}
+        loading={<UiLoadingComponent pastDelay={true} />}
         persistor={persistor}
       >
-        <ErrorBoundary fallback={<h1>Something Went Wrong.</h1>}>
+        <ErrorBoundary fallback={<NotFoundComponent />}>
           <RouterProvider
             router={router}
           />

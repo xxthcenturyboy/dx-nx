@@ -1,14 +1,23 @@
-import express, { Response, Express, Request, NextFunction } from 'express';
+import express,
+{
+  Response,
+  Express,
+  Request,
+  // NextFunction
+} from 'express';
 // import session from 'express-session';
 // import RedisStore from 'connect-redis';
 import { Logger as WinstonLogger } from 'winston';
 import { logger as expressWinston } from 'express-winston';
 import cookieParser from 'cookie-parser';
-import morgan, { TokenIndexer } from 'morgan';
+import morgan,
+{
+  TokenIndexer
+} from 'morgan';
 import cors from 'cors';
 
 // import { DxDateUtilClass } from '@dx/util-dates';
-import { CLIENT_APP_URL } from '@dx/config-web';
+import { CLIENT_APP_URL } from '@dx/config-shared';
 // import { StatusCodes } from 'http-status-codes';
 
 // import { RedisService, REDIS_DELIMITER } from '@dx/redis';
@@ -160,8 +169,7 @@ export async function configureExpress(
   //   }
   // });
 
-  // General Error Handling
-  app.use((err: Error, req: Request, res: Response, next: NextFunction) =>
+  app.use((err: Error, req: Request, res: Response) =>
     handleError(req, res, err, '')
   );
 }

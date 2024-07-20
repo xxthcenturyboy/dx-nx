@@ -1,4 +1,7 @@
-import { LOCAL_ENV_NAME, PROD_ENV_NAME } from './common-config.consts';
+import {
+  LOCAL_ENV_NAME,
+  PROD_ENV_NAME
+} from './common-config.consts';
 
 export function getEnvironment() {
   return {

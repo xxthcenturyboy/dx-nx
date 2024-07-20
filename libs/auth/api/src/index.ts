@@ -22,4 +22,3 @@ export { OtpCodeCache, OtpCodeCacheType } from './otp-code.redis-cache';
 export { OtpService } from './otp.service';
 export { SecurityAlertSerivice } from './security-alert.service';
 export { TokenService, TokenServiceType } from './token.service';
-export { JwtPayloadType } from './token.types';

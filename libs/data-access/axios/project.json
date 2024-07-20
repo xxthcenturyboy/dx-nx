@@ -3,7 +3,7 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/data-access/axios/src",
   "projectType": "library",
-  "tags": [],
+  "tags": ["scope:web", "scope:shared", "scope:mobile"],
   "// targets": "to see all targets run: nx show project data-access-axios --web",
   "targets": {}
 }

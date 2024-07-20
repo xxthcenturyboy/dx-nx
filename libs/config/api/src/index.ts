@@ -1,5 +1,7 @@
 export {
   API_APP_NAME,
+  API_HOST,
+  API_PORT,
   API_ROOT,
   CRYPT_KEY,
   JWT_SECRET,

@@ -18,7 +18,7 @@ jest.mock('@dx/data-access-redis');
 jest.mock('@dx/utils-api-error-handler');
 
 describe('configureExpress', () => {
-  const logInfoSpy = jest.spyOn(ApiLoggingClass.prototype, 'logInfo');
+  // const logInfoSpy = jest.spyOn(ApiLoggingClass.prototype, 'logInfo');
 
   beforeAll(() => {
     new ApiLoggingClass({ appName: 'Unit-Test' });

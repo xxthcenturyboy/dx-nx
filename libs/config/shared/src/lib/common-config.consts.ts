@@ -1,9 +1,18 @@
+import { getEnvironment } from './common-config.service';
+
+const env = getEnvironment();
+
 export const APP_DESCRIPTION = 'Boiler plate nx monorepo: Node, Express, React, Expo, Postgres, Redis';
 export const APP_DOMAIN = 'danex.software';
 export const APP_NAME = 'DX';
 export const APP_PREFIX = 'dx';
 export const APP_URL = `https://${APP_DOMAIN}`;
 export const COMPANY_NAME = 'Danex Software';
+
+export const CLIENT_HTTP_PROTOCOL = env.CLIENT_HTTP_PROTOCOL || 'http://';
+export const CLIENT_APP_DOMAIN = env.CLIENT_DOMAIN || 'localhost';
+export const CLIENT_APP_URL = `${CLIENT_HTTP_PROTOCOL}${CLIENT_APP_DOMAIN}`;
+
 export const DEFAULT_LIMIT = 10;
 export const DEFAULT_OFFSET = 0;
 export const LOCAL_ENV_NAME = 'development';

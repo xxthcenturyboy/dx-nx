@@ -3,7 +3,6 @@ import {
   CLIENT_APP_URL_PORT,
   CLIENT_HTTP_PROTOCOL,
   CLIENT_APP_URL,
-  FADE_TIMEOUT_DUR,
   WEB_ROUTES
 } from './client-config.consts';
 
@@ -40,15 +39,6 @@ describe('CLIENT_APP_URL', () => {
   // assert
   it('should exist when imported', () => {
     expect(CLIENT_APP_URL).toBeDefined();
-  });
-});
-
-describe('FADE_TIMEOUT_DUR', () => {
-  it('should exist when imported', () => {
-    // arrange
-    // act
-    // assert
-    expect(FADE_TIMEOUT_DUR).toBeDefined();
   });
 });
 

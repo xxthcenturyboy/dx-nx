@@ -12,10 +12,14 @@ import {
   APP_NAME,
   APP_DESCRIPTION
 } from '@dx/config-shared';
-import { FADE_TIMEOUT_DUR } from '@dx/config-web';
-import { WEB_ROUTES } from '@dx/config-web';
-import { LottieWelcomeDog } from 'client/core/UI/lottie';
-import { setDocumentTitle } from 'client/core/browser/setDocumentTitle';
+import {
+  WEB_ROUTES
+} from '@dx/config-web';
+import {
+  FADE_TIMEOUT_DUR,
+  LottieWelcomeRobot,
+  setDocumentTitle
+} from '@dx/ui-web';
 
 export const HomeComponent: React.FC = () => {
   const theme = useTheme();
@@ -40,13 +44,13 @@ export const HomeComponent: React.FC = () => {
         style={{ minHeight: '80vh' }}
         wrap="nowrap"
       >
-        <LottieWelcomeDog />
+        <LottieWelcomeRobot />
         <Typography
           variant={smBreak ? 'h3' : 'h1'}
           color="primary"
           align="center"
         >
-          {APP_NAME}
+          { APP_NAME }
         </Typography>
         <Typography
           variant="h5"
@@ -54,7 +58,7 @@ export const HomeComponent: React.FC = () => {
           margin="15px"
           align="center"
         >
-          {APP_DESCRIPTION}
+          { APP_DESCRIPTION }
         </Typography>
         <Grid
           item
@@ -72,7 +76,7 @@ export const HomeComponent: React.FC = () => {
               minWidth: '200px'
             }}
           >
-              Login
+            Login
           </Button>
         </Grid>
       </Grid>

@@ -8,9 +8,9 @@ import { UserModel } from '@dx/user-api';
 import {
   GenerateTokenParams,
   GenerateTokenResponse,
-  JwtPayloadType,
   TokenExpiration,
 } from './token.types';
+import { JwtPayloadType } from '@dx/auth-shared';
 
 export class TokenService {
   public static issuer = `accounts.${APP_DOMAIN}`;

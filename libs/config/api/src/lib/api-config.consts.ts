@@ -1,11 +1,16 @@
 import { APP_NAME, getEnvironment } from '@dx/config-shared';
 
+const LOCAL_URL = 'http://localhost';
+const LOCAL_PORT = 4200;
+
 const __API_ROOT_DIR__ =
   process.env.API_ROOT_DIR || process.env.PWD || process.cwd();
 
 const env = getEnvironment();
 
 export const API_APP_NAME = `${APP_NAME.toLowerCase()}-api`;
+export const API_HOST = env.API_HOST || LOCAL_URL;
+export const API_PORT = env.API_PORT || LOCAL_PORT;
 export const API_ROOT = __API_ROOT_DIR__;
 export const CRYPT_KEY =
   env.CRYPT_KEY ||
