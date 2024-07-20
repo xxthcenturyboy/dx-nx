@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
 
 import { UserModelType } from '@dx/user-api';
-import { DeviceAuthType } from '@dx/devices-api';
-import { APP_URL } from '@dx/config-shared';
+import { DeviceAuthType } from '@dx/devices-shared';
+import { webUrl } from '@dx/config-api';
 import {
   IP_POOL_NAME,
   MailSendgrid,
@@ -26,7 +26,7 @@ export class SecurityAlertSerivice {
     const phone =
       (await user.getVerifiedPhone()) || (await user.getDefaultPhone());
     const currentDevice = await user.fetchConnectedDeviceBeforeToken(token);
-    const rejectionUrl = `${APP_URL}/confirm-device-rejection?token=${token}&dn=${encodeURIComponent(
+    const rejectionUrl = `${webUrl()}/confirm-device-rejection?token=${token}&dn=${encodeURIComponent(
       (currentDevice && currentDevice.name) || ''
     )}`;
 

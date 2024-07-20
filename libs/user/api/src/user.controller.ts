@@ -5,13 +5,13 @@ import { sendBadRequest, sendOK } from '@dx/utils-api-http-response';
 import { HeaderService } from '@dx/utils-api-headers';
 import { TokenService } from '@dx/auth-api';
 import {
-  CreateUserPayloadType,
   GetUserQueryType,
   GetUsersListQueryType,
   UpdateUsernamePayloadType,
   UpdatePasswordPayloadType,
   UpdateUserPayloadType,
 } from './user.types';
+import { CreateUserPayloadType } from '@dx/user-shared';
 
 export const UserController = {
   checkUsernameAvailability: async function (req: Request, res: Response) {

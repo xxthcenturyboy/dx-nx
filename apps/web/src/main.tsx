@@ -39,6 +39,7 @@ root.render(
       store={store}
     >
       <PersistGate
+        // loading={null}
         loading={<UiLoadingComponent pastDelay={true} />}
         persistor={persistor}
       >

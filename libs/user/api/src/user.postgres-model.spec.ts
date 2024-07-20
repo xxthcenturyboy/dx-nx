@@ -6,8 +6,10 @@ import { DeviceModel } from '@dx/devices-api';
 import { EmailModel } from '@dx/email-api';
 import { PhoneModel } from '@dx/phone-api';
 import { UserPrivilegeSetModel, USER_PRIVILEGES_POSTGRES_DB_NAME } from '@dx/user-privilege-api';
-import { isLocal } from '@dx/config-shared';
-import { POSTGRES_URI } from '@dx/config-api';
+import {
+  isLocal,
+  POSTGRES_URI
+} from '@dx/config-api';
 import { USER_ENTITY_POSTGRES_DB_NAME } from './user.consts';
 import { UserModel } from './user.postgres-model';
 

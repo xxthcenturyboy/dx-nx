@@ -6,6 +6,7 @@ import axios, {
   Method,
 } from 'axios';
 
+import { webUrl } from '@dx/config-api';
 import getCSRFToken from 'client/core/getCSRFToken';
 import settings from 'settings';
 import LoggerClass from 'client/core/logger';
@@ -100,7 +101,7 @@ export class RequestClass {
   private _logout() {
     store.dispatch(fetchLogout());
     this._handleNotification();
-    const url = `${settings.APP_URL}${allRoutes.login}`;
+    const url = `${webUrl()}${allRoutes.login}`;
     typeof window !== 'undefined' && window.location.replace(url);
   }
 

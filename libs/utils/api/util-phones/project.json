@@ -1,9 +1,9 @@
 {
   "name": "util-phones",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/utils/shared/util-phones/src",
+  "sourceRoot": "libs/utils/api/util-phones/src",
   "projectType": "library",
-  "tags": ["scope:shared"],
+  "tags": ["scope:api"],
   "// targets": "to see all targets run: nx show project util-phones --web",
   "targets": {}
 }

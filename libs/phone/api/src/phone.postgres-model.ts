@@ -16,10 +16,8 @@ import {
 import { getTimeFromUuid } from '@dx/utils-shared-misc';
 import { PhoneUtil } from '@dx/util-phones';
 import { UserModel, UserModelType } from '@dx/user-api';
-import {
-  PHONE_DEFAULT_REGION_CODE,
-  PHONE_POSTGRES_DB_NAME,
-} from './phone.consts';
+import { PHONE_POSTGRES_DB_NAME } from './phone.consts';
+import { PHONE_DEFAULT_REGION_CODE } from '@dx/config-shared';
 
 @Table({
   modelName: PHONE_POSTGRES_DB_NAME,

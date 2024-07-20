@@ -7,9 +7,12 @@ import { DeviceModel } from '@dx/devices-api';
 import { EmailModel } from '@dx/email-api';
 import { ShortLinkModel } from '@dx/shortlink-api';
 import { UserModel } from '@dx/user-api';
-import { isLocal } from '@dx/config-shared';
 import { RedisService } from '@dx/data-access-redis';
-import { getRedisConfig, POSTGRES_URI } from '@dx/config-api';
+import {
+  getRedisConfig,
+  isLocal,
+  POSTGRES_URI
+} from '@dx/config-api';
 import {
   UserPrivilegeService,
   UserPrivilegeServiceType,

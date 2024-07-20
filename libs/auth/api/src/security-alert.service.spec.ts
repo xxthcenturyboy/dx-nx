@@ -3,12 +3,14 @@ import { Sequelize } from 'sequelize-typescript';
 import { ApiLoggingClass } from '@dx/logger-api';
 import { MailSendgrid } from '@dx/mail-api';
 import {
-  isLocal,
   TEST_DEVICE,
   TEST_EXISTING_USER_ID,
   TEST_UUID,
 } from '@dx/config-shared';
-import { POSTGRES_URI } from '@dx/config-api';
+import {
+  isLocal,
+  POSTGRES_URI
+} from '@dx/config-api';
 import { PostgresDbConnection } from '@dx/data-access-postgres';
 import { UserModel } from '@dx/user-api';
 import { UserPrivilegeSetModel } from '@dx/user-privilege-api';

@@ -5,16 +5,16 @@ import {
 import storage from 'reduxjs-toolkit-persist/lib/storage';
 import autoMergeLevel1 from 'reduxjs-toolkit-persist/lib/stateReconciler/autoMergeLevel1';
 import { PersistConfig } from 'reduxjs-toolkit-persist/lib/types';
+import { PaletteMode } from '@mui/material';
 
 import { UiStateType } from './ui-web.types';
 import { UI_WEB_ENTITY_NAME } from '../ui.consts';
-import { APP_NAME } from '@dx/config-shared';
 import {
-  API_HOST,
-  API_PORT
-} from '@dx/config-api';
+  // API_HOST_PORT,
+  // API_URL,
+  APP_NAME
+} from '@dx/config-shared';
 import { appTheme } from '../muiOverrides/muiTheme';
-import { PaletteMode } from '@mui/material';
 
 export const uiInitialState: UiStateType = {
   apiDialogError: null,
@@ -25,8 +25,8 @@ export const uiInitialState: UiStateType = {
   dialogComponent: null,
   dialogOpen: false,
   isShowingUnauthorizedAlert: false,
-  logoUrl: `${API_HOST}:${API_PORT}/img/logo-2.png`,
-  logoUrlSmall: `${API_HOST}:${API_PORT}/img/logo-square-2.png`,
+  logoUrl: `/img/logo-2.png`,
+  logoUrlSmall: `/img/logo-square-2.png`,
   menuOpen: false,
   name: APP_NAME,
   notifications: 0,

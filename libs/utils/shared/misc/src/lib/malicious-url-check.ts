@@ -1,13 +1,12 @@
-import {
-  CLIENT_APP_DOMAIN,
-  CLIENT_APP_URL
-} from '@dx/config-shared';
-
-export function maliciousUrlCheck(urlToCheck: string) {
-  const TRANSFORMED_APP_DOMAIN = CLIENT_APP_DOMAIN.replace(/\./g, '\\.');
+export function maliciousUrlCheck(
+  appDomain: string,
+  appUrl: string,
+  urlToCheck: string
+) {
+  const TRANSFORMED_APP_DOMAIN = appDomain.replace(/\./g, '\\.');
   // below makes use of query params - not necessary here
-  // const PATTERN_APP_DOMAIN = new RegExp(`^${CLIENT_APP_DOMAIN.replace(/\./g, '\\.')}[.:?/]`);
-  const TRANSFORMED_APP_URL = CLIENT_APP_URL.replace(/\./g, '\\.');
+  // const PATTERN_APP_DOMAIN = new RegExp(`^${appUrl.replace(/\./g, '\\.')}[.:?/]`);
+  const TRANSFORMED_APP_URL = appUrl.replace(/\./g, '\\.');
 
   const PATTERN_REQUIRES_TEST = new RegExp('^(http|https)://\\S|^//\\S', 'i');
   const PATTERN_APP_URL = new RegExp(`^${TRANSFORMED_APP_URL}`);

@@ -9,14 +9,16 @@ import { EmailModel } from '@dx/email-api';
 import { ShortLinkModel } from '@dx/shortlink-api';
 import { UserPrivilegeSetModel } from '@dx/user-privilege-api';
 import {
-  isLocal,
   TEST_EXISTING_EMAIL,
   TEST_EXISTING_USER_ID,
   TEST_PASSWORD,
   TEST_USER_CREATE,
   TEST_UUID,
 } from '@dx/config-shared';
-import { POSTGRES_URI } from '@dx/config-api';
+import {
+  isLocal,
+  POSTGRES_URI
+} from '@dx/config-api';
 import {
   UpdatePasswordPayloadType,
   UpdateUserPayloadType,

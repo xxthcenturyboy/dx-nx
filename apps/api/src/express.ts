@@ -17,15 +17,15 @@ import morgan,
 import cors from 'cors';
 
 // import { DxDateUtilClass } from '@dx/util-dates';
-import { CLIENT_APP_URL } from '@dx/config-shared';
+import { webUrl } from '@dx/config-api';
 // import { StatusCodes } from 'http-status-codes';
 
 // import { RedisService, REDIS_DELIMITER } from '@dx/redis';
 // import {
   // API_ROOT,
   // APP_PREFIX
-// } from '@dx/config-shared';
-// import { isLocal } from '@dx/config-shared';
+// } from '@dx/config-api';
+// import { isLocal } from '@dx/config-api';
 
 import { handleError } from '@dx/utils-api-error-handler';
 
@@ -40,7 +40,7 @@ export async function configureExpress(
 ) {
   app.use(
     cors({
-      origin: CLIENT_APP_URL,
+      origin: webUrl(),
       credentials: true,
     })
   );

@@ -1,17 +1,17 @@
 import {
-  CLIENT_APP_DOMAIN,
-  CLIENT_APP_URL
-} from '@dx/config-shared';
+  webDomain,
+  webUrl
+} from '@dx/config-api';
 import { maliciousUrlCheck } from './malicious-url-check';
 
 describe('maliciousUrlCheck', () => {
   it('should throw on a potentially maliciouls url', () => {
     // arrange
-    const urlToCheck = `https://${CLIENT_APP_DOMAIN}.com`;
+    const urlToCheck = `https://${webDomain()}.com`;
     // act
     // assert
     try {
-      expect(maliciousUrlCheck(urlToCheck)).toThrow();
+      expect(maliciousUrlCheck(webDomain(), webUrl(), urlToCheck)).toThrow();
     } catch (err) {
       expect(err.message).toEqual(
         `Possible malicious attack - check URL: ${urlToCheck}`
@@ -22,16 +22,16 @@ describe('maliciousUrlCheck', () => {
   it('should run without error on a url that is the main domain', () => {
     // arrange
     // act
-    maliciousUrlCheck(CLIENT_APP_URL);
+    maliciousUrlCheck(webDomain(), webUrl(), webUrl());
     // assert
     expect(true).toBeTruthy();
   });
 
   it('should run without error on a benign url', () => {
     // arrange
-    const urlToCheck = `${CLIENT_APP_URL}/this-url-should-still-point-to-our-site`;
+    const urlToCheck = `${webUrl()}/this-url-should-still-point-to-our-site`;
     // act
-    maliciousUrlCheck(urlToCheck);
+    maliciousUrlCheck(webDomain(), webUrl(), urlToCheck);
     // assert
     expect(true).toBeTruthy();
   });
@@ -40,7 +40,7 @@ describe('maliciousUrlCheck', () => {
     // arrange
     const urlToCheck = `/in-app-route`;
     // act
-    maliciousUrlCheck(urlToCheck);
+    maliciousUrlCheck(webDomain(), webUrl(), urlToCheck);
     // assert
     expect(true).toBeTruthy();
   });

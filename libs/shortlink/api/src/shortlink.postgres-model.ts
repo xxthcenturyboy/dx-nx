@@ -12,7 +12,10 @@ import {
   Unique,
 } from 'sequelize-typescript';
 
-import { CLIENT_APP_URL } from '@dx/config-shared';
+import {
+  webDomain,
+  webUrl
+} from '@dx/config-api';
 import { ApiLoggingClass } from '@dx/logger-api';
 import { maliciousUrlCheck } from '@dx/utils-shared-misc';
 import { randomId } from '@dx/util-numbers';
@@ -40,7 +43,7 @@ export class ShortLinkModel extends Model<ShortLinkModel> {
 
   public static async generateShortlink(url: string): Promise<string> {
     try {
-      maliciousUrlCheck(url);
+      maliciousUrlCheck(webDomain(), webUrl(), url);
 
       // Check if we have this already
       const existing = await ShortLinkModel.findOne({
@@ -50,7 +53,7 @@ export class ShortLinkModel extends Model<ShortLinkModel> {
       });
 
       if (existing) {
-        return `${CLIENT_APP_URL}/l/${existing.id}`;
+        return `${webUrl()}/l/${existing.id}`;
       }
 
       // Create a new short link
@@ -58,7 +61,7 @@ export class ShortLinkModel extends Model<ShortLinkModel> {
         target: url,
       });
 
-      return `${CLIENT_APP_URL}/l/${shortlink.id}`;
+      return `${webUrl()}/l/${shortlink.id}`;
     } catch (err) {
       ApiLoggingClass.instance.logError(err);
       throw err;
@@ -74,7 +77,7 @@ export class ShortLinkModel extends Model<ShortLinkModel> {
       });
 
       if (link) {
-        maliciousUrlCheck(link.target);
+        maliciousUrlCheck(webDomain(), webUrl(), link.target);
         return link.target;
       }
 

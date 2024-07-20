@@ -1,7 +1,13 @@
 import { Sequelize } from 'sequelize-typescript';
 
 import { ApiLoggingClassType } from '@dx/logger-api';
-import { APP_PREFIX, isDebug, getEnvironment, LOCAL_ENV_NAME } from '@dx/config-shared';
+import { APP_PREFIX, LOCAL_ENV_NAME } from '@dx/config-shared';
+import {
+  apiPort,
+  apiUrl,
+  isDebug,
+  getEnvironment
+} from './api-config.service';
 import {
   API_APP_NAME,
   SENDGRID_API_KEY,
@@ -36,11 +42,11 @@ export function getApiConfig(
       jwtSecret: env.JWT_SECRET || '',
     },
     debug: isDebug(),
-    host: env.API_HOST || '0.0.0.0',
+    host: apiUrl(),
     isLocal: nodeEnv === LOCAL_ENV_NAME,
     logger: logger,
     nodeEnv: nodeEnv,
-    port: Number(env.API_PORT) || 80,
+    port: apiPort(),
     postgresDbh: postgresDbh,
     redis: redisService,
     sendgrid: {

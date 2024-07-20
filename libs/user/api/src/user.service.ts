@@ -4,15 +4,18 @@ import { FindOptions, WhereOptions } from 'sequelize/types';
 
 import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger-api';
 import { EMAIL_MODEL_OPTIONS } from '@dx/email-api';
-import { PHONE_DEFAULT_REGION_CODE, PHONE_MODEL_OPTIONS } from '@dx/phone-api';
+import { PHONE_MODEL_OPTIONS } from '@dx/phone-api';
 import {
   DEFAULT_LIMIT,
   DEFAULT_OFFSET,
   DEFAULT_SORT,
+  PHONE_DEFAULT_REGION_CODE
+} from '@dx/config-shared';
+import {
   isDebug,
   isLocal,
   isProd,
-} from '@dx/config-shared';
+} from '@dx/config-api';
 import { ShortLinkModel } from '@dx/shortlink-api';
 import { MailSendgrid } from '@dx/mail-api';
 import { EmailModel } from '@dx/email-api';
@@ -24,7 +27,6 @@ import { dxRsaValidateBiometricKey } from '@dx/util-encryption';
 import { UserModel } from './user.postgres-model';
 import { getUserProfileState } from './user-profile';
 import {
-  CreateUserPayloadType,
   CreateUserResponseType,
   GetUserProfileReturnType,
   GetUserListResponseType,
@@ -37,6 +39,7 @@ import {
   UpdatePasswordPayloadType,
 } from './user.types';
 import { USER_FIND_ATTRIBUTES, USER_SORT_FIELDS } from './user.consts';
+import { CreateUserPayloadType } from '@dx/user-shared';
 
 export class UserService {
   private DEBUG = isDebug();

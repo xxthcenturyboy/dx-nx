@@ -4,8 +4,10 @@ import ioRedisMock from 'ioredis-mock';
 import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger-api';
 import { parseJson } from '@dx/utils-shared-misc';
 import { isNumber } from '@dx/util-numbers';
-import { getRedisConfig } from '@dx/config-api';
-import { isTest } from '@dx/config-shared';
+import {
+  getRedisConfig,
+  isTest
+} from '@dx/config-api';
 import { REDIS_DELIMITER } from './redis.consts';
 import { RedisConstructorType, RedisExpireOptions } from './redis.types';
 

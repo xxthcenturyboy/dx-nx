@@ -1,5 +1,4 @@
 import {
-  PHONE_DEFAULT_REGION_CODE,
   PHONE_ENTITY_NAME,
   PHONE_MODEL_OPTIONS,
   PHONE_POSTGRES_DB_NAME,
@@ -60,21 +59,5 @@ describe('PHONE_POSTGRES_DB_NAME ', () => {
     // act
     // assert
     expect(PHONE_POSTGRES_DB_NAME).toEqual('phone');
-  });
-});
-
-describe('PHONE_DEFAULT_REGION_CODE ', () => {
-  it('should exist when imported', () => {
-    // arrange
-    // act
-    // assert
-    expect(PHONE_DEFAULT_REGION_CODE).toBeDefined();
-  });
-
-  it('should have correct value', () => {
-    // arrange
-    // act
-    // assert
-    expect(PHONE_DEFAULT_REGION_CODE).toEqual('US');
   });
 });

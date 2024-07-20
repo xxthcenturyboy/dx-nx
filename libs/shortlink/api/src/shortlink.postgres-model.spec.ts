@@ -2,8 +2,10 @@ import { Sequelize } from 'sequelize-typescript';
 
 import { PostgresDbConnection } from '@dx/data-access-postgres';
 import { ApiLoggingClass } from '@dx/logger-api';
-import { isLocal } from '@dx/config-shared';
-import { POSTGRES_URI } from '@dx/config-api';
+import {
+  isLocal,
+  POSTGRES_URI
+} from '@dx/config-api';
 import { ShortLinkModel } from './shortlink.postgres-model';
 import { SHORTLINK_POSTGRES_DB_NAME } from './shortlink.consts';
 

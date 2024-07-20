@@ -1,7 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { reduxResizeListener } from '@dx/ui-web';
+import {
+  uiActions
+} from '@dx/ui-web';
+import { useAppDispatch } from '@dx/store-web';
 import { HomeComponent } from '@dx/home';
 
 const StyledApp = styled.div`
@@ -9,13 +12,19 @@ const StyledApp = styled.div`
 `;
 
 export const App: React.FC = () => {
+  const dispatch = useAppDispatch();
+
   React.useEffect(() => {
-    reduxResizeListener();
+    dispatch(uiActions.windowSizeSet());
+    window.addEventListener('resize', () => {
+      dispatch(uiActions.windowSizeSet());
+    });
   }, []);
 
 
   return (
     <StyledApp>
+      {/* <div>HOME</div> */}
       <HomeComponent />
     </StyledApp>
   );

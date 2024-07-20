@@ -1,5 +1,5 @@
 import { UserProfileStateType } from '@dx/user-api';
-import { DeviceAuthType } from '@dx/devices-api';
+import { DeviceAuthType } from '@dx/devices-shared';
 
 export type AccountCreationPayloadType = {
   code: string;

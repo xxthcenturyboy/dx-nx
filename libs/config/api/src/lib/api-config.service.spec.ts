@@ -4,7 +4,7 @@ import {
   isProd,
   isTest,
   getEnvironment,
-} from './common-config.service';
+} from './api-config.service';
 
 describe('isDebug', () => {
   // arrange

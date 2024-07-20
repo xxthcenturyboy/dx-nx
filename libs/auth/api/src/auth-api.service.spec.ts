@@ -2,7 +2,6 @@ import { Sequelize } from 'sequelize-typescript';
 
 import { ApiLoggingClass } from '@dx/logger-api';
 import {
-  isLocal,
   TEST_COUNTRY_CODE,
   TEST_DEVICE,
   TEST_EMAIL,
@@ -15,7 +14,10 @@ import {
   TEST_PHONE_IT_INVALID,
   TEST_PHONE_VALID,
 } from '@dx/config-shared';
-import { POSTGRES_URI } from '@dx/config-api';
+import {
+  isLocal,
+  POSTGRES_URI
+} from '@dx/config-api';
 import { PostgresDbConnection } from '@dx/data-access-postgres';
 import { RedisService } from '@dx/data-access-redis';
 import { UserModel, UserProfileStateType } from '@dx/user-api';

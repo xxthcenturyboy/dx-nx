@@ -1,8 +1,16 @@
 import sgMail, { MailDataRequired } from '@sendgrid/mail';
 import sgClient from '@sendgrid/client';
 
-import { APP_DOMAIN, COMPANY_NAME, isProd, isTest } from '@dx/config-shared';
-import { SENDGRID_API_KEY, SENDGRID_URL } from '@dx/config-api';
+import {
+  APP_DOMAIN,
+  COMPANY_NAME
+} from '@dx/config-shared';
+import {
+  isProd,
+  isTest,
+  SENDGRID_API_KEY,
+  SENDGRID_URL
+} from '@dx/config-api';
 import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger-api';
 import { SendgridSendOptionsType } from './mail.sendgrid.types';
 import { SG_TEMPLATES } from './templates.sendgrid';

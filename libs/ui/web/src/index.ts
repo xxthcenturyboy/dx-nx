@@ -26,7 +26,6 @@ export {
   selectWindowHeight,
   selectWindowWidth
 } from './store/ui-web.selector';
-export { reduxResizeListener } from './resize-listener';
 export { setDocumentTitle } from './set-document-title';
 export {
   FADE_TIMEOUT_DUR,

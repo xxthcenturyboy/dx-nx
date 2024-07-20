@@ -9,7 +9,6 @@ import { ShortLinkModel } from '@dx/shortlink-api';
 import { UserModel } from '@dx/user-api';
 import { UserPrivilegeSetModel } from '@dx/user-privilege-api';
 import {
-  isLocal,
   TEST_COUNTRY_CODE,
   TEST_EXISTING_PHONE,
   TEST_EXISTING_USER_ID,
@@ -17,7 +16,10 @@ import {
   TEST_PHONE_VALID,
   TEST_UUID,
 } from '@dx/config-shared';
-import { POSTGRES_URI } from '@dx/config-api';
+import {
+  isLocal,
+  POSTGRES_URI
+} from '@dx/config-api';
 import { UserService } from '@dx/user-api';
 import { PhoneService, PhoneServiceType } from './phone.service';
 import { PhoneModel } from './phone.postgres-model';

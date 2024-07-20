@@ -14,12 +14,3 @@ export type DeviceType = {
   verificationToken: string;
   verifiedAt: Date | null;
 };
-
-export type DeviceAuthType = {
-  uniqueDeviceId: string;
-  deviceId?: string;
-  carrier?: string;
-  deviceCountry?: string;
-  name?: string;
-  // multiSigPubKey: string;
-};

@@ -9,12 +9,14 @@ import { ShortLinkModel } from '@dx/shortlink-api';
 import { UserModel, UserModelType } from '@dx/user-api';
 import { UserPrivilegeSetModel } from '@dx/user-privilege-api';
 import {
-  isLocal,
   TEST_DEVICE,
   TEST_EXISTING_USER_ID,
   TEST_UUID,
 } from '@dx/config-shared';
-import { POSTGRES_URI } from '@dx/config-api';
+import {
+  isLocal,
+  POSTGRES_URI
+} from '@dx/config-api';
 import { DevicesService, DevicesServiceType } from './devices.service';
 import { DeviceModel } from './device.postgres-model';
 

@@ -1,6 +1,6 @@
-import { PHONE_DEFAULT_REGION_CODE } from '@dx/phone-api';
-import { CreateUserPayloadType } from '@dx/user-api';
-import { DeviceAuthType } from '@dx/devices-api';
+import { PHONE_DEFAULT_REGION_CODE } from '../common-config.consts';
+import { CreateUserPayloadType } from '@dx/user-shared';
+import { DeviceAuthType } from '@dx/devices-shared';
 
 export const TEST_COUNTRY_CODE = '1';
 export const TEST_DEVICE: DeviceAuthType = {

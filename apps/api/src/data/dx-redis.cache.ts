@@ -5,7 +5,7 @@ import {
   RedisServiceType,
 } from '@dx/data-access-redis';
 import { getRedisConfig } from '@dx/config-api';
-import { isLocal } from '@dx/config-shared';
+import { isLocal } from '@dx/config-api';
 
 export class DxRedisCache {
   public static async getRedisConnection(): Promise<RedisServiceType | null> {

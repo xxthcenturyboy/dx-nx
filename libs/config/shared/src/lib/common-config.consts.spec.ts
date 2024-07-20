@@ -3,7 +3,6 @@ import {
   APP_DOMAIN,
   APP_NAME,
   APP_PREFIX,
-  APP_URL,
   COMPANY_NAME,
   DEFAULT_LIMIT,
   DEFAULT_OFFSET,
@@ -47,15 +46,6 @@ describe('APP_PREFIX', () => {
   // assert
   it('should exist when imported', () => {
     expect(APP_PREFIX).toBeDefined();
-  });
-});
-
-describe('APP_URL', () => {
-  // arrange
-  // act
-  // assert
-  it('should exist when imported', () => {
-    expect(APP_URL).toBeDefined();
   });
 });
 

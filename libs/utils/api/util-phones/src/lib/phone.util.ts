@@ -1,7 +1,7 @@
 import { PhoneNumber, PhoneNumberUtil } from 'google-libphonenumber';
 
 import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger-api';
-import { isDebug } from '@dx/config-shared';
+import { isDebug } from '@dx/config-api';
 
 export class PhoneUtil {
   private phoneUtil: typeof PhoneNumberUtil.prototype;

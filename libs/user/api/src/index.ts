@@ -5,7 +5,6 @@ export {
 } from './user.consts';
 export { UserModel, UserModelType } from './user.postgres-model';
 export {
-  CreateUserPayloadType,
   CreateUserResponseType,
   GetUserListResponseType,
   GetUserProfileReturnType,

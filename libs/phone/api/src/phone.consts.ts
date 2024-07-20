@@ -19,4 +19,3 @@ export const PHONE_MODEL_OPTIONS: IncludeOptions = {
     deletedAt: null,
   },
 };
-export const PHONE_DEFAULT_REGION_CODE = 'US';
