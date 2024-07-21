@@ -1,4 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React,
+{
+  useEffect,
+  useState
+} from 'react';
 import {
   Accordion,
   AccordionActions,
@@ -31,6 +35,7 @@ import {
   useAppSelector
 } from '@dx/store-web';
 import { SORT_DIR } from '@dx/config-shared';
+import { selectCurrentThemeMode } from '@dx/ui-web';
 import {
   TableCellData,
   TableComponentProps,
@@ -39,11 +44,10 @@ import {
   TableHeaderItem,
   TableRowType,
 } from './types';
-import { getIcon, IconNames } from '../../Icons';
+import { getIcon, IconNames } from '../../icons';
 import { waveItem } from '../skeletons.ui';
 import { TablePaginationActions } from './PaginationActions';
-import { themeColors } from '../../muiOverrides/styles';
-import { selectCurrentThemeMode } from '@dx/ui-web';
+import { themeColors } from '../../mui-overrides/styles';
 
 export const TableComponent: React.FC<TableComponentProps> = (props) => {
   const {

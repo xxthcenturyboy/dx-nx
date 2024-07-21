@@ -2,7 +2,7 @@ import { createSelector } from 'reselect';
 import { PaletteMode } from '@mui/material';
 import { Theme as ToastifyTheme } from 'react-toastify';
 
-import { UiStateType } from './ui-web.types';
+import { UiStateType } from '../ui-web.types';
 import { RootState } from '@dx/store-web';
 
 const getThemePalette = (state: RootState): RootState['ui']['theme']['palette'] => state.ui.theme.palette;

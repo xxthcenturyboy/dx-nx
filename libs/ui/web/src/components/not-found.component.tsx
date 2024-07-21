@@ -6,29 +6,14 @@ import {
   Typography
 } from '@mui/material';
 
-import {
-  RootState,
-  useAppDispatch,
-  useAppSelector
-} from '@dx/store-web';
-import {
-  WEB_ROUTES
-} from '@dx/config-web';
 import { LottieNotFound } from '../lottie/LottieNotFound';
-import { selectAuthToken } from '@dx/auth-web';
 
-export const NotFoundComponent: React.FC = () => {
-  const isAuthenticated = useAppSelector((state: RootState) => selectAuthToken(state));
-  const dispatch = useAppDispatch();
+type NotFoundComponentPropsType = {
+  routingFn: () => void;
+  buttonText?: string;
+};
 
-  const goHome = () => {
-    if (isAuthenticated) {
-      dispatch(push(WEB_ROUTES.USER_PROFILE));
-      return;
-    }
-    dispatch(push(WEB_ROUTES.MAIN));
-  };
-
+export const NotFoundComponent: React.FC<NotFoundComponentPropsType> = ({ routingFn, buttonText }) => {
   return (
     <Grid
       container
@@ -56,10 +41,10 @@ export const NotFoundComponent: React.FC = () => {
         margin="20px"
       >
         <Button
-          onClick={goHome}
+          onClick={routingFn}
           variant="outlined"
         >
-          Go Back to Home
+          { buttonText || 'Return Home' }
         </Button>
       </Box>
     </Grid>

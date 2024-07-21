@@ -1,4 +1,4 @@
-import { IconNames } from '../../Icons';
+import { IconNames } from '../../icons';
 
 export type CellAlignment = 'left' | 'center' | 'right' | 'justify' | 'inherit';
 export type ComponentType = 'text' | 'icon' | 'checkbox' | 'none';

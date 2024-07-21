@@ -5,7 +5,7 @@ import {
   Typography
 } from '@mui/material';
 
-import { themeColors } from '../muiOverrides/styles';
+import { themeColors } from '../mui-overrides/styles';
 
 type LoadingProps = {
   error?: Error;

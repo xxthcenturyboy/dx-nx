@@ -3,7 +3,7 @@ import {
   Grid,
   Typography
 } from '@mui/material';
-// import { themeColors } from '../muiOverrides/styles';
+// import { themeColors } from '../mui-overrides/styles';
 import { LottieAccessDenied } from '../lottie/LottieAccessDenied';
 
 type LoadingProps = {

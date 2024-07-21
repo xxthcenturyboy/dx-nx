@@ -23,15 +23,16 @@ import {
   authReducer,
   authPersistConfig
 } from '@dx/auth-web';
-import {
-  homeReducer,
-  HomeStateType
-} from '@dx/home';
+import { homeReducer } from '@dx/home';
 import { uiReducer } from '@dx/ui-web';
+import { dashboardReducer } from '@dx/dashboard-web';
+import { shortlinkReducer } from '@dx/shortlink-web';
 
 const combinedPersistReducers = combineReducers({
   auth: persistReducer<AuthStateType, any>(authPersistConfig, authReducer) as typeof authReducer,
+  dashboard: dashboardReducer,
   home: homeReducer,
+  shortlink: shortlinkReducer,
   ui: uiReducer
 });
 

@@ -1,0 +1,8 @@
+export {
+  USER_ENTITY_NAME,
+  USER_MENU,
+  USER_PROFILE_ENTITY_NAME,
+  USER_PROFILE_MENU,
+  USER_PROFILE_ROUTES,
+  USER_ROUTES
+} from './user-web.consts';

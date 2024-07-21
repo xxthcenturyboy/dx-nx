@@ -10,7 +10,7 @@ import {
   KeyboardArrowRight,
   LastPage as LastPageIcon,
 } from '@mui/icons-material';
-import { themeColors } from '../../muiOverrides/styles';
+import { themeColors } from '../../mui-overrides/styles';
 
 interface TablePaginationActionsProps {
   count: number;

@@ -7,14 +7,16 @@ import autoMergeLevel1 from 'reduxjs-toolkit-persist/lib/stateReconciler/autoMer
 import { PersistConfig } from 'reduxjs-toolkit-persist/lib/types';
 import { PaletteMode } from '@mui/material';
 
-import { UiStateType } from './ui-web.types';
+import { UiStateType } from '../ui-web.types';
 import { UI_WEB_ENTITY_NAME } from '../ui.consts';
 import {
   // API_HOST_PORT,
   // API_URL,
   APP_NAME
 } from '@dx/config-shared';
-import { appTheme } from '../muiOverrides/muiTheme';
+import { appTheme } from '../mui-overrides/muiTheme';
+import { AppMenuType } from '../components/menu';
+import { WebConfigService } from '@dx/config-web';
 
 export const uiInitialState: UiStateType = {
   apiDialogError: null,
@@ -28,6 +30,7 @@ export const uiInitialState: UiStateType = {
   logoUrl: `/img/logo-2.png`,
   logoUrlSmall: `/img/logo-square-2.png`,
   menuOpen: false,
+  menus: null,
   name: APP_NAME,
   notifications: 0,
   routes: {},
@@ -56,13 +59,16 @@ const uiSlice = createSlice({
   name: UI_WEB_ENTITY_NAME,
   initialState: uiInitialState,
   reducers: {
-    appDialogSet(state, action: PayloadAction<string>) {
-      state.apiDialogOpen = !!action.payload;
-      state.apiDialogError = action.payload;
+    bootstrapSet(state, action: PayloadAction<boolean>) {
+      state.bootstrapped = action.payload;
     },
     apiDialogSet(state, action: PayloadAction<string>) {
       state.apiDialogOpen = !!action.payload;
       state.apiDialogError = action.payload;
+    },
+    appDialogSet(state, action: PayloadAction<React.ReactNode | null>) {
+      state.apiDialogOpen = !!action.payload;
+      state.dialogComponent = action.payload;
     },
     awaitDialogMessageSet(state, action: PayloadAction<string>) {
       state.awaitDialogMessage = action.payload;
@@ -70,8 +76,12 @@ const uiSlice = createSlice({
     awaitDialogOpenSet(state, action: PayloadAction<boolean>) {
       state.apiDialogOpen = action.payload;
     },
-    bootstrapSet(state, action: PayloadAction<boolean>) {
-      state.bootstrapped = action.payload;
+    menusSet(state, action: PayloadAction<AppMenuType[] | null>) {
+      state.menus = action.payload;
+      if (action.payload) {
+        const { routeState } = WebConfigService.getRouteConfigs();
+        state.routes = routeState;
+      }
     },
     themeModeSet(state, action: PayloadAction<PaletteMode>) {
       if (
