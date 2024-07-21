@@ -1,4 +1,7 @@
-import { Model, ModelCtor } from 'sequelize-typescript';
+import {
+  Model,
+  ModelCtor
+} from 'sequelize-typescript';
 
 import { UserModel } from '@dx/user-api';
 import { UserPrivilegeSetModel } from '@dx/user-privilege-api';
@@ -7,7 +10,7 @@ import { EmailModel } from '@dx/email-api';
 import { PhoneModel } from '@dx/phone-api';
 
 import { ShortLinkModel } from '@dx/shortlink-api';
-import { logTable } from '@dx/utils-shared-misc';
+import { logTable } from '@dx/logger-api';
 
 export function getPostgresModels(): ModelCtor[] {
   const models: ModelCtor[] = [];

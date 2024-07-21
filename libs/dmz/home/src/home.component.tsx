@@ -7,14 +7,13 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 import {
   APP_NAME,
   APP_DESCRIPTION
 } from '@dx/config-shared';
-import {
-  WEB_ROUTES
-} from '@dx/config-web';
+import { WebConfigService } from '@dx/config-web';
 import {
   FADE_TIMEOUT_DUR,
   LottieWelcomeRobot,
@@ -24,13 +23,21 @@ import {
 export const HomeComponent: React.FC = () => {
   const theme = useTheme();
   const smBreak = useMediaQuery(theme.breakpoints.down('sm'));
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     setDocumentTitle();
   }, []);
 
   const goToLogin = () => {
-    // dispatch(push(WEB_ROUTES.LOGIN));
+    const routes = WebConfigService.getWebRoutes();
+    if (
+      routes
+      && routes.AUTH
+      && routes.AUTH.LOGIN
+    ) {
+      navigate(routes.AUTH.LOGIN);
+    }
   };
 
   return (

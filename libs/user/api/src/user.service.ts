@@ -9,19 +9,15 @@ import {
   DEFAULT_LIMIT,
   DEFAULT_OFFSET,
   DEFAULT_SORT,
-  PHONE_DEFAULT_REGION_CODE
+  PHONE_DEFAULT_REGION_CODE,
 } from '@dx/config-shared';
-import {
-  isDebug,
-  isLocal,
-  isProd,
-} from '@dx/config-api';
+import { isDebug, isLocal, isProd } from '@dx/config-api';
 import { ShortLinkModel } from '@dx/shortlink-api';
 import { MailSendgrid } from '@dx/mail-api';
 import { EmailModel } from '@dx/email-api';
-import { EmailUtil } from '@dx/util-emails';
+import { EmailUtil } from '@dx/utils/api/emails';
 import { PhoneUtil } from '@dx/util-phones';
-import { ProfanityFilter } from '@dx/util-profanity';
+import { ProfanityFilter } from '@dx/utils/api/profanity';
 import { OtpResponseType, OtpService } from '@dx/auth-api';
 import { dxRsaValidateBiometricKey } from '@dx/util-encryption';
 import { UserModel } from './user.postgres-model';

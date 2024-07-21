@@ -1,5 +1,5 @@
 import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger-api';
-import { EmailUtil } from '@dx/util-emails';
+import { EmailUtil } from '@dx/utils/api/emails';
 import { UserModel } from '@dx/user-api';
 import { isLocal } from '@dx/config-api';
 import { OtpService } from '@dx/auth-api';

@@ -21,7 +21,7 @@ import {
 } from '@mui/material';
 
 import { APP_NAME } from '@dx/config-shared';
-import { WEB_ROUTES } from '@dx/config-web';
+import { WebConfigService } from '@dx/config-web';
 import {
   FADE_TIMEOUT_DUR,
   MEDIA_BREAK
@@ -71,7 +71,10 @@ export const ShortlinkComponent: React.FC = () => {
   }, [fetchedRoute]);
 
   const routeToMain = () => {
-    navigate(WEB_ROUTES.MAIN);
+    const routes = WebConfigService.getWebRoutes();
+    if (routes && routes.MAIN) {
+      navigate(routes.MAIN);
+    }
   };
 
   return (

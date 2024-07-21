@@ -1,11 +1,11 @@
 /* eslint-disable */
 export default {
-  displayName: 'util-emails',
+  displayName: 'utils-api-profanity',
   preset: '../../../../jest.preset.js',
   testEnvironment: 'node',
   transform: {
     '^.+\\.[tj]s$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.spec.json' }],
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageDirectory: '../../../../coverage/libs/utils/shared/util-emails',
+  coverageDirectory: '../../../../coverage/libs/utils/api/profanity',
 };

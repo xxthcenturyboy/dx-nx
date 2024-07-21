@@ -6,6 +6,11 @@ import {
 } from '@dx/ui-web';
 import { useAppDispatch } from '@dx/store-web';
 import { HomeComponent } from '@dx/home';
+import { ErrorBoundary } from '@dx/utils-web-error-boundary';
+import {
+  NotFoundComponent,
+  // UiLoadingComponent
+} from '@dx/ui-web';
 
 const StyledApp = styled.div`
   // Your style here
@@ -19,13 +24,15 @@ export const App: React.FC = () => {
     window.addEventListener('resize', () => {
       dispatch(uiActions.windowSizeSet());
     });
-  }, []);
+  });
 
 
   return (
     <StyledApp>
       {/* <div>HOME</div> */}
-      <HomeComponent />
+      <ErrorBoundary fallback={<NotFoundComponent routingFn={() => null} />}>
+        <HomeComponent />
+      </ErrorBoundary>
     </StyledApp>
   );
 };

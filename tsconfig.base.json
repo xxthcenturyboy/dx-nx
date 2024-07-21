@@ -48,11 +48,9 @@
       "@dx/user-shared": ["libs/user/shared/src/index.ts"],
       "@dx/user-web": ["libs/user/web/src/index.ts"],
       "@dx/util-dates": ["libs/utils/shared/util-dates/src/index.ts"],
-      "@dx/util-emails": ["libs/utils/shared/util-emails/src/index.ts"],
       "@dx/util-encryption": ["libs/utils/shared/util-encryption/src/index.ts"],
       "@dx/util-numbers": ["libs/utils/shared/util-numbers/src/index.ts"],
       "@dx/util-phones": ["libs/utils/api/util-phones/src/index.ts"],
-      "@dx/util-profanity": ["libs/utils/shared/util-profanity/src/index.ts"],
       "@dx/util-regex": ["libs/utils/shared/util-regex/src/index.ts"],
       "@dx/util-strings": ["libs/utils/shared/util-strings/src/index.ts"],
       "@dx/utils-api-cookies": ["libs/utils/api/cookies/src/index.ts"],
@@ -69,7 +67,9 @@
       "@dx/utils-shared-misc": ["libs/utils/shared/misc/src/index.ts"],
       "@dx/utils-web-error-boundary": [
         "libs/utils/web/error-boundary/src/index.ts"
-      ]
+      ],
+      "@dx/utils/api/emails": ["libs/utils/api/emails/src/index.ts"],
+      "@dx/utils/api/profanity": ["libs/utils/api/profanity/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

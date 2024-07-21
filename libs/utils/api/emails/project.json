@@ -1,0 +1,9 @@
+{
+  "name": "utils-api-emails",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/utils/api/emails/src",
+  "projectType": "library",
+  "tags": ["scope:api"],
+  "// targets": "to see all targets run: nx show project utils-api-emails --web",
+  "targets": {}
+}

@@ -12,7 +12,7 @@ import { PhoneModel } from '@dx/phone-api';
 import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger-api';
 import { MailSendgrid } from '@dx/mail-api';
 import { ShortLinkModel } from '@dx/shortlink-api';
-import { EmailUtil } from '@dx/util-emails';
+import { EmailUtil } from '@dx/utils/api/emails';
 import { PhoneUtil } from '@dx/util-phones';
 import { dxRsaValidateBiometricKey } from '@dx/util-encryption';
 import { isProd } from '@dx/config-api';

@@ -1,12 +1,12 @@
 import {
-  WEB_ROUTES
+  CLIENT_REDUX_DB_NAME
 } from './web-config.consts';
 
-describe('WEB_ROUTES', () => {
+describe('CLIENT_REDUX_DB_NAME', () => {
   it('should exist when imported', () => {
     // arrange
     // act
     // assert
-    expect(WEB_ROUTES).toBeDefined();
+    expect(CLIENT_REDUX_DB_NAME).toBeDefined();
   });
 });

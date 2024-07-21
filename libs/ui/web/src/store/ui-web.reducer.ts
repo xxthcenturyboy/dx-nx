@@ -7,7 +7,7 @@ import autoMergeLevel1 from 'reduxjs-toolkit-persist/lib/stateReconciler/autoMer
 import { PersistConfig } from 'reduxjs-toolkit-persist/lib/types';
 import { PaletteMode } from '@mui/material';
 
-import { UiStateType } from '../ui-web.types';
+import { RouteState, UiStateType } from '../ui-web.types';
 import { UI_WEB_ENTITY_NAME } from '../ui.consts';
 import {
   // API_HOST_PORT,
@@ -16,7 +16,6 @@ import {
 } from '@dx/config-shared';
 import { appTheme } from '../mui-overrides/muiTheme';
 import { AppMenuType } from '../components/menu';
-import { WebConfigService } from '@dx/config-web';
 
 export const uiInitialState: UiStateType = {
   apiDialogError: null,
@@ -76,11 +75,11 @@ const uiSlice = createSlice({
     awaitDialogOpenSet(state, action: PayloadAction<boolean>) {
       state.apiDialogOpen = action.payload;
     },
-    menusSet(state, action: PayloadAction<AppMenuType[] | null>) {
-      state.menus = action.payload;
-      if (action.payload) {
-        const { routeState } = WebConfigService.getRouteConfigs();
-        state.routes = routeState;
+    menusSet(state, action: PayloadAction<{ menus: AppMenuType[] | null, routes: RouteState}>) {
+      state.menus = action.payload.menus;
+      state.routes = {};
+      if (action.payload.routes) {
+        state.routes = action.payload.routes;
       }
     },
     themeModeSet(state, action: PayloadAction<PaletteMode>) {
