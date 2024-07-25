@@ -12,7 +12,7 @@ import {
 } from '@dx/store-web';
 import { themeColors } from '../mui-overrides/styles';
 
-export const GlobalAwaiterComponent: React.FC = () => {
+export const GlobalAwaiter: React.FC = () => {
   const open = useAppSelector((state: RootState) => state.ui.awaitDialogOpen);
   const message = useAppSelector((state: RootState) => state.ui.awaitDialogMessage);
 

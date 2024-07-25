@@ -5,11 +5,11 @@ import {
   GetUserProfileReturnType,
   GetUserListResponseType,
   GetUserResponseType,
-  UserProfileStateType,
   UpdateUserPayloadType,
   UpdateUserResponseType,
   UpdatePasswordPayloadType,
 } from '@dx/user-api';
+import { UserProfileStateType } from '@dx/user-shared';
 import {
   TEST_EXISTING_USER_ID,
   TEST_USER_CREATE,

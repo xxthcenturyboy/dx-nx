@@ -26,6 +26,11 @@ import {
 import { dashboardReducer } from '@dx/dashboard-web';
 import { homeReducer } from '@dx/home';
 import { shortlinkReducer } from '@dx/shortlink-web';
+import {
+  userProfileReducer,
+  userProfilePersistConfig
+} from '@dx/user-profile-web';
+import { UserProfileStateType } from '@dx/user-shared';
 import { uiReducer } from '@dx/ui-web';
 
 const combinedPersistReducers = combineReducers({
@@ -33,7 +38,8 @@ const combinedPersistReducers = combineReducers({
   dashboard: dashboardReducer,
   home: homeReducer,
   shortlink: shortlinkReducer,
-  ui: uiReducer
+  ui: uiReducer,
+  userProfile: persistReducer<UserProfileStateType, any>(userProfilePersistConfig, userProfileReducer) as typeof userProfileReducer
 });
 
 // const store = configureStore({

@@ -4,8 +4,8 @@ import {
   getUserProfileState,
   UserModel,
   UserModelType,
-  UserProfileStateType,
 } from '@dx/user-api';
+import { UserProfileStateType } from '@dx/user-shared';
 import { DeviceModel } from '@dx/devices-api';
 import { EmailModel } from '@dx/email-api';
 import { PhoneModel } from '@dx/phone-api';

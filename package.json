@@ -36,6 +36,7 @@
     "ioredis-mock": "^8.9.0",
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
+    "libphonenumber-js": "^1.11.4",
     "lodash": "^4.17.21",
     "lottie-react": "^2.4.0",
     "morgan": "^1.10.0",

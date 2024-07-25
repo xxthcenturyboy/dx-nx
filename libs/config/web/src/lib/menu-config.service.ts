@@ -1,22 +1,19 @@
-import {
-  AppMenuType,
-  MenuRestrictionType
-} from "@dx/ui-web";
+import { AppMenuType, MenuRestrictionType } from '@dx/ui-web';
 import { DASHBOARD_MENU } from '@dx/dashboard-web';
-import {
-  USER_MENU,
-  USER_PROFILE_MENU
-} from '@dx/user-web';
+import { USER_ADMIN_MENU } from '@dx/user-admin-web';
+import { USER_PROFILE_MENU } from '@dx/user-profile-web';
 
 export class MenuConfigService {
   CARDINAL_MENU_SET = [
     DASHBOARD_MENU,
     USER_PROFILE_MENU,
-    USER_MENU
+    USER_ADMIN_MENU
   ];
 
   private restrictSuperAdmin(menu: AppMenuType) {
-    const unrestrictedItems = menu.items.filter(item => item.restriction !== 'SUPERADMIN');
+    const unrestrictedItems = menu.items.filter(
+      (item) => item.restriction !== 'SUPERADMIN'
+    );
     if (unrestrictedItems.length) {
       menu.items = unrestrictedItems;
       return menu;
@@ -26,7 +23,12 @@ export class MenuConfigService {
   }
 
   private restrictBeta(menu: AppMenuType) {
-    const unrestrictedItems = menu.items.filter(item => item.restriction !== 'BETA' && item.restriction !== 'ADMIN' && item.restriction !== 'SUPERADMIN');
+    const unrestrictedItems = menu.items.filter(
+      (item) =>
+        item.restriction !== 'BETA' &&
+        item.restriction !== 'ADMIN' &&
+        item.restriction !== 'SUPERADMIN'
+    );
     if (unrestrictedItems.length) {
       menu.items = unrestrictedItems;
       return menu;
@@ -36,7 +38,10 @@ export class MenuConfigService {
   }
 
   private restrictStandard(menu: AppMenuType) {
-    const unrestrictedItems = menu.items.filter(item => item.restriction !== 'ADMIN' && item.restriction !== 'SUPERADMIN');
+    const unrestrictedItems = menu.items.filter(
+      (item) =>
+        item.restriction !== 'ADMIN' && item.restriction !== 'SUPERADMIN'
+    );
     if (unrestrictedItems.length) {
       menu.items = unrestrictedItems;
       return menu;
@@ -83,4 +88,4 @@ export class MenuConfigService {
 
     return menus;
   }
-};
+}

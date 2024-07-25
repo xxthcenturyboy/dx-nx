@@ -1,11 +1,9 @@
-import { propertiesToArray } from "@dx/utils-shared-misc";
-import { RouteState } from "@dx/ui-web";
+import { propertiesToArray } from '@dx/utils-shared-misc';
+import { RouteState } from '@dx/ui-web';
 import { AUTH_ROUTES } from '@dx/auth-web';
 import { DASHBOARD_ROUTES } from '@dx/dashboard-web';
-import {
-  USER_PROFILE_ROUTES,
-  USER_ROUTES
-} from '@dx/user-web';
+import { USER_ADMIN_ROUTES } from '@dx/user-admin-web';
+import { USER_PROFILE_ROUTES } from '@dx/user-profile-web';
 import { SHORTLINK_ROUTES } from '@dx/shortlink-web';
 
 export class WebConfigService {
@@ -14,14 +12,23 @@ export class WebConfigService {
       MAIN: '/',
       AUTH: AUTH_ROUTES,
       DASHBOARD: DASHBOARD_ROUTES,
+      NOT_FOUND: '/404',
       SHORTLINK: SHORTLINK_ROUTES,
       USER_PROFILE: USER_PROFILE_ROUTES,
       ADMIN: {
-        USER: USER_ROUTES
+        USER: USER_ADMIN_ROUTES,
       },
-      SUDO: {
-      }
+      SUDO: {},
     };
+  }
+
+  public static getNoRedirectRoutes() {
+    const routes = WebConfigService.getWebRoutes();
+    if (routes) {
+      return [routes.MAIN, routes.AUTH.LOGIN, routes.SHORTLINK.MAIN];
+    }
+
+    return [];
   }
 
   public static getRouteConfigs() {
@@ -33,7 +40,8 @@ export class WebConfigService {
       const routeJson = propertiesToArray(routes);
       if (Array.isArray(routeJson)) {
         for (const routeKey of routeJson) {
-          routeState[routeKey] = routeKey.split('.').reduce((a, b) => a[b], routes) || '';
+          routeState[routeKey] =
+            routeKey.split('.').reduce((a, b) => a[b], routes) || '';
           if (routeKey.includes('main')) {
             mainRouteKeys.push(routeKey);
           }
@@ -43,7 +51,7 @@ export class WebConfigService {
 
     return {
       mainRouteKeys,
-      routeState
-    }
+      routeState,
+    };
   }
-};
+}

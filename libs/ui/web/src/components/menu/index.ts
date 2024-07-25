@@ -1,5 +1,7 @@
-export { AppMenuType, MenuRestrictionType } from './app-menu.types';
+export {
+  AppMenuType,
+  MenuRestrictionType
+} from './app-menu.types';
 
-// export {
-//   MenuNav
-// } from './lib/menu-nav';
+export { MenuNav } from './menu-nav';
+export { AppNavBar } from './app-nav-bar.menu';

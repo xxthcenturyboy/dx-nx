@@ -1,38 +1,53 @@
 import * as React from 'react';
 import {
-  RootState,
-  useDispatch,
-  useSelector
-} from 'client/store';
-import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
-import { createTheme, Theme, ThemeProvider } from '@mui/material/styles';
-import fetchProfile from 'client/UserProfile/actions/fetchProfile';
-import { AppNavBar } from 'client/App/components/AppNavBar';
-import { appBootstrap, loginBootstrap } from 'client/core/bootstrap';
+  Route,
+  RouterProvider,
+  Routes,
+  useLocation,
+  useNavigate
+} from 'react-router-dom';
+import {
+  createTheme,
+  Theme,
+  ThemeProvider
+} from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import { Fade } from '@mui/material';
-import { PrivateRoute } from 'client/core/PrivateRoute';
-import { AppRouter } from 'client/core/Router';
-import { AuthRouter } from 'client/Auth/components/Router';
-import { MenuNav } from 'client/App/components/Menu';
-import { drawerWidth } from 'client/core/UI/mui-overrides/muiTheme';
-import { selectIsAuthenticated } from 'client/UserProfile/selectors';
-import { actions as appActions } from 'client/App';
-import { allRoutes, noRedirectRoutes } from 'client/routes';
-import { AppUrlEntities, OpenClosed, StorageKeys } from 'client/core/enums';
-import { actions as userProfileActions } from 'client/UserProfile';
-import { push } from 'connected-react-router';
-import { MEDIA_BREAK, TOAST_LOCATION, TOAST_TIMEOUT } from 'client/core/constants';
-import { CustomDialog } from 'client/core/UI/components/Dialog/Dialog';
-import { DialogApiError } from 'client/core/UI/components/Dialog/DialogApiError';
-// import { DialogAwaiter } from 'client/core/UI/components/Dialog/DialogAwaiter';
-import { Slide, ToastContainer } from 'react-toastify';
+import {
+  Slide,
+  ToastContainer
+} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { selectToastThemeMode } from 'client/App/selectors';
-import { Home } from 'client/DMZ/Home/components/Home';
-// import Loading from 'client/core/UI/components/Loading';
-import GlobalAwaiter from './GlobalAwaiter';
-import { ShortlinkComponent } from 'client/Shortlink/components/short-link.component';
+
+import {
+  RootState,
+  useAppDispatch,
+  useAppSelector
+} from '@dx/store-web';
+import {
+  AppNavBar,
+  CustomDialog,
+  DialogApiError,
+  DialogAwaiter,
+  drawerWidth,
+  GlobalAwaiter,
+  MenuNav,
+  MEDIA_BREAK,
+  selectToastThemeMode,
+  STORAGE_KEYS,
+  TOAST_LOCATION,
+  TOAST_TIMEOUT,
+  uiActions,
+  UiLoadingComponent
+} from '@dx/ui-web';
+import { WebConfigService } from '@dx/config-web';
+import { selectIsAuthenticated } from '@dx/auth-web';
+
+import fetchProfile from 'client/UserProfile/actions/fetchProfile';
+import { actions as userProfileActions } from 'client/UserProfile';
+
+import { AppRouter } from './app.router';
+
 
 // Code splitting
 import {
@@ -40,57 +55,68 @@ import {
   NotFound,
 } from 'client/core/LazyLoader';
 
-const App: React.FC = () => {
+export const App: React.FC = () => {
   const [theme, setTheme] = React.useState<Theme>(createTheme());
-  const [bootstrapped, setBootstrapped] = React.useState<boolean>(false);
-  const [menuBreak, setMenuBreak] = React.useState<boolean>(false);
-  const [mobileBreak, setMobileBreak] = React.useState<boolean>(false);
-  const [topPixel, setTopPixel] = React.useState<number>(64);
+  const [bootstrapped, setBootstrapped] = React.useState(false);
+  const [menuBreak, setMenuBreak] = React.useState(false);
+  const [mobileBreak, setMobileBreak] = React.useState(false);
+  const [topPixel, setTopPixel] = React.useState(64);
   const [appFrameStyle, setAppFrameStyle] = React.useState<React.CSSProperties>({
     zIndex: 1,
     height: '100vh'
   });
   const [contentWrapperStyle, setContentWrapperStyle] = React.useState<React.CSSProperties>({});
-  const dispatch = useDispatch();
-  const userProfile = useSelector((state: RootState) => state.userProfile.profile);
-  const menuOpen = useSelector((state: RootState) => state.app.menuOpen);
-  const themeOptions = useSelector((state: RootState) => state.app.settings.themeOptions);
-  const isAuthenticated = useSelector((state: RootState) => selectIsAuthenticated(state));
-  const logoutResponse = useSelector((state: RootState) => state.auth.logoutResponse);
-  const windowWidth = useSelector((state: RootState) => state.client.windowWidth) || 0;
-  const toastTheme = useSelector((state: RootState) => selectToastThemeMode(state));
+  const dispatch = useAppDispatch();
+  const userProfile = useAppSelector((state: RootState) => state.userProfile.profile);
+  const menuOpen = useAppSelector((state: RootState) => state.ui.menuOpen);
+  const themeOptions = useAppSelector((state: RootState) => state.ui.theme);
+  const isAuthenticated = useAppSelector((state: RootState) => selectIsAuthenticated(state));
+  const logoutResponse = useAppSelector((state: RootState) => state.auth.logoutResponse);
+  const windowWidth = useAppSelector((state: RootState) => state.ui.windowWidth) || 0;
+  const toastTheme = useAppSelector((state: RootState) => selectToastThemeMode(state));
   const location = useLocation();
-  const canRedirect = !noRedirectRoutes.some(route => location.pathname.startsWith(route));
+  const navigate = useNavigate();
+  const ROUTES = WebConfigService.getWebRoutes();
+  const NO_REDICRET_ROUTES = WebConfigService.getNoRedirectRoutes()
+  const canRedirect = !NO_REDICRET_ROUTES.some(route => location.pathname.startsWith(route));
 
   React.useEffect(() => {
-    if (!userProfile && canRedirect) {
+    dispatch(uiActions.windowSizeSet());
+    window.addEventListener('resize', () => {
+      dispatch(uiActions.windowSizeSet());
+    });
+
+    if (
+      !userProfile
+      && canRedirect
+    ) {
       void dispatch(fetchProfile());
     }
 
-    appBootstrap();
+    // appBootstrap();
     setTheme(createTheme(themeOptions));
     updateAppThemeStyle();
 
     setTimeout(() => {
       setBootstrapped(true);
-      dispatch(appActions.setBootstrapped());
-      loginBootstrap();
+      dispatch(uiActions.bootstrapSet(true));
+      // loginBootstrap();
     }, 200);
   }, []);
 
   React.useEffect(() => {
     if (logoutResponse) {
-      dispatch(appActions.toggleMenu(false));
+      dispatch(uiActions.toggleMenuSet(false));
       dispatch(userProfileActions.setProfile(null));
       dispatch(userProfileActions.invalidateProfile());
-      canRedirect && dispatch(push(allRoutes.main));
+      canRedirect && navigate(ROUTES.MAIN);
     }
   }, [logoutResponse]);
 
   React.useEffect(() => {
     if (bootstrapped) {
       setTheme(createTheme(themeOptions));
-      localStorage.setItem(StorageKeys.THEME_MODE, themeOptions.palette?.mode || 'light');
+      localStorage.setItem(STORAGE_KEYS.THEME_MODE, themeOptions.palette?.mode || 'light');
     }
   }, [themeOptions]);
 
@@ -103,7 +129,7 @@ const App: React.FC = () => {
     if (bootstrapped) {
       updateContentWrapperStyles();
       if (isAuthenticated) {
-        localStorage.setItem(StorageKeys.MENU_STATE, menuOpen ? OpenClosed.OPEN : OpenClosed.CLOSED);
+        localStorage.setItem(STORAGE_KEYS.MENU_STATE, menuOpen ? 'OPEN' : 'CLOSED');
       }
     }
   }, [menuOpen]);
@@ -178,15 +204,9 @@ const App: React.FC = () => {
           }
           <AppNavBar />
           <Box style={contentWrapperStyle}>
-            <Switch>
-              <Route exact path={allRoutes.main} component={Home} />
-              <Route exact path={allRoutes.login} component={Login} />
-              <Route path={`${allRoutes.auth.main}/*`} component={AuthRouter} />
-              <Route exact path={`${allRoutes.shortlink.main}/:token`} component={ShortlinkComponent} />
-              <PrivateRoute path={`/*`} component={AppRouter} />
-              <Route exact path="/404" component={NotFound} />
-              <Redirect from="*" to="/404" />
-            </Switch>
+            <RouterProvider
+              router={AppRouter.getRouter()}
+            />
           </Box>
         </Box>
       </Fade>
@@ -203,5 +223,3 @@ const App: React.FC = () => {
     </ThemeProvider>
   );
 };
-
-export default App;

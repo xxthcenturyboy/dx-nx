@@ -9,7 +9,7 @@ import {
 import { LottieNotFound } from '../lottie/LottieNotFound';
 
 type NotFoundComponentPropsType = {
-  routingFn: () => void;
+  routingFn?: () => void;
   buttonText?: string;
 };
 
@@ -41,7 +41,13 @@ export const NotFoundComponent: React.FC<NotFoundComponentPropsType> = ({ routin
         margin="20px"
       >
         <Button
-          onClick={routingFn}
+          onClick={
+            () => {
+              routingFn
+                ? routingFn()
+                : history.back();
+            }
+          }
           variant="outlined"
         >
           { buttonText || 'Return Home' }

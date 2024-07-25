@@ -23,8 +23,8 @@ import {
   UpdatePasswordPayloadType,
   UpdateUserPayloadType,
   UpdateUsernamePayloadType,
-  UserProfileStateType,
 } from './user.types';
+import { UserProfileStateType } from '@dx/user-shared';
 import { UserService, UserServiceType } from './user.service';
 import { UserModel } from './user.postgres-model';
 

@@ -21,8 +21,10 @@ import {
   dxVerifyHash,
 } from '@dx/util-encryption';
 import { DxDateUtilClass } from '@dx/util-dates';
-import { EmailModel, EmailModelType, EmailType } from '@dx/email-api';
-import { PhoneModel, PhoneModelType, PhoneType } from '@dx/phone-api';
+import { EmailModel, EmailModelType } from '@dx/email-api';
+import { PhoneModel, PhoneModelType } from '@dx/phone-api';
+import { EmailType } from '@dx/email-shared';
+import { PhoneType } from '@dx/phone-shared';
 import { DeviceModel, DeviceModelType, DeviceType } from '@dx/devices-api';
 import {
   UserPrivilegeSetModel,

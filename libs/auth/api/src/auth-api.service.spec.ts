@@ -20,7 +20,8 @@ import {
 } from '@dx/config-api';
 import { PostgresDbConnection } from '@dx/data-access-postgres';
 import { RedisService } from '@dx/data-access-redis';
-import { UserModel, UserProfileStateType } from '@dx/user-api';
+import { UserModel } from '@dx/user-api';
+import { UserProfileStateType } from '@dx/user-shared';
 import { UserPrivilegeSetModel } from '@dx/user-privilege-api';
 import { DeviceModel, DevicesService } from '@dx/devices-api';
 import { EmailModel } from '@dx/email-api';

@@ -9,6 +9,5 @@ export {
 
 export {
   CreateEmailPayloadType,
-  EmailType,
   UpdateEmailPayloadType,
 } from './email.types';

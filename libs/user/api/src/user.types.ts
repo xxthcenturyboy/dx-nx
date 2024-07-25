@@ -1,5 +1,9 @@
-import { EmailType } from '@dx/email-api';
-import { PhoneType } from '@dx/phone-api';
+import { EmailType } from '@dx/email-shared';
+import { PhoneType } from '@dx/phone-shared';
+import {
+  UserProfileDeviceType,
+  UserProfileStateType
+} from '@dx/user-shared';
 
 export type UserType = {
   id: string;
@@ -26,30 +30,6 @@ export type UserSessionType = {
   roles: string[];
   username: string;
   restrictions: string[];
-};
-
-export type UserProfileDeviceType = {
-  id: string;
-  hasBiometricSetup: boolean;
-};
-
-export type UserProfileStateType = {
-  id: string;
-  device: UserProfileDeviceType;
-  emails: EmailType[];
-  firstName: string;
-  fullName: string;
-  hasSecuredAccount: boolean;
-  hasVerifiedEmail: boolean;
-  hasVerifiedPhone: boolean;
-  a: boolean;
-  sa: boolean;
-  lastName: string;
-  b: boolean;
-  phones: PhoneType[];
-  restrictions: string[];
-  role: string[];
-  username: string;
 };
 
 export type GetUserProfileReturnType = {

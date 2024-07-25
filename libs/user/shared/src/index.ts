@@ -1,3 +1,5 @@
 export {
-  CreateUserPayloadType
+  CreateUserPayloadType,
+  UserProfileDeviceType,
+  UserProfileStateType
 } from './user-shared.types';

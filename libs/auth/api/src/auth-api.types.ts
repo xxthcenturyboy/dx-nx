@@ -1,4 +1,4 @@
-import { UserProfileStateType } from '@dx/user-api';
+import { UserProfileStateType } from '@dx/user-shared';
 import { DeviceAuthType } from '@dx/devices-shared';
 
 export type AccountCreationPayloadType = {

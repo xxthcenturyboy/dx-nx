@@ -17,7 +17,6 @@ export {
   UpdatePasswordPayloadType,
   UpdateUserPayloadType,
   UpdateUserResponseType,
-  UserProfileStateType,
   UserSessionType,
   UpdateUsernamePayloadType,
   UserType,

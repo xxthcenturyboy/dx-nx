@@ -1,0 +1,9 @@
+{
+  "name": "email-shared",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/email/shared/src",
+  "projectType": "library",
+  "tags": ["scope:shared"],
+  "// targets": "to see all targets run: nx show project email-shared --web",
+  "targets": {}
+}

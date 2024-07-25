@@ -10,6 +10,5 @@ export {
 
 export {
   CreatePhonePayloadType,
-  PhoneType,
   UpdatePhonePayloadType,
 } from './phone.types';

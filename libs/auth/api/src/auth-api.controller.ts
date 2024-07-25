@@ -8,7 +8,7 @@ import {
 } from '@dx/utils-api-http-response';
 import { DevicesService } from '@dx/devices-api';
 import { CookeiService } from '@dx/utils-api-cookies';
-import { UserProfileStateType } from '@dx/user-api';
+import { UserProfileStateType } from '@dx/user-shared';
 import { ApiLoggingClass } from '@dx/logger-api';
 import { UserModel } from '@dx/user-api';
 import { AuthService } from './auth-api.service';
