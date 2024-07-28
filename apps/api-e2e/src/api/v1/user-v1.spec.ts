@@ -16,8 +16,14 @@ import {
   TEST_UUID,
 } from '@dx/config-shared';
 import { UpdateUsernamePayloadType } from '@dx/user-api';
-import { AuthSuccessResponseType, OtpResponseType } from '@dx/auth-api';
-import { AuthUtil, AuthUtilType } from './util-v1';
+import {
+  AuthSuccessResponseType,
+  OtpResponseType
+} from '@dx/auth-shared';
+import {
+  AuthUtil,
+  AuthUtilType
+} from './util-v1';
 
 describe('v1 User Routes', () => {
   let authRes: AuthSuccessResponseType;

@@ -28,7 +28,7 @@ import {
   AppNavBar,
   CustomDialog,
   DialogApiError,
-  DialogAwaiter,
+  // DialogAwaiter,
   drawerWidth,
   GlobalAwaiter,
   MenuNav,
@@ -38,22 +38,22 @@ import {
   TOAST_LOCATION,
   TOAST_TIMEOUT,
   uiActions,
-  UiLoadingComponent
+  // UiLoadingComponent
 } from '@dx/ui-web';
 import { WebConfigService } from '@dx/config-web';
 import { selectIsAuthenticated } from '@dx/auth-web';
-
-import fetchProfile from 'client/UserProfile/actions/fetchProfile';
-import { actions as userProfileActions } from 'client/UserProfile';
-
+import {
+  userProfileActions,
+  useLazyGetProfileQuery
+} from '@dx/user-profile-web';
 import { AppRouter } from './app.router';
 
 
 // Code splitting
-import {
-  Login,
-  NotFound,
-} from 'client/core/LazyLoader';
+// import {
+//   Login,
+//   NotFound,
+// } from 'client/core/LazyLoader';
 
 export const App: React.FC = () => {
   const [theme, setTheme] = React.useState<Theme>(createTheme());
@@ -67,7 +67,7 @@ export const App: React.FC = () => {
   });
   const [contentWrapperStyle, setContentWrapperStyle] = React.useState<React.CSSProperties>({});
   const dispatch = useAppDispatch();
-  const userProfile = useAppSelector((state: RootState) => state.userProfile.profile);
+  const userProfile = useAppSelector((state: RootState) => state.userProfile);
   const menuOpen = useAppSelector((state: RootState) => state.ui.menuOpen);
   const themeOptions = useAppSelector((state: RootState) => state.ui.theme);
   const isAuthenticated = useAppSelector((state: RootState) => selectIsAuthenticated(state));
@@ -79,6 +79,13 @@ export const App: React.FC = () => {
   const ROUTES = WebConfigService.getWebRoutes();
   const NO_REDICRET_ROUTES = WebConfigService.getNoRedirectRoutes()
   const canRedirect = !NO_REDICRET_ROUTES.some(route => location.pathname.startsWith(route));
+  const [
+    fetchProfile,
+    {
+      data: profileResponse,
+      isSuccess: fetchProfileSuccess
+    }
+  ] = useLazyGetProfileQuery();
 
   React.useEffect(() => {
     dispatch(uiActions.windowSizeSet());
@@ -90,7 +97,7 @@ export const App: React.FC = () => {
       !userProfile
       && canRedirect
     ) {
-      void dispatch(fetchProfile());
+      void fetchProfile();
     }
 
     // appBootstrap();
@@ -107,11 +114,20 @@ export const App: React.FC = () => {
   React.useEffect(() => {
     if (logoutResponse) {
       dispatch(uiActions.toggleMenuSet(false));
-      dispatch(userProfileActions.setProfile(null));
-      dispatch(userProfileActions.invalidateProfile());
+      dispatch(userProfileActions.profileInvalidated());
       canRedirect && navigate(ROUTES.MAIN);
     }
   }, [logoutResponse]);
+
+  React.useEffect(() => {
+    if (
+      fetchProfileSuccess
+      && profileResponse.profile
+      && typeof profileResponse.profile !== 'string'
+    ) {
+      dispatch(userProfileActions.profileUpdated(profileResponse.profile));
+    }
+  }, [fetchProfileSuccess]);
 
   React.useEffect(() => {
     if (bootstrapped) {

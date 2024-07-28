@@ -1,4 +1,7 @@
 export {
+  useLogoutMutation
+} from './auth-web.api';
+export {
   authActions,
   authInitialState,
   authPersistConfig,

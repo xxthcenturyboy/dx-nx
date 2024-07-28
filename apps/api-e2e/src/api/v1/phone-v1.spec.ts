@@ -10,7 +10,10 @@ import {
   TEST_PHONE_VALID,
   TEST_UUID,
 } from '@dx/config-shared';
-import { AuthSuccessResponseType, OtpResponseType } from '@dx/auth-api';
+import {
+  AuthSuccessResponseType,
+  OtpResponseType
+} from '@dx/auth-shared';
 import { AuthUtil, AuthUtilType } from './util-v1';
 
 describe('v1 Phone Routes', () => {

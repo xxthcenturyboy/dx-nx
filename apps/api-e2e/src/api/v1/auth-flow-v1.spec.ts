@@ -3,8 +3,10 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import {
   AccountCreationPayloadType,
   AuthSuccessResponseType,
-  LoginPaylodType,
-  UserLookupResponseType,
+  LoginPayloadType,
+  UserLookupResponseType
+} from '@dx/auth-shared';
+import {
   USER_LOOKUPS,
   AUTH_TOKEN_NAMES,
 } from '@dx/auth-api';
@@ -660,7 +662,7 @@ describe('v1 Auth Flow', () => {
   describe('Log In', () => {
     test('should return an error when sent with a phone that does not have an account.', async () => {
       // arrange
-      const payload: LoginPaylodType = {
+      const payload: LoginPayloadType = {
         code: otpPhone,
         value: '8584846802',
       };
@@ -687,7 +689,7 @@ describe('v1 Auth Flow', () => {
 
     test('should return an error when sent with an invalid otp code via phone login', async () => {
       // arrange
-      const payload: LoginPaylodType = {
+      const payload: LoginPayloadType = {
         code: 'InvalidCode',
         value: TEST_PHONE_VALID,
       };
@@ -714,7 +716,7 @@ describe('v1 Auth Flow', () => {
 
     test('should return an error when sent with an email that does not have an account.', async () => {
       // arrange
-      const payload: LoginPaylodType = {
+      const payload: LoginPayloadType = {
         code: otpEmail,
         value: 'not-in-this-system@useless.com',
       };
@@ -741,7 +743,7 @@ describe('v1 Auth Flow', () => {
 
     test('should return an error when sent with an invalid otp code via email login.', async () => {
       // arrange
-      const payload: LoginPaylodType = {
+      const payload: LoginPayloadType = {
         code: 'InvalidCode',
         value: TEST_EMAIL,
       };
@@ -768,7 +770,7 @@ describe('v1 Auth Flow', () => {
 
     test('should return an error when password is incorrect via email login.', async () => {
       // arrange
-      const payload: LoginPaylodType = {
+      const payload: LoginPayloadType = {
         value: TEST_EXISTING_EMAIL,
         password: 'bad-password',
       };
@@ -802,7 +804,7 @@ describe('v1 Auth Flow', () => {
         },
       });
 
-      const payload: LoginPaylodType = {
+      const payload: LoginPayloadType = {
         code: otpResponse.data.code,
         value: TEST_EMAIL,
       };
@@ -826,7 +828,7 @@ describe('v1 Auth Flow', () => {
     });
 
     test('should return user profile when successfully logged in with email / password', async () => {
-      const payload: LoginPaylodType = {
+      const payload: LoginPayloadType = {
         value: TEST_EXISTING_EMAIL,
         password: 'advancedbasics1',
       };
@@ -853,7 +855,7 @@ describe('v1 Auth Flow', () => {
         },
       });
 
-      const payload: LoginPaylodType = {
+      const payload: LoginPayloadType = {
         code: otpResonse.data.code,
         value: TEST_PHONE_VALID,
       };
@@ -878,7 +880,7 @@ describe('v1 Auth Flow', () => {
     });
 
     test('should return user profile when successfully logged in with device biometrics', async () => {
-      const payload: LoginPaylodType = {
+      const payload: LoginPayloadType = {
         biometric: {
           device: TEST_DEVICE,
           signature: dxRsaSignPayload(rsaKeyPair.privateKey, TEST_PHONE_VALID),
@@ -908,7 +910,7 @@ describe('v1 Auth Flow', () => {
 
     test('should return an error when sent with userId that has no biometrics', async () => {
       // arrange
-      const payload: LoginPaylodType = {
+      const payload: LoginPayloadType = {
         biometric: {
           device: TEST_DEVICE,
           signature: dxRsaSignPayload(rsaKeyPair.privateKey, TEST_PHONE_VALID),
@@ -939,7 +941,7 @@ describe('v1 Auth Flow', () => {
 
     test('should return an error when signature cannot be validated', async () => {
       // arrange
-      const payload: LoginPaylodType = {
+      const payload: LoginPayloadType = {
         biometric: {
           device: TEST_DEVICE,
           signature: dxRsaSignPayload(rsaKeyPair.privateKey, 'invalid payload'),

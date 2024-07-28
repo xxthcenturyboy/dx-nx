@@ -9,8 +9,7 @@ import {
   DEFAULT_SORT,
   LOCAL_ENV_NAME,
   LOREM,
-  PROD_ENV_NAME,
-  SORT_DIR,
+  PROD_ENV_NAME
 } from './common-config.consts';
 
 describe('APP_DESCRIPTION', () => {
@@ -109,14 +108,5 @@ describe('PROD_ENV_NAME', () => {
   // assert
   it('should exist when imported', () => {
     expect(PROD_ENV_NAME).toBeDefined();
-  });
-});
-
-describe('SORT_DIR', () => {
-  // arrange
-  // act
-  // assert
-  it('should exist when imported', () => {
-    expect(SORT_DIR).toBeDefined();
   });
 });

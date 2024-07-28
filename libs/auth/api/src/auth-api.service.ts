@@ -21,11 +21,10 @@ import { DevicesService } from '@dx/devices-api';
 import {
   AccountCreationPayloadType,
   BiometricAuthType,
-  LoginPaylodType,
-  // SessionData,
+  LoginPayloadType,
   UserLookupQueryType,
   UserLookupResponseType,
-} from './auth-api.types';
+} from '@dx/auth-shared';
 import { USER_LOOKUPS } from './auth-api.consts';
 import { OtpCodeCache } from './otp-code.redis-cache';
 import { TokenService } from './token.service';
@@ -39,7 +38,6 @@ export class AuthService {
 
   public async createAccount(
     payload: AccountCreationPayloadType
-    // session: SessionData
   ) {
     const { code, device, region, value } = payload;
 
@@ -272,7 +270,7 @@ export class AuthService {
   }
 
   public async login(
-    payload: LoginPaylodType
+    payload: LoginPayloadType
   ): Promise<UserProfileStateType | void> {
     const { biometric, code, region, password, value } = payload;
 

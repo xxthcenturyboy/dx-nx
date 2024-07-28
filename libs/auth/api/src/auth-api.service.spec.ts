@@ -30,14 +30,19 @@ import { ShortLinkModel } from '@dx/shortlink-api';
 import {
   AccountCreationPayloadType,
   BiometricAuthType,
-  LoginPaylodType,
-  // SessionData,
+  LoginPayloadType,
   UserLookupQueryType,
   UserLookupResponseType,
-} from './auth-api.types';
-import { AuthService, AuthServiceType } from './auth-api.service';
+} from '@dx/auth-shared';
+import {
+  AuthService,
+  AuthServiceType
+} from './auth-api.service';
 import { USER_LOOKUPS } from './auth-api.consts';
-import { dxRsaGenerateKeyPair, dxRsaSignPayload } from '@dx/util-encryption';
+import {
+  dxRsaGenerateKeyPair,
+  dxRsaSignPayload
+} from '@dx/util-encryption';
 
 jest.mock('@dx/logger-api');
 const errorLogSpyMock = jest
@@ -50,7 +55,6 @@ describe('AuthService', () => {
     let db: Sequelize;
     let emailAccountId: string;
     let phoneAccountId: string;
-    // let session: SessionData = {};
     const generatedKeys = dxRsaGenerateKeyPair();
     const rsaKeyPair = {
       privateKey: generatedKeys.privateKey,
@@ -498,7 +502,7 @@ describe('AuthService', () => {
 
       test('should throw when email does not exist', async () => {
         // arrange
-        const payload: LoginPaylodType = {
+        const payload: LoginPayloadType = {
           value: 'not-in-this-system@useless.com',
           password: '',
         };
@@ -513,7 +517,7 @@ describe('AuthService', () => {
 
       test('should throw when phone does not exist', async () => {
         // arrange
-        const payload: LoginPaylodType = {
+        const payload: LoginPayloadType = {
           value: '8584846802',
           code: 'OU812',
         };
@@ -528,7 +532,7 @@ describe('AuthService', () => {
 
       test('should throw when password is incorrect', async () => {
         // arrange
-        const payload: LoginPaylodType = {
+        const payload: LoginPayloadType = {
           value: TEST_EXISTING_EMAIL,
           password: TEST_PASSWORD,
         };
@@ -544,7 +548,7 @@ describe('AuthService', () => {
       test('should return user profile upon successful email, passwordless login', async () => {
         // arrange
         const otpCode = await authService.sendOtpToEmail(TEST_EMAIL);
-        const payload: LoginPaylodType = {
+        const payload: LoginPayloadType = {
           code: otpCode.code,
           value: TEST_EMAIL,
         };
@@ -558,7 +562,7 @@ describe('AuthService', () => {
 
       test('should return user profile upon successful email/password login', async () => {
         // arrange
-        const payload: LoginPaylodType = {
+        const payload: LoginPayloadType = {
           value: TEST_EXISTING_EMAIL,
           password: TEST_EXISTING_PASSWORD,
         };
@@ -577,7 +581,7 @@ describe('AuthService', () => {
           TEST_PHONE_VALID,
           'US'
         );
-        const payload: LoginPaylodType = {
+        const payload: LoginPayloadType = {
           value: TEST_PHONE_VALID,
           code: otpCode.code,
         };
@@ -591,7 +595,7 @@ describe('AuthService', () => {
 
       test('should return user profile upon successful biometric login', async () => {
         // arrange
-        const payload: LoginPaylodType = {
+        const payload: LoginPayloadType = {
           biometric: {
             signature: dxRsaSignPayload(
               rsaKeyPair.privateKey,

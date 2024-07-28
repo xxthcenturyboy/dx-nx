@@ -12,6 +12,7 @@ import { AUTH_ENTITY_NAME } from './auth-web.consts';
 import { JwtPayloadType } from '@dx/auth-shared';
 
 export const authInitialState: AuthStateType = {
+  logoutResponse: false,
   password: null,
   token: null,
   userId: null,
@@ -40,6 +41,9 @@ const authSlice = createSlice({
     tokenRemoved(state, action: PayloadAction<undefined>) {
       state.token = null;
       state.userId = null;
+    },
+    setLogoutResponse(state, action: PayloadAction<boolean>) {
+      state.logoutResponse = action.payload;
     },
     usernameUpdated(state, action: PayloadAction<string>) {
       state.username = action.payload;

@@ -5,8 +5,14 @@ import axios, {
   AxiosResponse,
 } from 'axios';
 
-import { AuthSuccessResponseType, LoginPaylodType } from '@dx/auth-api';
-import { TEST_EXISTING_EMAIL, TEST_EXISTING_PASSWORD } from '@dx/config-shared';
+import {
+  AuthSuccessResponseType,
+  LoginPayloadType
+} from '@dx/auth-shared';
+import {
+  TEST_EXISTING_EMAIL,
+  TEST_EXISTING_PASSWORD
+} from '@dx/config-shared';
 
 export class AuthUtil {
   accessToken: string;
@@ -31,7 +37,7 @@ export class AuthUtil {
     email?: string,
     password?: string
   ): Promise<AuthSuccessResponseType> {
-    const payload: LoginPaylodType = {
+    const payload: LoginPayloadType = {
       value: email || TEST_EXISTING_EMAIL,
       // password: password || 'akjd0023kakdj_**_('
       password: password || TEST_EXISTING_PASSWORD,

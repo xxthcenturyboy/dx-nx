@@ -82,6 +82,9 @@ const uiSlice = createSlice({
         state.routes = action.payload.routes;
       }
     },
+    setIsShowingUnauthorizedAlert(state, action : PayloadAction<boolean>) {
+      state.isShowingUnauthorizedAlert = action.payload;
+    },
     themeModeSet(state, action: PayloadAction<PaletteMode>) {
       if (
         state.theme.palette

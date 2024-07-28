@@ -34,7 +34,6 @@ import {
   RootState,
   useAppSelector
 } from '@dx/store-web';
-import { SORT_DIR } from '@dx/config-shared';
 import { selectCurrentThemeMode } from '@dx/ui-web';
 import {
   TableCellData,
@@ -44,7 +43,7 @@ import {
   TableHeaderItem,
   TableRowType,
 } from './types';
-import { getIcon, IconNames } from '../../icons';
+import { getIcon, IconNames } from '../../Icons';
 import { waveItem } from '../skeletons.ui';
 import { TablePaginationActions } from './PaginationActions';
 import { themeColors } from '../../mui-overrides/styles';
@@ -76,7 +75,7 @@ export const TableComponent: React.FC<TableComponentProps> = (props) => {
   const [dummyData, setDummyData] = useState<TableDummyRow>([]);
   const [rowsPerPageOptions, setRowsPerPageOptions] = useState<number[]>();
   const rowHeight = '32px';
-  const order = sortDir === SORT_DIR.ASC ? 'asc' : 'desc';
+  const order = sortDir === 'ASC' ? 'asc' : 'desc';
 
   useEffect(() => {
     setupRowsPerPage();

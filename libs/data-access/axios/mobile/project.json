@@ -1,0 +1,9 @@
+{
+  "name": "data-access-axios-mobile",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/data-access/axios/mobile/src",
+  "projectType": "library",
+  "tags": ["scope:mobile"],
+  "// targets": "to see all targets run: nx show project data-access-axios-mobile --web",
+  "targets": {}
+}

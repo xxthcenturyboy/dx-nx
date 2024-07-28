@@ -10,7 +10,7 @@ import { webUrl } from '@dx/config-api';
 import getCSRFToken from 'client/core/getCSRFToken';
 import settings from 'settings';
 import LoggerClass from 'client/core/logger';
-import { JSONObject } from './axios.types';
+import { JSONObject } from './axios-mobile.types';
 import { RootState, store } from 'client/store';
 import fetchLogout from 'client/Auth/actions/logout';
 import { toast } from 'react-toastify';

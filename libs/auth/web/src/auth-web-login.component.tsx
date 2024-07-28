@@ -34,23 +34,20 @@ import {
   setDocumentTitle,
   themeColors
 } from '@dx/ui-web';
-import * as UI from './auth-web-login.ui';
-import { authActions } from './auth-web.reducer';
 import {
   selectIsUserProfileValid,
   userProfileActions
 } from '@dx/user-profile-web';
-
-import requestLogin from 'client/Auth/actions/login';
+import { LoginPayloadType } from '@dx/auth-shared';
+import * as UI from './auth-web-login.ui';
+import { authActions } from './auth-web.reducer';
+import { useLoginMutation } from './auth-web.api';
 
 export const WebLogin: React.FC = () => {
   const [mobileBreak, setMobileBreak] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
   const username = useAppSelector((state: RootState) => state.auth.username);
   const password = useAppSelector((state: RootState) => state.auth.password);
-  const isFetchingLogin = useAppSelector((state: RootState) => state.auth.isFetchingLogin);
-  const loginError = useAppSelector((state: RootState) => state.auth.loginError);
-  const loginResponse = useAppSelector((state: RootState) => state.auth.loginResponse);
   const user = useAppSelector((state: RootState) => state.userProfile);
   const isProfileValid = useAppSelector((state: RootState) => selectIsUserProfileValid(state));
   const logo = useAppSelector((state: RootState) => state.ui.logoUrl);
@@ -60,6 +57,14 @@ export const WebLogin: React.FC = () => {
   const lastPath = location.pathname;
   const dispatch = useAppDispatch();
   const ROUTES = WebConfigService.getWebRoutes();
+  const [
+    requestLogin,
+    {
+      data: loginResponse,
+      error: loginError,
+      isLoading: isFetchingLogin
+    }
+  ] = useLoginMutation();
 
   React.useEffect(() => {
     clearInputs();
@@ -102,7 +107,9 @@ export const WebLogin: React.FC = () => {
       && !isProfileValid
     ) {
       clearInputs();
-      dispatch(userProfileActions.profileUpdated(loginResponse));
+      dispatch(authActions.tokenAdded(loginResponse.accessToken));
+      dispatch(authActions.setLogoutResponse(false));
+      dispatch(userProfileActions.profileUpdated(loginResponse.profile));
       navigate(ROUTES.DASHBOARD.MAIN);
       // loginBootstrap();
     }
@@ -134,12 +141,17 @@ export const WebLogin: React.FC = () => {
       return;
     }
 
-    const data = {
-      password,
-      email: username
-    };
+    if (
+      typeof username === 'string'
+      && typeof password === 'string'
+    ) {
+      const data: LoginPayloadType = {
+        value: username,
+        password: password
+      };
 
-    await dispatch(requestLogin(data));
+      await requestLogin(data);
+    }
   };
 
   const handleChangeUsername = (event: React.ChangeEvent<HTMLInputElement>): void => {

@@ -1,8 +1,4 @@
 import React from 'react';
-import { RootState, useDispatch, useSelector } from 'client/store';
-import { push } from 'connected-react-router';
-import { routes as UserProfileRoutes } from 'client/UserProfile';
-import { actions as appActions } from 'client/App';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -11,17 +7,26 @@ import IconButton from '@mui/material/IconButton';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import { APP_NAME } from 'shared/constants';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Badge from '@mui/material/Badge';
-import { MEDIA_BREAK } from 'client/core/constants';
-import styled from 'styled-components';
-import { selectIsAuthenticated } from 'client/UserProfile/selectors';
-import { LogoutContext } from 'client/App/enums';
-import { LogoutButton } from 'client/App/components/LogoutButton';
-import allRoutes from 'client/routes';
 import { Button } from '@mui/material';
-import { useLocation } from 'react-router';
+import {
+  useLocation,
+  useNavigate
+} from 'react-router';
+import styled from 'styled-components';
+
+import {
+  RootState,
+  useAppDispatch,
+  useAppSelector
+} from '@dx/store-web';
+import { selectIsAuthenticated } from '@dx/auth-web';
+import { APP_NAME } from '@dx/config-shared';
+import { LogoutButton } from '@dx/auth-web';
+import { WebConfigService } from '@dx/config-web';
+import { uiActions } from '../../store/ui-web.reducer';
+import { MEDIA_BREAK } from '../../ui.consts';
 
 const Logo = styled.img`
   width: 36px;
@@ -30,14 +35,16 @@ const Logo = styled.img`
 export const AppNavBar: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileBreak, setMobileBreak] = React.useState<boolean>(false);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { pathname } = useLocation();
-  const isAuthenticated = useSelector((state: RootState) => selectIsAuthenticated(state));
-  const windowWidth = useSelector((state: RootState) => state.client.windowWidth) || 0;
-  const logoUrl = useSelector((state: RootState) => state.app.logoUrlSmall);
-  const notificationCount = useSelector((state: RootState) => state.app.notifications);
-  const menuOpen = useSelector((state: RootState) => state.app.menuOpen);
-  // const themeMode = useSelector((state: RootState) => state.app.settings.themeOptions.palette?.mode);
+  const navigate = useNavigate();
+  const isAuthenticated = useAppSelector((state: RootState) => selectIsAuthenticated(state));
+  const windowWidth = useAppSelector((state: RootState) => state.ui.windowWidth) || 0;
+  const logoUrl = useAppSelector((state: RootState) => state.ui.logoUrlSmall);
+  const notificationCount = useAppSelector((state: RootState) => state.ui.notifications);
+  const menuOpen = useAppSelector((state: RootState) => state.ui.menuOpen);
+  // const themeMode = useAppSelector((state: RootState) => state.ui.theme.palette?.mode);
+  const ROUTES = WebConfigService.getWebRoutes();
 
   React.useEffect(() => {
     setMobileBreak(windowWidth < MEDIA_BREAK.MOBILE);
@@ -45,20 +52,20 @@ export const AppNavBar: React.FC = () => {
 
   const toggleMenuState = (): void => {
     if (isAuthenticated) {
-      dispatch(appActions.toggleMenu(!menuOpen));
+      dispatch(uiActions.toggleMenuSet(!menuOpen));
       return;
     }
 
-    dispatch(push(allRoutes.main));
+    navigate(ROUTES.MAIN);
   };
 
   const goToProfile = (): void => {
-    dispatch(push(UserProfileRoutes.main));
+    navigate(ROUTES.USER_PROFILE.MAIN);
     handleCloseAccountMenu();
   };
 
   const goToLogin = (): void => {
-    dispatch(push(allRoutes.login));
+    navigate(ROUTES.AUTH.LOGIN);
   };
 
   const handleClickAccountMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -89,8 +96,15 @@ export const AppNavBar: React.FC = () => {
       open={Boolean(anchorEl)}
       onClose={handleCloseAccountMenu}
     >
-      <MenuItem onClick={goToProfile}>Profile</MenuItem>
-      <LogoutButton context={LogoutContext.APP_BAR} onLocalClick={handleCloseAccountMenu} />
+      <MenuItem
+        onClick={goToProfile}
+      >
+        Profile
+      </MenuItem>
+      <LogoutButton
+        context="APP_BAR"
+        onLocalClick={handleCloseAccountMenu}
+      />
     </Menu>
   );
 

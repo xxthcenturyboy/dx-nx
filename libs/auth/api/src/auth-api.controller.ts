@@ -15,9 +15,9 @@ import { AuthService } from './auth-api.service';
 import { AUTH_TOKEN_NAMES } from './auth-api.consts';
 import {
   AccountCreationPayloadType,
-  LoginPaylodType,
-  UserLookupQueryType,
-} from './auth-api.types';
+  LoginPayloadType,
+  UserLookupQueryType
+} from '@dx/auth-shared';
 import { TokenService } from './token.service';
 
 export const AuthController = {
@@ -69,7 +69,7 @@ export const AuthController = {
     try {
       const service = new AuthService();
       const profile = (await service.login(
-        req.body as LoginPaylodType
+        req.body as LoginPayloadType
       )) as UserProfileStateType;
 
       const tokens = TokenService.generateTokens(profile.id);

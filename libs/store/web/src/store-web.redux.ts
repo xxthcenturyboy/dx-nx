@@ -18,6 +18,7 @@ import {
   REGISTER,
 } from 'reduxjs-toolkit-persist';
 
+import { apiWebMain } from './store-web.api';
 import {
   AuthStateType,
   authReducer,
@@ -27,6 +28,11 @@ import { dashboardReducer } from '@dx/dashboard-web';
 import { homeReducer } from '@dx/home';
 import { shortlinkReducer } from '@dx/shortlink-web';
 import {
+  userAdminReducer,
+  userAdminPersistConfig,
+  UserAdminStateType
+} from '@dx/user-admin-web';
+import {
   userProfileReducer,
   userProfilePersistConfig
 } from '@dx/user-profile-web';
@@ -34,20 +40,16 @@ import { UserProfileStateType } from '@dx/user-shared';
 import { uiReducer } from '@dx/ui-web';
 
 const combinedPersistReducers = combineReducers({
+  [apiWebMain.reducerPath]: apiWebMain.reducer,
   auth: persistReducer<AuthStateType, any>(authPersistConfig, authReducer) as typeof authReducer,
   dashboard: dashboardReducer,
   home: homeReducer,
   shortlink: shortlinkReducer,
   ui: uiReducer,
+  userAdmin: persistReducer<UserAdminStateType, any>(userAdminPersistConfig, userAdminReducer) as typeof userAdminReducer,
   userProfile: persistReducer<UserProfileStateType, any>(userProfilePersistConfig, userProfileReducer) as typeof userProfileReducer
 });
 
-// const store = configureStore({
-//   reducer: {
-//     auth: authReducer,
-//     home: homeReducer
-//   }
-// });
 const store = configureStore({
   reducer: combinedPersistReducers,
   middleware: (getDefaultMiddleware) =>
@@ -55,7 +57,7 @@ const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }),
+    }).concat(apiWebMain.middleware),
 });
 
 const persistor = persistStore(store);

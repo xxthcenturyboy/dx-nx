@@ -9,9 +9,12 @@ import {
   sendUnauthorized,
 } from '@dx/utils-api-http-response';
 import { ApiLoggingClass } from '@dx/logger-api';
-import { TEST_EMAIL, TEST_PASSWORD } from '@dx/config-shared';
+import {
+  TEST_EMAIL,
+  TEST_PASSWORD
+} from '@dx/config-shared';
 import { AuthController } from './auth-api.controller';
-import { LoginPaylodType } from './auth-api.types';
+import { LoginPayloadType } from '@dx/auth-shared';
 
 jest.mock('./auth-api.service.ts');
 jest.mock('./token.service.ts');
@@ -66,7 +69,7 @@ describe('AuthController', () => {
   describe('login', () => {
     test('should sendBadRequest when invoked', async () => {
       // arrange
-      const body: LoginPaylodType = {
+      const body: LoginPayloadType = {
         value: TEST_EMAIL,
         password: TEST_PASSWORD,
       };

@@ -37,6 +37,7 @@ export const WEB_URL = {
 export const COMPANY_NAME = 'Danex Software';
 export const DEFAULT_LIMIT = 10;
 export const DEFAULT_OFFSET = 0;
+export const DEFAULT_SORT = 'ASC';
 export const ERROR_MSG = 'Oops! Something went wrong. It\'s probably nothing you did and most likely our fault. There may be additional info for this message.';
 export const ERROR_MSG_API = 'Oops! Something went wrong. It\'s probably nothing you did and most likely our fault. If it happens many times, please contact support.';
 export const LOCAL_ENV_NAME = 'development';
@@ -45,9 +46,3 @@ export const LOREM =
 export const PHONE_DEFAULT_REGION_CODE = 'US';
 export const PROD_ENV_NAME = 'production';
 export const STAGING_ENV_NAME = 'production';
-export const SORT_DIR = {
-  ASC: 'ASC',
-  DESC: 'DESC',
-};
-// must be after SORT_DIR
-export const DEFAULT_SORT = SORT_DIR.ASC;

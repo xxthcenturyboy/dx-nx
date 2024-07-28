@@ -1,9 +1,15 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 import { UpdatePrivilegeSetPayloadType } from '@dx/user-privilege-api';
-import { TEST_EXISTING_USER_PRIVILEGE_ID, TEST_UUID } from '@dx/config-shared';
-import { AuthSuccessResponseType, OtpResponseType } from '@dx/auth-api';
-import { AuthUtil, AuthUtilType } from './util-v1';
+import {
+  TEST_EXISTING_USER_PRIVILEGE_ID,
+  TEST_UUID
+} from '@dx/config-shared';
+import { AuthSuccessResponseType } from '@dx/auth-shared';
+import {
+  AuthUtil,
+  AuthUtilType
+} from './util-v1';
 
 describe('v1 User Privilege Routes', () => {
   let authRes: AuthSuccessResponseType;
