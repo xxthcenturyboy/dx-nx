@@ -4,18 +4,9 @@ import axios,
   AxiosError,
   AxiosResponse
 } from 'axios';
-import {
-  useLocation,
-  useNavigate
-} from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import {
-  RootState,
-  store,
-  useAppDispatch,
-  useAppSelector
-} from '@dx/store-web';
+import { store } from '@dx/store-web';
 import {
   authActions,
   // useLogoutMutation
@@ -23,7 +14,8 @@ import {
 import { uiActions } from '@dx/ui-web';
 import {
   API_HOST_PORT,
-  API_URL
+  API_URL,
+  WEB_URL
 } from '@dx/config-shared';
 import { WebConfigService } from '@dx/config-web';
 import { logger } from '@dx/logger-web';
@@ -35,8 +27,6 @@ import {
 
 export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
   const apiUri = `${API_URL}:${API_HOST_PORT}/api/`;
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   // const [
   //   requestLogout,
   //   {
@@ -55,7 +45,7 @@ export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
 
   instance.interceptors.request.use(
     (config) => {
-      const accessToken = useAppSelector((state) => state.auth.token);
+      const accessToken = store.getState().auth.token;
       if (accessToken) {
         config.headers.Authorization = `Bearer ${accessToken}`;
         config.withCredentials = true;
@@ -64,6 +54,7 @@ export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
       return config;
     },
     (error: AxiosError) => {
+      logger.error('error caught in interceptor', error);
       return Promise.reject(error);
     }
   );
@@ -77,7 +68,8 @@ export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
         error.response.status === 403 &&
         error.response.data.error === 'Forbidden: JWT token expired!'
       ) {
-        const accessToken = useAppSelector((state) => state.auth.token);
+        const accessToken = store.getState().auth.token;
+        const ROUTES = WebConfigService.getWebRoutes();
         if (accessToken) {
           try {
             const response = await axios.get(`${apiUri}/users/refresh`, {
@@ -86,7 +78,7 @@ export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
 
             const newAccessToken = response.data;
             // Update the access token in local storage
-            dispatch(authActions.tokenAdded(newAccessToken));
+            store.dispatch(authActions.tokenAdded(newAccessToken));
 
             // Retry the original request with the new access token
             error.config.headers.authorization = `Bearer ${newAccessToken}`;
@@ -94,14 +86,16 @@ export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
             return axios.request(error.config);
           } catch (refreshError) {
             // If refresh token is expired or invalid, redirect to the login page
-            navigate('/login');
+            const url = `${WEB_URL}${ROUTES.AUTH.LOGIN}`;
+            typeof window !== 'undefined' && window.location.replace(url);
             logger.error('Refresh token could not refresh.', refreshError);
             handleNotification();
             return Promise.reject(refreshError);
           }
         } else {
           // If no refresh token is found, redirect to the login page
-          navigate('/login');
+          const url = `${WEB_URL}${ROUTES.AUTH.LOGIN}`;
+          typeof window !== 'undefined' && window.location.replace(url);
           logger.error('accessToken not found.');
           handleNotification();
         }
@@ -117,20 +111,19 @@ export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
 };
 
 function handleNotification(): void {
-  const state: RootState = store.getState();
-  const ROUTES = WebConfigService.getWebRoutes();
-  const location = useLocation();
-  const dispatch = useAppDispatch();
-  if (location.pathname !== ROUTES.MAIN) {
-    const message = `🤷‍♂️ You are not logged in or authorized to make this request`;
-    if (!state.ui.isShowingUnauthorizedAlert) {
-      dispatch(uiActions.setIsShowingUnauthorizedAlert(true));
+  // const ROUTES = WebConfigService.getWebRoutes();
+  // const location = useLocation();
+  // const dispatch = useAppDispatch();
+  // if (location.pathname !== ROUTES.MAIN) {
+    if (!store.getState().ui.isShowingUnauthorizedAlert) {
+      const message = `🤷‍♂️ You are not logged in or authorized to make this request`;
+      store.dispatch(uiActions.setIsShowingUnauthorizedAlert(true));
       toast.warn(message, {
         onClose: () =>
-          dispatch(uiActions.setIsShowingUnauthorizedAlert(false)),
+          store.dispatch(uiActions.setIsShowingUnauthorizedAlert(false)),
       });
     }
-  }
+  // }
 }
 
 export const axiosBaseQuery = ({ baseUrl } = { baseUrl: '' }): BaseQueryFn =>
@@ -148,6 +141,8 @@ export const axiosBaseQuery = ({ baseUrl } = { baseUrl: '' }): BaseQueryFn =>
           ...headers
         }
       });
+      console.log(axiosInstance.defaults);
+      console.log('url', baseUrl + url);
       const result = await axiosInstance<TReturnData>({
         url: baseUrl + url,
         method,
@@ -167,7 +162,8 @@ export const axiosBaseQuery = ({ baseUrl } = { baseUrl: '' }): BaseQueryFn =>
       };
     } catch (axiosError) {
       const err = axiosError as AxiosError;
-      const data = err.response?.data as TReturnData || err.message;
+      const data = err.message;
+      // const data = err.response?.data as TReturnData || err.message;
       logger.error('Error in axiosBaseQuery', data);
       return {
         error: {

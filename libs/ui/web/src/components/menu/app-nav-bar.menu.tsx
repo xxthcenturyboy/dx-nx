@@ -13,7 +13,7 @@ import { Button } from '@mui/material';
 import {
   useLocation,
   useNavigate
-} from 'react-router';
+} from 'react-router-dom';
 import styled from 'styled-components';
 
 import {
@@ -43,7 +43,7 @@ export const AppNavBar: React.FC = () => {
   const logoUrl = useAppSelector((state: RootState) => state.ui.logoUrlSmall);
   const notificationCount = useAppSelector((state: RootState) => state.ui.notifications);
   const menuOpen = useAppSelector((state: RootState) => state.ui.menuOpen);
-  // const themeMode = useAppSelector((state: RootState) => state.ui.theme.palette?.mode);
+  const themeMode = useAppSelector((state: RootState) => state.ui.theme.palette?.mode);
   const ROUTES = WebConfigService.getWebRoutes();
 
   React.useEffect(() => {
@@ -77,7 +77,7 @@ export const AppNavBar: React.FC = () => {
   };
 
   const hideLoginForRoutes = (): boolean => {
-    return pathname.includes('/auth');
+    return pathname.includes(ROUTES.AUTH.MAIN);
   };
 
   const renderAccountMenu = (
@@ -111,8 +111,7 @@ export const AppNavBar: React.FC = () => {
   return (
     <Box>
       <AppBar
-        // color={themeMode === 'dark' ? 'default' : 'primary'}
-        color="default"
+        color={themeMode === 'dark' ? 'default' : 'primary'}
         position="static"
         elevation={2}
         enableColorOnDark
@@ -142,7 +141,7 @@ export const AppNavBar: React.FC = () => {
           {
             !mobileBreak ? (
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                {APP_NAME}
+                { APP_NAME }
               </Typography>
             )
             :
@@ -176,7 +175,11 @@ export const AppNavBar: React.FC = () => {
             )
           }
           {
-            (!isAuthenticated && !mobileBreak && !hideLoginForRoutes()) && (
+            (
+              !isAuthenticated &&
+              !mobileBreak
+              && !hideLoginForRoutes()
+            ) && (
               <>
                 <Button
                   variant="text"
@@ -189,7 +192,7 @@ export const AppNavBar: React.FC = () => {
           }
         </Toolbar>
       </AppBar>
-      {renderAccountMenu}
+      { renderAccountMenu }
     </Box>
   );
 };

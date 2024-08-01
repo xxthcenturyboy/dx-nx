@@ -5,10 +5,10 @@ import {
 } from '@mui/material';
 import { toast } from 'react-toastify';
 
-import { useAppDispatch } from '@dx/store-web';
+import { useAppDispatch, useLogoutMutation } from '@dx/store-web';
 import {
   authActions,
-  useLogoutMutation
+  // useLogoutMutation
 } from '@dx/auth-web';
 import { logger } from '@dx/logger-web';
 import { uiActions } from '@dx/ui-web';

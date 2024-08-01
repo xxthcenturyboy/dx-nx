@@ -9,6 +9,7 @@ import {
   UnauthorizedComponent
 } from '@dx/ui-web';
 import { WebConfigService } from '@dx/config-web';
+import { WebLogin } from './auth-web-login.component';
 
 export const AuthWebRouter = () => {
   return (
@@ -24,15 +25,20 @@ export class AuthWebRouterConfig {
 
     const config: RouteObject[] = [
       {
+        path: ROUTES.AUTH.LOGIN,
+        element: (<WebLogin />),
+        errorElement: (<NotFoundComponent />)
+      },
+      {
         path: ROUTES.AUTH.MAIN,
         element: (<AuthWebRouter />),
         errorElement: (<NotFoundComponent />),
         children: [
-          {
-            path: ROUTES.AUTH.LOGIN,
-            element: (<UnauthorizedComponent />),
-            errorElement: (<NotFoundComponent />)
-          }
+          // {
+          //   path: ROUTES.AUTH.LOGIN,
+          //   element: (<WebLogin />),
+          //   errorElement: (<NotFoundComponent />)
+          // }
         ]
       }
     ];

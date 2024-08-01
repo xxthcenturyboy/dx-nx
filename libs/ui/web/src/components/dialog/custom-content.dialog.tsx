@@ -26,7 +26,7 @@ export const CustomDialogContent: React.FC<CustomDialogContentType> = ({ childre
         overflow: 'visible'
       }}
     >
-      {children}
+      { children }
     </DialogContent>
   );
 

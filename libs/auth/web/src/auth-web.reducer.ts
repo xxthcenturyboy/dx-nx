@@ -13,10 +13,10 @@ import { JwtPayloadType } from '@dx/auth-shared';
 
 export const authInitialState: AuthStateType = {
   logoutResponse: false,
-  password: null,
+  password: '',
   token: null,
   userId: null,
-  username: null
+  username: ''
 };
 
 export const authPersistConfig: PersistConfig<AuthStateType> = {

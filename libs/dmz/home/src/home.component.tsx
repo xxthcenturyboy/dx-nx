@@ -30,13 +30,13 @@ export const HomeComponent: React.FC = () => {
   }, []);
 
   const goToLogin = () => {
-    const routes = WebConfigService.getWebRoutes();
+    const ROUTES = WebConfigService.getWebRoutes();
     if (
-      routes
-      && routes.AUTH
-      && routes.AUTH.LOGIN
+      ROUTES
+      && ROUTES.AUTH
+      && ROUTES.AUTH.LOGIN
     ) {
-      navigate(routes.AUTH.LOGIN);
+      navigate(ROUTES.AUTH.LOGIN);
     }
   };
 

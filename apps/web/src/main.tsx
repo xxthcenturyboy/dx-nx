@@ -2,8 +2,11 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'reduxjs-toolkit-persist/integration/react';
+import {
+  RouterProvider,
+} from 'react-router-dom';
 
-import { App } from './app/app.component';
+import { AppRouter } from './app/app.router';
 import { ErrorBoundary } from '@dx/utils-web-error-boundary';
 import {
   persistor,
@@ -21,6 +24,8 @@ const root = createRoot(
   document.getElementById('root') as HTMLElement
 );
 
+const router = AppRouter.getRouter();
+
 root.render(
   <StrictMode>
     <ErrorBoundary fallback={<NotFoundComponent />}>
@@ -31,9 +36,12 @@ root.render(
           loading={<UiLoadingComponent pastDelay={true} />}
           persistor={persistor}
         >
-          <App />
+          <RouterProvider
+            router={router}
+            fallbackElement={<UiLoadingComponent pastDelay={true} />}
+          />
         </PersistGate>
       </Provider>
     </ErrorBoundary>
-  </StrictMode>
+  // </StrictMode>
 );

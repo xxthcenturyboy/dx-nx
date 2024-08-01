@@ -1,8 +1,6 @@
 import * as React from 'react';
 import {
-  Route,
-  RouterProvider,
-  Routes,
+  Outlet,
   useLocation,
   useNavigate
 } from 'react-router-dom';
@@ -15,14 +13,18 @@ import Box from '@mui/material/Box';
 import { Fade } from '@mui/material';
 import {
   Slide,
-  ToastContainer
+  ToastContainer,
+  Theme as ToastifyTheme
 } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import {
+  injectStyle as injectToastifyStyle
+} from 'react-toastify/dist/inject-style';
 
 import {
   RootState,
   useAppDispatch,
-  useAppSelector
+  useAppSelector,
+  useLazyGetProfileQuery
 } from '@dx/store-web';
 import {
   AppNavBar,
@@ -33,7 +35,6 @@ import {
   GlobalAwaiter,
   MenuNav,
   MEDIA_BREAK,
-  selectToastThemeMode,
   STORAGE_KEYS,
   TOAST_LOCATION,
   TOAST_TIMEOUT,
@@ -44,9 +45,9 @@ import { WebConfigService } from '@dx/config-web';
 import { selectIsAuthenticated } from '@dx/auth-web';
 import {
   userProfileActions,
-  useLazyGetProfileQuery
+  // useLazyGetProfileQuery
 } from '@dx/user-profile-web';
-import { AppRouter } from './app.router';
+import { WEB_APP_ENV } from '@dx/config-web';
 
 
 // Code splitting
@@ -55,7 +56,7 @@ import { AppRouter } from './app.router';
 //   NotFound,
 // } from 'client/core/LazyLoader';
 
-export const App: React.FC = () => {
+export const Root: React.FC = () => {
   const [theme, setTheme] = React.useState<Theme>(createTheme());
   const [bootstrapped, setBootstrapped] = React.useState(false);
   const [menuBreak, setMenuBreak] = React.useState(false);
@@ -73,12 +74,12 @@ export const App: React.FC = () => {
   const isAuthenticated = useAppSelector((state: RootState) => selectIsAuthenticated(state));
   const logoutResponse = useAppSelector((state: RootState) => state.auth.logoutResponse);
   const windowWidth = useAppSelector((state: RootState) => state.ui.windowWidth) || 0;
-  const toastTheme = useAppSelector((state: RootState) => selectToastThemeMode(state));
-  const location = useLocation();
+  const toastTheme: ToastifyTheme = useAppSelector((state: RootState) => state.ui.theme.palette?.mode || 'color');
+  const { pathname } = useLocation();
   const navigate = useNavigate();
   const ROUTES = WebConfigService.getWebRoutes();
   const NO_REDICRET_ROUTES = WebConfigService.getNoRedirectRoutes()
-  const canRedirect = !NO_REDICRET_ROUTES.some(route => location.pathname.startsWith(route));
+  const canRedirect = !NO_REDICRET_ROUTES.some(route => pathname.startsWith(route));
   const [
     fetchProfile,
     {
@@ -92,6 +93,9 @@ export const App: React.FC = () => {
     window.addEventListener('resize', () => {
       dispatch(uiActions.windowSizeSet());
     });
+    console.log(WEB_APP_ENV);
+
+    injectToastifyStyle();
 
     if (
       !userProfile
@@ -220,9 +224,7 @@ export const App: React.FC = () => {
           }
           <AppNavBar />
           <Box style={contentWrapperStyle}>
-            <RouterProvider
-              router={AppRouter.getRouter()}
-            />
+            <Outlet />
           </Box>
         </Box>
       </Fade>

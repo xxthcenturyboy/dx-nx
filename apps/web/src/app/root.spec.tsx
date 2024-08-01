@@ -2,13 +2,13 @@ import { render } from '@testing-library/react';
 
 import { BrowserRouter } from 'react-router-dom';
 
-import { App } from './app';
+import { Root } from './root.component';
 
 describe('App', () => {
   it('should render successfully', () => {
     const { baseElement } = render(
       <BrowserRouter>
-        <App />
+        <Root />
       </BrowserRouter>
     );
     expect(baseElement).toBeTruthy();

@@ -1,8 +1,10 @@
-import { AppMenuType, MenuRestrictionType } from '@dx/ui-web';
+import {
+  AppMenuType,
+  MenuRestrictionType
+} from '@dx/ui-web';
 import { DASHBOARD_MENU } from '@dx/dashboard-web';
 import { USER_ADMIN_MENU } from '@dx/user-admin-web';
 import { USER_PROFILE_MENU } from '@dx/user-profile-web';
-
 export class MenuConfigService {
   CARDINAL_MENU_SET = [
     DASHBOARD_MENU,
