@@ -5,8 +5,16 @@ import { DASHBOARD_ROUTES } from '@dx/dashboard-web';
 import { USER_ADMIN_ROUTES } from '@dx/user-admin-web';
 import { USER_PROFILE_ROUTES } from '@dx/user-profile-web';
 import { SHORTLINK_ROUTES } from '@dx/shortlink-web';
+import { WEB_APP_ENV } from '@dx/config-web';
 
 export class WebConfigService {
+  public static getWebUrls()  {
+    return {
+      API_URL: `${WEB_APP_ENV.API_URL}:${WEB_APP_ENV.API_PORT}`,
+      WEB_APP_URL: `${WEB_APP_ENV.WEB_APP_URL}:${WEB_APP_ENV.WEB_APP_PORT}`
+    };
+  }
+
   public static getWebRoutes() {
     return {
       MAIN: '/',

@@ -1,7 +1,5 @@
 export {
   API_ERROR,
-  API_HOST_PORT,
-  API_URL,
   APP_DESCRIPTION,
   APP_DOMAIN,
   APP_NAME,
@@ -15,9 +13,7 @@ export {
   LOCAL_ENV_NAME,
   PHONE_DEFAULT_REGION_CODE,
   PROD_ENV_NAME,
-  STAGING_ENV_NAME,
-  WEB_DOMAIN,
-  WEB_URL
+  STAGING_ENV_NAME
 } from './lib/common-config.consts';
 export { DISPOSABLE_EMAIL_DOMAINS } from './lib/disposable-email-providers';
 export { INVALID_EMAIL_NAMES } from './lib/email-validation.const';

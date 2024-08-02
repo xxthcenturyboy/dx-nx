@@ -3,9 +3,8 @@ import { Sequelize } from 'sequelize-typescript';
 import { ApiLoggingClassType } from '@dx/logger-api';
 import { APP_PREFIX, LOCAL_ENV_NAME } from '@dx/config-shared';
 import {
-  apiPort,
-  apiUrl,
   isDebug,
+  isLocal,
   getEnvironment
 } from './api-config.service';
 import {
@@ -42,11 +41,11 @@ export function getApiConfig(
       jwtSecret: env.JWT_SECRET || '',
     },
     debug: isDebug(),
-    host: apiUrl(),
+    host: isLocal() ? '0.0.0.0' : env.API_URL,
     isLocal: nodeEnv === LOCAL_ENV_NAME,
     logger: logger,
     nodeEnv: nodeEnv,
-    port: apiPort(),
+    port: Number(env.API_PORT),
     postgresDbh: postgresDbh,
     redis: redisService,
     sendgrid: {
@@ -54,5 +53,6 @@ export function getApiConfig(
       url: SENDGRID_URL,
     },
     sessionSecret: env.SESSION_SECRET || '',
+    webUrl: `${env.WEB_URL}:${env.WEB_PORT}`
   };
 }

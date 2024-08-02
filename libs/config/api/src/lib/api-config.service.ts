@@ -1,11 +1,7 @@
 import {
-  API_HOST_PORT,
-  API_URL,
   LOCAL_ENV_NAME,
   PROD_ENV_NAME,
-  STAGING_ENV_NAME,
-  WEB_DOMAIN,
-  WEB_URL
+  STAGING_ENV_NAME
 } from '@dx/config-shared';
 
 export function getEnvironment() {
@@ -54,65 +50,23 @@ export function isTest() {
   return false;
 }
 
-export function apiPort() {
-  if (isLocal()) {
-    return Number(API_HOST_PORT.DEV);
-  }
-
-  if (isProd()) {
-    return Number(API_HOST_PORT.PROD);
-  }
-
-  if (isStaging()) {
-    return Number(API_HOST_PORT.STAGING);
-  }
-
-  return 80;
-}
-
-export function apiUrl() {
-  if (isLocal()) {
-    return API_URL.DEV;
-  }
-
-  if (isProd()) {
-    return API_URL.PROD;
-  }
-
-  if (isStaging()) {
-    return API_URL.STAGING;
+export function webDomain() {
+  const ENV = getEnvironment();
+  if (ENV) {
+    return ENV.WEB_APP_URL;
   }
 
   return '';
 }
 
 export function webUrl() {
-  if (isLocal()) {
-    return WEB_URL.DEV;
-  }
-
-  if (isProd()) {
-    return WEB_URL.PROD;
-  }
-
-  if (isStaging()) {
-    return WEB_URL.STAGING;
-  }
-
-  return '';
-}
-
-export function webDomain() {
-  if (isLocal()) {
-    return WEB_DOMAIN.DEV;
-  }
-
-  if (isProd()) {
-    return WEB_DOMAIN.PROD;
-  }
-
-  if (isStaging()) {
-    return WEB_DOMAIN.STAGING;
+  const ENV = getEnvironment();
+  if (ENV) {
+    let url = ENV.WEB_APP_URL;
+    if (ENV.WEB_APP_PORT.toString() !== '80') {
+      url = url + ':' + ENV.WEB_APP_PORT;
+    }
+    return url;
   }
 
   return '';

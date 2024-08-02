@@ -12,11 +12,6 @@ import {
   // useLogoutMutation
 } from '@dx/auth-web';
 import { uiActions } from '@dx/ui-web';
-import {
-  API_HOST_PORT,
-  API_URL,
-  WEB_URL
-} from '@dx/config-shared';
 import { WebConfigService } from '@dx/config-web';
 import { logger } from '@dx/logger-web';
 import {
@@ -26,7 +21,10 @@ import {
 } from './axios-web.types';
 
 export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
-  const apiUri = `${API_URL}:${API_HOST_PORT}/api/`;
+  const URLS = WebConfigService.getWebUrls();
+  const ROUTES = WebConfigService.getWebRoutes();
+  const API_URI = `${URLS.API_URL}/api/`;
+  const LOGIN_URI = `${URLS.WEB_APP_URL}${ROUTES.AUTH.LOGIN}`;
   // const [
   //   requestLogout,
   //   {
@@ -37,7 +35,7 @@ export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
   // ] = useLogoutMutation();
 
   const instance = axios.create({
-    baseURL: apiUri,
+    baseURL: API_URI,
     headers: {
       ...headers
     }
@@ -69,10 +67,9 @@ export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
         error.response.data.error === 'Forbidden: JWT token expired!'
       ) {
         const accessToken = store.getState().auth.token;
-        const ROUTES = WebConfigService.getWebRoutes();
         if (accessToken) {
           try {
-            const response = await axios.get(`${apiUri}/users/refresh`, {
+            const response = await axios.get(`${API_URI}/users/refresh`, {
               withCredentials: true,
             });
 
@@ -86,22 +83,23 @@ export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
             return axios.request(error.config);
           } catch (refreshError) {
             // If refresh token is expired or invalid, redirect to the login page
-            const url = `${WEB_URL}${ROUTES.AUTH.LOGIN}`;
-            typeof window !== 'undefined' && window.location.replace(url);
+            typeof window !== 'undefined' && window.location.replace(LOGIN_URI);
             logger.error('Refresh token could not refresh.', refreshError);
-            handleNotification();
+            handleNotification(`🤷‍♂️ You are not logged in or authorized to make this request`);
             return Promise.reject(refreshError);
           }
         } else {
           // If no refresh token is found, redirect to the login page
-          const url = `${WEB_URL}${ROUTES.AUTH.LOGIN}`;
-          typeof window !== 'undefined' && window.location.replace(url);
+          typeof window !== 'undefined' && window.location.replace(LOGIN_URI);
           logger.error('accessToken not found.');
-          handleNotification();
+          handleNotification(`🤷‍♂️ You are not logged in or authorized to make this request`);
         }
       } else {
         logger.error('Error in AxiosInstance', error);
-        handleNotification();
+        const message = error.response.status !== 500
+          ? error.message
+          : null;
+        handleNotification(message);
         return Promise.reject(error);
       }
     }
@@ -110,15 +108,17 @@ export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
   return instance;
 };
 
-function handleNotification(): void {
+function handleNotification(message?: string): void {
   // const ROUTES = WebConfigService.getWebRoutes();
   // const location = useLocation();
   // const dispatch = useAppDispatch();
   // if (location.pathname !== ROUTES.MAIN) {
     if (!store.getState().ui.isShowingUnauthorizedAlert) {
-      const message = `🤷‍♂️ You are not logged in or authorized to make this request`;
+      const msg = message
+        ? message
+        : `Something went wrong. It's likely our fault. Please try again later.`;
       store.dispatch(uiActions.setIsShowingUnauthorizedAlert(true));
-      toast.warn(message, {
+      toast.warn(msg, {
         onClose: () =>
           store.dispatch(uiActions.setIsShowingUnauthorizedAlert(false)),
       });
@@ -141,8 +141,6 @@ export const axiosBaseQuery = ({ baseUrl } = { baseUrl: '' }): BaseQueryFn =>
           ...headers
         }
       });
-      console.log(axiosInstance.defaults);
-      console.log('url', baseUrl + url);
       const result = await axiosInstance<TReturnData>({
         url: baseUrl + url,
         method,

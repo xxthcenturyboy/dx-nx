@@ -10,8 +10,6 @@ import { PaletteMode } from '@mui/material';
 import { RouteState, UiStateType } from '../ui-web.types';
 import { UI_WEB_ENTITY_NAME } from '../ui.consts';
 import {
-  // API_HOST_PORT,
-  // API_URL,
   APP_NAME
 } from '@dx/config-shared';
 import { appTheme } from '../mui-overrides/muiTheme';

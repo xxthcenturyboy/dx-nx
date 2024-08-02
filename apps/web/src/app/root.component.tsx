@@ -47,8 +47,6 @@ import {
   userProfileActions,
   // useLazyGetProfileQuery
 } from '@dx/user-profile-web';
-import { WEB_APP_ENV } from '@dx/config-web';
-
 
 // Code splitting
 // import {
@@ -93,8 +91,6 @@ export const Root: React.FC = () => {
     window.addEventListener('resize', () => {
       dispatch(uiActions.windowSizeSet());
     });
-    console.log(WEB_APP_ENV);
-
     injectToastifyStyle();
 
     if (

@@ -3,37 +3,6 @@ export const APP_DESCRIPTION = 'Boiler plate nx monorepo: Node, Express, React, 
 export const APP_DOMAIN = 'danex.software';
 export const APP_NAME = 'DX';
 export const APP_PREFIX = 'dx';
-
-export const HTTP_PROTOCOL = {
-  DEV: 'http://',
-  PROD: 'https://',
-  STAGING: 'https://'
-};
-
-export const API_URL = {
-  DEV: `0.0.0.0`,
-  PROD: `${HTTP_PROTOCOL.PROD}${APP_DOMAIN}`,
-  STAGING: `${HTTP_PROTOCOL.STAGING}${APP_DOMAIN}`
-};
-
-export const API_HOST_PORT = {
-  DEV: 4000,
-  PROD: 4000,
-  STAGING: 4000
-};
-
-export const WEB_DOMAIN = {
-  DEV: 'localhost',
-  PROD: APP_DOMAIN,
-  STAGING: APP_DOMAIN
-};
-
-export const WEB_URL = {
-  DEV: `${HTTP_PROTOCOL.DEV}${WEB_DOMAIN.DEV}`,
-  PROD: `${HTTP_PROTOCOL.PROD}${WEB_DOMAIN.PROD}`,
-  STAGING: `${HTTP_PROTOCOL.STAGING}${WEB_DOMAIN.STAGING}`
-};
-
 export const COMPANY_NAME = 'Danex Software';
 export const DEFAULT_LIMIT = 10;
 export const DEFAULT_OFFSET = 0;

@@ -25,4 +25,5 @@ export type ApiConfigType = {
   redis: RedisServiceType;
   sendgrid: SendgridConfigType;
   sessionSecret: string;
+  webUrl: string;
 };

@@ -14,7 +14,6 @@ export {
 } from './lib/api-config';
 export { ApiConfigType } from './lib/api-config.type';
 export {
-  apiUrl,
   getEnvironment,
   isDebug,
   isLocal,
