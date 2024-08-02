@@ -1,4 +1,4 @@
-import { apiWebMain } from './store-web.api';
+import { apiWebMain } from '@dx/store-web';
 import {
   LoginPayloadType,
   LogoutResponse,

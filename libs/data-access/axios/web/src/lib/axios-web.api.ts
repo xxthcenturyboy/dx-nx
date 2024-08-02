@@ -59,12 +59,12 @@ export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
 
   instance.interceptors.response.use(
     (response: AxiosResponse) => {
-      return response.data;
+      return response;
     },
-    async (error: AxiosError<{ error: string }>) => {
+    async (error: AxiosError<{ description: string, message: string, status: number, url: string }>) => {
       if (
         error.response.status === 403 &&
-        error.response.data.error === 'Forbidden: JWT token expired!'
+        error.response.data.message === 'Forbidden: JWT token expired!'
       ) {
         const accessToken = store.getState().auth.token;
         if (accessToken) {
@@ -97,8 +97,8 @@ export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
       } else {
         logger.error('Error in AxiosInstance', error);
         const message = error.response.status !== 500
-          ? error.message
-          : null;
+          ? error.response.data.message
+          : error.message;
         handleNotification(message);
         return Promise.reject(error);
       }

@@ -349,6 +349,16 @@ export class AuthService {
         }
       }
 
+      // Username Login
+      if (!user) {
+        if (password) {
+          user = await UserModel.loginWithUsernamePassword(
+            value,
+            password
+          );
+        }
+      }
+
       if (!user) {
         throw new Error('Could not log you in.');
       }

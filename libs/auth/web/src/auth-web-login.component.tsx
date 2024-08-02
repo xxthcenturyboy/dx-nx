@@ -63,7 +63,8 @@ export const WebLogin: React.FC = () => {
     {
       data: loginResponse,
       error: loginError,
-      isLoading: isFetchingLogin
+      isLoading: isFetchingLogin,
+      isSuccess: loginIsSuccess
     }
   ] = useLoginMutation();
 
@@ -105,7 +106,9 @@ export const WebLogin: React.FC = () => {
       dispatch(userProfileActions.profileInvalidated());
       return;
     }
+  }, [isFetchingLogin, loginError]);
 
+  React.useEffect(() => {
     if (
       loginResponse
       && !isProfileValid
@@ -117,7 +120,7 @@ export const WebLogin: React.FC = () => {
       navigate(ROUTES.DASHBOARD.MAIN);
       // loginBootstrap();
     }
-  }, [isFetchingLogin, loginError, loginResponse]);
+  }, [loginIsSuccess]);
 
   const clearInputs = (): void => {
     dispatch(authActions.usernameUpdated(''));
@@ -154,7 +157,8 @@ export const WebLogin: React.FC = () => {
         password: password
       };
 
-      await requestLogin(data);
+      const result = await requestLogin(data);
+      console.log(result);
     }
   };
 

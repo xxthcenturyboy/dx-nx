@@ -3,6 +3,7 @@ import express,
   Response,
   Express,
   Request,
+  NextFunction,
   // NextFunction
 } from 'express';
 // import session from 'express-session';
@@ -169,7 +170,7 @@ export async function configureExpress(
   //   }
   // });
 
-  app.use((err: Error, req: Request, res: Response) =>
-    handleError(req, res, err, '')
-  );
+  app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    handleError(req, res, err, '');
+  });
 }

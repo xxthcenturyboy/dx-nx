@@ -11,6 +11,7 @@ export function handleError(
   message?: string,
   code?: number
 ) {
+
   if (code) {
     res.status(code);
   } else {

@@ -64,7 +64,7 @@ const uiSlice = createSlice({
       state.apiDialogError = action.payload;
     },
     appDialogSet(state, action: PayloadAction<React.ReactNode | null>) {
-      state.apiDialogOpen = !!action.payload;
+      state.dialogOpen = !!action.payload;
       state.dialogComponent = action.payload;
     },
     awaitDialogMessageSet(state, action: PayloadAction<string>) {
