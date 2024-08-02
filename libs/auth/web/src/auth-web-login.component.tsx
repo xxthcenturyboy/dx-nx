@@ -102,10 +102,10 @@ export const WebLogin: React.FC = () => {
       return;
     }
 
-    if (loginError) {
-      dispatch(userProfileActions.profileInvalidated());
-      return;
-    }
+    // if (loginError) {
+    //   dispatch(userProfileActions.profileInvalidated());
+    //   return;
+    // }
   }, [isFetchingLogin, loginError]);
 
   React.useEffect(() => {
@@ -157,8 +157,7 @@ export const WebLogin: React.FC = () => {
         password: password
       };
 
-      const result = await requestLogin(data);
-      console.log(result);
+      await requestLogin(data);
     }
   };
 

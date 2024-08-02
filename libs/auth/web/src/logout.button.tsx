@@ -4,6 +4,7 @@ import {
   MenuItem,
 } from '@mui/material';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 import { useAppDispatch, useLogoutMutation } from '@dx/store-web';
 import {
@@ -13,6 +14,7 @@ import {
 import { logger } from '@dx/logger-web';
 import { uiActions } from '@dx/ui-web';
 import { ConfirmationDialog } from '@dx/ui-web';
+import { WebConfigService } from '@dx/config-web';
 
 type LogoutButtonType = {
   context: 'APP_MENU' | 'APP_BAR';
@@ -21,9 +23,11 @@ type LogoutButtonType = {
 
 export const LogoutButton: React.FC<LogoutButtonType> = ({ context, onLocalClick }) => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [
     requestLogout
   ] = useLogoutMutation();
+  const ROUTES = WebConfigService.getWebRoutes();
 
   const logout = async (): Promise<void> => {
     if (
@@ -49,6 +53,7 @@ export const LogoutButton: React.FC<LogoutButtonType> = ({ context, onLocalClick
                     dispatch(authActions.tokenRemoved());
                     dispatch(authActions.setLogoutResponse(true));
                     toast.success('Logged out.');
+                    navigate(ROUTES.AUTH.LOGIN);
                     setTimeout(() => dispatch(uiActions.appDialogSet(null)), 1000);
                     return;
                   }

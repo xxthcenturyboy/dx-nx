@@ -104,12 +104,12 @@ export const AuthController = {
       );
       CookeiService.clearCookies(res);
       if (!refreshToken) {
-        return sendNoContent(req, res, '');
+        return sendOK(req, res, { loggedOut: true });
       }
       const service = new AuthService();
       const result = await service.logout(refreshToken);
       if (!result) {
-        return sendNoContent(req, res, '');
+        return sendOK(req, res, { loggedOut: false });
       }
 
       // req.session.destroy((err: Error) => {

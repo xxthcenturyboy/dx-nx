@@ -43,10 +43,36 @@ const userProfileSlice = createSlice({
   initialState: userProfileInitialState,
   reducers: {
     profileUpdated(state, action: PayloadAction<UserProfileStateType>) {
-      state = action.payload;
+      state.device = action.payload.device;
+      state.emails = action.payload.emails;
+      state.firstName = action.payload.firstName;
+      state.fullName = action.payload.fullName;
+      state.hasSecuredAccount = action.payload.hasSecuredAccount;
+      state.hasVerifiedEmail = action.payload.hasVerifiedEmail;
+      state.hasVerifiedPhone = action.payload.hasVerifiedPhone;
+      state.a = action.payload.a;
+      state.sa = action.payload.sa;
+      state.lastName = action.payload.lastName;
+      state.phones = action.payload.phones;
+      state.restrictions = action.payload.restrictions;
+      state.role = action.payload.role;
+      state.username = action.payload.username;
     },
     profileInvalidated(state, action: PayloadAction<undefined>) {
-      state = userProfileInitialState;
+      state.device = userProfileInitialState.device;
+      state.emails = userProfileInitialState.emails;
+      state.firstName = userProfileInitialState.firstName;
+      state.fullName = userProfileInitialState.fullName;
+      state.hasSecuredAccount = userProfileInitialState.hasSecuredAccount;
+      state.hasVerifiedEmail = userProfileInitialState.hasVerifiedEmail;
+      state.hasVerifiedPhone = userProfileInitialState.hasVerifiedPhone;
+      state.a = userProfileInitialState.a;
+      state.sa = userProfileInitialState.sa;
+      state.lastName = userProfileInitialState.lastName;
+      state.phones = userProfileInitialState.phones;
+      state.restrictions = userProfileInitialState.restrictions;
+      state.role = userProfileInitialState.role;
+      state.username = userProfileInitialState.username;
     }
   },
 });
