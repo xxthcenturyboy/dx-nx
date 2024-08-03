@@ -37,7 +37,11 @@ import {
   userProfilePersistConfig
 } from '@dx/user-profile-web';
 import { UserProfileStateType } from '@dx/user-shared';
-import { uiReducer } from '@dx/ui-web';
+import {
+  uiPersistConfig,
+  uiReducer,
+  UiStateType
+} from '@dx/ui-web';
 
 const combinedPersistReducers = combineReducers({
   [apiWebMain.reducerPath]: apiWebMain.reducer,
@@ -45,7 +49,7 @@ const combinedPersistReducers = combineReducers({
   dashboard: dashboardReducer,
   home: homeReducer,
   shortlink: shortlinkReducer,
-  ui: uiReducer,
+  ui: persistReducer<UiStateType, any>(uiPersistConfig, uiReducer) as typeof uiReducer,
   userAdmin: persistReducer<UserAdminStateType, any>(userAdminPersistConfig, userAdminReducer) as typeof userAdminReducer,
   userProfile: persistReducer<UserProfileStateType, any>(userProfilePersistConfig, userProfileReducer) as typeof userProfileReducer
 });

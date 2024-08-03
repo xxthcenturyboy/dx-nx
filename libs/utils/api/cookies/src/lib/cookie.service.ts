@@ -1,6 +1,11 @@
-import { CookieOptions, Request, Response } from 'express';
+import {
+  CookieOptions,
+  Request,
+  Response
+} from 'express';
 
 import { AUTH_TOKEN_NAMES } from '@dx/auth-api';
+import { isLocal } from '@dx/config-api';
 
 export class CookeiService {
   public static setCookies(
@@ -11,7 +16,7 @@ export class CookeiService {
   ) {
     res.cookie(AUTH_TOKEN_NAMES.ACCTSECURE, hasAccountBeenSecured, {
       httpOnly: true,
-      secure: true,
+      secure: !isLocal(),
     });
 
     CookeiService.setRefreshCookie(res, refreshToken, refreshTokenExpTimestamp);
@@ -34,7 +39,7 @@ export class CookeiService {
     res.cookie(AUTH_TOKEN_NAMES.REFRESH, refreshToken, {
       httpOnly: true,
       maxAge: exp * 1000,
-      secure: true,
+      secure: !isLocal(),
     });
   }
 
@@ -66,9 +71,9 @@ export class CookeiService {
       };
 
       res.clearCookie(AUTH_TOKEN_NAMES.ACCTSECURE, options);
-      res.clearCookie(AUTH_TOKEN_NAMES.AUTH, options);
+      // res.clearCookie(AUTH_TOKEN_NAMES.AUTH, options);
       res.clearCookie(AUTH_TOKEN_NAMES.REFRESH, options);
-      res.clearCookie(AUTH_TOKEN_NAMES.EXP, options);
+      // res.clearCookie(AUTH_TOKEN_NAMES.EXP, options);
 
       return true;
     }

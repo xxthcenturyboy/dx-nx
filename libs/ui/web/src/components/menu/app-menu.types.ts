@@ -1,6 +1,7 @@
-export type MenuRestrictionType = 'ADMIN' | 'SUPERADMIN' | 'BETA';
+export type MenuRestrictionType = 'ADMIN' | 'SUPERADMIN';
 
 export type AppMenuItemType = {
+  beta?: boolean;
   id: string;
   icon?: string;
   restriction?: MenuRestrictionType;

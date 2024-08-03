@@ -26,13 +26,17 @@ import {
   useAppDispatch,
   useAppSelector
 } from '@dx/store-web';
-import { WebConfigService } from '@dx/config-web';
-import { regexEmail } from '@dx/util-regex';
 import {
+  MenuConfigService,
+  WebConfigService
+} from '@dx/config-web';
+import {
+  AppMenuType,
   FADE_TIMEOUT_DUR,
   MEDIA_BREAK,
   setDocumentTitle,
-  themeColors
+  themeColors,
+  uiActions
 } from '@dx/ui-web';
 import {
   selectIsUserProfileValid,
@@ -98,27 +102,34 @@ export const WebLogin: React.FC = () => {
   }, [windowWidth]);
 
   React.useEffect(() => {
-    if (isFetchingLogin) {
+    if (loginError) {
+      dispatch(userProfileActions.profileInvalidated());
       return;
     }
-
-    // if (loginError) {
-    //   dispatch(userProfileActions.profileInvalidated());
-    //   return;
-    // }
-  }, [isFetchingLogin, loginError]);
+  }, [loginError]);
 
   React.useEffect(() => {
-    if (
-      loginResponse
-      && !isProfileValid
-    ) {
+    if (loginResponse) {
+      const {
+        accessToken,
+        profile
+      } = loginResponse;
       clearInputs();
-      dispatch(authActions.tokenAdded(loginResponse.accessToken));
+      dispatch(authActions.tokenAdded(accessToken));
       dispatch(authActions.setLogoutResponse(false));
-      dispatch(userProfileActions.profileUpdated(loginResponse.profile));
+      dispatch(userProfileActions.profileUpdated(profile));
+      const menuService = new MenuConfigService();
+      let menus: AppMenuType[] = [];
+      if (profile.role.includes('SUPERADMIN')) {
+        menus = menuService.getMenus('SUPERADMIN', profile.b);
+      } else if (profile.role.includes('ADMIN')) {
+        menus = menuService.getMenus('ADMIN', profile.b);
+      } else {
+        menus = menuService.getMenus(undefined, profile.b);
+      }
+      dispatch(uiActions.menusSet({ menus }));
+      dispatch(uiActions.toggleMenuSet(true));
       navigate(ROUTES.DASHBOARD.MAIN);
-      // loginBootstrap();
     }
   }, [loginIsSuccess]);
 

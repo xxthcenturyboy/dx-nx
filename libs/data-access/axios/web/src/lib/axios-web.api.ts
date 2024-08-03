@@ -46,9 +46,9 @@ export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
       const accessToken = store.getState().auth.token;
       if (accessToken) {
         config.headers.Authorization = `Bearer ${accessToken}`;
-        config.withCredentials = true;
       }
 
+      config.withCredentials = true;
       return config;
     },
     (error: AxiosError) => {

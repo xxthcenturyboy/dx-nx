@@ -50,7 +50,7 @@ export class WebConfigService {
         for (const routeKey of routeJson) {
           routeState[routeKey] =
             routeKey.split('.').reduce((a, b) => a[b], routes) || '';
-          if (routeKey.includes('main')) {
+          if (routeKey.includes('MAIN')) {
             mainRouteKeys.push(routeKey);
           }
         }

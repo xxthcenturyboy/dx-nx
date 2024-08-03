@@ -73,12 +73,8 @@ const uiSlice = createSlice({
     awaitDialogOpenSet(state, action: PayloadAction<boolean>) {
       state.apiDialogOpen = action.payload;
     },
-    menusSet(state, action: PayloadAction<{ menus: AppMenuType[] | null, routes: RouteState}>) {
+    menusSet(state, action: PayloadAction<{ menus: AppMenuType[] | null }>) {
       state.menus = action.payload.menus;
-      state.routes = {};
-      if (action.payload.routes) {
-        state.routes = action.payload.routes;
-      }
     },
     setIsShowingUnauthorizedAlert(state, action : PayloadAction<boolean>) {
       state.isShowingUnauthorizedAlert = action.payload;

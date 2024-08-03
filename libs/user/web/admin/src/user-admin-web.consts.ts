@@ -38,5 +38,14 @@ export const USER_ADMIN_MENU: AppMenuType = {
       title: 'User Edit',
       type: 'ROUTE',
     },
+    {
+      beta: true,
+      id: 'menu-item-user-edit-beta',
+      icon: '',
+      restriction: 'ADMIN',
+      routeKey: USER_ADMIN_ROUTES.EDIT,
+      title: 'User Edit',
+      type: 'ROUTE',
+    },
   ],
 };

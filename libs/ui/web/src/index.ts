@@ -17,6 +17,7 @@ export {
 export { themeColors } from './mui-overrides/styles';
 export {
   uiActions,
+  uiPersistConfig,
   uiReducer
 } from './store/ui-web.reducer';
 export {
@@ -33,7 +34,10 @@ export {
   TOAST_LOCATION,
   TOAST_TIMEOUT
 } from './ui.consts';
-export { RouteState } from './ui-web.types';
+export {
+  RouteState,
+  UiStateType
+} from './ui-web.types';
 export { GlobalAwaiter } from './components/global-awaiter.component';
 export { NotFoundComponent } from './components/not-found.component';
 export { UnauthorizedComponent } from './components/unauthorized.component';

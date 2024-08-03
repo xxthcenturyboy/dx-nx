@@ -50,7 +50,7 @@ export const NotFoundComponent: React.FC<NotFoundComponentPropsType> = ({ routin
           }
           variant="outlined"
         >
-          { buttonText || 'Return Home' }
+          { buttonText || 'Go Back' }
         </Button>
       </Box>
     </Grid>
