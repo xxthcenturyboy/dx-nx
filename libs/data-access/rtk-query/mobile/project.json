@@ -1,0 +1,9 @@
+{
+  "name": "rtk-query-mobile",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/data-access/rtk-query/mobile/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project rtk-query-mobile --web",
+  "targets": {}
+}
