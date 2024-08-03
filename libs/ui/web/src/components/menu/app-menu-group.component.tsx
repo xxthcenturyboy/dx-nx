@@ -27,13 +27,11 @@ export const AppMenuGroup: React.FC<AppMenuGroupProps> = (props) => {
   const theme = useTheme();
   const location = useLocation();
   const { pathname } = location;
-  const routeState = useAppSelector((state: RootState) => state.ui.routes);
 
   useEffect(() => {
     const subItemRouteKeys = Array.from(menu.items, item => item.routeKey);
     for (const routeKey of subItemRouteKeys) {
-      const route = routeState[routeKey];
-      if (pathname.includes(route)) {
+      if (pathname.includes(routeKey)) {
         setOpen(true);
         break;
       }

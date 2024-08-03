@@ -31,26 +31,22 @@ type AppMenuItemItemProps = {
 export const AppMenuItem: React.FC<AppMenuItemItemProps> = (props) => {
   const { isFirst, isSubItem, menuItem } = props;
   const windowWidth = useAppSelector((state: RootState) => state.ui.windowWidth) || 0;
-  const routeState = useAppSelector((state: RootState) => state.ui.routes);
-  const [route, _] = useState<string>(routeState[menuItem.routeKey]);
+  const location = useLocation();
+  const [route] = useState(menuItem.routeKey);
+  const [isSelected] = useState(location.pathname.includes(menuItem.routeKey));
   const [menuBreak, setMenuBreak] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
-  const { pathname } = location;
+
 
   React.useEffect(() => {
     setMenuBreak(windowWidth < MEDIA_BREAK.MENU);
   }, [windowWidth]);
 
-  const isSelected = (): boolean => {
-    return pathname.includes(route);
-  };
-
   const goToRoute = (): void => {
     if (
       route
-      && !isSelected()
+      && !isSelected
     ) {
       menuBreak && dispatch(uiActions.toggleMenuSet(false));
       navigate(route);
@@ -71,7 +67,7 @@ export const AppMenuItem: React.FC<AppMenuItemItemProps> = (props) => {
         px: 4
       }}
       onClick={goToRoute}
-      selected={isSelected()}
+      selected={isSelected}
     >
       {
         !!menuItem.icon && (

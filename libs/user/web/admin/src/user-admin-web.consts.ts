@@ -3,9 +3,9 @@ import { AppMenuType } from '@dx/ui-web';
 export const USER_ADMIN_ENTITY_NAME = 'userAdmin';
 
 export const USER_ADMIN_ROUTES = {
-  MAIN: `/admin/${USER_ADMIN_ENTITY_NAME}`,
-  LIST: `/admin/${USER_ADMIN_ENTITY_NAME}/list`,
-  EDIT: `/admin/${USER_ADMIN_ENTITY_NAME}/edit`,
+  MAIN: `/admin/user`,
+  LIST: `/admin/user/list`,
+  EDIT: `/admin/user/edit`,
 };
 
 export const USER_ADMIN_MENU: AppMenuType = {

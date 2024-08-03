@@ -81,7 +81,6 @@ export const WebLogin: React.FC = () => {
       user
       && isProfileValid
     ) {
-      console.log(lastPath);
       if (
         lastPath !== ROUTES.MAIN
         && lastPath !== ROUTES.AUTH.LOGIN
