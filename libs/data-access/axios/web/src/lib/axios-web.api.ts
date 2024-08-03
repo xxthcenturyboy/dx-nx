@@ -7,10 +7,7 @@ import axios,
 import { toast } from 'react-toastify';
 
 import { store } from '@dx/store-web';
-import {
-  authActions,
-  // useLogoutMutation
-} from '@dx/auth-web';
+import { authActions } from '@dx/auth-web';
 import { uiActions } from '@dx/ui-web';
 import { WebConfigService } from '@dx/config-web';
 import { logger } from '@dx/logger-web';
@@ -25,14 +22,6 @@ export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
   const ROUTES = WebConfigService.getWebRoutes();
   const API_URI = `${URLS.API_URL}/api/`;
   const LOGIN_URI = `${URLS.WEB_APP_URL}${ROUTES.AUTH.LOGIN}`;
-  // const [
-  //   requestLogout,
-  //   {
-  //     data,
-  //     error,
-  //     isLoading
-  //   }
-  // ] = useLogoutMutation();
 
   const instance = axios.create({
     baseURL: API_URI,

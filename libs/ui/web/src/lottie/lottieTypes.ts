@@ -2,6 +2,7 @@ import { CSSProperties } from 'react';
 
 export type LottiePropTypes = {
   complete?: () => void;
+  loop?: boolean;
 };
 
 export type LottieWrapperPropTypes = {

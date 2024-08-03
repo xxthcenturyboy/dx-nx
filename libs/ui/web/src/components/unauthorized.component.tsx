@@ -32,7 +32,9 @@ export const UnauthorizedComponent = (props: LoadingProps): JSX.Element | null =
       >
         You are not authorized to access this feature.
       </Typography>
-      <LottieAccessDenied />
+      <LottieAccessDenied
+        loop={false}
+      />
     </Grid>
   );
 };

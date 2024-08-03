@@ -1,14 +1,10 @@
-import {
-  createBrowserRouter,
-  // unstable_BlockerFunction
-} from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
 
 import { NotFoundComponent } from '@dx/ui-web';
 import { WebConfigService } from '@dx/config-web';
 import { Root } from './root.component';
-// import { HomeComponent } from '@dx/home';
-// import { ShortlinkComponent } from '@dx/shortlink-web';
 import { AuthWebRouterConfig } from '@dx/auth-web';
+import { PrivateWebRouterConfig } from './private.router';
 
 export class AppRouter {
   public static getRouter() {
@@ -24,7 +20,6 @@ export class AppRouter {
             lazy: async () => { let { HomeComponent } = await import('@dx/home')
               return { Component: HomeComponent }
             },
-            // element: (<HomeComponent />),
             errorElement: (<NotFoundComponent />)
           },
           ...AuthWebRouterConfig.getRouter(),
@@ -33,9 +28,9 @@ export class AppRouter {
             lazy: async () => { let { ShortlinkComponent } = await import('@dx/shortlink-web')
               return { Component: ShortlinkComponent }
             },
-            // element: (<ShortlinkComponent />),
             errorElement: (<NotFoundComponent />)
           },
+          ...PrivateWebRouterConfig.getRouter(),
           {
             path: ROUTES.NOT_FOUND,
             element: (<NotFoundComponent />),

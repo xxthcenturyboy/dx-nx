@@ -12,6 +12,13 @@ export const selectIsUserProfileValid = createSelector(
   userId => !!userId
 );
 
+export const selectHasAdminRole = createSelector(
+  [getUserProfile],
+  (profile) => {
+    return profile.a;
+  }
+);
+
 export const selectProfileFormatted = createSelector(
   [getUserProfile],
   (profile) => {
