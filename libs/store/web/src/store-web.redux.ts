@@ -18,7 +18,6 @@ import {
   REGISTER,
 } from 'reduxjs-toolkit-persist';
 
-import { apiWebMain } from './store-web.api';
 import {
   AuthStateType,
   authReducer,
@@ -42,6 +41,7 @@ import {
   uiReducer,
   UiStateType
 } from '@dx/ui-web';
+import { apiWebMain } from '@dx/rtk-query-web';
 
 const combinedPersistReducers = combineReducers({
   [apiWebMain.reducerPath]: apiWebMain.reducer,

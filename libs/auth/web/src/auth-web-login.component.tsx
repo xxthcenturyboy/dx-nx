@@ -45,8 +45,8 @@ import {
 import { LoginPayloadType } from '@dx/auth-shared';
 import * as UI from './auth-web-login.ui';
 import { authActions } from './auth-web.reducer';
-import { useLoginMutation } from '@dx/store-web';
-// import { useLoginMutation } from './auth-web.api';
+// import { useLoginMutation } from '@dx/rtk-query-web';
+import { useLoginMutation } from './auth-web.api';
 
 export const WebLogin: React.FC = () => {
   const [mobileBreak, setMobileBreak] = React.useState(false);
@@ -81,6 +81,7 @@ export const WebLogin: React.FC = () => {
       user
       && isProfileValid
     ) {
+      console.log(lastPath);
       if (
         lastPath !== ROUTES.MAIN
         && lastPath !== ROUTES.AUTH.LOGIN

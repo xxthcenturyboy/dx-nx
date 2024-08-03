@@ -28,7 +28,7 @@ export const NotFoundComponent: React.FC<NotFoundComponentPropsType> = ({ routin
         variant="h1"
         color="primary"
       >
-        Page Not Found
+        Not Found
       </Typography>
       <Typography
         variant="h5"

@@ -44,6 +44,7 @@
       "@dx/phone-api": ["libs/phone/api/src/index.ts"],
       "@dx/phone-shared": ["libs/phone/shared/src/index.ts"],
       "@dx/plugins-nx": ["libs/plugins-nx/src/index.ts"],
+      "@dx/rtk-query-web": ["libs/data-access/rtk-query/web/src/index.ts"],
       "@dx/shortlink-api": ["libs/shortlink/api/src/index.ts"],
       "@dx/shortlink-web": ["libs/shortlink/web/src/index.ts"],
       "@dx/store-web": ["libs/store/web/src/index.ts"],

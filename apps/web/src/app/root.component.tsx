@@ -23,8 +23,7 @@ import {
 import {
   RootState,
   useAppDispatch,
-  useAppSelector,
-  useLazyGetProfileQuery
+  useAppSelector
 } from '@dx/store-web';
 import {
   AppNavBar,
@@ -45,14 +44,8 @@ import { WebConfigService } from '@dx/config-web';
 import { selectIsAuthenticated } from '@dx/auth-web';
 import {
   userProfileActions,
-  // useLazyGetProfileQuery
+  useLazyGetProfileQuery
 } from '@dx/user-profile-web';
-
-// Code splitting
-// import {
-//   Login,
-//   NotFound,
-// } from 'client/core/LazyLoader';
 
 export const Root: React.FC = () => {
   const [theme, setTheme] = React.useState<Theme>(createTheme());

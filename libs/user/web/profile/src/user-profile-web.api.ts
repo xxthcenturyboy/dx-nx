@@ -1,4 +1,4 @@
-import { apiWebMain } from '@dx/store-web';
+import { apiWebMain } from '@dx/rtk-query-web';
 import {
   UserProfileStateType
 } from '@dx/user-shared';
@@ -14,7 +14,7 @@ export const apiWebUserProfile = apiWebMain.injectEndpoints({
       )
     })
   }),
-  overrideExisting: false
+  overrideExisting: true
 });
 
 export const {

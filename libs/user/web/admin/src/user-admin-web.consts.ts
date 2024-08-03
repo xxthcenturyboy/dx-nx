@@ -14,14 +14,14 @@ export const USER_ADMIN_MENU: AppMenuType = {
   description: 'Manage Users',
   title: 'Users',
   items: [
-    {
-      id: 'menu-item-header-user',
-      icon: '',
-      restriction: 'ADMIN',
-      routeKey: USER_ADMIN_ROUTES.MAIN,
-      title: 'Users',
-      type: 'SUB_HEADING',
-    },
+    // {
+    //   id: 'menu-item-header-user',
+    //   icon: '',
+    //   restriction: 'ADMIN',
+    //   routeKey: USER_ADMIN_ROUTES.MAIN,
+    //   title: 'Manage Users',
+    //   type: 'SUB_HEADING',
+    // },
     {
       id: 'menu-item-user-list',
       icon: '',
@@ -35,7 +35,7 @@ export const USER_ADMIN_MENU: AppMenuType = {
       icon: '',
       restriction: 'ADMIN',
       routeKey: USER_ADMIN_ROUTES.EDIT,
-      title: 'User Edit',
+      title: 'Create User',
       type: 'ROUTE',
     },
     {
@@ -44,7 +44,7 @@ export const USER_ADMIN_MENU: AppMenuType = {
       icon: '',
       restriction: 'ADMIN',
       routeKey: USER_ADMIN_ROUTES.EDIT,
-      title: 'User Edit',
+      title: 'User Beta',
       type: 'ROUTE',
     },
   ],

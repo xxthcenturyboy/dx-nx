@@ -1,15 +1,15 @@
 import {
-  createBrowserRouter,
+  // createBrowserRouter,
   Outlet,
   RouteObject
 } from 'react-router-dom';
 
 import {
   NotFoundComponent,
-  UnauthorizedComponent
+  // UnauthorizedComponent
 } from '@dx/ui-web';
 import { WebConfigService } from '@dx/config-web';
-import { WebLogin } from './auth-web-login.component';
+// import { WebLogin } from './auth-web-login.component';
 
 export const AuthWebRouter = () => {
   return (
@@ -26,7 +26,10 @@ export class AuthWebRouterConfig {
     const config: RouteObject[] = [
       {
         path: ROUTES.AUTH.LOGIN,
-        element: (<WebLogin />),
+        lazy: async () => { let { WebLogin } = await import('@dx/auth-web')
+          return { Component: WebLogin }
+        },
+        // element: (<WebLogin />),
         errorElement: (<NotFoundComponent />)
       },
       {
