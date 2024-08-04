@@ -32,6 +32,7 @@
       "@dx/devices-shared": ["libs/devices/shared/src/index.ts"],
       "@dx/email-api": ["libs/email/api/src/index.ts"],
       "@dx/email-shared": ["libs/email/shared/src/index.ts"],
+      "@dx/email-web": ["libs/email/web/src/index.ts"],
       "@dx/healthz-api": ["libs/healthz/api/src/index.ts"],
       "@dx/home": ["libs/dmz/home/src/index.ts"],
       "@dx/logger-api": ["libs/logger/api/src/index.ts"],
@@ -39,6 +40,7 @@
       "@dx/mail-api": ["libs/mail/api/src/index.ts"],
       "@dx/phone-api": ["libs/phone/api/src/index.ts"],
       "@dx/phone-shared": ["libs/phone/shared/src/index.ts"],
+      "@dx/phone-web": ["libs/phone/web/src/index.ts"],
       "@dx/plugins-nx": ["libs/plugins-nx/src/index.ts"],
       "@dx/rtk-query-mobile": [
         "libs/data-access/rtk-query/mobile/src/index.ts"

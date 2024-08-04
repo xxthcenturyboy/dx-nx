@@ -3,6 +3,7 @@ import parsePhoneNumber from 'libphonenumber-js';
 
 import { RootState } from '@dx/store-web';
 import { UserProfileStateType } from '@dx/user-shared';
+import { PhoneType } from '@dx/phone-shared';
 
 const getUserProfile = (state: RootState): UserProfileStateType => state.userProfile;
 const getCurrentUserId = (state: RootState): string | null => state.userProfile && state.userProfile.id;
@@ -19,14 +20,34 @@ export const selectHasAdminRole = createSelector(
   }
 );
 
+export const selectUserEmails = createSelector(
+  [getUserProfile],
+  (profile) => {
+    return profile.emails || [];
+  }
+);
+
+export const selectUserPhones = createSelector(
+  [getUserProfile],
+  (profile) => {
+    return profile.phones || [];
+  }
+);
+
 export const selectProfileFormatted = createSelector(
   [getUserProfile],
   (profile) => {
-    profile?.phones.forEach((phone) => {
+    const nextPhones: PhoneType[] = [];
+    for (const phone of profile.phones) {
       const formatted = parsePhoneNumber(phone.phoneFormatted);
-      phone.uiFormatted = formatted?.formatNational();
-    });
-
-    return profile;
+      nextPhones.push({
+        ...phone,
+        uiFormatted: formatted?.formatNational()
+      });
+    }
+    return {
+      ...profile,
+      phones: nextPhones
+    };
   }
 );

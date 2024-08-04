@@ -44,6 +44,13 @@ export class PrivateWebRouterConfig {
             },
             errorElement: (<NotFoundComponent />)
           },
+          {
+            path: ROUTES.USER_PROFILE.MAIN,
+            lazy: async () => { let { UserProfile } = await import('@dx/user-profile-web')
+              return { Component: UserProfile }
+            },
+            errorElement: (<NotFoundComponent />)
+          },
           ...AdminWebRouterConfig.getRouter(),
           ...SuperAdminWebRouterConfig.getRouter()
         ]

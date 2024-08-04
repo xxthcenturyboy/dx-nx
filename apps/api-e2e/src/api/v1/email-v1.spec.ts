@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
-import { CreateEmailPayloadType, UpdateEmailPayloadType } from '@dx/email-api';
+import { CreateEmailPayloadType, UpdateEmailPayloadType } from '@dx/email-shared';
 import {
   TEST_EMAIL,
   TEST_EXISTING_EMAIL,

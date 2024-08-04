@@ -23,20 +23,20 @@ import { OtpService } from '@dx/auth-api';
 import { dxRsaValidateBiometricKey } from '@dx/util-encryption';
 import { UserModel } from './user.postgres-model';
 import { getUserProfileState } from './user-profile';
+import { USER_FIND_ATTRIBUTES, USER_SORT_FIELDS } from './user.consts';
 import {
   CreateUserResponseType,
   GetUserProfileReturnType,
   GetUserListResponseType,
   GetUsersListQueryType,
   GetUserResponseType,
-  UserType,
   UpdateUserPayloadType,
   UpdateUsernamePayloadType,
   UpdateUserResponseType,
   UpdatePasswordPayloadType,
-} from './user.types';
-import { USER_FIND_ATTRIBUTES, USER_SORT_FIELDS } from './user.consts';
-import { CreateUserPayloadType } from '@dx/user-shared';
+  CreateUserPayloadType,
+  UserType
+} from '@dx/user-shared';
 
 export class UserService {
   private DEBUG = isDebug();

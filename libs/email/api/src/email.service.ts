@@ -5,7 +5,7 @@ import { isLocal } from '@dx/config-api';
 import { OtpService } from '@dx/auth-api';
 import { dxRsaValidateBiometricKey } from '@dx/util-encryption';
 import { EmailModel } from './email.postgres-model';
-import { CreateEmailPayloadType, UpdateEmailPayloadType } from './email.types';
+import { CreateEmailPayloadType, UpdateEmailPayloadType } from '@dx/email-shared';
 
 export class EmailService {
   private LOCAL = isLocal();

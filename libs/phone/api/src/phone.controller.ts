@@ -5,7 +5,7 @@ import { PhoneService } from './phone.service';
 import {
   CreatePhonePayloadType,
   UpdatePhonePayloadType,
-} from './phone.types';
+} from '@dx/phone-shared';
 
 export const PhoneController = {
   createPhone: async function (req: Request, res: Response) {

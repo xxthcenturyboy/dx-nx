@@ -1,5 +1,4 @@
-import { EmailType } from "@dx/email-shared";
-import { PhoneType } from "@dx/phone-shared";
+import { UserType } from '@dx/user-shared';
 
 export type UserAdminStateType = {
   filterValue?: string;
@@ -11,19 +10,4 @@ export type UserAdminStateType = {
   user?: UserType;
   users: UserType[];
   usersCount?: number;
-};
-
-export type UserType = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  fullName: string;
-  isAdmin: boolean;
-  isSuperAdmin: boolean;
-  emails: EmailType[];
-  phones: PhoneType[];
-  optInBeta: boolean;
-  roles: string[];
-  username: string;
-  restrictions: string[];
 };

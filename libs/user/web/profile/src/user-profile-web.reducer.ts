@@ -8,6 +8,8 @@ import { PersistConfig } from 'reduxjs-toolkit-persist/lib/types';
 
 import { UserProfileStateType } from '@dx/user-shared';
 import { USER_PROFILE_ENTITY_NAME } from './user-profile-web.consts';
+import { EmailType } from '@dx/email-shared';
+import { PhoneType } from '@dx/phone-shared';
 
 export const userProfileInitialState: UserProfileStateType = {
   id: '',
@@ -75,6 +77,24 @@ const userProfileSlice = createSlice({
       state.restrictions = userProfileInitialState.restrictions;
       state.role = userProfileInitialState.role;
       state.username = userProfileInitialState.username;
+    },
+    emailAddedToProfile(state, action: PayloadAction<EmailType>) {
+      const nextEmails = state.emails;
+      nextEmails.push(action.payload);
+      state.emails = nextEmails;
+    },
+    emailRemovedFromProfile(state, action: PayloadAction<string>) {
+      const nextEmails = state.emails.filter(email => email.id !== action.payload);
+      state.emails = nextEmails;
+    },
+    phoneAddedToProfile(state, action: PayloadAction<PhoneType>) {
+      const nextPhones = state.phones;
+      nextPhones.push(action.payload);
+      state.phones = nextPhones;
+    },
+    phoneRemovedFromProfile(state, action: PayloadAction<string>) {
+      const nextPhones = state.phones.filter(phone => phone.id !== action.payload);
+      state.phones = nextPhones;
     }
   },
 });

@@ -23,9 +23,12 @@ import {
   UpdatePasswordPayloadType,
   UpdateUserPayloadType,
   UpdateUsernamePayloadType,
-} from './user.types';
-import { UserProfileStateType } from '@dx/user-shared';
-import { UserService, UserServiceType } from './user.service';
+  UserProfileStateType
+} from '@dx/user-shared';
+import {
+  UserService,
+  UserServiceType
+} from './user.service';
 import { UserModel } from './user.postgres-model';
 
 jest.mock('@dx/logger-api');

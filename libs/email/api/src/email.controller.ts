@@ -5,7 +5,7 @@ import { EmailService } from './email.service';
 import {
   CreateEmailPayloadType,
   UpdateEmailPayloadType,
-} from './email.types';
+} from '@dx/email-shared';
 
 export const EmailController = {
   createEmail: async function (req: Request, res: Response) {

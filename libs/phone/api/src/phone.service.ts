@@ -6,7 +6,7 @@ import { dxRsaValidateBiometricKey } from '@dx/util-encryption';
 import { UserModel } from '@dx/user-api';
 import { PhoneModel } from './phone.postgres-model';
 import { PHONE_DEFAULT_REGION_CODE } from '@dx/config-shared';
-import { CreatePhonePayloadType, UpdatePhonePayloadType } from './phone.types';
+import { CreatePhonePayloadType, UpdatePhonePayloadType } from '@dx/phone-shared';
 
 export class PhoneService {
   private LOCAL: boolean;
@@ -91,7 +91,7 @@ export class PhoneService {
       userPhone.verifiedAt = new Date();
       await userPhone.save();
 
-      return { id: userPhone.id };
+      return { id: userPhone.id, phoneFormatted: phoneUtil.normalizedPhone };
     } catch (err) {
       this.logger.logError(err);
     }

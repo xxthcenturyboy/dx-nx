@@ -50,7 +50,7 @@ export const LogoutButton: React.FC<LogoutButtonType> = ({ context, onLocalClick
                   if (logoutResponse.loggedOut) {
                     dispatch(authActions.tokenRemoved());
                     dispatch(authActions.setLogoutResponse(true));
-                    toast.success('Logged out.');
+                    // toast.success('Logged out.');
                     navigate(ROUTES.AUTH.LOGIN);
                     setTimeout(() => dispatch(uiActions.appDialogSet(null)), 1000);
                     return;

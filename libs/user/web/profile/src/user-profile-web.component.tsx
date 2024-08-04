@@ -26,9 +26,11 @@ import {
   setDocumentTitle,
   uiActions
 } from '@dx/ui-web';
-
-import UserPhones from './UserPhones';
-import UserEmails from './UserEmails';
+import { EmailList } from '@dx/email-web';
+import { EmailType } from '@dx/email-shared';
+import { PhoneType } from '@dx/phone-shared';
+import { Phonelist } from '@dx/phone-web';
+import { userProfileActions } from './user-profile-web.reducer';
 import { selectProfileFormatted } from './user-profile-web.selectors';
 
 export const UserProfile: React.FC = () => {
@@ -84,6 +86,22 @@ export const UserProfile: React.FC = () => {
     }
   };
 
+  const addEmailToProfile = (email: EmailType) => {
+    dispatch(userProfileActions.emailAddedToProfile(email));
+  };
+
+  const removeEmailFromProfile = (email: EmailType) => {
+    dispatch(userProfileActions.emailRemovedFromProfile(email.id));
+  };
+
+  const addPhoneToProfile = (phone: PhoneType) => {
+    dispatch(userProfileActions.phoneAddedToProfile(phone));
+  };
+
+  const removePhoneFromProfile = (phone: PhoneType) => {
+    dispatch(userProfileActions.phoneRemovedFromProfile(phone.id));
+  };
+
   return (
     <Fade in={true} timeout={FADE_TIMEOUT_DUR}>
       <Box>
@@ -127,8 +145,18 @@ export const UserProfile: React.FC = () => {
               width={mdBreak ? '100%' : '50%'}
               padding="10px"
             >
-              <UserEmails emails={profile?.emails} />
-              <UserPhones phones={profile?.phones} />
+              <EmailList
+                emails={profile.emails}
+                userId={profile.id}
+                emailDataCallback={addEmailToProfile}
+                emailDeleteCallback={removeEmailFromProfile}
+              />
+              <Phonelist
+                phones={profile.phones}
+                userId={profile.id}
+                phoneDataCallback={addPhoneToProfile}
+                phoneDeleteCallback={removePhoneFromProfile}
+              />
               <Grid
                 item
                 width={mdBreak ? '100%' : '50%'}

@@ -15,3 +15,4 @@ export {
 export {
   selectIsUserProfileValid
 } from './user-profile-web.selectors';
+export { UserProfile } from './user-profile-web.component';

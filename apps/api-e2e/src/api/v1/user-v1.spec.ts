@@ -8,14 +8,14 @@ import {
   UpdateUserPayloadType,
   UpdateUserResponseType,
   UpdatePasswordPayloadType,
-} from '@dx/user-api';
+  UpdateUsernamePayloadType
+} from '@dx/user-shared';
 import { UserProfileStateType } from '@dx/user-shared';
 import {
   TEST_EXISTING_USER_ID,
   TEST_USER_CREATE,
   TEST_UUID,
 } from '@dx/config-shared';
-import { UpdateUsernamePayloadType } from '@dx/user-api';
 import {
   AuthSuccessResponseType,
   OtpResponseType

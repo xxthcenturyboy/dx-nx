@@ -23,7 +23,7 @@ import {
 import { UserService } from '@dx/user-api';
 import { PhoneService, PhoneServiceType } from './phone.service';
 import { PhoneModel } from './phone.postgres-model';
-import { CreatePhonePayloadType, UpdatePhonePayloadType } from './phone.types';
+import { CreatePhonePayloadType, UpdatePhonePayloadType } from '@dx/phone-shared';
 
 jest.mock('@dx/logger-api');
 

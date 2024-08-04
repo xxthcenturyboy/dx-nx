@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
-import { CreatePhonePayloadType, UpdatePhonePayloadType } from '@dx/phone-api';
+import { CreatePhonePayloadType, UpdatePhonePayloadType } from '@dx/phone-shared';
 import {
   TEST_COUNTRY_CODE,
   TEST_EXISTING_PHONE,

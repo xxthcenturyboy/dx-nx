@@ -10,7 +10,7 @@ import {
   UpdateUsernamePayloadType,
   UpdatePasswordPayloadType,
   UpdateUserPayloadType,
-} from './user.types';
+} from '@dx/user-shared';
 import { CreateUserPayloadType } from '@dx/user-shared';
 
 export const UserController = {

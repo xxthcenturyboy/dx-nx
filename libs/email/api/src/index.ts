@@ -6,8 +6,3 @@ export {
   EMAIL_MODEL_OPTIONS,
   EMAIL_POSTGRES_DB_NAME,
 } from './email.consts';
-
-export {
-  CreateEmailPayloadType,
-  UpdateEmailPayloadType,
-} from './email.types';

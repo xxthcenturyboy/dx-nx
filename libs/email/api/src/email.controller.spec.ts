@@ -5,7 +5,7 @@ import { Response } from 'jest-express/lib/response';
 // import { TEST_EMAIL, TEST_EXISTING_USER_ID } from '@dx/config';
 import { sendOK, sendBadRequest } from '@dx/utils-api-http-response';
 import { EmailController } from './email.controller';
-// import { CreateEmailPayloadType } from '../model/email.types';
+// import { CreateEmailPayloadType } from '@dx/email-shared';
 
 jest.mock('./email.service.ts');
 jest.mock('@dx/utils-api-http-response', () => ({

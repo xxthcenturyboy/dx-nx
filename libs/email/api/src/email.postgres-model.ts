@@ -17,7 +17,8 @@ import {
 } from 'sequelize-typescript';
 
 import { UserModel, UserModelType } from '@dx/user-api';
-import { EMAIL_LABEL, EMAIL_POSTGRES_DB_NAME } from './email.consts';
+import { EMAIL_LABEL } from '@dx/email-shared';
+import { EMAIL_POSTGRES_DB_NAME } from './email.consts';
 
 @Table({
   modelName: EMAIL_POSTGRES_DB_NAME,

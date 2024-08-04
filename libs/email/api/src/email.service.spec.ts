@@ -18,7 +18,7 @@ import {
   POSTGRES_URI
 } from '@dx/config-api';
 import { UserService } from '@dx/user-api';
-import { CreateEmailPayloadType, UpdateEmailPayloadType } from './email.types';
+import { CreateEmailPayloadType, UpdateEmailPayloadType } from '@dx/email-shared';
 import { EmailService, EmailServiceType } from './email.service';
 import { EmailModel } from './email.postgres-model';
 
