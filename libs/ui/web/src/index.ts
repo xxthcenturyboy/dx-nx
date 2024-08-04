@@ -35,7 +35,7 @@ export {
   TOAST_TIMEOUT
 } from './ui.consts';
 export {
-  RouteState,
+  // RouteState,
   UiStateType
 } from './ui-web.types';
 export { GlobalAwaiter } from './components/global-awaiter.component';

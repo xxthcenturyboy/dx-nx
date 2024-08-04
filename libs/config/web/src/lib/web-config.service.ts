@@ -1,5 +1,5 @@
-import { propertiesToArray } from '@dx/utils-shared-misc';
-import { RouteState } from '@dx/ui-web';
+// import { propertiesToArray } from '@dx/utils-shared-misc';
+// import { RouteState } from '@dx/ui-web';
 import { AUTH_ROUTES } from '@dx/auth-web';
 import { DASHBOARD_ROUTES } from '@dx/dashboard-web';
 import { USER_ADMIN_ROUTES } from '@dx/user-admin-web';
@@ -39,27 +39,27 @@ export class WebConfigService {
     return [];
   }
 
-  public static getRouteConfigs() {
-    const routeState: RouteState = {};
-    const mainRouteKeys: string[] = [];
-    const routes = WebConfigService.getWebRoutes();
+  // public static getRouteConfigs() {
+  //   const routeState: RouteState = {};
+  //   const mainRouteKeys: string[] = [];
+  //   const routes = WebConfigService.getWebRoutes();
 
-    if (routes) {
-      const routeJson = propertiesToArray(routes);
-      if (Array.isArray(routeJson)) {
-        for (const routeKey of routeJson) {
-          routeState[routeKey] =
-            routeKey.split('.').reduce((a, b) => a[b], routes) || '';
-          if (routeKey.includes('MAIN')) {
-            mainRouteKeys.push(routeKey);
-          }
-        }
-      }
-    }
+  //   if (routes) {
+  //     const routeJson = propertiesToArray(routes);
+  //     if (Array.isArray(routeJson)) {
+  //       for (const routeKey of routeJson) {
+  //         routeState[routeKey] =
+  //           routeKey.split('.').reduce((a, b) => a[b], routes) || '';
+  //         if (routeKey.includes('MAIN')) {
+  //           mainRouteKeys.push(routeKey);
+  //         }
+  //       }
+  //     }
+  //   }
 
-    return {
-      mainRouteKeys,
-      routeState,
-    };
-  }
+  //   return {
+  //     mainRouteKeys,
+  //     routeState,
+  //   };
+  // }
 }

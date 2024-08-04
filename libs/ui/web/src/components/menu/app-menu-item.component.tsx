@@ -16,6 +16,7 @@ import {
 } from '@dx/store-web';
 import { AppMenuItemType } from './app-menu.types';
 import {
+  themeColors,
   getIcon,
   IconNames,
   MEDIA_BREAK,

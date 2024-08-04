@@ -7,7 +7,7 @@ import autoMergeLevel1 from 'reduxjs-toolkit-persist/lib/stateReconciler/autoMer
 import { PersistConfig } from 'reduxjs-toolkit-persist/lib/types';
 import { PaletteMode } from '@mui/material';
 
-import { RouteState, UiStateType } from '../ui-web.types';
+import { UiStateType } from '../ui-web.types';
 import { UI_WEB_ENTITY_NAME } from '../ui.consts';
 import {
   APP_NAME
@@ -24,7 +24,7 @@ export const uiInitialState: UiStateType = {
   dialogComponent: null,
   dialogOpen: false,
   isShowingUnauthorizedAlert: false,
-  logoUrl: `/img/dark-logo.png`,
+  logoUrl: `/img/light-logo-square.png`,
   logoUrlSmall: `/img/text-logo-square.png`,
   menuOpen: false,
   menus: null,

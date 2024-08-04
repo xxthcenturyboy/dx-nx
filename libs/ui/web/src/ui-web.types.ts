@@ -16,7 +16,6 @@ export type UiStateType = {
   menus: AppMenuType[] | null;
   name: string;
   notifications: number;
-  routes: RouteState;
   theme: ThemeOptions;
   windowWidth: number;
   windowHeight: number;
