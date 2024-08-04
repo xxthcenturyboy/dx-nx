@@ -26,10 +26,6 @@
       "@dx/config-shared": ["libs/config/shared/src/index.ts"],
       "@dx/config-web": ["libs/config/web/src/index.ts"],
       "@dx/dashboard-web": ["libs/dashboard/web/src/index.ts"],
-      "@dx/data-access-axios-mobile": [
-        "libs/data-access/axios/mobile/src/index.ts"
-      ],
-      "@dx/data-access-axios-web": ["libs/data-access/axios/web/src/index.ts"],
       "@dx/data-access-postgres": ["libs/data-access/postgres/src/index.ts"],
       "@dx/data-access-redis": ["libs/data-access/redis/src/index.ts"],
       "@dx/devices-api": ["libs/devices/api/src/index.ts"],

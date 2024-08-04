@@ -120,15 +120,17 @@ export const WebLogin: React.FC = () => {
       dispatch(userProfileActions.profileUpdated(profile));
       const menuService = new MenuConfigService();
       let menus: AppMenuType[] = [];
-      if (profile.role.includes('SUPERADMIN')) {
-        menus = menuService.getMenus('SUPERADMIN', profile.b);
+      if (profile.role.includes('SUPER_ADMIN')) {
+        menus = menuService.getMenus('SUPER_ADMIN', profile.b);
       } else if (profile.role.includes('ADMIN')) {
         menus = menuService.getMenus('ADMIN', profile.b);
       } else {
         menus = menuService.getMenus(undefined, profile.b);
       }
       dispatch(uiActions.menusSet({ menus }));
-      dispatch(uiActions.toggleMenuSet(true));
+      if (!mobileBreak) {
+        dispatch(uiActions.toggleMenuSet(true));
+      }
       navigate(ROUTES.DASHBOARD.MAIN);
     }
   }, [loginIsSuccess]);

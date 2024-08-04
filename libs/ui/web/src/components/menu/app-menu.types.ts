@@ -1,4 +1,4 @@
-export type MenuRestrictionType = 'ADMIN' | 'SUPERADMIN';
+export type MenuRestrictionType = 'ADMIN' | 'SUPER_ADMIN';
 
 export type AppMenuItemType = {
   beta?: boolean;

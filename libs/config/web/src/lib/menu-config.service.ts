@@ -30,7 +30,7 @@ export class MenuConfigService {
           item.restriction
           && (
             item.restriction === 'ADMIN'
-            || item.restriction === 'SUPERADMIN'
+            || item.restriction === 'SUPER_ADMIN'
           )
         ) {
           items.push(item);
@@ -51,7 +51,7 @@ export class MenuConfigService {
           item.restriction
           && (
             item.restriction === 'ADMIN'
-            || item.restriction === 'SUPERADMIN'
+            || item.restriction === 'SUPER_ADMIN'
           )
           && !item.beta
         ) {
@@ -62,8 +62,10 @@ export class MenuConfigService {
     }
 
     if (items.length) {
-      menu.items = items;
-      return menu;
+      return {
+        ...menu,
+        items: items
+      };
     }
 
     return null;
@@ -112,8 +114,10 @@ export class MenuConfigService {
     }
 
     if (items.length) {
-      menu.items = items;
-      return menu;
+      return {
+        ...menu,
+        items: items
+      };
     }
 
     return null;
@@ -135,7 +139,7 @@ export class MenuConfigService {
         if (
           item.restriction
           && item.restriction !== 'ADMIN'
-          && item.restriction !== 'SUPERADMIN'
+          && item.restriction !== 'SUPER_ADMIN'
         ) {
           items.push(item);
           continue;
@@ -154,7 +158,7 @@ export class MenuConfigService {
         if (
           item.restriction
           && item.restriction !== 'ADMIN'
-          && item.restriction !== 'SUPERADMIN'
+          && item.restriction !== 'SUPER_ADMIN'
           && !item.beta
         ) {
           items.push(item);
@@ -164,8 +168,10 @@ export class MenuConfigService {
     }
 
     if (items.length) {
-      menu.items = items;
-      return menu;
+      return {
+        ...menu,
+        items: items
+      };
     }
 
     return null;
@@ -177,7 +183,7 @@ export class MenuConfigService {
   ) {
     const menus: AppMenuType[] = [];
 
-    if (restriction === 'SUPERADMIN') {
+    if (restriction === 'SUPER_ADMIN') {
       for (const menu of this.CARDINAL_MENU_SET) {
         const menuItem = this.restrictSuperAdmin(menu, includeBeta || false);
         if (menuItem) {
