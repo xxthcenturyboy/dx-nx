@@ -1,4 +1,7 @@
-import { AppMenuType } from '@dx/ui-web';
+import {
+  AppMenuType,
+  IconNames
+} from '@dx/ui-web';
 
 export const USER_ADMIN_ENTITY_NAME = 'userAdmin';
 
@@ -12,7 +15,7 @@ export const USER_ADMIN_MENU: AppMenuType = {
   id: 'menu-user',
   collapsible: true,
   description: 'Manage Users',
-  title: 'Users',
+  title: 'User Admin',
   items: [
     // {
     //   id: 'menu-item-header-user',
@@ -24,27 +27,27 @@ export const USER_ADMIN_MENU: AppMenuType = {
     // },
     {
       id: 'menu-item-user-list',
-      icon: '',
+      icon: IconNames.PEOPLE,
       restriction: 'ADMIN',
       routeKey: USER_ADMIN_ROUTES.LIST,
-      title: 'User List',
+      title: 'List',
       type: 'ROUTE',
     },
     {
       id: 'menu-item-user-edit',
-      icon: '',
+      icon: IconNames.MANAGE_ACCOUNTS,
       restriction: 'ADMIN',
       routeKey: USER_ADMIN_ROUTES.EDIT,
-      title: 'Create User',
+      title: 'Create',
       type: 'ROUTE',
     },
     {
       beta: true,
       id: 'menu-item-user-edit-beta',
-      icon: '',
+      icon: IconNames.MENU_OPEN,
       restriction: 'ADMIN',
       routeKey: USER_ADMIN_ROUTES.EDIT,
-      title: 'User Beta',
+      title: 'Beta Feature',
       type: 'ROUTE',
     },
   ],

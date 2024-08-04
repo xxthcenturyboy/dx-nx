@@ -2,6 +2,7 @@ import {
   borderRadius,
   boxShadow
 } from './common';
+import { yellow } from '@mui/material/colors';
 
 export const listItemOverrides = {
   root: {
@@ -29,6 +30,9 @@ export const listItemButtonOverrides = {
       borderRadius,
       boxShadow,
       margin: '10px 0',
+    },
+    '&&.Mui-selected': {
+      backgroundColor: yellow[200]
     }
   }
 };

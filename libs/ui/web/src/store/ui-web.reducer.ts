@@ -24,7 +24,7 @@ export const uiInitialState: UiStateType = {
   dialogComponent: null,
   dialogOpen: false,
   isShowingUnauthorizedAlert: false,
-  logoUrl: `/img/light-logo-square.png`,
+  logoUrl: `/img/text-logo-dark-square.png`,
   logoUrlSmall: `/img/text-logo-square.png`,
   menuOpen: false,
   menus: null,

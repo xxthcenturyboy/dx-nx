@@ -5,27 +5,7 @@ import {
   listItemButtonOverrides,
   themeColors,
 } from './styles';
-import {
-  amber,
-  blue,
-  blueGrey,
-  brown,
-  cyan,
-  deepOrange,
-  deepPurple,
-  green,
-  grey,
-  indigo,
-  lightBlue,
-  lightGreen,
-  lime,
-  orange,
-  pink,
-  purple,
-  red,
-  teal,
-  yellow,
-} from '@mui/material/colors';
+import { toolbarItemOverrides } from './styles/menus';
 
 export const drawerWidth = 300;
 
@@ -51,6 +31,9 @@ export const appTheme: ThemeOptions = {
     },
     MuiListItemButton: {
       styleOverrides: listItemButtonOverrides
+    },
+    MuiToolbar: {
+      styleOverrides: toolbarItemOverrides
     }
   }
   // components: {

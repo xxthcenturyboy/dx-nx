@@ -8,10 +8,6 @@ import {
 import { KeyboardArrowDown } from '@mui/icons-material';
 import { useLocation } from "react-router-dom";
 
-import {
-  RootState,
-  useAppSelector
-} from '@dx/store-web';
 import { AppMenuType } from './app-menu.types';
 
 type AppMenuGroupProps = {
@@ -59,7 +55,7 @@ export const AppMenuGroup: React.FC<AppMenuGroupProps> = (props) => {
           pl: -2,
           pt: 2.5,
           pb: open ? 0 : 2.5,
-          '&:hover, &:focus': { '& svg': { opacity: open ? 1 : 0 } },
+          // '&:hover, &:focus': { '& svg': { opacity: open ? 1 : 0 } },
         }}
       >
         <ListItemText
@@ -84,7 +80,7 @@ export const AppMenuGroup: React.FC<AppMenuGroupProps> = (props) => {
         <KeyboardArrowDown
           sx={{
             mr: -1,
-            opacity: 0,
+            // opacity: 0,
             transform: open ? 'rotate(-180deg)' : 'rotate(0)',
             transition: '0.2s',
           }}

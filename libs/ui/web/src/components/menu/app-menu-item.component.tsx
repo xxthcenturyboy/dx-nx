@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React,
+{
+  useState
+} from 'react';
 import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
+import Badge from '@mui/material/Badge';
 import {
   useLocation,
   useNavigate
@@ -16,7 +20,6 @@ import {
 } from '@dx/store-web';
 import { AppMenuItemType } from './app-menu.types';
 import {
-  themeColors,
   getIcon,
   IconNames,
   MEDIA_BREAK,
@@ -85,6 +88,11 @@ export const AppMenuItem: React.FC<AppMenuItemItemProps> = (props) => {
         primary={menuItem.title}
         primaryTypographyProps={{ fontSize: 14, fontWeight: 'medium' }}
       />
+      {
+        menuItem.beta && (
+          <Badge badgeContent="BETA" color="info" />
+        )
+      }
     </ListItemButton>
   );
 };

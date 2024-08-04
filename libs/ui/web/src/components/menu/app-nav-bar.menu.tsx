@@ -27,6 +27,7 @@ import { LogoutButton } from '@dx/auth-web';
 import { WebConfigService } from '@dx/config-web';
 import { uiActions } from '../../store/ui-web.reducer';
 import { MEDIA_BREAK } from '../../ui.consts';
+import { APP_COLOR_PALETTE } from '../../mui-overrides/styles';
 
 const Logo = styled.img`
   width: 36px;
@@ -140,7 +141,14 @@ export const AppNavBar: React.FC = () => {
           </IconButton>
           {
             !mobileBreak ? (
-              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              <Typography
+                variant="h6"
+                component="div"
+                className="toolbar-app-name"
+                sx={
+                  { flexGrow: 1 }
+                }
+              >
                 { APP_NAME }
               </Typography>
             )
@@ -153,11 +161,14 @@ export const AppNavBar: React.FC = () => {
             isAuthenticated && (
               <>
                 <IconButton
+                  className="toolbar-icons"
                   size="large"
                   aria-label="show 17 new notifications"
-                  color="inherit"
                 >
-                  <Badge badgeContent={notificationCount} color="secondary">
+                  <Badge
+                    badgeContent={notificationCount}
+                    color="info"
+                  >
                     <NotificationsIcon />
                   </Badge>
                 </IconButton>
@@ -167,7 +178,7 @@ export const AppNavBar: React.FC = () => {
                   aria-controls="menu-appbar"
                   aria-haspopup="true"
                   onClick={handleClickAccountMenu}
-                  color="inherit"
+                  className="toolbar-icons"
                 >
                   <AccountCircle />
                 </IconButton>

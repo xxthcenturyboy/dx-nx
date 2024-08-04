@@ -1,4 +1,7 @@
-export { getIcon, IconNames } from './Icons'
+export {
+  getIcon,
+  IconNames
+} from './Icons'
 export {
   LottieAccessDenied,
   LottieAlert,
@@ -14,7 +17,10 @@ export {
   appTheme,
   drawerWidth
 } from './mui-overrides/muiTheme';
-export { themeColors } from './mui-overrides/styles';
+export {
+  APP_COLOR_PALETTE,
+  themeColors
+} from './mui-overrides/styles';
 export {
   uiActions,
   uiPersistConfig,
