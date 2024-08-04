@@ -1,7 +1,7 @@
 export const API_ERROR = 'Could not complete the request.';
 export const APP_DESCRIPTION = 'Boiler plate nx monorepo: Node, Express, React, Expo, Postgres, Redis';
 export const APP_DOMAIN = 'danex.software';
-export const APP_NAME = 'DX';
+export const APP_NAME = 'Web App Shell';
 export const APP_PREFIX = 'dx';
 export const COMPANY_NAME = 'Danex Software';
 export const DEFAULT_LIMIT = 10;

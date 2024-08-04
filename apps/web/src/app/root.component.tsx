@@ -27,6 +27,7 @@ import {
 } from '@dx/store-web';
 import {
   AppNavBar,
+  appTheme,
   CustomDialog,
   DialogApiError,
   // DialogAwaiter,
@@ -94,7 +95,7 @@ export const Root: React.FC = () => {
     }
 
     // appBootstrap();
-    setTheme(createTheme(themeOptions));
+    setTheme(createTheme(appTheme));
     updateAppThemeStyle();
 
     setTimeout(() => {

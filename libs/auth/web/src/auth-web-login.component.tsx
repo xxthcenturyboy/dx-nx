@@ -206,7 +206,7 @@ export const WebLogin: React.FC = () => {
             }}
           >
             <UI.Logo src={logo} />
-            <Divider style={{ width: '100%'}} />
+            {/* <Divider style={{ width: '100%'}} /> */}
             <UI.Form
               name="form-login"
               onSubmit={handleLogin}

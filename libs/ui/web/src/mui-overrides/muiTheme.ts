@@ -33,7 +33,7 @@ export const appTheme: ThemeOptions = {
   palette: {
     mode: 'light',
     primary: {
-      main: themeColors.primary
+      main: themeColors.primary,
     },
     secondary: {
       main: themeColors.secondary

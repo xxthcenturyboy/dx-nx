@@ -24,8 +24,8 @@ export const uiInitialState: UiStateType = {
   dialogComponent: null,
   dialogOpen: false,
   isShowingUnauthorizedAlert: false,
-  logoUrl: `/img/logo-2.png`,
-  logoUrlSmall: `/img/logo-square-2.png`,
+  logoUrl: `/img/dark-logo.png`,
+  logoUrlSmall: `/img/text-logo-square.png`,
   menuOpen: false,
   menus: null,
   name: APP_NAME,
@@ -46,7 +46,9 @@ export const uiPersistConfig: PersistConfig<UiStateType> = {
     'bootstrapped',
     'dialogOpen',
     'dialogComponent',
-    'isShowingUnauthorizedAlert'
+    'isShowingUnauthorizedAlert',
+    'logoUrl',
+    'logoUrlSmall'
   ],
   storage,
   stateReconciler: autoMergeLevel1,
