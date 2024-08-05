@@ -8,7 +8,10 @@ import { toast } from 'react-toastify';
 
 import { store } from '@dx/store-web';
 import { authActions } from '@dx/auth-web';
-import { uiActions } from '@dx/ui-web';
+import {
+  DialogApiError,
+  uiActions
+} from '@dx/ui-web';
 import { WebConfigService } from '@dx/config-web';
 import { logger } from '@dx/logger-web';
 import {
@@ -105,7 +108,7 @@ function handleNotification(message?: string): void {
     if (!store.getState().ui.isShowingUnauthorizedAlert) {
       const msg = message
         ? message
-        : `Something went wrong. It's likely our fault. Please try again later.`;
+        : `Something went wrong. It's probably our fault. Please try again later.`;
       store.dispatch(uiActions.setIsShowingUnauthorizedAlert(true));
       toast.warn(msg, {
         onClose: () =>
@@ -152,6 +155,7 @@ export const axiosBaseQuery = ({ baseUrl } = { baseUrl: '' }): BaseQueryFn =>
       const data = err.message;
       // const data = err.response?.data as TReturnData || err.message;
       logger.error('Error in axiosBaseQuery', data);
+      store.dispatch(uiActions.apiDialogSet('Oops! Something went wrong. It\'s probably our fault. Please try again later.'))
       return {
         error: {
           status: err.response?.status,

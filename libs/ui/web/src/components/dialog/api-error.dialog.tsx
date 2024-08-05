@@ -28,7 +28,7 @@ export const DialogApiError: React.FC<Partial<DialogProps>> = (props) => {
   const dispatch = useAppDispatch();
 
   const closeDialog = (): void => {
-    dispatch(uiActions.appDialogSet(null));
+    dispatch(uiActions.apiDialogSet(''));
   };
 
   return (

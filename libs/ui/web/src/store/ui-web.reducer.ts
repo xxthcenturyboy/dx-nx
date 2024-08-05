@@ -30,7 +30,6 @@ export const uiInitialState: UiStateType = {
   menus: null,
   name: APP_NAME,
   notifications: 0,
-  routes: {},
   theme: appTheme,
   windowWidth: window.innerWidth,
   windowHeight: window.innerHeight,
@@ -73,7 +72,7 @@ const uiSlice = createSlice({
       state.awaitDialogMessage = action.payload;
     },
     awaitDialogOpenSet(state, action: PayloadAction<boolean>) {
-      state.apiDialogOpen = action.payload;
+      state.awaitDialogOpen = action.payload;
     },
     menusSet(state, action: PayloadAction<{ menus: AppMenuType[] | null }>) {
       state.menus = action.payload.menus;
