@@ -24,7 +24,7 @@ export const APP_COLOR_PALETTE = {
   PRIMARY: blueGrey,
   SECONDARY: yellow,
   DARK: {
-    PRIMARY: grey,
+    PRIMARY: yellow,
     SECONDARY: blueGrey
   },
   LIGHT: {
@@ -38,8 +38,8 @@ export const themeColors = {
   primary: APP_COLOR_PALETTE.PRIMARY[900],
   secondary: APP_COLOR_PALETTE.SECONDARY[800],
   dark: {
-    primary: APP_COLOR_PALETTE.DARK.PRIMARY[900],
-    secondary: APP_COLOR_PALETTE.DARK.SECONDARY[800]
+    primary: APP_COLOR_PALETTE.DARK.PRIMARY[500],
+    secondary: APP_COLOR_PALETTE.DARK.SECONDARY[500]
   },
   light: {
     background: APP_COLOR_PALETTE.LIGHT.BACKGROUND[100]

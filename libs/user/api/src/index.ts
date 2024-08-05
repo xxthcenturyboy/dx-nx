@@ -12,5 +12,5 @@ export {
 } from './user.postgres-model';
 export {
   UserSessionType
-=} from './user.types';
+} from './user.types';
 export { UserService } from './user.service';
