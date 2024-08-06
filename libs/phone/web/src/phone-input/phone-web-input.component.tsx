@@ -1,16 +1,19 @@
 import React from 'react';
 import {
-    useMediaQuery,
     useTheme,
 } from '@mui/material';
-import PhoneInput, { CountryData } from 'react-phone-input-2';
+import PhoneInput,
+{
+  CountryData
+} from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
-import 'react-phone-input-2/lib/plain.css';
+import 'react-phone-input-2/lib/high-res.css';
 
 import { PhoneInputProps } from './phone-web-input.types';
 import { getDefaultStyles } from './phone-web-input.config';
 
-export const PhoneInputComponent: React.FC<PhoneInputProps> = (props): JSX.Element => {
+
+export const PhoneNumberInput: React.FC<PhoneInputProps> = (props): JSX.Element => {
   const {
       defaultCountry,
       defaultValue,
@@ -82,6 +85,8 @@ export const PhoneInputComponent: React.FC<PhoneInputProps> = (props): JSX.Eleme
       buttonStyle={buttonStyle}
       containerStyle={containerStyle}
       dropdownStyle={dropdownStyleDefaults}
+      // disableCountryCode={true}
+      // disableCountryGuess={true}
       inputProps={{
         required,
         id: inputId,

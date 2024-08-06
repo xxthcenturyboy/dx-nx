@@ -4,14 +4,34 @@ const {
   withReact
 } = require('@nx/rspack');
 const { DefinePlugin } = require('@rspack/core');
+// const path = require('path');
+// const ROOT = path.resolve(__dirname, '../../');
 
-module.exports = composePlugins(withNx(), withReact(), (config) => {
-  config.devServer = {
-    ...config.devServer,
-    historyApiFallback: true,
-    // static: ['a']
+function withCustomFactory(config, { options, context }) {
+  // console.log(options);
+  // console.log(context);
+  const customConfig = {
+    ...config,
+    devServer: {
+      ...config.devServer,
+      historyApiFallback: true
+    },
+    module: {
+      ...config.module,
+      rules: [
+        ...config.module.rules,
+        {
+          test: /\.css$/,
+          type: 'css'
+        }
+      ]
+    }
   };
-  // console.log(config);
+
+  // console.log(customConfig);
+  // console.log(config.module.rules);
+  // const ROOT = path.resolve(__dirname, '../../');
+  // console.log(ROOT, __dirname);
   // console.log(process.env);
   // const keys = [];
   // const defines = {}
@@ -23,8 +43,8 @@ module.exports = composePlugins(withNx(), withReact(), (config) => {
   //   }
   // });
   // console.log(keys);
-  // config.plugins.push(new DotenvPlugin());
-  config.plugins.push(new DefinePlugin({
+  // customConfig.plugins.push(new DotenvPlugin());
+  customConfig.plugins.push(new DefinePlugin({
     webAppEnvVars: {
       API_PORT: process.env.API_PORT,
       API_URL: process.env.API_URL,
@@ -33,6 +53,14 @@ module.exports = composePlugins(withNx(), withReact(), (config) => {
       WEB_APP_URL: process.env.WEB_APP_URL
     }
   }));
-  // console.log(config.plugins[config.plugins.length - 1]);
-  return config;
-});
+
+  // console.log(config.plugins[customConfig.plugins.length - 1]);
+
+  return customConfig;
+}
+
+module.exports = composePlugins(
+  withNx(),
+  withReact(),
+  withCustomFactory
+);

@@ -34,7 +34,7 @@ import {
   themeColors,
   uiActions
 } from '@dx/ui-web';
-import { PhoneInputComponent } from './phone-input/phone-web-input.component';
+import { PhoneNumberInput } from './phone-input/phone-web-input.component';
 import { AddPhoneForm } from './phone-web.ui';
 import { useAddPhoneMutation } from './phone-web-api';
 
@@ -164,7 +164,7 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (props): ReactEleme
             >
               Phone
             </InputLabel>
-            <PhoneInputComponent
+            <PhoneNumberInput
               defaultCountry="us"
               defaultValue=""
               inputId="new-user-phone"
