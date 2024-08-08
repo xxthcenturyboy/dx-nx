@@ -136,7 +136,7 @@ export const AuthController = {
       //   }
       //   ApiLoggingClass.instance.logInfo(`Session Destroyed: ${req.sessionId}`);
       // });
-      return sendUnauthorized(req, res, 'no refresh token.');
+      return sendUnauthorized(req, res, 'No refresh token.');
     }
 
     const userId = await TokenService.isRefreshValid(refreshToken);

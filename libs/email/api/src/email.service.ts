@@ -41,7 +41,7 @@ export class EmailService {
     }
 
     if (code) {
-      const isCodeValid = await OtpService.validateOptCode(userId, code);
+      const isCodeValid = await OtpService.validateOptCodeByEmail(userId, email, code);
       if (!isCodeValid) {
         throw new Error('Invalid OTP code.');
       }

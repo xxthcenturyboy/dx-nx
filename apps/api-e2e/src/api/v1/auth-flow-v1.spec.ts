@@ -975,7 +975,7 @@ describe('v1 Auth Flow', () => {
     test('should throw when sent with an invalid access token', async () => {
       const request: AxiosRequestConfig = {
         url: '/api/v1/auth/refresh-token',
-        method: 'POST',
+        method: 'GET',
         headers: {
           Authorization: `Bearer ${phoneAuthToken}`,
           cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=invalid-jwt`],
@@ -997,7 +997,7 @@ describe('v1 Auth Flow', () => {
     test('should return a new accessToken when called with valid refresh token', async () => {
       const request: AxiosRequestConfig = {
         url: '/api/v1/auth/refresh-token',
-        method: 'POST',
+        method: 'GET',
         headers: {
           Authorization: `Bearer ${phoneAuthToken}`,
           cookie: [`${AUTH_TOKEN_NAMES.REFRESH}=${phoneRefreshToken}`],

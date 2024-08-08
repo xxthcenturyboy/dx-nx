@@ -13,4 +13,8 @@ export { AUTH_ROUTES } from './auth-web.consts';
 export { AuthWebRouterConfig } from './auth-web.router';
 export { LogoutButton } from './logout.button';
 export { WebLogin } from './auth-web-login.component';
-export { useLogoutMutation } from './auth-web.api';
+export {
+  useLogoutMutation,
+  useOtpRequestEmailMutation,
+  useOtpRequestPhoneMutation
+} from './auth-web.api';

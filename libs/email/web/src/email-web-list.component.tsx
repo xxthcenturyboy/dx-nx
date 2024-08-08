@@ -108,7 +108,7 @@ export const EmailList: React.FC<EmailListPropsType> = (props) => {
             aria-label=""
             id="table-user-emails"
           >
-            <TableHead>
+            {/* <TableHead>
               <TableRow>
                 <TableCell
                   align="left"
@@ -127,7 +127,7 @@ export const EmailList: React.FC<EmailListPropsType> = (props) => {
                   width="20%"
                 />
               </TableRow>
-            </TableHead>
+            </TableHead> */}
             <TableBody>
               {
                 !emails || (emails && !emails.length) && (

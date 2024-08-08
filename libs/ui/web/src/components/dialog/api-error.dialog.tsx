@@ -19,7 +19,7 @@ import {
   useAppSelector
 } from '@dx/store-web';
 import { uiActions } from '../../store/ui-web.reducer';
-import { LottieAlert } from '../../lottie/LottieAlert';
+import { LottieError } from '../../lottie/LottieError';
 import { DialogWrapper } from './ui-wrapper.dialog';
 
 export const DialogApiError: React.FC<Partial<DialogProps>> = (props) => {
@@ -64,13 +64,13 @@ export const DialogApiError: React.FC<Partial<DialogProps>> = (props) => {
               overflow: 'visible'
             }}>
               {
-                open && (<LottieAlert />)
+                open && (<LottieError />)
               }
             <DialogContentText
               id="dialog-api-alert"
               variant="body1"
               align="center"
-              color="default"
+              color="error"
               margin="20px 0 0"
             >
               { message || 'Your request could not be completed.' }

@@ -6,7 +6,7 @@ import {
 export const USER_PROFILE_ENTITY_NAME = 'userProfile';
 
 export const USER_PROFILE_ROUTES = {
-  MAIN: `/${USER_PROFILE_ENTITY_NAME}`,
+  MAIN: `/profile`,
 };
 
 export const USER_PROFILE_MENU: AppMenuType = {

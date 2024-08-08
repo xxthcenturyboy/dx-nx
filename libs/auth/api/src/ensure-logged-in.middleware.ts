@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { ApiLoggingClass } from '@dx/logger-api';
-import { CookeiService } from '@dx/utils-api-cookies';
+// import { CookeiService } from '@dx/utils-api-cookies';
 import { HeaderService } from '@dx/utils-api-headers';
-import { sendUnauthorized } from '@dx/utils-api-http-response';
+import { sendForbidden } from '@dx/utils-api-http-response';
 import { UserModel } from '@dx/user-api';
 import { TokenService } from './token.service';
 
@@ -28,8 +28,8 @@ export async function ensureLoggedIn(
     next();
   } catch (err) {
     const msg = err.message || err;
-    CookeiService.clearCookies(res);
+    // CookeiService.clearCookies(res);
     ApiLoggingClass.instance.logError(`Failed to authenticate tokens: ${msg}`);
-    sendUnauthorized(req, res, msg);
+    sendForbidden(req, res, msg);
   }
 }

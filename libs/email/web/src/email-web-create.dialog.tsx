@@ -16,6 +16,7 @@ import {
   Select,
   SelectChangeEvent
 } from '@mui/material';
+import { MuiOtpInput } from 'mui-one-time-password-input';
 
 import {
   useAppDispatch
@@ -36,6 +37,8 @@ import {
 import { EmailType } from '@dx/email-shared';
 import { AddEmailForm } from './email-web.ui';
 import { useAddEmailMutation } from './email-web-api';
+import { useOtpRequestEmailMutation } from '@dx/auth-web';
+import { OTP_LENGTH } from '@dx/auth-shared';
 
 type AddEmailPropsType = {
   userId: string;
@@ -46,7 +49,10 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
   const [allSucceeded, setAllSucceeded] = React.useState(false);
   const [showLottieError, setShowLottieError] = React.useState(false);
   const [previousXHR, setPreviousXHR] = React.useState(false);
+  const [hasSentOtp, setHasSentOtp] = React.useState(false);
   const [email, setEmail] = React.useState('');
+  const [errorMessage, setErrorMessage] = React.useState('');
+  const [otp, setOtp] = React.useState('');
   const [label, setLabel] = React.useState('');
   const [isDefault, setIsDefault] = React.useState(false);
   const dispatch = useAppDispatch();
@@ -59,6 +65,15 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
       isSuccess: addEmailSuccess
     }
   ] = useAddEmailMutation();
+  const [
+    sendOtpCode,
+    {
+      data: sendOtpResponse,
+      error: sendOtpError,
+      isLoading: isLoadingSendOtp,
+      isSuccess: sendOtpSuccess
+    }
+  ] = useOtpRequestEmailMutation();
 
   React.useEffect(() => {
     if (!props.userId) {
@@ -75,6 +90,8 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
         setShowLottieError(false);
         setAllSucceeded(true);
       } else {
+        // @ts-expect-error -all good
+        setErrorMessage(addEmailError.data as unknown as string);
         setShowLottieError(true);
       }
     }
@@ -83,10 +100,34 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
 
   React.useEffect(() => {
     if (
+      !isLoadingSendOtp
+    ) {
+      if (
+        !sendOtpError
+      ) {
+        setShowLottieError(false);
+      } else {
+        // @ts-expect-error -all good
+        setErrorMessage(sendOtpError.data as unknown as string);
+        setShowLottieError(true);
+      }
+    }
+  }, [isLoadingSendOtp]);
+
+  React.useEffect(() => {
+    if (
       addEmailSuccess
       && props.emailDataCallback
       && typeof props.emailDataCallback === 'function'
     ) {
+      console.log({
+        id: addEmailResponse.id,
+        email,
+        label,
+        isDeleted: false,
+        isVerified: true,
+        default: isDefault
+      });
       props.emailDataCallback({
         id: addEmailResponse.id,
         email,
@@ -98,8 +139,41 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
     }
   }, [addEmailSuccess]);
 
+  React.useEffect(() => {
+    if (
+      sendOtpSuccess
+    ) {
+      setHasSentOtp(true);
+    }
+  }, [sendOtpSuccess]);
+
+  React.useEffect(() => {
+    if (otp.length === OTP_LENGTH) {
+      void handleCreate();
+    }
+  }, [otp]);
+
   const handleClose = (): void => {
     dispatch(uiActions.appDialogSet(null));
+  };
+
+  const submitDisabled = (): boolean => {
+    if (
+      !(email && label)
+      || isLoadingAddEmail
+      || isLoadingSendOtp
+    ) {
+      return true;
+    }
+
+    if (
+      hasSentOtp
+      && otp.length < 6
+    ) {
+      return true;
+    }
+
+    return false;
   };
 
   const handleCreate = async (): Promise<void> => {
@@ -107,17 +181,31 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
       !submitDisabled()
       && props.userId
     ) {
-      try {
-        const payload: CreateEmailPayloadType = {
-          label,
-          email,
-          def: isDefault,
-          userId: props.userId
-        };
+      if (!hasSentOtp) {
+        try {
+          await sendOtpCode({ email });
+        } catch (err) {
+          logger.error((err as Error).message, err);
+        }
+      }
 
-        await requestAddEmail(payload);
-      } catch (err) {
-        logger.error((err as Error).message, err);
+      if (
+        hasSentOtp
+        && otp
+      ) {
+        try {
+          const payload: CreateEmailPayloadType = {
+            code: otp,
+            label,
+            email,
+            def: isDefault,
+            userId: props.userId
+          };
+
+          await requestAddEmail(payload);
+        } catch (err) {
+          logger.error((err as Error).message, err);
+        }
       }
     }
   };
@@ -126,19 +214,32 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
     setEmail(event.target.value);
   };
 
+  const handleChangeOtp = (value: string): void => {
+    setOtp(value);
+  };
+
+  const handleOtpComplete = (value: string): void => {
+    if (value !== otp) {
+      setOtp(value);
+    }
+  };
+
   const handleChangeLabel = (event: SelectChangeEvent<string>): void => {
     setLabel(event.target.value);
   };
 
-  const submitDisabled = (): boolean => {
-    if (
-      !(email && label)
-      || isLoadingAddEmail
-    ) {
-      return true;
-    }
-
-    return false;
+  const renderOtp = (): JSX.Element => {
+    return (
+      <CustomDialogContent>
+        <MuiOtpInput
+          value={otp}
+          onChange={handleChangeOtp}
+          onComplete={handleOtpComplete}
+          length={OTP_LENGTH}
+          autoFocus={true}
+        />
+      </CustomDialogContent>
+    );
   };
 
   const renderFormContent = (): JSX.Element => {
@@ -210,11 +311,20 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
         {`New Email`}
       </DialogTitle>
       {
-        !allSucceeded && !showLottieError && renderFormContent()
+        !allSucceeded
+        && !showLottieError
+        && !hasSentOtp
+        && renderFormContent()
+      }
+      {
+        !allSucceeded
+        && !showLottieError
+        && hasSentOtp
+        && renderOtp()
       }
       {
         showLottieError && (
-          <DialogError message={addEmailError as string} />
+          <DialogError message={errorMessage} />
         )
       }
       {

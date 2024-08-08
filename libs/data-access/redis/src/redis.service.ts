@@ -89,10 +89,11 @@ export class RedisService {
   }
 
   public async getCacheItemSimple(key: string) {
+    console.log('item simple', key);
     if (!key) {
       return null;
     }
-
+    // const modKey = `${getRedisConfig().prefix}${REDIS_DELIMITER}${key}`;
     try {
       return await this.cacheHandle.get(key);
     } catch (error) {
@@ -131,7 +132,7 @@ export class RedisService {
       if (Array.isArray(keys)) {
         const prefix = getRedisConfig().prefix;
         for (const key of keys) {
-          const trimmedKey = key.replace(`${prefix}:`, '');
+          const trimmedKey = key.replace(`${prefix}${REDIS_DELIMITER}`, '');
           result.push(await this.getCacheItem(trimmedKey));
         }
       }

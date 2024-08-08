@@ -92,6 +92,66 @@ export class OtpService {
 
     return false;
   }
+
+  public static async validateOptCodeByEmail(
+    userId: string,
+    email: string,
+    code: string
+  ): Promise<boolean> {
+    if (!email || !code) {
+      throw new Error('Insufficient data.');
+    }
+    const codeCache = new OtpCodeCache();
+    const logger = ApiLoggingClass.instance;
+
+    try {
+      const user = await UserModel.findByPk(userId);
+      if (!user) {
+        throw new Error(
+          `User could not be found with the id: ${userId} for validate OPT`
+        );
+      }
+      if (user.accountLocked) {
+        throw new Error(`Account is locked.`);
+      }
+
+      return await codeCache.validateEmailOtp(code, email);
+    } catch (err) {
+      logger.logError(err.message);
+    }
+
+    return false;
+  }
+
+  public static async validateOptCodeByPhone(
+    userId: string,
+    phone: string,
+    code: string
+  ): Promise<boolean> {
+    if (!phone || !code) {
+      throw new Error('Insufficient data.');
+    }
+    const codeCache = new OtpCodeCache();
+    const logger = ApiLoggingClass.instance;
+
+    try {
+      const user = await UserModel.findByPk(userId);
+      if (!user) {
+        throw new Error(
+          `User could not be found with the id: ${userId} for validate OPT`
+        );
+      }
+      if (user.accountLocked) {
+        throw new Error(`Account is locked.`);
+      }
+
+      return await codeCache.validateEmailOtp(code, phone);
+    } catch (err) {
+      logger.logError(err.message);
+    }
+
+    return false;
+  }
 }
 
 export type OtpServiceType = typeof OtpService.prototype;

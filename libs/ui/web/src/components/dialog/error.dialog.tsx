@@ -2,7 +2,7 @@ import React from 'react';
 import { DialogContentText } from '@mui/material';
 
 import { CustomDialogContent } from './custom-content.dialog';
-import { LottieError } from '../../lottie/LottieError';
+import { LottieAlert } from '../../lottie/LottieAlert';
 import { ERROR_MSG } from '@dx/config-shared';
 
 type DialogErrorType = {
@@ -12,12 +12,12 @@ type DialogErrorType = {
 export const DialogError: React.FC<DialogErrorType> = ({ message }) => {
   return (
     <CustomDialogContent>
-      <LottieError />
+      <LottieAlert />
       <DialogContentText
         id="dialog-error"
         variant="body1"
         align="center"
-        color="error"
+        color="default"
         margin="20px 0 0"
       >
         <span>
@@ -25,7 +25,7 @@ export const DialogError: React.FC<DialogErrorType> = ({ message }) => {
         </span>
         <br />
         <br />
-        { message || 'No additional info.' }
+        { message || '' }
       </DialogContentText>
     </CustomDialogContent>
   );

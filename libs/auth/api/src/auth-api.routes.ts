@@ -12,6 +12,11 @@ export class AuthRoutes {
       AuthController.authLookup
     );
     router.get(
+      '/refresh-token',
+      DxRateLimiters.veryStrict(),
+      AuthController.refreshTokens
+    );
+    router.get(
       '/validate/email/:token',
       DxRateLimiters.strict(),
       AuthController.validateEmail
@@ -33,11 +38,6 @@ export class AuthRoutes {
       '/otp-code/send/phone',
       DxRateLimiters.veryStrict(),
       AuthController.sendOtpToPhone
-    );
-    router.post(
-      '/refresh-token',
-      DxRateLimiters.veryStrict(),
-      AuthController.refreshTokens
     );
 
     router.delete(

@@ -55,10 +55,11 @@ export const LogoutButton: React.FC<LogoutButtonType> = ({ context, onLocalClick
                     setTimeout(() => dispatch(uiActions.appDialogSet(null)), 1000);
                     return;
                   }
+                  setTimeout(() => dispatch(uiActions.appDialogSet(null)), 1000);
                 } catch (err) {
                   logger.error(err);
+                  toast.warn('Could not complete the logout request.');
                 }
-                toast.warn('Could not complete the logout request.');
               }
 
               if (!isConfirmed) {

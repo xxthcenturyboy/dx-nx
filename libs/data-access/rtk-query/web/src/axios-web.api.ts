@@ -9,7 +9,6 @@ import { toast } from 'react-toastify';
 import { store } from '@dx/store-web';
 import { authActions } from '@dx/auth-web';
 import {
-  DialogApiError,
   uiActions
 } from '@dx/ui-web';
 import { WebConfigService } from '@dx/config-web';
@@ -56,35 +55,49 @@ export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
     async (error: AxiosError<{ description: string, message: string, status: number, url: string }>) => {
       if (
         error.response.status === 403 &&
-        error.response.data.message === 'Forbidden: JWT token expired!'
+        error.response.data.message === 'Token invalid or expired.'
       ) {
         const accessToken = store.getState().auth.token;
         if (accessToken) {
           try {
-            const response = await axios.get(`${API_URI}/users/refresh`, {
+            const response: AxiosResponse<{ accessToken: string }> = await axios.get(`${API_URI}/v1/auth/refresh-token`, {
               withCredentials: true,
             });
 
-            const newAccessToken = response.data;
-            // Update the access token in local storage
-            store.dispatch(authActions.tokenAdded(newAccessToken));
+            if (response.data.accessToken) {
+              // Update the access token in the store
+              store.dispatch(authActions.tokenAdded(response.data.accessToken));
+              // Retry the original request with the new access token
+              error.config.headers.authorization = `Bearer ${response.data.accessToken}`;
+              return axios.request(error.config);
+            }
 
-            // Retry the original request with the new access token
-            error.config.headers.authorization = `Bearer ${newAccessToken}`;
-
-            return axios.request(error.config);
+            return Promise.reject({
+              response: {
+                data: {
+                  message: 'Access token failed to refresh.'
+                },
+                status: 403
+              }
+            });
           } catch (refreshError) {
-            // If refresh token is expired or invalid, redirect to the login page
-            typeof window !== 'undefined' && window.location.replace(LOGIN_URI);
-            logger.error('Refresh token could not refresh.', refreshError);
-            handleNotification(`🤷‍♂️ You are not logged in or authorized to make this request`);
+            // TODO: Find a better way - Lgout too?
+            // window.location.assign(LOGIN_URI);
+            logger.error('Refresh token could not refresh.');
             return Promise.reject(refreshError);
           }
         } else {
-          // If no refresh token is found, redirect to the login page
-          typeof window !== 'undefined' && window.location.replace(LOGIN_URI);
+          // TODO: Find a better way - Lgout too?
+          // window.location.assign(LOGIN_URI);;
           logger.error('accessToken not found.');
-          handleNotification(`🤷‍♂️ You are not logged in or authorized to make this request`);
+          return Promise.reject({
+            response: {
+              data: {
+                message: 'No access token.'
+              },
+              status: 403
+            }
+          });
         }
       } else {
         logger.error('Error in AxiosInstance', error);
@@ -151,15 +164,16 @@ export const axiosBaseQuery = ({ baseUrl } = { baseUrl: '' }): BaseQueryFn =>
         }
       };
     } catch (axiosError) {
-      const err = axiosError as AxiosError;
-      const data = err.message;
-      // const data = err.response?.data as TReturnData || err.message;
-      logger.error('Error in axiosBaseQuery', data);
-      store.dispatch(uiActions.apiDialogSet('Oops! Something went wrong. It\'s probably our fault. Please try again later.'))
+      const err = axiosError as AxiosError<{ description: string, message: string, status: number, url: string }>;
+      const message = err.response.data.message || 'Oops! Something went wrong. It\'s probably our fault. Please try again later.';
+      logger.error('Error in axiosBaseQuery', err);
+      if (err.status === 500) {
+        store.dispatch(uiActions.apiDialogSet('Oops! Something went wrong. It\'s probably our fault. Please try again later.'));
+      }
       return {
         error: {
-          status: err.response?.status,
-          data: data,
+          status: err.response.status,
+          data: message,
         },
       }
     }

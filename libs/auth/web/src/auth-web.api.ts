@@ -8,11 +8,11 @@ import {
 export const apiWebAuth = apiWebMain.injectEndpoints({
   endpoints: (build) => ({
     login: build.mutation<AuthSuccessResponseType, LoginPayloadType>({
-      query: (paylaod) => (
+      query: (payload) => (
         {
           url: 'v1/auth/login',
           method: 'POST',
-          data: paylaod
+          data: payload
         }
       )
     }),
@@ -26,6 +26,24 @@ export const apiWebAuth = apiWebMain.injectEndpoints({
       transformResponse: (response: LogoutResponse) => {
         return response;
       }
+    }),
+    otpRequestEmail: build.mutation<{ code?: string }, { email: string }>({
+      query: (payload) => (
+        {
+          url: 'v1/auth/otp-code/send/email',
+          method: 'POST',
+          data: payload
+        }
+      )
+    }),
+    otpRequestPhone: build.mutation<{ code?: string }, { phone: string; region?: string }>({
+      query: (payload) => (
+        {
+          url: 'v1/auth/otp-code/send/phone',
+          method: 'POST',
+          data: payload
+        }
+      )
     })
   }),
   overrideExisting: false
@@ -34,4 +52,6 @@ export const apiWebAuth = apiWebMain.injectEndpoints({
 export const {
   useLoginMutation,
   useLogoutMutation,
+  useOtpRequestEmailMutation,
+  useOtpRequestPhoneMutation
 } = apiWebAuth;

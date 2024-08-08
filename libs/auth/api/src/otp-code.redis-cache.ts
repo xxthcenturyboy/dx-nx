@@ -7,6 +7,7 @@ import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger-api';
 import { dxGenerateOtp, dxGenerateHashWithSalt } from '@dx/util-encryption';
 import { OTP_SALT } from '@dx/config-api';
 import { RedisExpireOptions } from '@dx/data-access-redis';
+import { OTP_LENGTH } from '@dx/auth-shared';
 
 export class OtpCodeCache {
   cache: RedisServiceType;
@@ -44,7 +45,7 @@ export class OtpCodeCache {
       return '';
     }
 
-    const code = dxGenerateOtp(6);
+    const code = dxGenerateOtp(OTP_LENGTH);
     const hashedValue = await dxGenerateHashWithSalt(email, OTP_SALT);
     const key = this.getFormattedKeyName(`${code}_${hashedValue}`);
     try {
@@ -68,7 +69,7 @@ export class OtpCodeCache {
       return '';
     }
 
-    const code = dxGenerateOtp(6).toString();
+    const code = dxGenerateOtp(OTP_LENGTH).toString();
     const hashedValue = await this.getHashedPhoneValue(
       countryCode,
       nationalNumber
@@ -94,9 +95,11 @@ export class OtpCodeCache {
 
     const hashedValue = await dxGenerateHashWithSalt(email, OTP_SALT);
     const key = this.getFormattedKeyName(`${code}_${hashedValue}`);
+    console.log('key', key);
     try {
       const data = await this.cache.getCacheItemSimple(key);
       const isValid = data?.toString() === code?.toString();
+      console.log(data, code, isValid);
       if (isValid) {
         void this.cache.deleteCacheItem(key);
       }

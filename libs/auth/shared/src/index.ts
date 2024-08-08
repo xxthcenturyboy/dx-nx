@@ -12,3 +12,6 @@ export {
   UserLookupQueryType,
   UserLookupResponseType
 } from './auth-shared.types';
+export {
+  OTP_LENGTH
+} from './auth-shared.consts';

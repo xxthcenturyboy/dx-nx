@@ -2,7 +2,7 @@ import { getReasonPhrase, StatusCodes } from 'http-status-codes';
 import { Request, Response, NextFunction } from 'express';
 
 import { ApiLoggingClass } from '@dx/logger-api';
-import { CookeiService } from '@dx/utils-api-cookies';
+// import { CookeiService } from '@dx/utils-api-cookies';
 
 // export function destroySession(req: Request, res: Response) {
 //   CookeiService.clearCookies(res);
@@ -95,7 +95,7 @@ export function sendUnauthorized(req: Request, res: Response, message: string) {
     `Unauthorized: ${req.url}, userId: ${req.user?.id || 'unavailable'}`
   );
   // destroySession(req, res);
-  CookeiService.clearCookies(res);
+  // CookeiService.clearCookies(res);
   send400(res, {
     description: getReasonPhrase(StatusCodes.UNAUTHORIZED),
     status: StatusCodes.UNAUTHORIZED,
@@ -113,7 +113,7 @@ export function sendForbidden(
     `Forbidden: ${req.url}, userId: ${req.user?.id || 'unavailable'}`
   );
   // destroySession(req, res);
-  CookeiService.clearCookies(res);
+  // CookeiService.clearCookies(res);
   send400(res, {
     description: getReasonPhrase(StatusCodes.FORBIDDEN),
     status: StatusCodes.FORBIDDEN,

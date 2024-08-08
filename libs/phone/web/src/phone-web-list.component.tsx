@@ -108,7 +108,7 @@ export const Phonelist: React.FC<UserPhonesProps> = (props) => {
             aria-label=""
             id="table-user-phones"
           >
-            <TableHead>
+            {/* <TableHead>
               <TableRow>
                 <TableCell
                   align="left"
@@ -127,7 +127,7 @@ export const Phonelist: React.FC<UserPhonesProps> = (props) => {
                   width="20%"
                 />
               </TableRow>
-            </TableHead>
+            </TableHead> */}
             <TableBody>
               {
                 !phones || (phones && !phones.length) && (

@@ -53,7 +53,7 @@ export class PhoneService {
     }
 
     if (code) {
-      const isCodeValid = await OtpService.validateOptCode(userId, code);
+      const isCodeValid = await OtpService.validateOptCodeByPhone(userId, phone, code);
       if (!isCodeValid) {
         throw new Error('Invalid OTP code.');
       }
