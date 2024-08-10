@@ -5,6 +5,7 @@ import {
 } from 'react-router-dom';
 
 import {
+  GlobalErrorComponent,
   NotFoundComponent,
   UnauthorizedComponent
 } from '@dx/ui-web';
@@ -42,14 +43,14 @@ export class PrivateWebRouterConfig {
             lazy: async () => { let { Dashboard } = await import('@dx/dashboard-web')
               return { Component: Dashboard }
             },
-            errorElement: (<NotFoundComponent />)
+            errorElement: (<GlobalErrorComponent />)
           },
           {
             path: ROUTES.USER_PROFILE.MAIN,
             lazy: async () => { let { UserProfile } = await import('@dx/user-profile-web')
               return { Component: UserProfile }
             },
-            errorElement: (<NotFoundComponent />)
+            errorElement: (<GlobalErrorComponent />)
           },
           ...AdminWebRouterConfig.getRouter(),
           ...SuperAdminWebRouterConfig.getRouter()

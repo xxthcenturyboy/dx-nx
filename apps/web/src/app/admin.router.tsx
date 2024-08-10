@@ -4,6 +4,7 @@ import {
 } from 'react-router-dom';
 
 import {
+  GlobalErrorComponent,
   NotFoundComponent,
   UnauthorizedComponent
 } from '@dx/ui-web';
@@ -38,7 +39,7 @@ export class AdminWebRouterConfig {
             //   return { Component: Dashboard }
             // },
             element: (<UnauthorizedComponent />),
-            errorElement: (<NotFoundComponent />)
+            errorElement: (<GlobalErrorComponent />)
           }
         ]
       }
