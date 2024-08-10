@@ -15,12 +15,28 @@ export const apiWebPhone = apiWebMain.injectEndpoints({
         }
       )
     }),
+    checkPhoneAvailability: build.mutation<{ isAvailable: boolean }, { phone: string, regionCode: string }>({
+      query: (paylaod) => (
+        {
+          url: 'v1/phone/validate',
+          method: 'POST',
+          data: paylaod
+        }
+      )
+    }),
     deletePhone: build.mutation<{ id: string }, string>({
       query: (paylaod) => (
         {
           url: `v1/phone/${paylaod}`,
-          method: 'DELETE',
-          data: paylaod
+          method: 'DELETE'
+        }
+      )
+    }),
+    deletePhoneProfile: build.mutation<{ id: string }, string>({
+      query: (paylaod) => (
+        {
+          url: `v1/phone/user-profile/${paylaod}`,
+          method: 'DELETE'
         }
       )
     }),
@@ -39,6 +55,8 @@ export const apiWebPhone = apiWebMain.injectEndpoints({
 
 export const {
   useAddPhoneMutation,
+  useCheckPhoneAvailabilityMutation,
   useDeletePhoneMutation,
+  useDeletePhoneProfileMutation,
   useUpdatePhoneMutation
 } = apiWebPhone;

@@ -120,7 +120,7 @@ export class EmailModel extends Model<EmailModel> {
         email,
         token,
         default: true,
-        label: EMAIL_LABEL.MAIN,
+        label: EMAIL_LABEL.PERSONAL,
         verifiedAt: validate ? new Date() : null,
       },
     });

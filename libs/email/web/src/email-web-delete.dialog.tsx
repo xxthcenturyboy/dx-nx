@@ -27,7 +27,7 @@ import { logger } from '@dx/logger-web';
 import {
   EmailType
 } from '@dx/email-shared';
-import { useDeleteEmailMutation } from './email-web-api';
+import { useDeleteEmailProfileMutation } from './email-web-api';
 
 type DeleteEmailDialogProps = {
   emailItem: EmailType;
@@ -40,7 +40,6 @@ export const DeleteEmailDialog: React.FC<DeleteEmailDialogProps> = (props): Reac
   const [showLottieCancel, setShowLottieCancel] = React.useState(false);
   const [showLottieSuccess, setShowLottieSuccess] = React.useState(false);
   const [showLottieError, setShowLottieError] = React.useState(false);
-  const [previousXHR, setPreviousXHR] = React.useState(false);
   const [bodyMessage, setBodyMessage] = React.useState(
     emailItem
       ? `Are you sure you want to delete the email: ${emailItem.email} (${emailItem.label})?`
@@ -53,14 +52,15 @@ export const DeleteEmailDialog: React.FC<DeleteEmailDialogProps> = (props): Reac
       data: deleteEmailResponse,
       error: deleteEmailError,
       isLoading: isLoadingDeleteEmail,
-      isSuccess: deleteEmailSuccess
+      isSuccess: deleteEmailSuccess,
+      isUninitialized: deleteEmailUninitialized
     }
-  ] = useDeleteEmailMutation();
+  ] = useDeleteEmailProfileMutation();
 
   React.useEffect(() => {
     if (
       !isLoadingDeleteEmail
-      && previousXHR
+      && !deleteEmailUninitialized
     ) {
       if (!deleteEmailError) {
         setShowLottieError(false);
@@ -68,10 +68,10 @@ export const DeleteEmailDialog: React.FC<DeleteEmailDialogProps> = (props): Reac
         setBodyMessage('Email deleted.');
       } else {
         setShowLottieError(true);
-        setBodyMessage(deleteEmailError as string);
+        // @ts-expect-error - stupid
+        setBodyMessage(deleteEmailError.data as unknown as string);
       }
     }
-    setPreviousXHR(isLoadingDeleteEmail);
   }, [isLoadingDeleteEmail]);
 
   React.useEffect(() => {
@@ -127,7 +127,7 @@ export const DeleteEmailDialog: React.FC<DeleteEmailDialogProps> = (props): Reac
         {
           showLottieError ?
           (
-            <DialogError message={deleteEmailError as string} />
+            <DialogError message={bodyMessage} />
           )
           :
           (
@@ -141,7 +141,7 @@ export const DeleteEmailDialog: React.FC<DeleteEmailDialogProps> = (props): Reac
                 align="center"
                 margin="20px 0 0"
               >
-                {bodyMessage}
+                { bodyMessage }
               </DialogContentText>
             </CustomDialogContent>
           )
@@ -161,7 +161,7 @@ export const DeleteEmailDialog: React.FC<DeleteEmailDialogProps> = (props): Reac
                   setShowLottieCancel(true);
                 }}
               >
-                {showLottieError ? 'Close' : 'Cancel'}
+                { showLottieError ? 'Close' : 'Cancel' }
               </Button>
               {
                 !showLottieError && (

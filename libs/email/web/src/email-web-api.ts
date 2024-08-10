@@ -15,12 +15,28 @@ export const apiWebEmail = apiWebMain.injectEndpoints({
         }
       )
     }),
+    checkEmailAvailability: build.mutation<{ isAvailable: boolean }, string>({
+      query: (paylaod) => (
+        {
+          url: 'v1/email/validate',
+          method: 'POST',
+          data: { email: paylaod }
+        }
+      )
+    }),
     deleteEmail: build.mutation<{ id: string }, string>({
       query: (paylaod) => (
         {
           url: `v1/email/${paylaod}`,
-          method: 'DELETE',
-          data: paylaod
+          method: 'DELETE'
+        }
+      )
+    }),
+    deleteEmailProfile: build.mutation<{ id: string }, string>({
+      query: (paylaod) => (
+        {
+          url: `v1/email/user-profile/${paylaod}`,
+          method: 'DELETE'
         }
       )
     }),
@@ -39,6 +55,8 @@ export const apiWebEmail = apiWebMain.injectEndpoints({
 
 export const {
   useAddEmailMutation,
+  useCheckEmailAvailabilityMutation,
   useDeleteEmailMutation,
+  useDeleteEmailProfileMutation,
   useUpdateEmailMutation
 } = apiWebEmail;

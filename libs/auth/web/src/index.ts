@@ -18,3 +18,4 @@ export {
   useOtpRequestEmailMutation,
   useOtpRequestPhoneMutation
 } from './auth-web.api';
+export { AuthWebOtpEntry } from './auth-web-otp.component';

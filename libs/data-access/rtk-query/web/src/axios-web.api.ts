@@ -21,9 +21,9 @@ import {
 
 export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
   const URLS = WebConfigService.getWebUrls();
-  const ROUTES = WebConfigService.getWebRoutes();
+  // const ROUTES = WebConfigService.getWebRoutes();
   const API_URI = `${URLS.API_URL}/api/`;
-  const LOGIN_URI = `${URLS.WEB_APP_URL}${ROUTES.AUTH.LOGIN}`;
+  // const LOGIN_URI = `${URLS.WEB_APP_URL}${ROUTES.AUTH.LOGIN}`;
 
   const instance = axios.create({
     baseURL: API_URI,
@@ -104,7 +104,7 @@ export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
         const message = error.response.status !== 500
           ? error.response.data.message
           : error.message;
-        handleNotification(message);
+        // handleNotification(message);
         return Promise.reject(error);
       }
     }
@@ -113,23 +113,23 @@ export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
   return instance;
 };
 
-function handleNotification(message?: string): void {
-  // const ROUTES = WebConfigService.getWebRoutes();
-  // const location = useLocation();
-  // const dispatch = useAppDispatch();
-  // if (location.pathname !== ROUTES.MAIN) {
-    if (!store.getState().ui.isShowingUnauthorizedAlert) {
-      const msg = message
-        ? message
-        : `Something went wrong. It's probably our fault. Please try again later.`;
-      store.dispatch(uiActions.setIsShowingUnauthorizedAlert(true));
-      toast.warn(msg, {
-        onClose: () =>
-          store.dispatch(uiActions.setIsShowingUnauthorizedAlert(false)),
-      });
-    }
-  // }
-}
+// function handleNotification(message?: string): void {
+//   // const ROUTES = WebConfigService.getWebRoutes();
+//   // const location = useLocation();
+//   // const dispatch = useAppDispatch();
+//   // if (location.pathname !== ROUTES.MAIN) {
+//     if (!store.getState().ui.isShowingUnauthorizedAlert) {
+//       const msg = message
+//         ? message
+//         : `Something went wrong. It's probably our fault. Please try again later.`;
+//       store.dispatch(uiActions.setIsShowingUnauthorizedAlert(true));
+//       toast.warn(msg, {
+//         onClose: () =>
+//           store.dispatch(uiActions.setIsShowingUnauthorizedAlert(false)),
+//       });
+//     }
+//   // }
+// }
 
 export const axiosBaseQuery = ({ baseUrl } = { baseUrl: '' }): BaseQueryFn =>
   async <TReturnData>({

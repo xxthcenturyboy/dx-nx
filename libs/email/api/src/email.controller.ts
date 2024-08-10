@@ -8,6 +8,18 @@ import {
 } from '@dx/email-shared';
 
 export const EmailController = {
+  checkAvailability: async function (req: Request, res: Response) {
+    try {
+      const service = new EmailService();
+      const { email } = req.body as { email: string };
+      await service.isEmailAvailableAndValid(email);
+      return sendOK(req, res, { isAvailable: true });
+
+    } catch (err) {
+      sendBadRequest(req, res, err.message);
+    }
+  },
+
   createEmail: async function (req: Request, res: Response) {
     try {
       const service = new EmailService();
@@ -29,6 +41,21 @@ export const EmailController = {
       const { id } = req.params as { id: string };
       const service = new EmailService();
       const result = await service.deleteEmail(id);
+      if (result.id) {
+        return sendOK(req, res, result);
+      }
+
+      sendBadRequest(req, res, `Email could not be deleted.`);
+    } catch (err) {
+      sendBadRequest(req, res, err.message);
+    }
+  },
+
+  deleteEmailUserProfile: async function (req: Request, res: Response) {
+    try {
+      const { id } = req.params as { id: string };
+      const service = new EmailService();
+      const result = await service.deleteEmail(id, req.user?.id);
       if (result.id) {
         return sendOK(req, res, result);
       }

@@ -81,6 +81,16 @@ const userProfileSlice = createSlice({
     emailAddedToProfile(state, action: PayloadAction<EmailType>) {
       const nextEmails = state.emails;
       nextEmails.push(action.payload);
+      if (action.payload.default) {
+        for (const email of nextEmails) {
+          if (
+            email.default
+            && email.id !== action.payload.id
+          ) {
+            email.default = false;
+          }
+        }
+      }
       state.emails = nextEmails;
     },
     emailRemovedFromProfile(state, action: PayloadAction<string>) {
@@ -90,6 +100,16 @@ const userProfileSlice = createSlice({
     phoneAddedToProfile(state, action: PayloadAction<PhoneType>) {
       const nextPhones = state.phones;
       nextPhones.push(action.payload);
+      if (action.payload.default) {
+        for (const phone of nextPhones) {
+          if (
+            phone.default
+            && phone.id !== action.payload.id
+          ) {
+            phone.default = false;
+          }
+        }
+      }
       state.phones = nextPhones;
     },
     phoneRemovedFromProfile(state, action: PayloadAction<string>) {

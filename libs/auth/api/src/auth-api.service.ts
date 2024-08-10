@@ -28,6 +28,8 @@ import {
 import { USER_LOOKUPS } from './auth-api.consts';
 import { OtpCodeCache } from './otp-code.redis-cache';
 import { TokenService } from './token.service';
+import { EmailService } from '@dx/email-api';
+import { PhoneService } from '@dx/phone-api';
 
 export class AuthService {
   logger: ApiLoggingClassType;
@@ -67,13 +69,8 @@ export class AuthService {
           );
         }
 
-        const isAvailable = await PhoneModel.isPhoneAvailable(
-          phoneUtil.nationalNumber,
-          phoneUtil.countryCode
-        );
-        if (!isAvailable) {
-          throw new Error(`Phone is unavailable.`);
-        }
+        const phoneService = new PhoneService();
+        await phoneService.isPhoneAvailableAndValid(value, region);
 
         const otpCache = new OtpCodeCache();
         const isCodeValid = await otpCache.validatePhoneOtp(
@@ -93,12 +90,9 @@ export class AuthService {
       if (!user) {
         const emailUtil = new EmailUtil(value);
         if (emailUtil.validate()) {
-          const isAvailable = await EmailModel.isEmailAvailable(
-            emailUtil.formattedEmail()
-          );
-          if (!isAvailable) {
-            throw new Error(`Email is unavailable.`);
-          }
+          const emailService = new EmailService();
+          await emailService.isEmailAvailableAndValid(value);
+
           const otpCache = new OtpCodeCache();
           const isCodeValid = await otpCache.validateEmailOtp(
             code,
@@ -190,33 +184,15 @@ export class AuthService {
 
     try {
       if (type === USER_LOOKUPS.EMAIL) {
-        const emailUtil = new EmailUtil(value);
-        if (!emailUtil.validate()) {
-          if (emailUtil.isDisposableDomain()) {
-            throw new Error('Invalid email domain.');
-          }
-          throw new Error('Invalid Email.');
-        }
-        result.available = await EmailModel.isEmailAvailable(
-          emailUtil.formattedEmail()
-        );
+        const emailService = new EmailService();
+        await emailService.isEmailAvailableAndValid(value);
+        result.available = true
       }
 
       if (type === USER_LOOKUPS.PHONE) {
-        const phoneUtil = new PhoneUtil(
-          value,
-          region || PHONE_DEFAULT_REGION_CODE
-        );
-        if (!phoneUtil.isValid) {
-          this.logger.logError(
-            `invalid phone: ${value}, ${region || PHONE_DEFAULT_REGION_CODE}`
-          );
-          throw new Error('This phone cannot be used.');
-        }
-        result.available = await PhoneModel.isPhoneAvailable(
-          phoneUtil.nationalNumber,
-          phoneUtil.countryCode
-        );
+        const phoneService = new PhoneService();
+        await phoneService.isPhoneAvailableAndValid(value, region);
+        result.available = true
       }
 
       return result;

@@ -17,6 +17,39 @@ export class PhoneService {
     this.logger = ApiLoggingClass.instance;
   }
 
+  public async isPhoneAvailableAndValid(
+    phone: string,
+    regionCode: string
+  ) {
+    if (
+      !phone
+      || !regionCode
+    ) {
+      throw new Error('No phone sent.');
+    }
+
+    const phoneUtil = new PhoneUtil(
+      phone,
+      regionCode || PHONE_DEFAULT_REGION_CODE
+    );
+
+    if (!phoneUtil.isValid) {
+      this.logger.logError(
+        `invalid phone: ${phone}, ${regionCode || PHONE_DEFAULT_REGION_CODE}`
+      );
+      throw new Error('This phone cannot be used.');
+    }
+
+    const phoneAvailable = await PhoneModel.isPhoneAvailable(
+      phoneUtil.nationalNumber,
+      phoneUtil.countryCode
+    );
+
+    if (!phoneAvailable) {
+      throw new Error(`This phone: ${phone} already exists.`);
+    }
+  }
+
   public async createPhone(payload: CreatePhonePayloadType) {
     const {
       code,
@@ -33,24 +66,7 @@ export class PhoneService {
       throw new Error('Not enough information to create a phone.');
     }
 
-    const phoneUtil = new PhoneUtil(
-      phone,
-      regionCode || PHONE_DEFAULT_REGION_CODE
-    );
-    if (!phoneUtil.isValid) {
-      this.logger.logError(
-        `invalid phone: ${phone}, ${regionCode || PHONE_DEFAULT_REGION_CODE}`
-      );
-      throw new Error('This phone cannot be used.');
-    }
-
-    const isPhoneAvailable = await PhoneModel.isPhoneAvailable(
-      phoneUtil.nationalNumber,
-      countryCode
-    );
-    if (!isPhoneAvailable) {
-      throw new Error(`This phone: ${phone} already exists.`);
-    }
+    await this.isPhoneAvailableAndValid(phone, regionCode);
 
     if (code) {
       const isCodeValid = await OtpService.validateOptCodeByPhone(userId, phone, code);
@@ -72,6 +88,11 @@ export class PhoneService {
         );
       }
     }
+
+    const phoneUtil = new PhoneUtil(
+      phone,
+      regionCode || PHONE_DEFAULT_REGION_CODE
+    );
 
     if (def === true) {
       if (!phoneUtil.isValidMobile) {
@@ -99,7 +120,10 @@ export class PhoneService {
     return { id: '' };
   }
 
-  public async deletePhone(id: string) {
+  public async deletePhone(
+    id: string,
+    userId?: string
+  ) {
     if (!id) {
       throw new Error('No id for delete phone.');
     }
@@ -108,6 +132,12 @@ export class PhoneService {
 
     if (!phone) {
       throw new Error(`Phone could not be found with the id: ${id}`);
+    }
+
+    if (userId) {
+      if (userId !== phone.userId) {
+        throw new Error('You cannot delete this phone.');
+      }
     }
 
     try {

@@ -36,7 +36,15 @@ import {
 } from '@dx/ui-web';
 import { PhoneNumberInput } from './phone-input/phone-web-input.component';
 import { AddPhoneForm } from './phone-web.ui';
-import { useAddPhoneMutation } from './phone-web-api';
+import {
+  useCheckPhoneAvailabilityMutation,
+  useAddPhoneMutation
+} from './phone-web-api';
+import {
+  AuthWebOtpEntry,
+  useOtpRequestPhoneMutation
+} from '@dx/auth-web';
+import { OTP_LENGTH } from '@dx/auth-shared';
 
 type AddPhoneDialogProps = {
   userId: string;
@@ -46,21 +54,45 @@ type AddPhoneDialogProps = {
 export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (props): ReactElement => {
   const [allSucceeded, setAllSucceeded] = React.useState(false);
   const [showLottieError, setShowLottieError] = React.useState(false);
-  const [previousXHR, setPreviousXHR] = React.useState(false);
+  const [hasSentOtp, setHasSentOtp] = React.useState(false);
+  const [isPhoneAvailable, setIsPhoneAvailable] = React.useState(false);
   const [phone, setPhone] = React.useState('');
   const [countryData, setCountryData] = React.useState('');
-  const [label, setLabel] = React.useState('');
+  const [label, setLabel] = React.useState(PHONE_LABEL.CELL);
+  const [errorMessage, setErrorMessage] = React.useState('');
+  const [otp, setOtp] = React.useState('');
   const [isDefault, setIsDefault] = React.useState(false);
   const dispatch = useAppDispatch();
+  const [
+    requestCheckAvailability,
+    {
+      data: checkAvailabilityResponse,
+      error: checkAvailabilityError,
+      isLoading: isLoadingCheckAvailability,
+      isSuccess: checkAvailabilitySuccess,
+      isUninitialized: checkAvailabilityUninitialized
+    }
+  ] = useCheckPhoneAvailabilityMutation();
   const [
     requestAddPhone,
     {
       data: addPhoneResponse,
       error: addPhoneError,
       isLoading: isLoadingAddPhone,
-      isSuccess: addPhoneSuccess
+      isSuccess: addPhoneSuccess,
+      isUninitialized: addPhoneUninitialized
     }
   ] = useAddPhoneMutation();
+  const [
+    sendOtpCode,
+    {
+      data: sendOtpResponse,
+      error: sendOtpError,
+      isLoading: isLoadingSendOtp,
+      isSuccess: sendOtpSuccess,
+      isUninitialized: sendOtpUninitialized
+    }
+  ] = useOtpRequestPhoneMutation();
 
   React.useEffect(() => {
     if (!props.userId) {
@@ -71,17 +103,51 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (props): ReactEleme
   React.useEffect(() => {
     if (
       !isLoadingAddPhone
-      && previousXHR
+      && !addPhoneUninitialized
     ) {
       if (!addPhoneError) {
         setShowLottieError(false);
         setAllSucceeded(true);
       } else {
+        // @ts-expect-error -all good
+        setErrorMessage(addPhoneError.data as unknown as string);
         setShowLottieError(true);
       }
     }
-    setPreviousXHR(isLoadingAddPhone);
   }, [isLoadingAddPhone]);
+
+  React.useEffect(() => {
+    if (
+      !isLoadingCheckAvailability
+      && !checkAvailabilityUninitialized
+    ) {
+      if (!checkAvailabilityError) {
+        setShowLottieError(false);
+        setIsPhoneAvailable(true);
+      } else {
+        // @ts-expect-error -all good
+        setErrorMessage(checkAvailabilityError.data as unknown as string);
+        setShowLottieError(true);
+        setIsPhoneAvailable(false);
+      }
+    }
+  }, [isLoadingCheckAvailability]);
+
+  React.useEffect(() => {
+    if (
+      !isLoadingSendOtp
+    ) {
+      if (
+        !sendOtpError
+      ) {
+        setShowLottieError(false);
+      } else {
+        // @ts-expect-error -all good
+        setErrorMessage(sendOtpError.data as unknown as string);
+        setShowLottieError(true);
+      }
+    }
+  }, [isLoadingSendOtp]);
 
   React.useEffect(() => {
     if (
@@ -103,8 +169,51 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (props): ReactEleme
     }
   }, [addPhoneSuccess]);
 
+  React.useEffect(() => {
+    if (
+      checkAvailabilitySuccess
+      && sendOtpUninitialized
+    ) {
+      sendOtpCode({ phone, region: countryData })
+        .catch((err) => logger.error((err as Error).message, err));
+    }
+  }, [checkAvailabilitySuccess]);
+
+  React.useEffect(() => {
+    if (
+      sendOtpSuccess
+    ) {
+      setHasSentOtp(true);
+    }
+  }, [sendOtpSuccess]);
+
+  React.useEffect(() => {
+    if (otp.length === OTP_LENGTH) {
+      void handleCreate();
+    }
+  }, [otp]);
+
   const handleClose = (): void => {
     dispatch(uiActions.appDialogSet(null));
+  };
+
+  const submitDisabled = (): boolean => {
+    if (
+      !(phone && countryData && label)
+      || isLoadingAddPhone
+      || isLoadingSendOtp
+    ) {
+      return true;
+    }
+
+    if (
+      hasSentOtp
+      && otp.length < 6
+    ) {
+      return true;
+    }
+
+    return false;
   };
 
   const handleCreate = async (): Promise<void> => {
@@ -112,32 +221,40 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (props): ReactEleme
       !submitDisabled()
       && props.userId
     ) {
-      try {
-        const payload: CreatePhonePayloadType = {
-          label,
-          phone,
-          countryCode: countryData,
-          def: isDefault,
-          userId: props.userId
-        };
+      if (
+        !isPhoneAvailable
+        && !hasSentOtp
+      ) {
+        try {
+          await requestCheckAvailability({ phone, regionCode: countryData });
+        } catch (err) {
+          logger.error((err as Error).message, err);
+        }
+      }
 
-        await requestAddPhone(payload);
-      } catch (err) {
-        logger.error((err as Error).message, err);
+      if (
+        hasSentOtp
+        && otp
+      ) {
+        try {
+          const payload: CreatePhonePayloadType = {
+            label,
+            phone,
+            countryCode: countryData,
+            def: isDefault,
+            userId: props.userId
+          };
+
+          await requestAddPhone(payload);
+        } catch (err) {
+          logger.error((err as Error).message, err);
+        }
       }
     }
   };
 
   const handleChangeLabel = (event: SelectChangeEvent<string>): void => {
     setLabel(event.target.value);
-  };
-
-  const submitDisabled = (): boolean => {
-    if (!(phone && countryData && label) || isLoadingAddPhone) {
-      return true;
-    }
-
-    return false;
   };
 
   const renderFormContent = (): JSX.Element => {
@@ -219,19 +336,34 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (props): ReactEleme
   return (
     <DialogWrapper maxWidth={400}>
       <DialogTitle style={{ textAlign: 'center' }} >
-        {`New Phone`}
+        { `New Phone` }
       </DialogTitle>
       {
-        !allSucceeded && !showLottieError && renderFormContent()
+        !allSucceeded
+        && !showLottieError
+        && !hasSentOtp
+        && renderFormContent()
+      }
+      {
+        !allSucceeded
+        && !showLottieError
+        && isPhoneAvailable
+        && hasSentOtp
+        && (
+          <AuthWebOtpEntry
+            method="Phone"
+            onCompleteCallback={setOtp}
+          />
+        )
       }
       {
         showLottieError && (
-          <DialogError message={addPhoneError as string} />
+          <DialogError message={errorMessage} />
         )
       }
       {
         allSucceeded && (
-          <LottieSuccess complete={() => setTimeout(() => handleClose(), 500)} />
+          <LottieSuccess complete={() => setTimeout(() => handleClose(), 700)} />
         )
       }
       {
@@ -242,7 +374,7 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (props): ReactEleme
               onClick={handleClose}
               disabled={isLoadingAddPhone}
             >
-              {showLottieError ? 'Close' : 'Cancel'}
+              { showLottieError ? 'Close' : 'Cancel' }
             </Button>
             {
               !showLottieError && (
@@ -252,7 +384,11 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (props): ReactEleme
                   disabled={submitDisabled()}
                 >
                   {
-                    isLoadingAddPhone ? (
+                    (
+                      isLoadingAddPhone
+                      || isLoadingCheckAvailability
+                      || isLoadingSendOtp
+                    ) ? (
                       <BeatLoader
                         color={themeColors.secondary}
                         size={16}

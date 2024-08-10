@@ -3,7 +3,7 @@ import { DialogContentText } from '@mui/material';
 
 import { CustomDialogContent } from './custom-content.dialog';
 import { LottieAlert } from '../../lottie/LottieAlert';
-import { ERROR_MSG } from '@dx/config-shared';
+// import { ERROR_MSG } from '@dx/config-shared';
 
 type DialogErrorType = {
   message?: string;
@@ -20,11 +20,11 @@ export const DialogError: React.FC<DialogErrorType> = ({ message }) => {
         color="default"
         margin="20px 0 0"
       >
-        <span>
+        {/* <span>
           { ERROR_MSG }
         </span>
         <br />
-        <br />
+        <br /> */}
         { message || '' }
       </DialogContentText>
     </CustomDialogContent>

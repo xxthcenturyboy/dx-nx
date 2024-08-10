@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { ensureLoggedIn, hasSuperAdminRole } from '@dx/auth-api';
+import { ensureLoggedIn, hasAdminRole, hasSuperAdminRole } from '@dx/auth-api';
 import { PhoneController } from './phone.controller';
 
 export class PhoneRoutes {
@@ -9,11 +9,13 @@ export class PhoneRoutes {
 
     router.all('/*', [ensureLoggedIn]);
 
+    router.post('/validate', PhoneController.checkAvailability);
     router.post('/', PhoneController.createPhone);
 
     router.put('/:id', PhoneController.updatePhone);
 
-    router.delete('/:id', PhoneController.deletePhone);
+    router.delete('/user-profile/:id', PhoneController.deletePhoneUserProfile);
+    router.delete('/:id', hasAdminRole, PhoneController.deletePhone);
     router.delete(
       '/test/:id',
       hasSuperAdminRole,

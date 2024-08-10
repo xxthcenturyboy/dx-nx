@@ -89,11 +89,9 @@ export class RedisService {
   }
 
   public async getCacheItemSimple(key: string) {
-    console.log('item simple', key);
     if (!key) {
       return null;
     }
-    // const modKey = `${getRedisConfig().prefix}${REDIS_DELIMITER}${key}`;
     try {
       return await this.cacheHandle.get(key);
     } catch (error) {

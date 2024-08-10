@@ -16,7 +16,6 @@ import {
   Select,
   SelectChangeEvent
 } from '@mui/material';
-import { MuiOtpInput } from 'mui-one-time-password-input';
 
 import {
   useAppDispatch
@@ -36,8 +35,14 @@ import {
 } from '@dx/ui-web';
 import { EmailType } from '@dx/email-shared';
 import { AddEmailForm } from './email-web.ui';
-import { useAddEmailMutation } from './email-web-api';
-import { useOtpRequestEmailMutation } from '@dx/auth-web';
+import {
+  useAddEmailMutation,
+  useCheckEmailAvailabilityMutation
+} from './email-web-api';
+import {
+  AuthWebOtpEntry,
+  useOtpRequestEmailMutation
+} from '@dx/auth-web';
 import { OTP_LENGTH } from '@dx/auth-shared';
 
 type AddEmailPropsType = {
@@ -48,21 +53,32 @@ type AddEmailPropsType = {
 export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement => {
   const [allSucceeded, setAllSucceeded] = React.useState(false);
   const [showLottieError, setShowLottieError] = React.useState(false);
-  const [previousXHR, setPreviousXHR] = React.useState(false);
   const [hasSentOtp, setHasSentOtp] = React.useState(false);
+  const [isEmailAvailable, setIsEmailAvailable] = React.useState(false);
   const [email, setEmail] = React.useState('');
+  const [label, setLabel] = React.useState(EMAIL_LABEL.PERSONAL);
   const [errorMessage, setErrorMessage] = React.useState('');
   const [otp, setOtp] = React.useState('');
-  const [label, setLabel] = React.useState('');
   const [isDefault, setIsDefault] = React.useState(false);
   const dispatch = useAppDispatch();
+  const [
+    requestCheckAvailability,
+    {
+      data: checkAvailabilityResponse,
+      error: checkAvailabilityError,
+      isLoading: isLoadingCheckAvailability,
+      isSuccess: checkAvailabilitySuccess,
+      isUninitialized: checkAvailabilityUninitialized
+    }
+  ] = useCheckEmailAvailabilityMutation();
   const [
     requestAddEmail,
     {
       data: addEmailResponse,
       error: addEmailError,
       isLoading: isLoadingAddEmail,
-      isSuccess: addEmailSuccess
+      isSuccess: addEmailSuccess,
+      isUninitialized: addEmailUninitialized
     }
   ] = useAddEmailMutation();
   const [
@@ -71,7 +87,8 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
       data: sendOtpResponse,
       error: sendOtpError,
       isLoading: isLoadingSendOtp,
-      isSuccess: sendOtpSuccess
+      isSuccess: sendOtpSuccess,
+      isUninitialized: sendOtpUninitialized
     }
   ] = useOtpRequestEmailMutation();
 
@@ -84,7 +101,7 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
   React.useEffect(() => {
     if (
       !isLoadingAddEmail
-      && previousXHR
+      && !addEmailUninitialized
     ) {
       if (!addEmailError) {
         setShowLottieError(false);
@@ -95,8 +112,24 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
         setShowLottieError(true);
       }
     }
-    setPreviousXHR(isLoadingAddEmail);
   }, [isLoadingAddEmail]);
+
+  React.useEffect(() => {
+    if (
+      !isLoadingCheckAvailability
+      && !checkAvailabilityUninitialized
+    ) {
+      if (!checkAvailabilityError) {
+        setShowLottieError(false);
+        setIsEmailAvailable(true);
+      } else {
+        // @ts-expect-error -all good
+        setErrorMessage(checkAvailabilityError.data as unknown as string);
+        setShowLottieError(true);
+        setIsEmailAvailable(false);
+      }
+    }
+  }, [isLoadingCheckAvailability]);
 
   React.useEffect(() => {
     if (
@@ -120,14 +153,6 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
       && props.emailDataCallback
       && typeof props.emailDataCallback === 'function'
     ) {
-      console.log({
-        id: addEmailResponse.id,
-        email,
-        label,
-        isDeleted: false,
-        isVerified: true,
-        default: isDefault
-      });
       props.emailDataCallback({
         id: addEmailResponse.id,
         email,
@@ -138,6 +163,16 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
       });
     }
   }, [addEmailSuccess]);
+
+  React.useEffect(() => {
+    if (
+      checkAvailabilitySuccess
+      && sendOtpUninitialized
+    ) {
+      sendOtpCode({ email })
+        .catch((err) => logger.error((err as Error).message, err));
+    }
+  }, [checkAvailabilitySuccess]);
 
   React.useEffect(() => {
     if (
@@ -181,9 +216,12 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
       !submitDisabled()
       && props.userId
     ) {
-      if (!hasSentOtp) {
+      if (
+        !isEmailAvailable
+        && !hasSentOtp
+      ) {
         try {
-          await sendOtpCode({ email });
+          await requestCheckAvailability(email);
         } catch (err) {
           logger.error((err as Error).message, err);
         }
@@ -214,32 +252,8 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
     setEmail(event.target.value);
   };
 
-  const handleChangeOtp = (value: string): void => {
-    setOtp(value);
-  };
-
-  const handleOtpComplete = (value: string): void => {
-    if (value !== otp) {
-      setOtp(value);
-    }
-  };
-
   const handleChangeLabel = (event: SelectChangeEvent<string>): void => {
     setLabel(event.target.value);
-  };
-
-  const renderOtp = (): JSX.Element => {
-    return (
-      <CustomDialogContent>
-        <MuiOtpInput
-          value={otp}
-          onChange={handleChangeOtp}
-          onComplete={handleOtpComplete}
-          length={OTP_LENGTH}
-          autoFocus={true}
-        />
-      </CustomDialogContent>
-    );
   };
 
   const renderFormContent = (): JSX.Element => {
@@ -295,10 +309,12 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
           </FormControl>
           <FormControlLabel
             label="Set as Default"
-            control={<Checkbox
-              checked={isDefault}
-              onChange={() => setIsDefault(!isDefault)}
-            />}
+            control={
+              <Checkbox
+                checked={isDefault}
+                onChange={() => setIsDefault(!isDefault)}
+              />
+            }
           />
         </AddEmailForm>
       </CustomDialogContent>
@@ -308,7 +324,7 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
   return (
     <DialogWrapper maxWidth={400}>
       <DialogTitle style={{ textAlign: 'center' }} >
-        {`New Email`}
+        { `New Email` }
       </DialogTitle>
       {
         !allSucceeded
@@ -319,8 +335,14 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
       {
         !allSucceeded
         && !showLottieError
+        && isEmailAvailable
         && hasSentOtp
-        && renderOtp()
+        && (
+          <AuthWebOtpEntry
+            method="Email"
+            onCompleteCallback={setOtp}
+          />
+        )
       }
       {
         showLottieError && (
@@ -340,7 +362,7 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
               onClick={handleClose}
               disabled={isLoadingAddEmail}
             >
-              {showLottieError ? 'Close' : 'Cancel'}
+              { showLottieError ? 'Close' : 'Cancel' }
             </Button>
             {
               !showLottieError && (
@@ -350,7 +372,11 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
                   disabled={submitDisabled()}
                 >
                   {
-                    isLoadingAddEmail ? (
+                    (
+                      isLoadingAddEmail
+                      || isLoadingCheckAvailability
+                      || isLoadingSendOtp
+                    ) ? (
                       <BeatLoader
                         color={themeColors.secondary}
                         size={16}

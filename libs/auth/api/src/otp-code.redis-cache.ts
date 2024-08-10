@@ -95,11 +95,9 @@ export class OtpCodeCache {
 
     const hashedValue = await dxGenerateHashWithSalt(email, OTP_SALT);
     const key = this.getFormattedKeyName(`${code}_${hashedValue}`);
-    console.log('key', key);
     try {
       const data = await this.cache.getCacheItemSimple(key);
       const isValid = data?.toString() === code?.toString();
-      console.log(data, code, isValid);
       if (isValid) {
         void this.cache.deleteCacheItem(key);
       }

@@ -1,4 +1,5 @@
 export const EMAIL_LABEL = {
-  DEFAULT: 'Default',
-  MAIN: 'Main',
+  PERSONAL: 'Personal',
+  WORK: 'Work',
+  OTHER: 'Other'
 };

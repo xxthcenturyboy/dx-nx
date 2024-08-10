@@ -145,7 +145,7 @@ export class OtpService {
         throw new Error(`Account is locked.`);
       }
 
-      return await codeCache.validateEmailOtp(code, phone);
+      return await codeCache.validatePhoneOtp(code, phone);
     } catch (err) {
       logger.logError(err.message);
     }

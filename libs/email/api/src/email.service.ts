@@ -15,20 +15,12 @@ export class EmailService {
     this.logger = ApiLoggingClass.instance;
   }
 
-  public async createEmail(payload: CreateEmailPayloadType) {
-    const { code, def, email, label, signature, userId } = payload;
-
-    if (!userId || !email) {
-      throw new Error('Not enough information to create an email.');
+  public async isEmailAvailableAndValid(email: string) {
+    if (!email) {
+      throw new Error('No email sent.');
     }
 
     const emailUtil = new EmailUtil(email);
-    const isEmailAvailable = await EmailModel.isEmailAvailable(
-      emailUtil.formattedEmail()
-    );
-    if (!isEmailAvailable) {
-      throw new Error(`This email: ${email} already exists.`);
-    }
 
     if (!emailUtil.validate()) {
       if (emailUtil.isDisposableDomain()) {
@@ -36,9 +28,35 @@ export class EmailService {
           'The email you provided is not valid. Please note that we do not allow disposable emails or emails that do not exist, so make sure to use a real email address.'
         );
       }
-
       throw new Error('The email you provided is not valid.');
     }
+
+    const isEmailAvailable = await EmailModel.isEmailAvailable(
+      emailUtil.formattedEmail()
+    );
+    if (!isEmailAvailable) {
+      throw new Error(`This email: ${email} already exists.`);
+    }
+  }
+
+  public async createEmail(payload: CreateEmailPayloadType) {
+    const {
+      code,
+      def,
+      email,
+      label,
+      signature,
+      userId
+    } = payload;
+
+    if (
+      !userId
+      || !email
+    ) {
+      throw new Error('Not enough information to create an email.');
+    }
+
+    await this.isEmailAvailableAndValid(email);
 
     if (code) {
       const isCodeValid = await OtpService.validateOptCodeByEmail(userId, email, code);
@@ -65,6 +83,7 @@ export class EmailService {
       await EmailModel.clearAllDefaultByUserId(userId);
     }
 
+    const emailUtil = new EmailUtil(email);
     try {
       const userEmail = new EmailModel();
       userEmail.userId = userId;
@@ -82,7 +101,10 @@ export class EmailService {
     return { id: '' };
   }
 
-  public async deleteEmail(id: string) {
+  public async deleteEmail(
+    id: string,
+    userId?: string
+  ) {
     if (!id) {
       throw new Error('No id for delete email.');
     }
@@ -92,6 +114,13 @@ export class EmailService {
     if (!email) {
       throw new Error(`Email could not be found with the id: ${id}`);
     }
+
+    if (userId) {
+      if (userId !== email.userId) {
+        throw new Error('You cannot delete this email.');
+      }
+    }
+
     try {
       email.setDataValue('deletedAt', new Date());
       await email.save();

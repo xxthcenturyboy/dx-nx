@@ -34,7 +34,6 @@ export async function hasAdminRole(
     if (!userId) {
       throw new Error('Token invalid or expired.');
     }
-
     const hasSuperAdminRole = await userHasRole(userId, USER_ROLE.SUPER_ADMIN);
     if (hasSuperAdminRole) {
       next();

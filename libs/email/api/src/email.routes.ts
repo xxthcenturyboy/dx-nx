@@ -11,10 +11,12 @@ export class EmailRoutes {
 
     router.all('/*', [ensureLoggedIn]);
 
+    router.post('/validate', EmailController.checkAvailability);
     router.post('/', EmailController.createEmail);
 
     router.put('/:id', EmailController.updateEmail);
 
+    router.delete('/user-profile/:id', EmailController.deleteEmailUserProfile);
     router.delete('/:id', hasAdminRole, EmailController.deleteEmail);
     router.delete(
       '/test/:id',

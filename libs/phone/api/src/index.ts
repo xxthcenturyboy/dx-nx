@@ -7,3 +7,5 @@ export {
   PHONE_MODEL_OPTIONS,
   PHONE_POSTGRES_DB_NAME,
 } from './phone.consts';
+
+export { PhoneService } from './phone.service';

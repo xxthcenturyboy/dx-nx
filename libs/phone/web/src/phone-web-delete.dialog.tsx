@@ -27,7 +27,7 @@ import { logger } from '@dx/logger-web';
 import {
   PhoneType
 } from '@dx/phone-shared';
-import { useDeletePhoneMutation } from './phone-web-api';
+import { useDeletePhoneProfileMutation } from './phone-web-api';
 
 type DeletePhoneDialogProps = {
   phoneItem: PhoneType;
@@ -40,7 +40,6 @@ export const DeletePhoneDialog: React.FC<DeletePhoneDialogProps> = (props): Reac
   const [showLottieCancel, setShowLottieCancel] = React.useState(false);
   const [showLottieSuccess, setShowLottieSuccess] = React.useState(false);
   const [showLottieError, setShowLottieError] = React.useState(false);
-  const [previousXHR, setPreviousXHR] = React.useState(false);
   const [bodyMessage, setBodyMessage] = React.useState(
     phoneItem
       ? `Are you sure you want to delete the phone: ${phoneItem.phone} (${phoneItem.label})?`
@@ -53,23 +52,26 @@ export const DeletePhoneDialog: React.FC<DeletePhoneDialogProps> = (props): Reac
       data: deletePhoneResponse,
       error: deletePhoneError,
       isLoading: isLoadingDeletePhone,
-      isSuccess: deletePhoneSuccess
+      isSuccess: deletePhoneSuccess,
+      isUninitialized: deletePhoneUninitialized
     }
-  ] = useDeletePhoneMutation();
-
+  ] = useDeletePhoneProfileMutation();
 
   React.useEffect(() => {
-    if (!(isLoadingDeletePhone) && previousXHR) {
+    if (
+      !isLoadingDeletePhone
+      && !deletePhoneUninitialized
+    ) {
       if (!(deletePhoneError)) {
         setShowLottieError(false);
         setShowLottieSuccess(true);
         setBodyMessage('Phone deleted.');
       } else {
         setShowLottieError(true);
-        setBodyMessage(deletePhoneError as string);
+        // @ts-expect-error - stupid
+        setBodyMessage(deletePhoneError.data as unknown as string);
       }
     }
-    setPreviousXHR(isLoadingDeletePhone);
   }, [isLoadingDeletePhone]);
 
   React.useEffect(() => {
@@ -125,7 +127,7 @@ export const DeletePhoneDialog: React.FC<DeletePhoneDialogProps> = (props): Reac
         {
           showLottieError ?
           (
-            <DialogError message={deletePhoneError} />
+            <DialogError message={bodyMessage} />
           )
           :
           (
@@ -139,7 +141,7 @@ export const DeletePhoneDialog: React.FC<DeletePhoneDialogProps> = (props): Reac
                 align="center"
                 margin="20px 0 0"
               >
-                {bodyMessage}
+                { bodyMessage }
               </DialogContentText>
             </CustomDialogContent>
           )
@@ -159,7 +161,7 @@ export const DeletePhoneDialog: React.FC<DeletePhoneDialogProps> = (props): Reac
                   setShowLottieCancel(true);
                 }}
               >
-                {showLottieError ? 'Close' : 'Cancel'}
+                { showLottieError ? 'Close' : 'Cancel' }
               </Button>
               {
                 !showLottieError && (

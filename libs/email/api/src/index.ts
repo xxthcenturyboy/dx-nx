@@ -6,3 +6,5 @@ export {
   EMAIL_MODEL_OPTIONS,
   EMAIL_POSTGRES_DB_NAME,
 } from './email.consts';
+
+export { EmailService } from './email.service';
