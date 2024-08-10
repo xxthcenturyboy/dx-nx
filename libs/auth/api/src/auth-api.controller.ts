@@ -193,9 +193,9 @@ export const AuthController = {
 
   sendOtpToPhone: async function (req: Request, res: Response) {
     try {
-      const { phone, region } = req.body as { phone: string; region?: string };
+      const { phone, regionCode } = req.body as { phone: string; regionCode?: string };
       const service = new AuthService();
-      const result = await service.sendOtpToPhone(phone, region);
+      const result = await service.sendOtpToPhone(phone, regionCode);
 
       sendOK(req, res, result);
     } catch (err) {

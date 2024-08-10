@@ -42,7 +42,7 @@ export const DeletePhoneDialog: React.FC<DeletePhoneDialogProps> = (props): Reac
   const [showLottieError, setShowLottieError] = React.useState(false);
   const [bodyMessage, setBodyMessage] = React.useState(
     phoneItem
-      ? `Are you sure you want to delete the phone: ${phoneItem.phone} (${phoneItem.label})?`
+      ? `Are you sure you want to delete the phone: ${phoneItem.uiFormatted} (${phoneItem.label})?`
       : ''
   );
   const dispatch = useAppDispatch();

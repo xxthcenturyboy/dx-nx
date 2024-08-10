@@ -57,7 +57,7 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (props): ReactEleme
   const [hasSentOtp, setHasSentOtp] = React.useState(false);
   const [isPhoneAvailable, setIsPhoneAvailable] = React.useState(false);
   const [phone, setPhone] = React.useState('');
-  const [countryData, setCountryData] = React.useState('');
+  const [countryData, setCountryData] = React.useState<CountryData | null>(null);
   const [label, setLabel] = React.useState(PHONE_LABEL.CELL);
   const [errorMessage, setErrorMessage] = React.useState('');
   const [otp, setOtp] = React.useState('');
@@ -157,7 +157,7 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (props): ReactEleme
     ) {
       props.phoneDataCallback({
         id: addPhoneResponse.id,
-        countryCode: countryData,
+        countryCode: (countryData as CountryData).countryCode,
         phone,
         phoneFormatted: addPhoneResponse.phoneFormatted,
         label,
@@ -174,7 +174,7 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (props): ReactEleme
       checkAvailabilitySuccess
       && sendOtpUninitialized
     ) {
-      sendOtpCode({ phone, region: countryData })
+      sendOtpCode({ phone, regionCode: (countryData as CountryData).countryCode, })
         .catch((err) => logger.error((err as Error).message, err));
     }
   }, [checkAvailabilitySuccess]);
@@ -226,7 +226,7 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (props): ReactEleme
         && !hasSentOtp
       ) {
         try {
-          await requestCheckAvailability({ phone, regionCode: countryData });
+          await requestCheckAvailability({ phone, regionCode: (countryData as CountryData).countryCode, });
         } catch (err) {
           logger.error((err as Error).message, err);
         }
@@ -240,7 +240,7 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (props): ReactEleme
           const payload: CreatePhonePayloadType = {
             label,
             phone,
-            countryCode: countryData,
+            regionCode: (countryData as CountryData).countryCode,
             def: isDefault,
             userId: props.userId
           };
@@ -290,7 +290,7 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (props): ReactEleme
               disabled={false}
               onChange={(value: string, data: CountryData) => {
                 setPhone(value);
-                setCountryData(data.countryCode);
+                setCountryData(data);
               }}
               value={phone || ''}
             />

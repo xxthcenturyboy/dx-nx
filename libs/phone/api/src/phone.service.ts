@@ -1,3 +1,5 @@
+import parsePhoneNumber from 'libphonenumber-js';
+
 import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger-api';
 import { isLocal } from '@dx/config-api';
 import { PhoneUtil } from '@dx/util-phones';
@@ -6,7 +8,10 @@ import { dxRsaValidateBiometricKey } from '@dx/util-encryption';
 import { UserModel } from '@dx/user-api';
 import { PhoneModel } from './phone.postgres-model';
 import { PHONE_DEFAULT_REGION_CODE } from '@dx/config-shared';
-import { CreatePhonePayloadType, UpdatePhonePayloadType } from '@dx/phone-shared';
+import {
+  CreatePhonePayloadType,
+  UpdatePhonePayloadType
+} from '@dx/phone-shared';
 
 export class PhoneService {
   private LOCAL: boolean;
@@ -25,7 +30,7 @@ export class PhoneService {
       !phone
       || !regionCode
     ) {
-      throw new Error('No phone sent.');
+      throw new Error('Missing phone or region code.');
     }
 
     const phoneUtil = new PhoneUtil(
@@ -37,7 +42,7 @@ export class PhoneService {
       this.logger.logError(
         `invalid phone: ${phone}, ${regionCode || PHONE_DEFAULT_REGION_CODE}`
       );
-      throw new Error('This phone cannot be used.');
+      throw new Error('This phone cannot be used (invalid).');
     }
 
     const phoneAvailable = await PhoneModel.isPhoneAvailable(
@@ -46,14 +51,15 @@ export class PhoneService {
     );
 
     if (!phoneAvailable) {
-      throw new Error(`This phone: ${phone} already exists.`);
+      const formatted = parsePhoneNumber(phoneUtil.normalizedPhone);
+      throw new Error(`${formatted?.formatNational()} is already in use.`);
     }
   }
 
   public async createPhone(payload: CreatePhonePayloadType) {
     const {
       code,
-      countryCode,
+      // countryCode,
       regionCode,
       def,
       label,
@@ -62,14 +68,27 @@ export class PhoneService {
       userId,
     } = payload;
 
-    if (!userId || !phone || !countryCode) {
+    if (
+      !userId
+      || !phone
+      // || !countryCode
+    ) {
       throw new Error('Not enough information to create a phone.');
     }
 
     await this.isPhoneAvailableAndValid(phone, regionCode);
 
     if (code) {
-      const isCodeValid = await OtpService.validateOptCodeByPhone(userId, phone, code);
+      const phoneUtil = new PhoneUtil(
+        phone,
+        regionCode || PHONE_DEFAULT_REGION_CODE
+      );
+      const isCodeValid = await OtpService.validateOptCodeByPhone(
+        userId,
+        phoneUtil.countryCode,
+        phoneUtil.nationalNumber,
+        code
+      );
       if (!isCodeValid) {
         throw new Error('Invalid OTP code.');
       }
@@ -96,7 +115,7 @@ export class PhoneService {
 
     if (def === true) {
       if (!phoneUtil.isValidMobile) {
-        throw new Error('Cannot use this phone number as your default.');
+        throw new Error('Cannot use this phone number as your default. It must be a valid mobile number.');
       }
       await PhoneModel.clearAllDefaultByUserId(userId);
     }
@@ -104,7 +123,7 @@ export class PhoneService {
     try {
       const userPhone = new PhoneModel();
       userPhone.userId = userId;
-      userPhone.countryCode = countryCode;
+      userPhone.countryCode = phoneUtil.countryCode;
       userPhone.regionCode = regionCode || PHONE_DEFAULT_REGION_CODE;
       userPhone.phone = phoneUtil.nationalNumber;
       userPhone.label = label;

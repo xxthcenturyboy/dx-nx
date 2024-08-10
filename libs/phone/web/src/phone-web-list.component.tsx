@@ -162,7 +162,7 @@ export const Phonelist: React.FC<UserPhonesProps> = (props) => {
                         align="left"
                         sx={{ height: '20px' }}
                       >
-                        {phone.uiFormatted || phone.phone}
+                        { phone.uiFormatted || phone.phone }
                       </TableCell>
                       <TableCell
                         align="left"

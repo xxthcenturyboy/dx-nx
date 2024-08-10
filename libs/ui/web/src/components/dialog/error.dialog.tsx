@@ -15,7 +15,7 @@ export const DialogError: React.FC<DialogErrorType> = ({ message }) => {
       <LottieAlert />
       <DialogContentText
         id="dialog-error"
-        variant="body1"
+        variant="h6"
         align="center"
         color="default"
         margin="20px 0 0"

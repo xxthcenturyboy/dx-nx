@@ -125,10 +125,11 @@ export class OtpService {
 
   public static async validateOptCodeByPhone(
     userId: string,
-    phone: string,
+    countryCode: string,
+    nationalNumber: string,
     code: string
   ): Promise<boolean> {
-    if (!phone || !code) {
+    if (!nationalNumber || !code) {
       throw new Error('Insufficient data.');
     }
     const codeCache = new OtpCodeCache();
@@ -145,7 +146,7 @@ export class OtpService {
         throw new Error(`Account is locked.`);
       }
 
-      return await codeCache.validatePhoneOtp(code, phone);
+      return await codeCache.validatePhoneOtp(code, countryCode, nationalNumber);
     } catch (err) {
       logger.logError(err.message);
     }

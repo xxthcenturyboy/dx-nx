@@ -36,7 +36,7 @@ export const apiWebAuth = apiWebMain.injectEndpoints({
         }
       )
     }),
-    otpRequestPhone: build.mutation<{ code?: string }, { phone: string; region?: string }>({
+    otpRequestPhone: build.mutation<{ code?: string }, { phone: string; regionCode?: string }>({
       query: (payload) => (
         {
           url: 'v1/auth/otp-code/send/phone',

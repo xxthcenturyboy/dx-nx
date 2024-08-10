@@ -14,7 +14,7 @@ export type PhoneType = {
 
 export type CreatePhonePayloadType = {
   code?: string;
-  countryCode: string;
+  countryCode?: string;
   regionCode?: string;
   def: boolean;
   label: string;

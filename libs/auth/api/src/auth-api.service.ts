@@ -425,7 +425,7 @@ export class AuthService {
 
   public async sendOtpToPhone(
     phone: string,
-    region?: string
+    regionCode?: string
   ): Promise<{ code: string }> {
     if (!phone) {
       throw new Error('No phone sent.');
@@ -436,7 +436,7 @@ export class AuthService {
     try {
       const phoneUtil = new PhoneUtil(
         phone,
-        region || PHONE_DEFAULT_REGION_CODE
+        regionCode || PHONE_DEFAULT_REGION_CODE
       );
       if (phoneUtil.isValid) {
         const otpCache = new OtpCodeCache();
