@@ -52,6 +52,11 @@ export type UserProfileStateType = {
   username: string;
 };
 
+export type UserRoleUi = {
+  role: UserRole;
+  hasRole: boolean;
+};
+
 export type OtpCodeResponseType = {
   codeSent: boolean;
 };

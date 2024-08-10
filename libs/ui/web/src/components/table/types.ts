@@ -1,4 +1,8 @@
-import { IconNames } from '../../icons';
+import { IconNames } from '../../Icons';
+import {
+  PrimitiveTypes,
+  SortDirType
+} from '@dx/config-shared';
 
 export type CellAlignment = 'left' | 'center' | 'right' | 'justify' | 'inherit';
 export type ComponentType = 'text' | 'icon' | 'checkbox' | 'none';
@@ -8,7 +12,7 @@ export type TableComponentProps = {
   changeLimit?: (limit: number) => void;
   changeOffset?: (offset: number) => void;
   changeSort?: (fieldName: string) => void;
-  clickRow?: (rowData: unknown) => void;
+  clickRow?: (rowData: TableRowType) => void;
   collapsible?: boolean;
   count: number;
   header: TableHeaderItem[];
@@ -19,7 +23,7 @@ export type TableComponentProps = {
   orderBy?: string;
   refreshData?: () => Promise<void>;
   rows: TableRowType[];
-  sortDir: string;
+  sortDir: SortDirType;
   tableName: string;
 };
 
@@ -41,7 +45,7 @@ export type TableCellData = {
   color?: string;
   componentType: ComponentType;
   data: unknown;
-  dataType: string | null;
+  dataType: PrimitiveTypes | null;
   icon?: IconNames;
   onClick?: (id: string, actionType: string) => void;
 };
@@ -54,7 +58,7 @@ export type TableMeta = {
   align?: CellAlignment;
   componentType: ComponentType;
   fieldName: string;
-  fieldType: string | null;
+  fieldType: PrimitiveTypes | null;
   headerAlign: CellAlignment;
   sortable: boolean;
   title: string;

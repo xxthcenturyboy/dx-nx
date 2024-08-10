@@ -39,3 +39,8 @@ export {
   TEST_USER_CREATE,
   TEST_UUID,
 } from './lib/tests/test.const';
+
+export {
+  PrimitiveTypes,
+  SortDirType
+} from './lib/common-config.types';

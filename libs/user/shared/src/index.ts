@@ -15,5 +15,6 @@ export {
   UpdateUsernamePayloadType,
   UserProfileDeviceType,
   UserProfileStateType,
+  UserRoleUi,
   UserType
 } from './user-shared.types';

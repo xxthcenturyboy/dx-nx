@@ -34,6 +34,7 @@ export {
 } from './store/ui-web.selector';
 export { setDocumentTitle } from './set-document-title';
 export {
+  DEBOUNCE,
   FADE_TIMEOUT_DUR,
   MEDIA_BREAK,
   STORAGE_KEYS,
@@ -58,6 +59,19 @@ export { DialogApiError } from './components/dialog/api-error.dialog';
 export { DialogAwaiter } from './components/dialog/awaiter.dialog';
 export { DialogError } from './components/dialog/error.dialog';
 export { DialogWrapper } from './components/dialog/ui-wrapper.dialog';
+
+export {
+  TableComponent,
+  CellAlignment,
+  ComponentType,
+  TableCellData,
+  TableComponentProps,
+  TableDummyColumn,
+  TableDummyRow,
+  TableHeaderItem,
+  TableMeta,
+  TableRowType
+} from './components/table';
 
 export {
   AppMenuType,

@@ -9,6 +9,7 @@ export const USER_ADMIN_ROUTES = {
   MAIN: `/admin/user`,
   LIST: `/admin/user/list`,
   EDIT: `/admin/user/edit`,
+  BETA: '/admin/user/beta'
 };
 
 export const USER_ADMIN_MENU: AppMenuType = {
@@ -38,7 +39,7 @@ export const USER_ADMIN_MENU: AppMenuType = {
       icon: IconNames.MANAGE_ACCOUNTS,
       restriction: 'ADMIN',
       routeKey: USER_ADMIN_ROUTES.EDIT,
-      title: 'Create',
+      title: 'Edit',
       type: 'ROUTE',
     },
     {
@@ -46,7 +47,7 @@ export const USER_ADMIN_MENU: AppMenuType = {
       id: 'menu-item-user-edit-beta',
       icon: IconNames.MENU_OPEN,
       restriction: 'ADMIN',
-      routeKey: USER_ADMIN_ROUTES.EDIT,
+      routeKey: USER_ADMIN_ROUTES.BETA,
       title: 'Beta Feature',
       type: 'ROUTE',
     },
