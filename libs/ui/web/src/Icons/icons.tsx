@@ -5,13 +5,18 @@ import {
   CheckBox,
   CheckBoxOutlineBlank,
   Dashboard,
+  HealthAndSafety,
   ManageAccounts,
   MenuOpen,
   People,
+  PeopleOutline
 } from '@mui/icons-material';
 import { IconNames } from './enums';
 
-export const getIcon = (name: IconNames, color?: string): React.ReactElement | null => {
+export const getIcon = (
+  name: IconNames,
+  color?: string
+): React.ReactElement | null => {
   if (name === IconNames.ACCESSIBLITY) {
     return <Accessibility style={{ color }} />;
   }
@@ -27,6 +32,9 @@ export const getIcon = (name: IconNames, color?: string): React.ReactElement | n
   if (name === IconNames.DASHBOARD) {
     return <Dashboard style={{ color }} />;
   }
+  if (name === IconNames.HEALTHZ) {
+    return <HealthAndSafety style={{ color }} />;
+  }
   if (name === IconNames.MANAGE_ACCOUNTS) {
     return <ManageAccounts style={{ color }} />;
   }
@@ -35,6 +43,9 @@ export const getIcon = (name: IconNames, color?: string): React.ReactElement | n
   }
   if (name === IconNames.PEOPLE) {
     return <People style={{ color }} />;
+  }
+  if (name === IconNames.PEOPLE_OUTLINE) {
+    return <PeopleOutline style={{ color }} />;
   }
 
   return null;

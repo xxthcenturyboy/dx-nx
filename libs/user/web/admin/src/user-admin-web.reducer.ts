@@ -63,6 +63,9 @@ const userAdminSlice = createSlice({
     },
     userSet(state, action: PayloadAction<UserType | undefined>) {
       state.user = action.payload;
+    },
+    userCountSet(state, action: PayloadAction<number | undefined>) {
+      state.usersCount = action.payload;
     }
   },
 });

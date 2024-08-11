@@ -1,4 +1,4 @@
-import { BaseQueryFn } from '@reduxjs/toolkit/query/react';
+import { BaseQueryFn, FetchArgs } from '@reduxjs/toolkit/query/react';
 import axios,
 {
   AxiosError,
@@ -113,23 +113,23 @@ export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
   return instance;
 };
 
-// function handleNotification(message?: string): void {
-//   // const ROUTES = WebConfigService.getWebRoutes();
-//   // const location = useLocation();
-//   // const dispatch = useAppDispatch();
-//   // if (location.pathname !== ROUTES.MAIN) {
-//     if (!store.getState().ui.isShowingUnauthorizedAlert) {
-//       const msg = message
-//         ? message
-//         : `Something went wrong. It's probably our fault. Please try again later.`;
-//       store.dispatch(uiActions.setIsShowingUnauthorizedAlert(true));
-//       toast.warn(msg, {
-//         onClose: () =>
-//           store.dispatch(uiActions.setIsShowingUnauthorizedAlert(false)),
-//       });
-//     }
-//   // }
-// }
+function handleNotification(message?: string): void {
+  // const ROUTES = WebConfigService.getWebRoutes();
+  // const location = useLocation();
+  // const dispatch = useAppDispatch();
+  // if (location.pathname !== ROUTES.MAIN) {
+    if (!store.getState().ui.isShowingUnauthorizedAlert) {
+      const msg = message
+        ? message
+        : `Something went wrong. It's probably our fault. Please try again later.`;
+      store.dispatch(uiActions.setIsShowingUnauthorizedAlert(true));
+      toast.warn(msg, {
+        onClose: () =>
+          store.dispatch(uiActions.setIsShowingUnauthorizedAlert(false)),
+      });
+    }
+  // }
+}
 
 export const axiosBaseQuery = ({ baseUrl } = { baseUrl: '' }): BaseQueryFn =>
   async <TReturnData>({
@@ -173,7 +173,8 @@ export const axiosBaseQuery = ({ baseUrl } = { baseUrl: '' }): BaseQueryFn =>
       return {
         error: {
           status: err.response.status,
-          data: message,
+          data: err.stack,
+          error: message
         },
       }
     }

@@ -4,7 +4,7 @@ import { ApiLoggingClass } from '@dx/logger-api';
 import { sendUnauthorized } from '@dx/utils-api-http-response';
 import { HeaderService } from '@dx/utils-api-headers';
 import { UserModel } from '@dx/user-api';
-import { USER_ROLE } from '@dx/user-privilege-api';
+import { USER_ROLE } from '@dx/user-privilege-shared';
 import { TokenService } from './token.service';
 
 export async function userHasRole(

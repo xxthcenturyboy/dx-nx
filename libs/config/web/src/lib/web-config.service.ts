@@ -2,6 +2,7 @@
 // import { RouteState } from '@dx/ui-web';
 import { AUTH_ROUTES } from '@dx/auth-web';
 import { DASHBOARD_ROUTES } from '@dx/dashboard-web';
+import { STATS_SUDO_ROUTES } from '@dx/stats-web';
 import { USER_ADMIN_ROUTES } from '@dx/user-admin-web';
 import { USER_PROFILE_ROUTES } from '@dx/user-profile-web';
 import { SHORTLINK_ROUTES } from '@dx/shortlink-web';
@@ -26,7 +27,9 @@ export class WebConfigService {
       ADMIN: {
         USER: USER_ADMIN_ROUTES,
       },
-      SUDO: {},
+      SUDO: {
+        STATS: STATS_SUDO_ROUTES
+      },
     };
   }
 

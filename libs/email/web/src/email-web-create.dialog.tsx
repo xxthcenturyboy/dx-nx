@@ -107,8 +107,9 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
         setShowLottieError(false);
         setAllSucceeded(true);
       } else {
-        // @ts-expect-error -all good
-        setErrorMessage(addEmailError.data as unknown as string);
+        if ('error' in addEmailError) {
+          setErrorMessage(addEmailError['error']);
+        }
         setShowLottieError(true);
       }
     }
@@ -123,8 +124,9 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
         setShowLottieError(false);
         setIsEmailAvailable(true);
       } else {
-        // @ts-expect-error -all good
-        setErrorMessage(checkAvailabilityError.data as unknown as string);
+        if ('error' in checkAvailabilityError) {
+          setErrorMessage(checkAvailabilityError['error']);
+        }
         setShowLottieError(true);
         setIsEmailAvailable(false);
       }
@@ -140,8 +142,9 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
       ) {
         setShowLottieError(false);
       } else {
-        // @ts-expect-error -all good
-        setErrorMessage(sendOtpError.data as unknown as string);
+        if ('error' in sendOtpError) {
+          setErrorMessage(sendOtpError['error']);
+        }
         setShowLottieError(true);
       }
     }

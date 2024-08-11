@@ -1,7 +1,7 @@
 import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger-api';
 import { RedisService, RedisServiceType } from './redis.service';
 import { REDIS_HEALTHZ_DATA, REDIS_HEALTHZ_KEY } from './redis.consts';
-import { RedisHealthzResponse } from './redis.types';
+import { RedisHealthzResponse } from '@dx/healthz-shared';
 
 export class RedisHealthzService {
   logger: ApiLoggingClassType;

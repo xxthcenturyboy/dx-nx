@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
-import { UpdatePrivilegeSetPayloadType } from '@dx/user-privilege-api';
+import { UpdatePrivilegeSetPayloadType } from '@dx/user-privilege-shared';
 import {
   TEST_EXISTING_USER_PRIVILEGE_ID,
   TEST_UUID

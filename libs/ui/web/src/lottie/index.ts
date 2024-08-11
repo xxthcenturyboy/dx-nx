@@ -1,4 +1,5 @@
 import { LottieAlert } from './LottieAlert';
+import { LottieBetaBadge } from './LottieBetaBadge';
 import { LottieCancel } from './LottieCancel';
 import { LottieError } from './LottieError';
 import { LottieAwaiter } from './LottieAwaiter';
@@ -12,6 +13,7 @@ export {
   LottieAccessDenied,
   LottieAlert,
   LottieAwaiter,
+  LottieBetaBadge,
   LottieCancel,
   LottieError,
   LottieQuestionMark,

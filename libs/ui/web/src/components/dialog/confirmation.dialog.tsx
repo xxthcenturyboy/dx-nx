@@ -13,6 +13,8 @@ import {
   useMediaQuery,
   useTheme
 } from '@mui/material';
+// import Zoom from '@mui/material/Zoom';
+
 import {
   LottieCancel,
   LottieQuestionMark,
@@ -73,62 +75,61 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
 
   return (
     <DialogWrapper>
-      {/* <DialogTitle style={{ textAlign: 'center' }} >{title || APP_NAME}</DialogTitle> */}
-      <CustomDialogContent>
+        {/* <DialogTitle style={{ textAlign: 'center' }} >{title || APP_NAME}</DialogTitle> */}
+        <CustomDialogContent>
+          {
+            showLottieInitial
+            && !(
+              showLottieCancel
+              || showLottieSuccess
+            )
+            && (
+              <LottieQuestionMark />
+            )
+          }
+          {
+            showLottieCancel && (
+              <LottieCancel complete={handleClose} />
+            )
+          }
+          {
+            showLottieSuccess && (
+              <LottieSuccess complete={handleConfirmation} />
+            )
+          }
+          <DialogContentText id="confirm-dialog-description" variant="h6" align="center" margin="0 0 20px">
+            { messageText || 'Are you sure?' }
+          </DialogContentText>
+          { bodyMessageHtml }
+        </CustomDialogContent>
 
         {
-          showLottieInitial
-          && !(
+          !(
             showLottieCancel
             || showLottieSuccess
           )
           && (
-            <LottieQuestionMark />
-          )
-        }
-        {
-          showLottieCancel && (
-            <LottieCancel complete={handleClose} />
-          )
-        }
-        {
-          showLottieSuccess && (
-            <LottieSuccess complete={handleConfirmation} />
-          )
-        }
-        <DialogContentText id="confirm-dialog-description" variant="h6" align="center" margin="0 0 20px">
-          { messageText || 'Are you sure?' }
-        </DialogContentText>
-        { bodyMessageHtml }
-      </CustomDialogContent>
-
-      {
-        !(
-          showLottieCancel
-          || showLottieSuccess
-        )
-        && (
-          <DialogActions
-            style={{
-              justifyContent: smBreak ? 'center' : 'flex-end'
-            }}
-          >
-            {
-              cancelText && (
-                <Button variant="outlined" onClick={handleCancel}>
-                  {cancelText}
-                </Button>
-              )
-            }
-            <Button
-              onClick={handleClickConfirm}
-              variant="contained"
+            <DialogActions
+              style={{
+                justifyContent: smBreak ? 'center' : 'flex-end'
+              }}
             >
-              { okText || 'OK' }
-            </Button>
-          </DialogActions>
-        )
-      }
+              {
+                cancelText && (
+                  <Button variant="outlined" onClick={handleCancel}>
+                    {cancelText}
+                  </Button>
+                )
+              }
+              <Button
+                onClick={handleClickConfirm}
+                variant="contained"
+              >
+                { okText || 'OK' }
+              </Button>
+            </DialogActions>
+          )
+        }
     </DialogWrapper>
   );
 };

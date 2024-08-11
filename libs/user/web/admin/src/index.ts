@@ -14,3 +14,6 @@ export {
   selectUserFormatted,
   selectUsersFormatted
 } from './user-admin-web.selectors';
+export { UserAdminMain } from './user-admin-web-main.component';
+export { UserAdminEdit } from './user-admin-web-edit.component';
+export { UserAdminList } from './user-admin-web-list.component';

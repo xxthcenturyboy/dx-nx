@@ -4,6 +4,5 @@ export { RedisHealthzService, RedisHealthzServiceType } from './redis.healthz';
 export {
   RedisConfigType,
   RedisConstructorType,
-  RedisExpireOptions,
-  RedisHealthzResponse
+  RedisExpireOptions
 } from './redis.types';

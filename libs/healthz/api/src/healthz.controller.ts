@@ -12,7 +12,7 @@ import {
   HealthzPostgresType,
   HealthzRedisType,
   HealthzStatusType,
-} from './healthz.types';
+} from '@dx/healthz-shared';
 import { HttpHealthzService } from './http-healthz.service';
 
 const HttpHealth = {

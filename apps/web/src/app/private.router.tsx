@@ -13,7 +13,7 @@ import { WebConfigService } from '@dx/config-web';
 import { store } from '@dx/store-web';
 import { selectIsAuthenticated } from '@dx/auth-web';
 import { AdminWebRouterConfig } from './admin.router';
-import { SuperAdminWebRouterConfig } from './super-admin.router';
+import { SudoWebRouterConfig } from './sudo.router';
 
 export const PrivateRouter = () => {
   const isAuthenticated = selectIsAuthenticated(store.getState());
@@ -53,7 +53,7 @@ export class PrivateWebRouterConfig {
             errorElement: (<GlobalErrorComponent />)
           },
           ...AdminWebRouterConfig.getRouter(),
-          ...SuperAdminWebRouterConfig.getRouter()
+          ...SudoWebRouterConfig.getRouter()
         ]
       }
     ];

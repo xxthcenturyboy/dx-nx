@@ -12,7 +12,8 @@ import {
   UpdatedAt,
 } from 'sequelize-typescript';
 
-import { USER_PRIVILEGES_POSTGRES_DB_NAME, USER_ROLE } from './user-privilege.consts';
+import { USER_PRIVILEGES_POSTGRES_DB_NAME } from './user-privilege.consts';
+import { USER_ROLE } from '@dx/user-privilege-shared';
 // import { UserPrivilegestMenuType } from './user.types';
 // import { parseJson } from '@dx/utils';
 

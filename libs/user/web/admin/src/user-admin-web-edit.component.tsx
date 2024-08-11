@@ -1,7 +1,6 @@
 import React,
 {
   useEffect,
-  useRef,
   useState
 } from 'react';
 import {
@@ -36,29 +35,29 @@ import {
   DialogAlert,
   FADE_TIMEOUT_DUR,
   setDocumentTitle,
-  uiActions,
-  useFocus
+  uiActions
 } from '@dx/ui-web';
 import { UserRoleUi } from '@dx/user-shared';
+import { ACCOUNT_RESTRICTIONS } from '@dx/auth-shared';
 import { WebConfigService } from '@dx/config-web';
+import { prepareRoleCheckboxes } from '@dx/user-privilege-web';
 import { userAdminActions } from './user-admin-web.reducer';
 import { selectUserFormatted } from './user-admin-web.selectors';
-
-import fetchUser from 'client/Users/actions/fetchUser';
-import fetchUserUpdate from 'client/Users/actions/fetchUpdateUser';
-
-import { AccountRestrictions, UserRole } from 'shared/enums';
-import fetchPrivilegeSets from 'client/PrivilegeSet/actions/fetchPrivilegeSets';
-import { prepareRoleCheckboxes } from 'client/PrivilegeSet';
+import {
+  useLazyGetUserAdminQuery,
+  useUpdateUserMutation
+} from './user-admin-web.api';
+import { privilegeSetActions } from '@dx/user-privilege-web';
+import { useLazyGetPrivilegeSetsQuery } from '@dx/user-privilege-web';
 
 type UserRestriction = {
-  restriction: AccountRestrictions;
+  restriction: keyof typeof ACCOUNT_RESTRICTIONS;
   isRestricted: boolean;
 };
 
-const UserAdminEdit: React.FC = () => {
+export const UserAdminEdit: React.FC = () => {
   const user = useAppSelector((state: RootState) => selectUserFormatted(state));
-  const sets = useAppSelector((state: RootState) => state.privilegeSet.sets);
+  const sets = useAppSelector((state: RootState) => state.privileges.sets);
   const currentUser = useAppSelector((state: RootState) => state.userProfile);
   const [title, setTitle] = useState('Edit User');
   const [restrictions, setRestrictions] = useState<UserRestriction[]>([]);
@@ -66,22 +65,50 @@ const UserAdminEdit: React.FC = () => {
   const ROUTES = WebConfigService.getWebRoutes();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { id } = useParams<{id: string}>();
+  const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const theme = useTheme();
   const mdBreak = useMediaQuery(theme.breakpoints.down('md'));
   const smBreak = useMediaQuery(theme.breakpoints.down('sm'));
+  const [
+    fetchPrivilegeSets,
+    {
+      data: privilegeResponse,
+      error: privilegeError,
+      isLoading: isLoadingPrivilegeSet,
+      isSuccess: privilegeSetSuccess,
+      isUninitialized: privilegeSetUninitialized
+    }
+  ] = useLazyGetPrivilegeSetsQuery();
+  const [
+    fetchUser,
+    {
+      data: userResponse,
+      error: userError,
+      isLoading: isLoadingUser,
+      isSuccess: fetchUserSuccess,
+      isUninitialized: fetchUserUninitialized
+    }
+  ] = useLazyGetUserAdminQuery();
+  const [
+    fetchUserUpdate,
+    {
+      data: updateUserResponse,
+      error: updateUserError,
+      isLoading: isLoadingUpdateUser,
+      isSuccess: updateUserSuccess,
+      isUninitialized: updateUserUninitialized
+    }
+  ] = useUpdateUserMutation();
 
   useEffect(() => {
-    if (id) {
-      void getUserData();
-    }
+    void getUserData();
     setDocumentTitle(title);
     if (location && location.pathname) {
       dispatch(userAdminActions.lastRouteSet(`${location.pathname}${location.search}`));
     }
     if (!sets) {
-      void dispatch(fetchPrivilegeSets());
+      void fetchPrivilegeSets();
     }
 
     return function cleanup() {
@@ -103,18 +130,68 @@ const UserAdminEdit: React.FC = () => {
     }
   }, [sets]);
 
+  useEffect(() => {
+    if (
+      privilegeSetSuccess
+    ) {
+      if (
+        !privilegeError
+        && privilegeResponse
+      ) {
+        dispatch(privilegeSetActions.setPrivileges(privilegeResponse));
+      }
+      if (
+        privilegeError
+        && 'error' in privilegeError
+      ) {
+        dispatch(uiActions.apiDialogSet(privilegeError['error']));
+      }
+    }
+  }, [privilegeSetSuccess]);
+
+  useEffect(() => {
+    if (
+      fetchUserSuccess
+    ) {
+      if (!userError) {
+        dispatch(userAdminActions.userSet(userResponse));
+      }
+      if (
+        userError
+      ) {
+        dispatch(uiActions.apiDialogSet(userError['error']));
+      }
+    }
+  }, [fetchUserSuccess]);
+
+  useEffect(() => {
+    if (
+      !isLoadingUpdateUser
+      && !updateUserUninitialized
+    ) {
+      if (
+        updateUserError
+        && 'error' in updateUserError
+      ) {
+        dispatch(uiActions.apiDialogSet(updateUserError.error));
+      }
+    }
+  }, [isLoadingUpdateUser]);
+
   const getUserData = async (): Promise<void> => {
-    await dispatch(fetchUser(id));
+    if (id) {
+      await fetchUser(id);
+    }
   };
 
   const setupRestrictions = (): void => {
-    const keys = Object.keys(AccountRestrictions);
+    const keys = Object.keys(ACCOUNT_RESTRICTIONS) as (keyof typeof ACCOUNT_RESTRICTIONS)[];
     const userRestrictions: UserRestriction[] = [];
     if (user?.restrictions && Array.isArray(user.restrictions)) {
       for (const key of keys) {
-        const thisRestriction = AccountRestrictions[key];
+        const thisRestriction = ACCOUNT_RESTRICTIONS[key];
         userRestrictions.push({
-          restriction: thisRestriction,
+          restriction: thisRestriction as keyof typeof ACCOUNT_RESTRICTIONS,
           isRestricted: user.restrictions.indexOf(thisRestriction) > -1
         });
       }
@@ -130,8 +207,8 @@ const UserAdminEdit: React.FC = () => {
     }
   };
 
-  const handleRoleClick = async (clickedRole: UserRole): Promise<void> => {
-    if (currentUser?.id === user?.id && !currentUser?.isSuperAdmin) {
+  const handleRoleClick = async (clickedRole: string): Promise<void> => {
+    if (currentUser?.id === user?.id && !currentUser?.sa) {
       dispatch(uiActions.appDialogSet(
         <DialogAlert
           buttonText="Aw, shucks"
@@ -150,9 +227,10 @@ const UserAdminEdit: React.FC = () => {
 
       dispatch(userAdminActions.userSet(user));
       setupRoles();
-      void dispatch(fetchUserUpdate(user.id, {
+      void fetchUserUpdate({
+        id: user.id,
         roles: user.roles
-      }));
+      });
     }
   };
 
@@ -400,5 +478,3 @@ const UserAdminEdit: React.FC = () => {
     </Fade>
   );
 };
-
-export default UserEdit;

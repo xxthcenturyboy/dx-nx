@@ -46,6 +46,7 @@ export {
   UiStateType
 } from './ui-web.types';
 export { GlobalAwaiter } from './components/global-awaiter.component';
+export { BetaFeatureComponent } from './components/beta-feature-placeholder.component';
 export { GlobalErrorComponent } from './components/global-error.component';
 export { NotFoundComponent } from './components/not-found.component';
 export { UnauthorizedComponent } from './components/unauthorized.component';
@@ -75,6 +76,7 @@ export {
 
 export {
   AppMenuType,
+  AppMenuItemType,
   AppNavBar,
   MenuNav,
   MenuRestrictionType

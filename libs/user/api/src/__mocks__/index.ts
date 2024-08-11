@@ -1,6 +1,6 @@
 import { Model } from 'sequelize-typescript';
 
-import { USER_ROLE } from '@dx/user-privilege-api';
+import { USER_ROLE } from '@dx/user-privilege-shared';
 
 const mockUsers = {
   user1: {
@@ -14,7 +14,7 @@ const mockUsers = {
   },
 };
 
-export { USER_ROLE } from '@dx/user-privilege-api';
+export { USER_ROLE } from '@dx/user-privilege-shared';
 
 export class UserModel extends Model<UserModel> {
   id: string;

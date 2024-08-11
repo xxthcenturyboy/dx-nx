@@ -109,8 +109,9 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (props): ReactEleme
         setShowLottieError(false);
         setAllSucceeded(true);
       } else {
-        // @ts-expect-error -all good
-        setErrorMessage(addPhoneError.data as unknown as string);
+        if ('error' in addPhoneError) {
+          setErrorMessage(addPhoneError['error']);
+        }
         setShowLottieError(true);
       }
     }
@@ -125,8 +126,9 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (props): ReactEleme
         setShowLottieError(false);
         setIsPhoneAvailable(true);
       } else {
-        // @ts-expect-error -all good
-        setErrorMessage(checkAvailabilityError.data as unknown as string);
+        if ('error' in checkAvailabilityError) {
+          setErrorMessage(checkAvailabilityError['error']);
+        }
         setShowLottieError(true);
         setIsPhoneAvailable(false);
       }
@@ -142,8 +144,9 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (props): ReactEleme
       ) {
         setShowLottieError(false);
       } else {
-        // @ts-expect-error -all good
-        setErrorMessage(sendOtpError.data as unknown as string);
+        if ('error' in sendOtpError) {
+          setErrorMessage(sendOtpError['error']);
+        }
         setShowLottieError(true);
       }
     }

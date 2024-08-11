@@ -17,9 +17,11 @@ import {
   UserPrivilegeService,
   UserPrivilegeServiceType,
 } from './user-privilege.service';
-import { UpdatePrivilegeSetPayloadType } from './user-privilege.types';
 import { UserPrivilegeSetModel } from './user-privilege.postgres-model';
-import { USER_ROLE } from './user-privilege.consts';
+import {
+  USER_ROLE,
+  UpdatePrivilegeSetPayloadType
+} from '@dx/user-privilege-shared';
 
 jest.mock('@dx/logger-api');
 

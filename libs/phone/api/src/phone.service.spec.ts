@@ -119,7 +119,7 @@ describe('PhoneService', () => {
           expect(await phoneService.createPhone(payload)).toThrow();
         } catch (err) {
           expect(err.message).toEqual(
-            `This phone: ${payload.phone} already exists.`
+            `${payload.phone} already exists.`
           );
         }
       });

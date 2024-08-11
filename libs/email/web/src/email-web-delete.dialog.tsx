@@ -68,8 +68,9 @@ export const DeleteEmailDialog: React.FC<DeleteEmailDialogProps> = (props): Reac
         setBodyMessage('Email deleted.');
       } else {
         setShowLottieError(true);
-        // @ts-expect-error - stupid
-        setBodyMessage(deleteEmailError.data as unknown as string);
+        if ('error' in deleteEmailError) {
+          setBodyMessage(deleteEmailError['error']);
+        }
       }
     }
   }, [isLoadingDeleteEmail]);

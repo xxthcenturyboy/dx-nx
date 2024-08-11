@@ -26,16 +26,14 @@ import { PhoneModel, PhoneModelType } from '@dx/phone-api';
 import { EmailType } from '@dx/email-shared';
 import { PhoneType } from '@dx/phone-shared';
 import { DeviceModel, DeviceModelType, DeviceType } from '@dx/devices-api';
+import { ACCOUNT_RESTRICTIONS } from '@dx/auth-shared';
 import {
   UserPrivilegeSetModel,
   UserPrivilegeSetModelType,
 } from '@dx/user-privilege-api';
-import { USER_ROLE } from '@dx/user-privilege-api';
+import { USER_ROLE } from '@dx/user-privilege-shared';
 import { ApiLoggingClass } from '@dx/logger-api';
-import {
-  ACCOUNT_RESTRICTIONS,
-  USER_ENTITY_POSTGRES_DB_NAME,
-} from './user.consts';
+import { USER_ENTITY_POSTGRES_DB_NAME } from './user.consts';
 import { usernameValidator } from './username.validator';
 import { UserSessionType } from './user.types';
 

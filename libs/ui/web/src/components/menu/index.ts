@@ -1,5 +1,6 @@
 export {
   AppMenuType,
+  AppMenuItemType,
   MenuRestrictionType
 } from './app-menu.types';
 

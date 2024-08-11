@@ -28,7 +28,7 @@ export const GlobalErrorComponent: React.FC<GlobalErrorComponentPropsType> = ({ 
         variant="h1"
         color="primary"
       >
-        Not Found
+        Ouch
       </Typography>
       <Typography
         variant="h5"

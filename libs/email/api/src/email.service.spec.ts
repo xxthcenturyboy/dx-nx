@@ -114,7 +114,7 @@ describe('EmailService', () => {
           expect(await emailService.createEmail(payload)).toThrow();
         } catch (err) {
           expect(err.message).toEqual(
-            `This email: ${payload.email} already exists.`
+            `${payload.email} already exists.`
           );
         }
       });

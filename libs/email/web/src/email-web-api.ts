@@ -27,7 +27,7 @@ export const apiWebEmail = apiWebMain.injectEndpoints({
     deleteEmail: build.mutation<{ id: string }, string>({
       query: (paylaod) => (
         {
-          url: `v1/email/${paylaod}`,
+          url: `v1/email/${encodeURIComponent(paylaod)}`,
           method: 'DELETE'
         }
       )
@@ -35,7 +35,7 @@ export const apiWebEmail = apiWebMain.injectEndpoints({
     deleteEmailProfile: build.mutation<{ id: string }, string>({
       query: (paylaod) => (
         {
-          url: `v1/email/user-profile/${paylaod}`,
+          url: `v1/email/user-profile/${encodeURIComponent(paylaod)}`,
           method: 'DELETE'
         }
       )
@@ -43,7 +43,7 @@ export const apiWebEmail = apiWebMain.injectEndpoints({
     updateEmail: build.mutation<{ id: string }, UpdateEmailPayloadType>({
       query: (paylaod) => (
         {
-          url: `v1/email/${paylaod.id}`,
+          url: `v1/email/${encodeURIComponent(paylaod.id)}`,
           method: 'PUT',
           data: paylaod
         }

@@ -77,7 +77,7 @@ describe('v1 Email Routes', () => {
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
         expect(typedError.response.data.message).toEqual(
-          `This email: ${TEST_EXISTING_EMAIL} already exists.`
+          `${TEST_EXISTING_EMAIL} already exists.`
         );
       }
     });

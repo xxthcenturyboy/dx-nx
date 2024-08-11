@@ -4,7 +4,7 @@ import {
   REDIS_DELIMITER,
 } from '@dx/data-access-redis';
 import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger-api';
-import { USER_ROLE } from './user-privilege.consts';
+import { USER_ROLE } from '@dx/user-privilege-shared';
 import { UserPrivilegeSetModel } from './user-privilege.postgres-model';
 
 export class UserPrivilegeSetCache {

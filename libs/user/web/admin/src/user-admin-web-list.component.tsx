@@ -39,15 +39,17 @@ import {
   uiActions,
   useFocus
 } from '@dx/ui-web';
+import { CustomResponseErrorType } from '@dx/rtk-query-web';
 import { debounce } from '@dx/utils-misc-web';
-import { UserType } from '@dx/user-shared';
+import {
+  GetUsersListQueryType,
+  UserType
+} from '@dx/user-shared';
 import { WebConfigService } from '@dx/config-web';
 import { userAdminActions } from './user-admin-web.reducer';
 import { userAdminTableMetaData } from './user-admin-web-list.config';
 import { selectUsersFormatted } from './user-admin-web.selectors';
-
-import fetchUserList from 'client/Users/actions/fetchUserList';
-import { GetUsersListQueryType } from 'shared/types/api/user';
+import { useLazyGetUserAdminListQuery } from './user-admin-web.api';
 
 export const UserAdminList: React.FC = () => {
   const filterValue = useAppSelector((state: RootState) => state.userAdmin.filterValue);
@@ -69,6 +71,16 @@ export const UserAdminList: React.FC = () => {
   const theme = useTheme();
   const smBreak = useMediaQuery(theme.breakpoints.down('sm'));
   const location = useLocation();
+  const [
+    fetchUserList,
+    {
+      data: userListResponse,
+      error: userListError,
+      isLoading: isLoadingUserList,
+      isSuccess: fetchUserListSuccess,
+      isUninitialized: fetchUserListUninitialized
+    }
+  ] = useLazyGetUserAdminListQuery();
 
   useEffect(() => {
     setDocumentTitle('Admin Users');
@@ -97,11 +109,26 @@ export const UserAdminList: React.FC = () => {
   }, [users]);
 
   useEffect(() => {
-    !userGetXhr
-    && appBootstrapped
+    !isLoadingUserList
     && mounted
     && void fetchUsers();
   }, [limit, offset, orderBy, sortDir]);
+
+  useEffect(() => {
+    if (
+      fetchUserListSuccess
+    ) {
+      if (!userListError) {
+        dispatch(userAdminActions.listSet(userListResponse?.rows || []));
+        dispatch(userAdminActions.userCountSet(userListResponse?.count));
+      }
+      if (
+        userListError
+      ) {
+        dispatch(uiActions.apiDialogSet(userListError['error']));
+      }
+    }
+  }, [fetchUserListSuccess]);
 
   const debounceFetch = useRef(debounce((value: string) => {
     void fetchUsers(value);
@@ -115,7 +142,7 @@ export const UserAdminList: React.FC = () => {
       sortDir,
       filterValue: searchValue !== undefined ? searchValue : filterValue,
     };
-    await dispatch(fetchUserList(params));
+    await fetchUserList(params);
   };
 
   const refreshTableData = async (): Promise<void> => {
@@ -347,7 +374,7 @@ export const UserAdminList: React.FC = () => {
           count={usersCount || 0}
           collapsible
           header={headerData}
-          loading={userGetXhr}
+          loading={isLoadingUserList}
           limit={limit}
           // maxHeight="200px"
           offset={offset}

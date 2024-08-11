@@ -14,7 +14,7 @@ import {
 } from './ensure-role.middleware';
 import { ApiLoggingClass } from '@dx/logger-api';
 import { sendUnauthorized } from '@dx/utils-api-http-response';
-import { USER_ROLE } from '@dx/user-privilege-api';
+import { USER_ROLE } from '@dx/user-privilege-shared';
 import { TokenService } from './token.service';
 import { CookeiService } from '@dx/utils-api-cookies';
 import { TEST_EXISTING_USER_ID, TEST_UUID } from '@dx/config-shared';

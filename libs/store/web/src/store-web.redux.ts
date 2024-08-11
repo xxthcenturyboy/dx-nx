@@ -25,6 +25,11 @@ import {
 } from '@dx/auth-web';
 import { dashboardReducer } from '@dx/dashboard-web';
 import { homeReducer } from '@dx/home';
+import {
+  privilegeSetReducer,
+  privilegeSetPersistConfig,
+  PrivilegeSetStateType
+} from '@dx/user-privilege-web';
 import { shortlinkReducer } from '@dx/shortlink-web';
 import {
   userAdminReducer,
@@ -48,6 +53,7 @@ const combinedPersistReducers = combineReducers({
   auth: persistReducer<AuthStateType, any>(authPersistConfig, authReducer) as typeof authReducer,
   dashboard: dashboardReducer,
   home: homeReducer,
+  privileges: persistReducer<PrivilegeSetStateType, any>(privilegeSetPersistConfig, privilegeSetReducer) as typeof privilegeSetReducer,
   shortlink: shortlinkReducer,
   ui: persistReducer<UiStateType, any>(uiPersistConfig, uiReducer) as typeof uiReducer,
   userAdmin: persistReducer<UserAdminStateType, any>(userAdminPersistConfig, userAdminReducer) as typeof userAdminReducer,

@@ -1,0 +1,9 @@
+{
+  "name": "user-privilege-shared",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/user-privilege/shared/src",
+  "projectType": "library",
+  "tags": ["scope:shared"],
+  "// targets": "to see all targets run: nx show project user-privilege-shared --web",
+  "targets": {}
+}

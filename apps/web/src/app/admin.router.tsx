@@ -4,8 +4,6 @@ import {
 } from 'react-router-dom';
 
 import {
-  GlobalErrorComponent,
-  NotFoundComponent,
   UnauthorizedComponent
 } from '@dx/ui-web';
 import { WebConfigService } from '@dx/config-web';
@@ -34,12 +32,22 @@ export class AdminWebRouterConfig {
         errorElement: (<UnauthorizedComponent />),
         children: [
           {
+            path: ROUTES.ADMIN.USER.MAIN,
+            lazy: async () => { let { UserAdminMain } = await import('@dx/user-admin-web')
+              return { Component: UserAdminMain }
+            }
+          },
+          {
             path: ROUTES.ADMIN.USER.LIST,
-            // lazy: async () => { let { Dashboard } = await import('@dx/dashboard-web')
-            //   return { Component: Dashboard }
-            // },
-            element: (<UnauthorizedComponent />),
-            errorElement: (<GlobalErrorComponent />)
+            lazy: async () => { let { UserAdminList } = await import('@dx/user-admin-web')
+              return { Component: UserAdminList }
+            }
+          },
+          {
+            path: ROUTES.ADMIN.USER.MAIN,
+            lazy: async () => { let { UserAdminEdit } = await import('@dx/user-admin-web')
+              return { Component: UserAdminEdit }
+            }
           }
         ]
       }

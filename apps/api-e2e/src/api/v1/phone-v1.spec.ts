@@ -82,7 +82,7 @@ describe('v1 Phone Routes', () => {
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
         expect(typedError.response.data.message).toEqual(
-          `This phone: ${TEST_EXISTING_PHONE} already exists.`
+          `${TEST_EXISTING_PHONE} already exists.`
         );
       }
     });

@@ -68,8 +68,9 @@ export const DeletePhoneDialog: React.FC<DeletePhoneDialogProps> = (props): Reac
         setBodyMessage('Phone deleted.');
       } else {
         setShowLottieError(true);
-        // @ts-expect-error - stupid
-        setBodyMessage(deletePhoneError.data as unknown as string);
+        if ('error' in deletePhoneError) {
+          setBodyMessage(deletePhoneError['error']);
+        }
       }
     }
   }, [isLoadingDeletePhone]);

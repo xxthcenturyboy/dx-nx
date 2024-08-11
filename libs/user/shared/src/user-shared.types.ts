@@ -53,7 +53,7 @@ export type UserProfileStateType = {
 };
 
 export type UserRoleUi = {
-  role: UserRole;
+  role: string;
   hasRole: boolean;
 };
 
@@ -93,6 +93,7 @@ export type GetUserQueryType = {
 export type GetUserResponseType = UserType;
 
 export type UpdateUserPayloadType = {
+  id: string;
   firstName?: string;
   lastName?: string;
   roles?: string[];

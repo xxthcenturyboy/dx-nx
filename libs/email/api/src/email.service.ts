@@ -35,7 +35,7 @@ export class EmailService {
       emailUtil.formattedEmail()
     );
     if (!isEmailAvailable) {
-      throw new Error(`This email: ${email} already exists.`);
+      throw new Error(`${email} already exists.`);
     }
   }
 
