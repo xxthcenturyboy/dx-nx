@@ -9,7 +9,7 @@ import {
 } from '@dx/auth-shared';
 import { getAuthApiErrors } from './auth-web-api-errors';
 
-function transformAAuthpiError(response: CustomResponseErrorType): CustomResponseErrorType {
+function transformAuthApiError(response: CustomResponseErrorType): CustomResponseErrorType {
   const AUTH_API_ERRORS = getAuthApiErrors();
 
   if (response.code === '100') {
@@ -32,7 +32,7 @@ export const apiWebAuth = apiWebMain.injectEndpoints({
           data: payload
         }
       ),
-      transformErrorResponse: transformAAuthpiError
+      transformErrorResponse: transformAuthApiError
     }),
     logout: build.mutation<LogoutResponse, void>({
       query: () => (
@@ -43,7 +43,8 @@ export const apiWebAuth = apiWebMain.injectEndpoints({
       ),
       transformResponse: (response: LogoutResponse) => {
         return response;
-      }
+      },
+      transformErrorResponse: transformAuthApiError
     }),
     otpRequestEmail: build.mutation<{ code?: string }, { email: string }>({
       query: (payload) => (
@@ -52,7 +53,8 @@ export const apiWebAuth = apiWebMain.injectEndpoints({
           method: 'POST',
           data: payload
         }
-      )
+      ),
+      transformErrorResponse: transformAuthApiError
     }),
     otpRequestPhone: build.mutation<{ code?: string }, { phone: string; regionCode?: string }>({
       query: (payload) => (
@@ -61,7 +63,8 @@ export const apiWebAuth = apiWebMain.injectEndpoints({
           method: 'POST',
           data: payload
         }
-      )
+      ),
+      transformErrorResponse: transformAuthApiError
     })
   }),
   overrideExisting: false
