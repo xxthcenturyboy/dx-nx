@@ -1,9 +1,26 @@
-import { apiWebMain } from '@dx/rtk-query-web';
+import {
+  apiWebMain,
+  CustomResponseErrorType
+} from '@dx/rtk-query-web';
 import {
   LoginPayloadType,
   LogoutResponse,
   AuthSuccessResponseType
 } from '@dx/auth-shared';
+import { getAuthApiErrors } from './auth-web-api-errors';
+
+function transformAAuthpiError(response: CustomResponseErrorType): CustomResponseErrorType {
+  const AUTH_API_ERRORS = getAuthApiErrors();
+
+  if (response.code === '100') {
+    return {
+      ...response,
+      error: AUTH_API_ERRORS[response.code] || response.error
+    }
+  }
+
+  return response;
+}
 
 export const apiWebAuth = apiWebMain.injectEndpoints({
   endpoints: (build) => ({
@@ -14,7 +31,8 @@ export const apiWebAuth = apiWebMain.injectEndpoints({
           method: 'POST',
           data: payload
         }
-      )
+      ),
+      transformErrorResponse: transformAAuthpiError
     }),
     logout: build.mutation<LogoutResponse, void>({
       query: () => (

@@ -336,7 +336,7 @@ export class AuthService {
       }
 
       if (!user) {
-        throw new Error('Could not log you in.');
+        throw new Error('100 Could not log you in.');
       }
 
       if (user.deletedAt || user.accountLocked) {
@@ -347,7 +347,7 @@ export class AuthService {
             2
           )}`
         );
-        throw new Error('Could not log you in.');
+        throw new Error('100 Could not log you in.');
       }
 
       await user.getEmails();

@@ -1,4 +1,4 @@
-import { BaseQueryFn, FetchArgs } from '@reduxjs/toolkit/query/react';
+import { BaseQueryFn } from '@reduxjs/toolkit/query/react';
 import axios,
 {
   AxiosError,
@@ -16,8 +16,10 @@ import { logger } from '@dx/logger-web';
 import {
   AxiosInstanceHeadersParamType,
   AxiosBaseQueryParamsType,
-  RequestResponseType
+  RequestResponseType,
+  CustomResponseErrorType
 } from './axios-web.types';
+import { regexMatchNumberGroups } from '@dx/util-regex';
 
 export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
   const URLS = WebConfigService.getWebUrls();
@@ -100,10 +102,10 @@ export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
           });
         }
       } else {
-        logger.error('Error in AxiosInstance', error);
-        const message = error.response.status !== 500
-          ? error.response.data.message
-          : error.message;
+        // logger.error('Error in AxiosInstance', error);
+        // const message = error.response.status !== 500
+        //   ? error.response.data.message
+        //   : error.message;
         // handleNotification(message);
         return Promise.reject(error);
       }
@@ -131,7 +133,26 @@ function handleNotification(message?: string): void {
   // }
 }
 
-export const axiosBaseQuery = ({ baseUrl } = { baseUrl: '' }): BaseQueryFn =>
+function parseErrorCodeFromResponse  (message: string): { errorCode: string, messageReduced: string } {
+  const numberGroups = message.match(regexMatchNumberGroups);
+  let errorCode: string | undefined;
+  let messageReduced: string | undefined;
+  if (
+    numberGroups
+    && numberGroups.length
+    && numberGroups[0].charAt(0) === message.charAt(0)
+  ) {
+    errorCode = numberGroups[0];
+    messageReduced = message.substring(errorCode.length + 1);
+  }
+
+  return {
+    errorCode,
+    messageReduced
+  };
+}
+
+export const axiosBaseQuery = ({ baseUrl } = { baseUrl: '' }): BaseQueryFn<AxiosBaseQueryParamsType, unknown, CustomResponseErrorType> =>
   async <TReturnData>({
     url,
     method,
@@ -170,11 +191,18 @@ export const axiosBaseQuery = ({ baseUrl } = { baseUrl: '' }): BaseQueryFn =>
       if (err.status === 500) {
         store.dispatch(uiActions.apiDialogSet('Oops! Something went wrong. It\'s probably our fault. Please try again later.'));
       }
+
+      const {
+        errorCode,
+        messageReduced
+      } = parseErrorCodeFromResponse(message);
+
       return {
         error: {
           status: err.response.status,
+          code: errorCode,
           data: err.stack,
-          error: message
+          error: messageReduced || message
         },
       }
     }

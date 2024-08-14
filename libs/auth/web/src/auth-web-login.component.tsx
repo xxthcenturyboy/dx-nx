@@ -6,7 +6,7 @@ import {
 import {
   Box,
   Button,
-  Divider,
+  // Divider,
   Fade,
   FormControl,
   Grid,
@@ -19,7 +19,9 @@ import {
   Visibility,
   VisibilityOff,
 } from '@mui/icons-material';
+import Zoom from '@mui/material/Zoom';
 import { BeatLoader } from 'react-spinners';
+import { toast } from 'react-toastify';
 
 import {
   RootState,
@@ -45,18 +47,19 @@ import {
 import { LoginPayloadType } from '@dx/auth-shared';
 import * as UI from './auth-web-login.ui';
 import { authActions } from './auth-web.reducer';
-// import { useLoginMutation } from '@dx/rtk-query-web';
 import { useLoginMutation } from './auth-web.api';
 
 export const WebLogin: React.FC = () => {
   const [mobileBreak, setMobileBreak] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
+  const [loginAttempts, setLoginAttempts] = React.useState(0);
   const username = useAppSelector((state: RootState) => state.auth.username);
   const password = useAppSelector((state: RootState) => state.auth.password);
   const user = useAppSelector((state: RootState) => state.userProfile);
   const isProfileValid = useAppSelector((state: RootState) => selectIsUserProfileValid(state));
   const logo = useAppSelector((state: RootState) => state.ui.logoUrl);
   const windowWidth = useAppSelector((state: RootState) => state.ui.windowWidth) || 0;
+  const tryAnotherMethodText = useAppSelector((state: RootState) => state.ui.strings['TRY_ANOTHER_WAY']);
   const location = useLocation();
   const navigate = useNavigate();
   const lastPath = location.pathname;
@@ -103,6 +106,7 @@ export const WebLogin: React.FC = () => {
 
   React.useEffect(() => {
     if (loginError) {
+      'error' in loginError && toast.warn(loginError.error);
       dispatch(userProfileActions.profileInvalidated());
       return;
     }
@@ -171,6 +175,7 @@ export const WebLogin: React.FC = () => {
       };
 
       await requestLogin(data);
+      setLoginAttempts(loginAttempts + 1);
     }
   };
 
@@ -291,22 +296,28 @@ export const WebLogin: React.FC = () => {
                 }
               </Button>
             </UI.Form>
-            <Typography
-              variant="subtitle2"
-              align="right"
-              marginTop={'2em'}
-              marginBottom={'0'}
-              color="primary"
-              alignSelf="flex-end"
-              style={
-                { cursor: 'pointer' }
-              }
-              onClick={
-                () => navigate(ROUTES.AUTH.CONFIRM)
-              }
-            >
-              Forgot password?
-            </Typography>
+            {
+              loginAttempts > 2 && (
+                <Zoom in={true}>
+                  <Typography
+                    variant="subtitle2"
+                    align="right"
+                    marginTop={'2em'}
+                    marginBottom={'0'}
+                    color="primary"
+                    alignSelf="flex-end"
+                    style={
+                      { cursor: 'pointer' }
+                    }
+                    onClick={
+                      () => navigate(ROUTES.AUTH.CONFIRM)
+                    }
+                  >
+                    { tryAnotherMethodText }
+                  </Typography>
+                </Zoom>
+              )
+            }
           </Paper>
         </Grid>
       </Box>

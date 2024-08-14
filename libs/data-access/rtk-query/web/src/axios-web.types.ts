@@ -1,10 +1,10 @@
 import {
   BaseQueryFn,
-  FetchArgs
 } from '@reduxjs/toolkit/query/react';
 import { QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes';
 import {
   AxiosHeaders,
+  AxiosRequestConfig,
   HeadersDefaults,
   HttpStatusCode,
   Method,
@@ -16,17 +16,18 @@ export type AxiosInstanceHeadersParamType = {
 };
 
 export type AxiosBaseQueryParamsType = {
-  url?: string;
-  method?: Method | string;
-  data: unknown;
-  params: unknown;
-  headers: (RawAxiosRequestHeaders & AxiosHeaders) | AxiosHeaders
+  url: string;
+  method?: Method;
+  data?: AxiosRequestConfig['data'];
+  params?: AxiosRequestConfig['params'];
+  headers?: (RawAxiosRequestHeaders & AxiosHeaders) | AxiosHeaders
 };
 
 export type BaseQueryFnType = BaseQueryFn<any, unknown, CustomResponseErrorType, {}>;
 
 export type CustomResponseErrorType = {
   status: number,
+  code?: string;
   data?: string;
   error: string;
 };

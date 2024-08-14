@@ -47,6 +47,7 @@ import {
   userProfileActions,
   useLazyGetProfileQuery
 } from '@dx/user-profile-web';
+import { appBootstrap } from '@dx/config-web';
 
 export const Root: React.FC = () => {
   const [theme, setTheme] = React.useState<Theme>(createTheme());
@@ -81,6 +82,8 @@ export const Root: React.FC = () => {
   ] = useLazyGetProfileQuery();
 
   React.useEffect(() => {
+    appBootstrap();
+
     dispatch(uiActions.windowSizeSet());
     window.addEventListener('resize', () => {
       dispatch(uiActions.windowSizeSet());
@@ -94,7 +97,6 @@ export const Root: React.FC = () => {
       void fetchProfile();
     }
 
-    // appBootstrap();
     setTheme(createTheme(appTheme));
     updateAppThemeStyle();
 

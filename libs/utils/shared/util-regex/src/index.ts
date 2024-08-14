@@ -1,6 +1,7 @@
 
 export {
   regexEmail,
+  regexMatchNumberGroups,
   regexNoWhiteSpaceString,
   regexPhone,
   regexPhoneUS,
