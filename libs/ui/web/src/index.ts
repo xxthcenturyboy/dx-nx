@@ -28,6 +28,7 @@ export {
 } from './store/ui-web.reducer';
 export {
   selectCurrentThemeMode,
+  selectIsMobileWidth,
   selectToastThemeMode,
   selectWindowHeight,
   selectWindowWidth

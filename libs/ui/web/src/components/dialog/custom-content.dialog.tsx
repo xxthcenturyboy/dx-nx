@@ -5,6 +5,13 @@ import {
   useTheme
 } from '@mui/material';
 
+import {
+  RootState,
+  store,
+  useAppSelector
+} from '@dx/store-web';
+import { selectIsMobileWidth } from '../../store/ui-web.selector';
+
 type CustomDialogContentType = {
   justifyContent?: string;
   children?: React.ReactNode;
@@ -13,6 +20,11 @@ type CustomDialogContentType = {
 export const CustomDialogContent: React.FC<CustomDialogContentType> = (props) => {
   const theme = useTheme();
   const smBreak = useMediaQuery(theme.breakpoints.down('sm'));
+  const windowHeight = useAppSelector((state: RootState) => state.ui.windowHeight) || 0;
+  const isMobileWidth = selectIsMobileWidth(store.getState());
+  const height = isMobileWidth
+    ? windowHeight - 140
+    : undefined;
 
   return (
     <DialogContent
@@ -24,7 +36,8 @@ export const CustomDialogContent: React.FC<CustomDialogContentType> = (props) =>
         minHeight: '360px',
         minWidth: smBreak ? '' : '320px',
         maxWidth: '400px',
-        overflow: 'visible'
+        overflow: 'visible',
+        height: height
       }}
     >
       { props.children }

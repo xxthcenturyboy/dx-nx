@@ -63,7 +63,10 @@ export const Phonelist: React.FC<UserPhonesProps> = (props) => {
   }));
 
   return (
-    <Box margin="20px 0">
+    <Box
+      margin="20px 0"
+      width="100%"
+    >
       <Paper
         elevation={0}
         sx={{ backgroundColor: 'transparent' }}
@@ -101,36 +104,20 @@ export const Phonelist: React.FC<UserPhonesProps> = (props) => {
           </Grid>
         </Grid>
         <Divider />
-        <TableContainer component={Box}>
+        <TableContainer
+          component={Box}
+        >
           <Table
             stickyHeader
             size="small"
             aria-label=""
             id="table-user-phones"
           >
-            {/* <TableHead>
-              <TableRow>
-                <TableCell
-                  align="left"
-                  width="50%"
-                >
-                  Phone
-                </TableCell>
-                <TableCell
-                  align="left"
-                  width="30%"
-                >
-                  Label
-                </TableCell>
-                <TableCell
-                  align="center"
-                  width="20%"
-                />
-              </TableRow>
-            </TableHead> */}
             <TableBody>
               {
-                !phones || (phones && !phones.length) && (
+                !phones
+                || (phones && !phones.length)
+                && (
                   <StyledTableRow>
                     <TableCell
                       colSpan={3}
@@ -147,8 +134,9 @@ export const Phonelist: React.FC<UserPhonesProps> = (props) => {
                 )
               }
               {
-                !!phones && !!phones.length &&
-                phones.map((phone: PhoneType) => {
+                !!phones
+                && !!phones.length
+                && phones.map((phone: PhoneType) => {
                   return (
                     <StyledTableRow
                       key={phone.id}
@@ -160,15 +148,25 @@ export const Phonelist: React.FC<UserPhonesProps> = (props) => {
                     >
                       <TableCell
                         align="left"
-                        sx={{ height: '20px' }}
+                        sx={
+                          {
+                            height: '20px',
+                            textWrap: 'nowrap'
+                          }
+                        }
                       >
                         { phone.uiFormatted || phone.phone }
                       </TableCell>
                       <TableCell
                         align="left"
-                        sx={{ height: '20px' }}
+                        sx={
+                          {
+                            height: '20px',
+                            textWrap: 'nowrap'
+                          }
+                        }
                       >
-                        {phone.label}
+                        { phone.label }
                       </TableCell>
                       <TableCell
                         align="right"

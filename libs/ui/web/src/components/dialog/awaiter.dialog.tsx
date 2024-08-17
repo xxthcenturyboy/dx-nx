@@ -6,20 +6,24 @@ import DialogContentText from '@mui/material/DialogContentText';
 
 import {
   RootState,
+  store,
   useAppSelector
 } from '@dx/store-web';
 import { LottieAwaiter } from '../../lottie/LottieAwaiter';
 import { DialogWrapper } from './ui-wrapper.dialog';
+import { selectIsMobileWidth } from '../../store/ui-web.selector';
 
 export const DialogAwaiter: React.FC<Partial<DialogProps>> = (props) => {
   const open = useAppSelector((state: RootState) => state.ui.awaitDialogOpen);
   const message = useAppSelector((state: RootState) => state.ui.awaitDialogMessage);
+  const isMobileWidth = selectIsMobileWidth(store.getState());
 
   return (
     <Dialog
       {
         ...{
           props,
+          fullScreen: isMobileWidth,
           open,
           maxWidth: false,
           keepMounted: true,

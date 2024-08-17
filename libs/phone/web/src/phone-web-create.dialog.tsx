@@ -23,6 +23,7 @@ import {
 
 
 import {
+  store,
   useAppDispatch
 } from '@dx/store-web';
 import { logger } from '@dx/logger-web';
@@ -36,6 +37,7 @@ import {
   DialogError,
   DialogWrapper,
   LottieSuccess,
+  selectIsMobileWidth,
   themeColors,
   uiActions
 } from '@dx/ui-web';
@@ -67,6 +69,7 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (props): ReactEleme
   const [errorMessage, setErrorMessage] = React.useState('');
   const [otp, setOtp] = React.useState('');
   const [isDefault, setIsDefault] = React.useState(false);
+  const isMobileWidth = selectIsMobileWidth(store.getState());
   const dispatch = useAppDispatch();
   const [
     requestCheckAvailability,
@@ -347,8 +350,16 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (props): ReactEleme
   };
 
   return (
-    <DialogWrapper maxWidth={400}>
-      <DialogTitle style={{ textAlign: 'center' }} >
+    <DialogWrapper
+      maxWidth={400}
+    >
+      <DialogTitle
+        style={
+          {
+            textAlign: 'center'
+          }
+        }
+      >
         { `New Phone` }
       </DialogTitle>
       {
@@ -373,17 +384,35 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (props): ReactEleme
       }
       {
         showLottieError && (
-          <DialogError message={errorMessage} />
+          <CustomDialogContent>
+            <DialogError
+              message={errorMessage}
+            />
+          </CustomDialogContent>
+
         )
       }
       {
         allSucceeded && (
-          <LottieSuccess complete={() => setTimeout(() => handleClose(), 700)} />
+          <CustomDialogContent>
+            <LottieSuccess
+              complete={
+                () => setTimeout(() => handleClose(), 700)
+              }
+            />
+          </CustomDialogContent>
+
         )
       }
       {
         !allSucceeded && (
-          <DialogActions>
+          <DialogActions
+            style={
+              {
+                justifyContent: isMobileWidth ? 'center' : 'flex-end'
+              }
+            }
+          >
             <Button
               variant="outlined"
               onClick={handleClose}

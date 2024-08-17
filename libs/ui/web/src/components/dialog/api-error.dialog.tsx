@@ -15,16 +15,19 @@ import DialogContentText from '@mui/material/DialogContentText';
 
 import {
   RootState,
+  store,
   useAppDispatch,
   useAppSelector
 } from '@dx/store-web';
 import { uiActions } from '../../store/ui-web.reducer';
 import { LottieError } from '../../lottie/LottieError';
 import { DialogWrapper } from './ui-wrapper.dialog';
+import { selectIsMobileWidth } from '../../store/ui-web.selector';
 
 export const DialogApiError: React.FC<Partial<DialogProps>> = (props) => {
   const open = useAppSelector((state: RootState) => state.ui.apiDialogOpen);
   const message = useAppSelector((state: RootState) => state.ui.apiDialogError);
+  const isMobileWidth = selectIsMobileWidth(store.getState());
   const dispatch = useAppDispatch();
 
   const closeDialog = (): void => {
@@ -36,6 +39,7 @@ export const DialogApiError: React.FC<Partial<DialogProps>> = (props) => {
       {
         ...{
           props,
+          fullScreen: isMobileWidth,
           open,
           maxWidth: false,
           keepMounted: true,

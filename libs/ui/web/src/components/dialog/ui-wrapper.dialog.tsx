@@ -12,7 +12,13 @@ export const DialogWrapper: React.FC<DialogWrapperType> = ({ children, maxWidth 
       flexDirection="column"
       justifyContent="flex-start"
       alignItems="center"
-      style={{ maxWidth: maxWidth ? `${maxWidth}px` : '' }}
+      style={
+        {
+          maxWidth: maxWidth
+            ? `${maxWidth}px`
+            : ''
+        }
+      }
     >
       { children }
     </Box>

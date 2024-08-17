@@ -119,7 +119,7 @@ export const UserProfile: React.FC = () => {
                 variant="h5"
                 color="primary"
               >
-                Profile
+                Profile: { profile.username }
               </Typography>
             </Grid>
             <Grid item>

@@ -63,7 +63,10 @@ export const EmailList: React.FC<EmailListPropsType> = (props) => {
   }));
 
   return (
-    <Box margin="20px 0">
+    <Box
+      margin="20px 0"
+      width="100%"
+    >
       <Paper
         elevation={0}
         sx={{ backgroundColor: 'transparent' }}
@@ -101,36 +104,20 @@ export const EmailList: React.FC<EmailListPropsType> = (props) => {
           </Grid>
         </Grid>
         <Divider />
-        <TableContainer component={Box}>
+        <TableContainer
+          component={Box}
+        >
           <Table
             stickyHeader
             size="small"
             aria-label=""
             id="table-user-emails"
           >
-            {/* <TableHead>
-              <TableRow>
-                <TableCell
-                  align="left"
-                  width="50%"
-                >
-                  Email
-                </TableCell>
-                <TableCell
-                  align="left"
-                  width="30%"
-                >
-                  Label
-                </TableCell>
-                <TableCell
-                  align="center"
-                  width="20%"
-                />
-              </TableRow>
-            </TableHead> */}
             <TableBody>
               {
-                !emails || (emails && !emails.length) && (
+                !emails
+                || (emails && !emails.length)
+                && (
                   <StyledTableRow>
                     <TableCell
                       colSpan={3}
@@ -147,8 +134,9 @@ export const EmailList: React.FC<EmailListPropsType> = (props) => {
                 )
               }
               {
-                !!emails && !!emails.length &&
-                emails.map((email: EmailType) => {
+                !!emails
+                && !!emails.length
+                && emails.map((email: EmailType) => {
                   return (
                     <StyledTableRow
                       key={email.id}
@@ -160,15 +148,25 @@ export const EmailList: React.FC<EmailListPropsType> = (props) => {
                     >
                       <TableCell
                         align="left"
-                        sx={{ height: '20px' }}
+                        sx={
+                          {
+                            height: '20px',
+                            textWrap: 'nowrap'
+                          }
+                        }
                       >
-                        {email.email}
+                        { email.email }
                       </TableCell>
                       <TableCell
                         align="left"
-                        sx={{ height: '20px' }}
+                        sx={
+                          {
+                            height: '20px',
+                            textWrap: 'nowrap'
+                          }
+                        }
                       >
-                        {email.label}
+                        { email.label }
                       </TableCell>
                       <TableCell
                         align="right"

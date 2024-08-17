@@ -158,8 +158,14 @@ export const TableComponent: React.FC<TableComponentProps> = (props) => {
   };
 
   return (
-    <Box padding="0" width="100%">
-      <Accordion expanded={expanded === tableId} onChange={handleClickExpansion(tableId)} >
+    <Box
+      padding="0"
+      width="100%"
+    >
+      <Accordion
+        expanded={expanded === tableId}
+        onChange={handleClickExpansion(tableId)}
+      >
         <AccordionSummary
           expandIcon={collapsible && <ExpandMore />}
           sx={{
@@ -192,7 +198,10 @@ export const TableComponent: React.FC<TableComponentProps> = (props) => {
           }
         </AccordionSummary>
         <AccordionDetails sx={{ padding: 0 }}>
-          <TableContainer component={Box} style={{ maxHeight }}>
+          <TableContainer
+            component={Box}
+            style={{ maxHeight }}
+          >
             <Table
               stickyHeader
               sx={{ minWidth: 1200 }}

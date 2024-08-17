@@ -18,6 +18,7 @@ import {
 } from '@mui/material';
 
 import {
+  store,
   useAppDispatch
 } from '@dx/store-web';
 import { logger } from '@dx/logger-web';
@@ -30,6 +31,7 @@ import {
   DialogError,
   DialogWrapper,
   LottieSuccess,
+  selectIsMobileWidth,
   themeColors,
   uiActions
 } from '@dx/ui-web';
@@ -61,6 +63,7 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
   const [errorMessage, setErrorMessage] = React.useState('');
   const [otp, setOtp] = React.useState('');
   const [isDefault, setIsDefault] = React.useState(false);
+  const isMobileWidth = selectIsMobileWidth(store.getState());
   const dispatch = useAppDispatch();
   const [
     requestCheckAvailability,
@@ -327,8 +330,16 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
   };
 
   return (
-    <DialogWrapper maxWidth={400}>
-      <DialogTitle style={{ textAlign: 'center' }} >
+    <DialogWrapper
+      maxWidth={400}
+    >
+      <DialogTitle
+        style={
+          {
+            textAlign: 'center'
+          }
+        }
+      >
         { `New Email` }
       </DialogTitle>
       {
@@ -353,17 +364,35 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
       }
       {
         showLottieError && (
-          <DialogError message={errorMessage} />
+          <CustomDialogContent>
+            <DialogError
+              message={errorMessage}
+            />
+          </CustomDialogContent>
+
         )
       }
       {
         allSucceeded && (
-          <LottieSuccess complete={() => setTimeout(() => handleClose(), 500)} />
+          <CustomDialogContent>
+            <LottieSuccess
+              complete={
+                () => setTimeout(() => handleClose(), 500)
+              }
+            />
+          </CustomDialogContent>
+
         )
       }
       {
         !allSucceeded && (
-          <DialogActions>
+          <DialogActions
+            style={
+              {
+                justifyContent: isMobileWidth ? 'center' : 'flex-end'
+              }
+            }
+          >
             <Button
               variant="outlined"
               onClick={handleClose}

@@ -2,8 +2,9 @@ import { createSelector } from 'reselect';
 import { PaletteMode } from '@mui/material';
 import { Theme as ToastifyTheme } from 'react-toastify';
 
-import { UiStateType } from '../ui-web.types';
 import { RootState } from '@dx/store-web';
+import { MEDIA_BREAK } from '../ui.consts';
+import { UiStateType } from '../ui-web.types';
 
 const getThemePalette = (state: RootState): RootState['ui']['theme']['palette'] => state.ui.theme.palette;
 
@@ -15,6 +16,13 @@ export const selectCurrentThemeMode = createSelector(
   [getThemePalette],
   (palette): PaletteMode | undefined => {
     return palette?.mode;
+  }
+);
+
+export const selectIsMobileWidth = createSelector(
+  [selectWindowWidth],
+  (width): boolean => {
+    return width <= MEDIA_BREAK.MOBILE;
   }
 );
 

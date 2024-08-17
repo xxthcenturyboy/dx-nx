@@ -11,6 +11,7 @@ import {
 import DialogContentText from '@mui/material/DialogContentText';
 
 import {
+  store,
   useAppDispatch
 } from '@dx/store-web';
 import {
@@ -20,6 +21,7 @@ import {
   LottieCancel,
   LottieQuestionMark,
   LottieSuccess,
+  selectIsMobileWidth,
   themeColors,
   uiActions
 } from '@dx/ui-web';
@@ -45,6 +47,7 @@ export const DeletePhoneDialog: React.FC<DeletePhoneDialogProps> = (props): Reac
       ? `Are you sure you want to delete the phone: ${phoneItem.uiFormatted} (${phoneItem.label})?`
       : ''
   );
+  const isMobileWidth = selectIsMobileWidth(store.getState());
   const dispatch = useAppDispatch();
   const [
     requestDeletePhone,
@@ -123,12 +126,18 @@ export const DeletePhoneDialog: React.FC<DeletePhoneDialogProps> = (props): Reac
 
   return (
     <>
-      <DialogWrapper maxWidth={400}>
+      <DialogWrapper
+        maxWidth={400}
+      >
         {/* <DialogTitle style={{ textAlign: 'center' }} >Confirm Deletion</DialogTitle> */}
         {
           showLottieError ?
           (
-            <DialogError message={bodyMessage} />
+            <CustomDialogContent>
+              <DialogError
+                message={bodyMessage}
+              />
+            </CustomDialogContent>
           )
           :
           (
@@ -149,7 +158,13 @@ export const DeletePhoneDialog: React.FC<DeletePhoneDialogProps> = (props): Reac
         }
         {
           showActions() && (
-            <DialogActions>
+            <DialogActions
+              style={
+                {
+                  justifyContent: isMobileWidth ? 'center' : 'flex-end'
+                }
+              }
+            >
               <Button
                 variant="outlined"
                 onClick={() => {
