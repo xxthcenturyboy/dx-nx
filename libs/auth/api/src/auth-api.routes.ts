@@ -27,7 +27,11 @@ export class AuthRoutes {
       DxRateLimiters.accountCreation(),
       AuthController.createAccount
     );
-    router.post('/login', DxRateLimiters.login(), AuthController.login);
+    router.post(
+      '/login',
+      DxRateLimiters.login(),
+      AuthController.login
+    );
     router.post('/logout', AuthController.logout);
     router.post(
       '/otp-code/send/email',

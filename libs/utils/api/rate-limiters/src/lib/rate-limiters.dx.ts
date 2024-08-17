@@ -19,6 +19,7 @@ export class DxRateLimiters {
     if (isLocal()) {
       return next();
     }
+
     const url = req.originalUrl;
     if (AUTH_ROUTES_V1_RATE_LIMIT.indexOf(url) > -1) {
       const message = options.message || RATE_LIMIT_MESSAGE;
@@ -26,27 +27,6 @@ export class DxRateLimiters {
     }
 
     sendTooManyRequests(req, res, RATE_LIMIT_MESSAGE);
-  }
-
-  static handleLimitLogin(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-    options: { message: string }
-  ) {
-    if (isLocal()) {
-      return next();
-    }
-    // TODO: Handle lock out of account
-    // Send email / SMS depending upon type, etc
-    // Don't handle in this file
-    res.setHeader('Content-Type', 'application/json');
-    res.status(200).send(
-      JSON.stringify({
-        error:
-          'Your account has been locked. Check your email for instructions.',
-      })
-    );
   }
 
   static keyGenStandard(req: Request) {
@@ -109,7 +89,7 @@ export class DxRateLimiters {
         // @ts-expect-error - Known issue: the `call` function is not present in @types/ioredis
         sendCommand: (...args: string[]) => RedisService.instance.cacheHandle.call(...args),
       }),
-      handler: DxRateLimiters.handleLimitLogin,
+      handler: DxRateLimiters.handleLimitCommon,
       keyGenerator: DxRateLimiters.keyGenLogin,
       limit: RATE_LIMITS.LOGIN, // limit each IP to 15 requests
       standardHeaders: true,

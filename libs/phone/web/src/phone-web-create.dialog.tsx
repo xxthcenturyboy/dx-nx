@@ -16,6 +16,11 @@ import {
   SelectChangeEvent
 } from '@mui/material';
 import { CountryData } from 'react-phone-input-2';
+import {
+  CountryCode,
+  isValidPhoneNumber
+} from 'libphonenumber-js';
+
 
 import {
   useAppDispatch
@@ -201,8 +206,12 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (props): ReactEleme
   };
 
   const submitDisabled = (): boolean => {
+    const countryCode = countryData?.countryCode
+      ? countryData.countryCode.toUpperCase() as CountryCode
+      : 'US';
     if (
       !(phone && countryData && label)
+      || !isValidPhoneNumber(phone, countryCode)
       || isLoadingAddPhone
       || isLoadingSendOtp
     ) {
@@ -241,6 +250,7 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (props): ReactEleme
       ) {
         try {
           const payload: CreatePhonePayloadType = {
+            code: otp,
             label,
             phone,
             regionCode: (countryData as CountryData).countryCode,
@@ -353,10 +363,12 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (props): ReactEleme
         && isPhoneAvailable
         && hasSentOtp
         && (
-          <AuthWebOtpEntry
-            method="Phone"
-            onCompleteCallback={setOtp}
-          />
+          <CustomDialogContent>
+            <AuthWebOtpEntry
+              method="PHONE"
+              onCompleteCallback={setOtp}
+            />
+          </CustomDialogContent>
         )
       }
       {

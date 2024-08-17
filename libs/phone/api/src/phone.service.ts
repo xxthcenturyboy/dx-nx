@@ -71,18 +71,18 @@ export class PhoneService {
     if (
       !userId
       || !phone
-      // || !countryCode
     ) {
       throw new Error('Not enough information to create a phone.');
     }
 
     await this.isPhoneAvailableAndValid(phone, regionCode);
+    const phoneUtil = new PhoneUtil(
+      phone,
+      regionCode || PHONE_DEFAULT_REGION_CODE
+    );
+    let validated = false;
 
     if (code) {
-      const phoneUtil = new PhoneUtil(
-        phone,
-        regionCode || PHONE_DEFAULT_REGION_CODE
-      );
       const isCodeValid = await OtpService.validateOptCodeByPhone(
         userId,
         phoneUtil.countryCode,
@@ -92,6 +92,7 @@ export class PhoneService {
       if (!isCodeValid) {
         throw new Error('Invalid OTP code.');
       }
+      validated = true;
     }
 
     if (signature) {
@@ -106,12 +107,14 @@ export class PhoneService {
           `Create Phone: Device signature is invalid: ${biometricAuthPublicKey}, userid: ${userId}`
         );
       }
+      validated = true;
     }
 
-    const phoneUtil = new PhoneUtil(
-      phone,
-      regionCode || PHONE_DEFAULT_REGION_CODE
-    );
+    if (!validated) {
+      throw new Error(
+        `Create Phone: Could not validate: ${phoneUtil.nationalNumber}`
+      );
+    }
 
     if (def === true) {
       if (!phoneUtil.isValidMobile) {

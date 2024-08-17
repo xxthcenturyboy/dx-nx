@@ -34,6 +34,7 @@ import {
   uiActions
 } from '@dx/ui-web';
 import { EmailType } from '@dx/email-shared';
+import { regexEmail } from '@dx/util-regex';
 import { AddEmailForm } from './email-web.ui';
 import {
   useAddEmailMutation,
@@ -198,6 +199,7 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
   const submitDisabled = (): boolean => {
     if (
       !(email && label)
+      || !regexEmail.test(email)
       || isLoadingAddEmail
       || isLoadingSendOtp
     ) {
@@ -341,10 +343,12 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
         && isEmailAvailable
         && hasSentOtp
         && (
-          <AuthWebOtpEntry
-            method="Email"
-            onCompleteCallback={setOtp}
-          />
+          <CustomDialogContent>
+            <AuthWebOtpEntry
+              method="EMAIL"
+              onCompleteCallback={setOtp}
+            />
+          </CustomDialogContent>
         )
       }
       {

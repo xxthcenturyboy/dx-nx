@@ -8,13 +8,11 @@ import {
 } from '@mui/material';
 import { MuiOtpInput } from 'mui-one-time-password-input';
 
-// import {
-//   CustomDialogContent
-// } from '@dx/ui-web';
+import { stringToTitleCase } from '@dx/util-strings';
 import { OTP_LENGTH } from '@dx/auth-shared';
 
 type AuthWebOtpPropsType = {
-  method: 'Email' | 'Phone';
+  method: 'EMAIL' | 'PHONE' | '';
   onCompleteCallback: (value: string) => void;
 };
 
@@ -53,7 +51,7 @@ export const AuthWebOtpEntry: React.FC<AuthWebOtpPropsType> = (props): ReactElem
           }
         }
       >
-        Enter the code sent to your { props.method }
+        { `Enter the code sent to your ${stringToTitleCase(props.method)}` }
       </Typography>
       <MuiOtpInput
         value={otp}

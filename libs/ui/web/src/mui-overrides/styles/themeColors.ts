@@ -29,7 +29,8 @@ export const APP_COLOR_PALETTE = {
   },
   LIGHT: {
     BACKGROUND: grey
-  }
+  },
+  BLUE: blue
 };
 
 export const themeColors = {

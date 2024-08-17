@@ -5,6 +5,7 @@ import axios,
   AxiosResponse
 } from 'axios';
 import { toast } from 'react-toastify';
+import { Navigate } from 'react-router-dom';
 
 import { store } from '@dx/store-web';
 import { authActions } from '@dx/auth-web';
@@ -101,6 +102,8 @@ export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
             }
           });
         }
+      } else if (error.response.status === 429) {
+        return Promise.reject(error);
       } else {
         // logger.error('Error in AxiosInstance', error);
         // const message = error.response.status !== 500

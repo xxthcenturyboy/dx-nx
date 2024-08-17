@@ -1,4 +1,4 @@
-export const RATE_LIMIT_MESSAGE = 'Too many requests, please try again later.';
+export const RATE_LIMIT_MESSAGE = '429 Too many requests.';
 export const RATE_LIMITS = {
   AUTH_LOOKUP: 20,
   LOGIN: 15,

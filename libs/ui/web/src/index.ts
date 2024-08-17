@@ -51,6 +51,7 @@ export { GlobalErrorComponent } from './components/global-error.component';
 export { NotFoundComponent } from './components/not-found.component';
 export { UnauthorizedComponent } from './components/unauthorized.component';
 export { UiLoadingComponent } from './components/loading.component';
+export { RateLimitComponent } from './components/rate-limit.component';
 
 export { ConfirmationDialog } from './components/dialog/confirmation.dialog';
 export { CustomDialog } from './components/dialog/dialog.component';

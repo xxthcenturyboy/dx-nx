@@ -202,7 +202,7 @@ export const WebLoginUserPass: React.FC<WebLoginUserPassPropType> = React.forwar
           </Button>
         </UI.Form>
         {
-          loginAttempts < 2 && (
+          loginAttempts > 2 && (
             <Zoom in={true}>
               <Typography
                 variant="subtitle2"

@@ -57,12 +57,14 @@ export class EmailService {
     }
 
     await this.isEmailAvailableAndValid(email);
+    let validated = false;
 
     if (code) {
       const isCodeValid = await OtpService.validateOptCodeByEmail(userId, email, code);
       if (!isCodeValid) {
         throw new Error('Invalid OTP code.');
       }
+      validated = true;
     }
 
     if (signature) {
@@ -77,6 +79,13 @@ export class EmailService {
           `Create Email: Device signature is invalid: ${biometricAuthPublicKey}, userid: ${userId}`
         );
       }
+      validated = true;
+    }
+
+    if (!validated) {
+      throw new Error(
+        `Create Email: Could not validate: ${email}`
+      )
     }
 
     if (def === true) {

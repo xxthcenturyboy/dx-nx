@@ -14,6 +14,10 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
 import { CountryData } from 'react-phone-input-2';
+import {
+  CountryCode,
+  isValidPhoneNumber
+} from 'libphonenumber-js';
 
 import {
   DialogError,
@@ -32,6 +36,7 @@ import {
 } from '@dx/user-profile-web';
 import { PhoneNumberInput } from '@dx/phone-web';
 import { OTP_LENGTH } from '@dx/auth-shared';
+import { regexEmail } from '@dx/util-regex';
 import { Form } from './auth-web-login.ui'
 import { AuthWebOtpEntry } from './auth-web-otp.component';
 import {
@@ -40,6 +45,7 @@ import {
 } from './auth-web.api';
 
 type AuthWebRequestOtpPropsType = {
+  hasLoginError: boolean;
   onCompleteCallback: (value: string, code: string, region?: string) => void;
 };
 
@@ -136,6 +142,23 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> = Reac
     }
   }, [otp]);
 
+  const phoneSubmitButtonDisabled = (): boolean => {
+    const countryCode = countryData?.countryCode
+      ? countryData.countryCode.toUpperCase() as CountryCode
+      : 'US';
+
+      if (
+      !(phone && countryData)
+      || !isValidPhoneNumber(phone, countryCode)
+      || isLoadingSendOtpPhone
+    ) {
+      return true;
+    }
+
+    return false;
+
+  };
+
   const handleSendOtpCode = async (event: React.FormEvent): Promise<void> => {
     event.preventDefault();
     event.stopPropagation();
@@ -223,7 +246,7 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> = Reac
             onSubmit={handleSendOtpCode}
           >
             <FormControl
-              disabled={isLoadingSendOtpPhone}
+              disabled={phoneSubmitButtonDisabled()}
               margin="normal"
               variant="standard"
               style={{ minWidth: 300 }}
@@ -259,7 +282,7 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> = Reac
               type="submit"
               variant="contained"
               onClick={handleSendOtpCode}
-              disabled={isLoadingSendOtpPhone}
+              disabled={phoneSubmitButtonDisabled()}
               sx={{
                 marginTop: '12px'
               }}
@@ -300,7 +323,7 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> = Reac
             onSubmit={handleSendOtpCode}
           >
             <FormControl
-              disabled={isLoadingSendOtpEmail}
+              disabled={isLoadingSendOtpEmail || !regexEmail.test(email)}
               margin="normal"
               variant="standard"
               style={{ minWidth: 300 }}
@@ -325,7 +348,7 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> = Reac
               type="submit"
               variant="contained"
               onClick={handleSendOtpCode}
-              disabled={isLoadingSendOtpEmail}
+              disabled={isLoadingSendOtpEmail || !regexEmail.test(email)}
               sx={{
                 marginTop: '12px'
               }}
@@ -498,11 +521,12 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> = Reac
     return (
       <>
         <AuthWebOtpEntry
-          method={selectedMethod === 'PHONE' ? 'Phone' : 'Email'}
+          method={selectedMethod}
           onCompleteCallback={setOtp}
         />
         {
           hasSentLogin
+          && props.hasLoginError
           && renderBackButton(true)
         }
       </>

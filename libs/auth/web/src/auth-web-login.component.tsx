@@ -5,22 +5,10 @@ import {
 } from 'react-router-dom';
 import {
   Box,
-  Button,
-  // Divider,
   Fade,
-  FormControl,
   Grid,
-  Input,
-  InputLabel,
   Paper,
-  Typography,
 } from '@mui/material';
-import {
-  Visibility,
-  VisibilityOff,
-} from '@mui/icons-material';
-import Zoom from '@mui/material/Zoom';
-import { BeatLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
 
 import {
@@ -37,7 +25,6 @@ import {
   FADE_TIMEOUT_DUR,
   MEDIA_BREAK,
   setDocumentTitle,
-  themeColors,
   uiActions
 } from '@dx/ui-web';
 import {
@@ -50,7 +37,6 @@ import { authActions } from './auth-web.reducer';
 import { useLoginMutation } from './auth-web.api';
 import { WebLoginUserPass } from './auth-web-login-user-pass.component';
 import { AuthWebRequestOtpEntry } from './auth-web-request-otp.component';
-import { UserProfileStateType } from '@dx/user-shared';
 
 export const WebLogin: React.FC = () => {
   const [mobileBreak, setMobileBreak] = React.useState(false);
@@ -99,8 +85,18 @@ export const WebLogin: React.FC = () => {
 
   React.useEffect(() => {
     if (loginError) {
+      if (
+        loginError.code
+        && loginError.code === '429'
+      ) {
+        navigate(ROUTES.LIMITED);
+        'error' in loginError && toast.error(loginError.error);
+        return;
+      }
+
       'error' in loginError && toast.warn(loginError.error);
       dispatch(userProfileActions.profileInvalidated());
+
       return;
     }
   }, [loginError]);
@@ -180,6 +176,7 @@ export const WebLogin: React.FC = () => {
             {
               loginType === 'OTP' && (
                 <AuthWebRequestOtpEntry
+                  hasLoginError={!!loginError}
                   onCompleteCallback={
                     (value: string, code: string, region?: string) => {
                       const data: LoginPayloadType = {

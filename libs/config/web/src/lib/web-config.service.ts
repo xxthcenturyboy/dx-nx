@@ -21,6 +21,7 @@ export class WebConfigService {
       MAIN: '/',
       AUTH: AUTH_ROUTES,
       DASHBOARD: DASHBOARD_ROUTES,
+      LIMITED: '/cyberia',
       NOT_FOUND: '/404',
       SHORTLINK: SHORTLINK_ROUTES,
       USER_PROFILE: USER_PROFILE_ROUTES,
