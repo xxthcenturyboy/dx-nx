@@ -13,7 +13,7 @@ import {
   Input,
   InputLabel,
   Paper,
-  Typography
+  Typography,
 } from '@mui/material';
 import {
   Visibility,
@@ -49,13 +49,12 @@ import * as UI from './auth-web-login.ui';
 import { authActions } from './auth-web.reducer';
 import { useLoginMutation } from './auth-web.api';
 import { WebLoginUserPass } from './auth-web-login-user-pass.component';
+import { AuthWebRequestOtpEntry } from './auth-web-request-otp.component';
+import { UserProfileStateType } from '@dx/user-shared';
 
 export const WebLogin: React.FC = () => {
   const [mobileBreak, setMobileBreak] = React.useState(false);
-  const [showPassword, setShowPassword] = React.useState(false);
-  const [loginAttempts, setLoginAttempts] = React.useState(0);
-  const username = useAppSelector((state: RootState) => state.auth.username);
-  const password = useAppSelector((state: RootState) => state.auth.password);
+  const [loginType, setLoginType] = React.useState<'USER_PASS' | 'OTP'>('USER_PASS');
   const user = useAppSelector((state: RootState) => state.userProfile);
   const isProfileValid = useAppSelector((state: RootState) => selectIsUserProfileValid(state));
   const logo = useAppSelector((state: RootState) => state.ui.logoUrl);
@@ -66,6 +65,15 @@ export const WebLogin: React.FC = () => {
   const lastPath = location.pathname;
   const dispatch = useAppDispatch();
   const ROUTES = WebConfigService.getWebRoutes();
+  const [
+    requestLogin,
+    {
+      data: loginResponse,
+      error: loginError,
+      isLoading: isFetchingLogin,
+      isSuccess: loginIsSuccess
+    }
+  ] = useLoginMutation();
 
   React.useEffect(() => {
     setDocumentTitle(stringLogin);
@@ -85,9 +93,109 @@ export const WebLogin: React.FC = () => {
     }
   }, []);
 
+  React.useEffect(() => {
+    setMobileBreak(windowWidth < MEDIA_BREAK.MOBILE);
+  }, [windowWidth]);
+
+  React.useEffect(() => {
+    if (loginError) {
+      'error' in loginError && toast.warn(loginError.error);
+      dispatch(userProfileActions.profileInvalidated());
+      return;
+    }
+  }, [loginError]);
+
+  React.useEffect(() => {
+    if (loginResponse) {
+      const {
+        accessToken,
+        profile
+      } = loginResponse;
+      dispatch(authActions.usernameUpdated(''));
+      dispatch(authActions.passwordUpdated(''));
+      dispatch(authActions.tokenAdded(accessToken));
+      dispatch(authActions.setLogoutResponse(false));
+      dispatch(userProfileActions.profileUpdated(profile));
+      const menuService = new MenuConfigService();
+      let menus: AppMenuType[] = [];
+      if (profile.role.includes('SUPER_ADMIN')) {
+        menus = menuService.getMenus('SUPER_ADMIN', profile.b);
+      } else if (profile.role.includes('ADMIN')) {
+        menus = menuService.getMenus('ADMIN', profile.b);
+      } else {
+        menus = menuService.getMenus(undefined, profile.b);
+      }
+      dispatch(uiActions.menusSet({ menus }));
+      if (!mobileBreak) {
+        dispatch(uiActions.toggleMenuSet(true));
+      }
+      navigate(ROUTES.DASHBOARD.MAIN);
+    }
+  }, [loginIsSuccess]);
+
+  const handleLogin = async (payload: LoginPayloadType): Promise<void> => {
+    await requestLogin(payload);
+  };
+
   return (
-    <>
-      <WebLoginUserPass />
-    </>
+    <Fade
+      in={true}
+      timeout={FADE_TIMEOUT_DUR}
+    >
+      <Box>
+        <Grid
+          container
+          spacing={0}
+          direction="column"
+          alignItems="center"
+          justifyContent="center"
+          style={{ minHeight: mobileBreak ? 'unset' : '90vh' }}
+        >
+          <Paper
+            elevation={2}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+              padding: mobileBreak ? '20px' : '40px',
+              minWidth: windowWidth < 375 ? `${windowWidth - 40}px` : '330px',
+              minHeight: '500px',
+              maxWidth: '420px',
+              width: '100%',
+            }}
+          >
+            <UI.Logo src={logo} />
+            {
+              loginType === 'USER_PASS' && (
+                <WebLoginUserPass
+                  changeLoginType={
+                    () => setLoginType('OTP')
+                  }
+                  isFetchingLogin={isFetchingLogin}
+                  login={handleLogin}
+                />
+              )
+            }
+            {
+              loginType === 'OTP' && (
+                <AuthWebRequestOtpEntry
+                  onCompleteCallback={
+                    (value: string, code: string, region?: string) => {
+                      const data: LoginPayloadType = {
+                        code,
+                        region,
+                        value,
+                      };
+                      void handleLogin(data);
+                    }
+                  }
+                />
+              )
+            }
+          </Paper>
+        </Grid>
+      </Box>
+    </Fade>
   );
 };

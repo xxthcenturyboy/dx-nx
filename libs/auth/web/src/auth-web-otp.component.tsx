@@ -2,12 +2,15 @@ import React,
 {
   ReactElement
 } from 'react';
-import Typeography from '@mui/material/Typography'
+import {
+  Grid,
+  Typography
+} from '@mui/material';
 import { MuiOtpInput } from 'mui-one-time-password-input';
 
-import {
-  CustomDialogContent
-} from '@dx/ui-web';
+// import {
+//   CustomDialogContent
+// } from '@dx/ui-web';
 import { OTP_LENGTH } from '@dx/auth-shared';
 
 type AuthWebOtpPropsType = {
@@ -38,19 +41,20 @@ export const AuthWebOtpEntry: React.FC<AuthWebOtpPropsType> = (props): ReactElem
   };
 
   return (
-    <CustomDialogContent
-      justifyContent="center"
+    <Grid
+      item
     >
-      <Typeography
+      <Typography
         variant="h6"
         style={
           {
-            margin: '0px auto 24px'
+            margin: '0px auto 24px',
+            textAlign: 'center'
           }
         }
       >
         Enter the code sent to your { props.method }
-      </Typeography>
+      </Typography>
       <MuiOtpInput
         value={otp}
         onChange={handleChangeOtp}
@@ -58,6 +62,6 @@ export const AuthWebOtpEntry: React.FC<AuthWebOtpPropsType> = (props): ReactElem
         length={OTP_LENGTH}
         autoFocus={true}
       />
-    </CustomDialogContent>
+    </Grid>
   );
 };

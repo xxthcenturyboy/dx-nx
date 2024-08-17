@@ -13,6 +13,8 @@ export {
   userProfileReducer
 } from './user-profile-web.reducer';
 export {
-  selectIsUserProfileValid
+  selectIsUserProfileValid,
+  selectUserEmails,
+  selectUserPhones
 } from './user-profile-web.selectors';
 export { UserProfile } from './user-profile-web.component';
