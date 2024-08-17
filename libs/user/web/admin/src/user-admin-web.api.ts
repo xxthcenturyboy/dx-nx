@@ -42,14 +42,23 @@ export const apiWebUserAdmin = apiWebMain.injectEndpoints({
     }),
     getUserAdmin: build.query<UserType, string>({
       query: (payload) => ({
-        url:  `/v1/user/user?id=${encodeURIComponent(payload)}}`,
+        url:  `/v1/user/user/${encodeURIComponent(payload)}`,
         method: 'GET'
       })
     }),
     updateUser: build.mutation<{ id: string }, UpdateUserPayloadType>({
       query: (paylaod) => (
         {
-          url: `v1/email/${encodeURIComponent(paylaod.id)}`,
+          url: `v1/user/${encodeURIComponent(paylaod.id)}`,
+          method: 'PUT',
+          data: paylaod
+        }
+      )
+    }),
+    updateUserRolesRestrictions: build.mutation<{ id: string }, UpdateUserPayloadType>({
+      query: (paylaod) => (
+        {
+          url: `v1/user/roles-restrictions/${encodeURIComponent(paylaod.id)}`,
           method: 'PUT',
           data: paylaod
         }
@@ -62,5 +71,6 @@ export const apiWebUserAdmin = apiWebMain.injectEndpoints({
 export const {
   useLazyGetUserAdminListQuery,
   useLazyGetUserAdminQuery,
-  useUpdateUserMutation
+  useUpdateUserMutation,
+  useUpdateUserRolesRestrictionsMutation
 } = apiWebUserAdmin;

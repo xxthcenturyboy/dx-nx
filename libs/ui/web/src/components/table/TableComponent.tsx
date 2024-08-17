@@ -5,7 +5,7 @@ import React,
 } from 'react';
 import {
   Accordion,
-  AccordionActions,
+  // AccordionActions,
   AccordionDetails,
   AccordionSummary,
   Box,
@@ -21,8 +21,8 @@ import {
   TableSortLabel,
   Tooltip,
   Typography,
-  useMediaQuery,
-  useTheme,
+  // useMediaQuery,
+  // useTheme,
 } from '@mui/material';
 import {
   Cached,
@@ -67,10 +67,10 @@ export const TableComponent: React.FC<TableComponentProps> = (props) => {
     sortDir,
     tableName,
   } = props;
-  const theme = useTheme();
+  // const theme = useTheme();
   const themeMode = useAppSelector((state: RootState) => selectCurrentThemeMode(state));
   const tableId = tableName.toLowerCase().replace(' ', '-');
-  const smBreak = useMediaQuery(theme.breakpoints.down('sm'));
+  // const smBreak = useMediaQuery(theme.breakpoints.down('sm'));
   const [expanded, setExpanded] = useState<string | false>(tableId);
   const [dummyData, setDummyData] = useState<TableDummyRow>([]);
   const [rowsPerPageOptions, setRowsPerPageOptions] = useState<number[]>();
@@ -119,10 +119,20 @@ export const TableComponent: React.FC<TableComponentProps> = (props) => {
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
-      backgroundColor: themeMode === 'dark' ? theme.palette.common.black : theme.palette.grey[500],
+      backgroundColor: themeMode === 'dark' ? theme.palette.common.black : theme.palette.primary.light,
       color: theme.palette.common.white,
       padding: '16px',
     },
+  }));
+
+  const StyledTableSortLabel = styled(TableSortLabel)(({ theme }) => ({
+    '&.Mui-active': {
+      color: theme.palette.secondary.light
+    },
+    '& .MuiTableSortLabel-icon': {
+      // color: `white !important`
+      color: `${theme.palette.secondary.light} !important`
+    }
   }));
 
   const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -130,12 +140,23 @@ export const TableComponent: React.FC<TableComponentProps> = (props) => {
       backgroundColor: loading ? 'transparent' : theme.palette.action.hover,
     },
     // hide last border
-    '&:last-child td, &:last-child th': {
-      border: 0,
-    },
+    // '&:last-child td, &:last-child th': {
+    //   border: 0,
+    // },
     '&:hover': {
-      backgroundColor: themeMode && themeMode === 'dark' ? theme.palette.primary.light : theme.palette.secondary.main,
+      backgroundColor: themeMode && themeMode === 'dark' ? theme.palette.primary.light : theme.palette.secondary.light,
     }
+  }));
+
+  const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
+    '& .MuiAccordionSummary-content': {
+      justifyContent: 'space-between',
+      cursor: collapsible ? 'pointer' : 'default',
+    },
+    '& .MuiAccordionSummary-expandIconWrapper': {
+      color: themeColors.primary
+    },
+    color: themeColors.primary
   }));
 
   const handleClickExpansion = (panelId: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
@@ -166,18 +187,8 @@ export const TableComponent: React.FC<TableComponentProps> = (props) => {
         expanded={expanded === tableId}
         onChange={handleClickExpansion(tableId)}
       >
-        <AccordionSummary
+        <StyledAccordionSummary
           expandIcon={collapsible && <ExpandMore />}
-          sx={{
-            '& .MuiAccordionSummary-content': {
-              justifyContent: 'space-between',
-              cursor: collapsible ? 'pointer' : 'default',
-            },
-            '& .MuiAccordionSummary-expandIconWrapper': {
-              color: themeColors.primary
-            },
-            color: themeColors.primary
-          }}
         >
           <Typography variant="body1" color="primary">
             {/* {`${tableName}${count !== undefined ? `: ${count}` : ''}`} */}
@@ -196,8 +207,8 @@ export const TableComponent: React.FC<TableComponentProps> = (props) => {
               </Tooltip>
             )
           }
-        </AccordionSummary>
-        <AccordionDetails sx={{ padding: 0 }}>
+        </StyledAccordionSummary>
+        <AccordionDetails>
           <TableContainer
             component={Box}
             style={{ maxHeight }}
@@ -218,22 +229,26 @@ export const TableComponent: React.FC<TableComponentProps> = (props) => {
                           key={`table-header-cell-${tableId}-${index}`}
                           align={data.align}
                           width={data.width}
-                          sx={{
-                            cursor: data.sortable ? 'pointer' : ''
-                          }}
+                          sx={
+                            {
+                              cursor: data.sortable ? 'pointer' : ''
+                            }
+                          }
                           sortDirection={orderBy === data.fieldName ? order : false}
                         >
                           {
                             data.sortable ? (
-                              <TableSortLabel
+                              <StyledTableSortLabel
                                 active={orderBy === data.fieldName}
                                 direction={orderBy === data.fieldName ? order : 'asc'}
-                                onClick={() => typeof changeSort === 'function' && changeSort(data.fieldName)}
+                                onClick={
+                                  () => typeof changeSort === 'function' && changeSort(data.fieldName)
+                                }
                               >
-                                {data.title}
-                              </TableSortLabel>
+                                { data.title }
+                              </StyledTableSortLabel>
                             ) : (
-                              <>{data.title}</>
+                              <>{ data.title }</>
                             )
                           }
                         </StyledTableCell>
@@ -324,27 +339,40 @@ export const TableComponent: React.FC<TableComponentProps> = (props) => {
                   })
                 }
               </TableBody>
-              <TableFooter>
-                <TableRow>
-                  <TablePagination
-                    rowsPerPageOptions={count > 10 ? rowsPerPageOptions : undefined}
-                    colSpan={header.length + 1}
-                    count={count}
-                    rowsPerPage={limit}
-                    page={offset}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                    ActionsComponent={TablePaginationActions}
-                    sx={{
-                      borderBottom: 'none',
-                      borderTop: `1px solid ${theme.palette.grey[400]}`,
-                      color: themeColors.primary
-                    }}
-                  />
-                </TableRow>
-              </TableFooter>
             </Table>
           </TableContainer>
+          <Table>
+            <TableFooter
+              sx={
+                {
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  marginTop: '12px'
+                }
+              }
+            >
+              <TableRow>
+                <TablePagination
+                  rowsPerPageOptions={count > 10 ? rowsPerPageOptions : undefined}
+                  colSpan={header.length + 1}
+                  count={count}
+                  rowsPerPage={limit}
+                  page={offset}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                  ActionsComponent={TablePaginationActions}
+                  sx={
+                    {
+                      borderBottom: 'none',
+                      borderTop: 'none',
+                      // borderTop: `1px solid ${theme.palette.grey[400]}`,
+                      color: themeColors.primary
+                    }
+                  }
+                />
+              </TableRow>
+            </TableFooter>
+          </Table>
         </AccordionDetails>
       </Accordion>
     </Box>

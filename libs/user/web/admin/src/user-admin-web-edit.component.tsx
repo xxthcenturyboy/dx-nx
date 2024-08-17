@@ -45,10 +45,11 @@ import { userAdminActions } from './user-admin-web.reducer';
 import { selectUserFormatted } from './user-admin-web.selectors';
 import {
   useLazyGetUserAdminQuery,
-  useUpdateUserMutation
+  useUpdateUserRolesRestrictionsMutation
 } from './user-admin-web.api';
 import { privilegeSetActions } from '@dx/user-privilege-web';
 import { useLazyGetPrivilegeSetsQuery } from '@dx/user-privilege-web';
+import { toast } from 'react-toastify';
 
 type UserRestriction = {
   restriction: keyof typeof ACCOUNT_RESTRICTIONS;
@@ -75,7 +76,7 @@ export const UserAdminEdit: React.FC = () => {
     {
       data: privilegeResponse,
       error: privilegeError,
-      isLoading: isLoadingPrivilegeSet,
+      isFetching: isLoadingPrivilegeSet,
       isSuccess: privilegeSetSuccess,
       isUninitialized: privilegeSetUninitialized
     }
@@ -85,13 +86,13 @@ export const UserAdminEdit: React.FC = () => {
     {
       data: userResponse,
       error: userError,
-      isLoading: isLoadingUser,
+      isFetching: isLoadingUser,
       isSuccess: fetchUserSuccess,
       isUninitialized: fetchUserUninitialized
     }
   ] = useLazyGetUserAdminQuery();
   const [
-    fetchUserUpdate,
+    fetchUserRolesRestrictionsUpdate,
     {
       data: updateUserResponse,
       error: updateUserError,
@@ -99,7 +100,7 @@ export const UserAdminEdit: React.FC = () => {
       isSuccess: updateUserSuccess,
       isUninitialized: updateUserUninitialized
     }
-  ] = useUpdateUserMutation();
+  ] = useUpdateUserRolesRestrictionsMutation();
 
   useEffect(() => {
     void getUserData();
@@ -107,7 +108,10 @@ export const UserAdminEdit: React.FC = () => {
     if (location && location.pathname) {
       dispatch(userAdminActions.lastRouteSet(`${location.pathname}${location.search}`));
     }
-    if (!sets) {
+    if (
+      !sets
+      || !sets.length
+    ) {
       void fetchPrivilegeSets();
     }
 
@@ -132,7 +136,7 @@ export const UserAdminEdit: React.FC = () => {
 
   useEffect(() => {
     if (
-      privilegeSetSuccess
+      !isLoadingPrivilegeSet
     ) {
       if (
         !privilegeError
@@ -147,11 +151,11 @@ export const UserAdminEdit: React.FC = () => {
         dispatch(uiActions.apiDialogSet(privilegeError['error']));
       }
     }
-  }, [privilegeSetSuccess]);
+  }, [isLoadingPrivilegeSet]);
 
   useEffect(() => {
     if (
-      fetchUserSuccess
+      !isLoadingUser
     ) {
       if (!userError) {
         dispatch(userAdminActions.userSet(userResponse));
@@ -159,10 +163,10 @@ export const UserAdminEdit: React.FC = () => {
       if (
         userError
       ) {
-        dispatch(uiActions.apiDialogSet(userError['error']));
+        'error' in userError && dispatch(uiActions.apiDialogSet(userError['error']));
       }
     }
-  }, [fetchUserSuccess]);
+  }, [isLoadingUser]);
 
   useEffect(() => {
     if (
@@ -174,6 +178,10 @@ export const UserAdminEdit: React.FC = () => {
         && 'error' in updateUserError
       ) {
         dispatch(uiActions.apiDialogSet(updateUserError.error));
+      }
+
+      if (!updateUserError) {
+        toast.success('User updated.');
       }
     }
   }, [isLoadingUpdateUser]);
@@ -208,7 +216,10 @@ export const UserAdminEdit: React.FC = () => {
   };
 
   const handleRoleClick = async (clickedRole: string): Promise<void> => {
-    if (currentUser?.id === user?.id && !currentUser?.sa) {
+    if (
+      currentUser?.id === user?.id
+      && !currentUser?.sa
+    ) {
       dispatch(uiActions.appDialogSet(
         <DialogAlert
           buttonText="Aw, shucks"
@@ -218,18 +229,27 @@ export const UserAdminEdit: React.FC = () => {
       return;
     }
 
-    if (user?.roles && Array.isArray(user.roles)) {
+    if (
+      user?.roles
+      && Array.isArray(user.roles)
+    ) {
+      let nextRoles = [...new Set(user.roles)];
       if (user.roles.indexOf(clickedRole) > -1) {
-        user.roles = user?.roles.filter(role => role !== clickedRole);
+        nextRoles = user?.roles.filter(role => role !== clickedRole);
       } else {
-        user.roles.push(clickedRole);
+        nextRoles.push(clickedRole);
       }
 
-      dispatch(userAdminActions.userSet(user));
+      const updateData = {
+        ...user,
+        roles: nextRoles
+      };
+
+      dispatch(userAdminActions.userSet(updateData));
       setupRoles();
-      void fetchUserUpdate({
+      void fetchUserRolesRestrictionsUpdate({
         id: user.id,
-        roles: user.roles
+        roles: nextRoles
       });
     }
   };
@@ -305,13 +325,13 @@ export const UserAdminEdit: React.FC = () => {
           <Grid item>
             <Typography>
               <span style={{ fontWeight: 700, marginRight: 12 }}>Name:</span>
-              {user?.fullName}
+              { user?.fullName }
             </Typography>
           </Grid>
         </Grid>
         <Grid container  margin="0 0 20px">
           <Typography style={{ fontWeight: 700 }}>Emails:</Typography>
-          {renderDivider('0 0 10')}
+          {/* {renderDivider('0 0 10')} */}
           <Grid container justifyContent="space-between">
             {
               user?.emails.map((email, index) => {
@@ -322,8 +342,11 @@ export const UserAdminEdit: React.FC = () => {
                       direction="row"
                       width="100%"
                       justifyContent="space-between"
-                      borderBottom="1px solid lightgray"
+                      borderTop="1px solid lightgray"
                       padding="10 0 3"
+                      display="flex"
+                      height="44px"
+                      alignItems="center"
                     >
                       <Grid
                         item
@@ -334,13 +357,13 @@ export const UserAdminEdit: React.FC = () => {
                         }}
                       >
                         <Typography>
-                          {email.email}
+                          { email.email }
                         </Typography>
                       </Grid>
                       <Grid item>
-                        {email.isVerified && renderVerifiedChip()}
-                        {email.default && renderDefaultChip()}
-                        {email.label}
+                        { email.isVerified && renderVerifiedChip() }
+                        { email.default && renderDefaultChip() }
+                        { email.label }
                       </Grid>
                     </Grid>
                   </React.Fragment>
@@ -351,7 +374,7 @@ export const UserAdminEdit: React.FC = () => {
         </Grid>
         <Grid container  margin="0 0 20px">
           <Typography style={{ fontWeight: 700 }}>Phones:</Typography>
-          {renderDivider('0 0 10')}
+          {/* {renderDivider('0 0 10')} */}
           <Grid container justifyContent="space-between" direction="column">
             {
               user?.phones.map((phone, index) => {
@@ -362,8 +385,11 @@ export const UserAdminEdit: React.FC = () => {
                       direction="row"
                       width="100%"
                       justifyContent="space-between"
-                      borderBottom="1px solid lightgray"
+                      borderTop="1px solid lightgray"
                       padding="10 0 3"
+                      display="flex"
+                      height="44px"
+                      alignItems="center"
                     >
                       <Grid
                         item

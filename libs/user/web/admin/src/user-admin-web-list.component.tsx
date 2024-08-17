@@ -39,7 +39,6 @@ import {
   uiActions,
   useFocus
 } from '@dx/ui-web';
-import { CustomResponseErrorType } from '@dx/rtk-query-web';
 import { debounce } from '@dx/utils-misc-web';
 import {
   GetUsersListQueryType,
@@ -63,7 +62,6 @@ export const UserAdminList: React.FC = () => {
   const [headerData, setHeaderData] = useState<TableHeaderItem[]>([]);
   const [tableMeta, setTableMeta] = useState(userAdminTableMetaData);
   const [rowData, setRowData] = useState<TableRowType[]>([]);
-  const [mounted, setMounted] = useState<boolean>(false);
   const [searchInputRef, setSearchInputRef] = useFocus();
   const ROUTES = WebConfigService.getWebRoutes();
   const dispatch = useAppDispatch();
@@ -76,7 +74,7 @@ export const UserAdminList: React.FC = () => {
     {
       data: userListResponse,
       error: userListError,
-      isLoading: isLoadingUserList,
+      isFetching: isLoadingUserList,
       isSuccess: fetchUserListSuccess,
       isUninitialized: fetchUserListUninitialized
     }
@@ -90,12 +88,17 @@ export const UserAdminList: React.FC = () => {
     ) {
       void fetchUsers();
     }
-    setMounted(true);
     if (
       location
       && location.pathname
     ) {
-      dispatch(userAdminActions.lastRouteSet(`${location.pathname}${location.search}`));
+      dispatch(userAdminActions.lastRouteSet(location.pathname));
+    }
+    if (
+      users
+      && users.length
+    ) {
+      setupRows();
     }
   }, []);
 
@@ -110,13 +113,12 @@ export const UserAdminList: React.FC = () => {
 
   useEffect(() => {
     !isLoadingUserList
-    && mounted
     && void fetchUsers();
   }, [limit, offset, orderBy, sortDir]);
 
   useEffect(() => {
     if (
-      fetchUserListSuccess
+      !isLoadingUserList
     ) {
       if (!userListError) {
         dispatch(userAdminActions.listSet(userListResponse?.rows || []));
@@ -125,10 +127,10 @@ export const UserAdminList: React.FC = () => {
       if (
         userListError
       ) {
-        dispatch(uiActions.apiDialogSet(userListError['error']));
+        'error' in userListError && dispatch(uiActions.apiDialogSet(userListError['error']));
       }
     }
-  }, [fetchUserListSuccess]);
+  }, [isLoadingUserList]);
 
   const debounceFetch = useRef(debounce((value: string) => {
     void fetchUsers(value);
@@ -171,7 +173,10 @@ export const UserAdminList: React.FC = () => {
 
   const clickRow = (data: TableRowType ): void => {
     const user = users.find(user => user.id === data.id);
-    if (user?.username === 'admin' && currentUser?.id !== user.id) {
+    if (
+      user?.username === 'admin'
+      && currentUser?.id !== user.id
+    ) {
       dispatch(uiActions.appDialogSet(
         <DialogAlert
           buttonText="Got it."
@@ -263,7 +268,10 @@ export const UserAdminList: React.FC = () => {
   const setupRows = (): void => {
     const rows: TableRowType[] = [];
 
-    if (users && users.length) {
+    if (
+      users
+      && users.length
+    ) {
       for (const user of users) {
         const data = getRowData(user);
         rows.push(data);

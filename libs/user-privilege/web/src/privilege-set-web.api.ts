@@ -9,7 +9,7 @@ export const apiWebPrivilegeSets = apiWebMain.injectEndpoints({
     getPrivilegeSets: build.query<PrivilegeSetDataType[], void>({
       query: () => (
         {
-          url: '/api/v1/privilege-set',
+          url: '/v1/privilege-set',
           method: 'GET'
         }
       )

@@ -27,7 +27,11 @@ import { selectIsMobileWidth } from '../../store/ui-web.selector';
 export const DialogApiError: React.FC<Partial<DialogProps>> = (props) => {
   const open = useAppSelector((state: RootState) => state.ui.apiDialogOpen);
   const message = useAppSelector((state: RootState) => state.ui.apiDialogError);
+  const windowHeight = useAppSelector((state: RootState) => state.ui.windowHeight) || 0;
   const isMobileWidth = selectIsMobileWidth(store.getState());
+  const height = isMobileWidth
+    ? windowHeight - 140
+    : undefined;
   const dispatch = useAppDispatch();
 
   const closeDialog = (): void => {
@@ -65,7 +69,8 @@ export const DialogApiError: React.FC<Partial<DialogProps>> = (props) => {
               alignItems: 'center',
               minHeight: '300px',
               minWidth: '360px',
-              overflow: 'visible'
+              overflow: 'visible',
+              height: height
             }}>
               {
                 open && (<LottieError />)
@@ -81,7 +86,13 @@ export const DialogApiError: React.FC<Partial<DialogProps>> = (props) => {
             </DialogContentText>
           </DialogContent>
 
-          <DialogActions>
+          <DialogActions
+            style={
+              {
+                justifyContent: isMobileWidth ? 'center' : 'flex-end'
+              }
+            }
+          >
             <Button
               onClick={closeDialog}
               variant="contained"

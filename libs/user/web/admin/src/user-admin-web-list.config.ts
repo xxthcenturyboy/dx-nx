@@ -60,7 +60,7 @@ export const userAdminTableMetaData: TableMeta[] = [
     fieldName: 'isSuperAdmin',
     fieldType: 'boolean',
     headerAlign: 'center',
-    title: 'SUDO',
+    title: 'Super',
     sortable: true,
     width: '5%',
   },

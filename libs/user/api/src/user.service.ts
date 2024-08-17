@@ -293,12 +293,15 @@ export class UserService {
         throw new Error('Search for users failed');
       }
 
+      let count = 0;
       const rows: UserType[] = [];
       for (const user of users.rows) {
         rows.push(user.toJSON());
+        count += 1;
       }
       // @ts-expect-error - types are ok
       users.rows = rows;
+      users.count = count;
       return users;
     } catch (err) {
       const message = err.message || 'Could not get user list.';
