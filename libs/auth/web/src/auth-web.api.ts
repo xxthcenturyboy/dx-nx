@@ -1,3 +1,5 @@
+import { IZXCVBNResult } from 'zxcvbn-typescript';
+
 import {
   apiWebMain,
   CustomResponseErrorType
@@ -24,6 +26,16 @@ function transformAuthApiError(response: CustomResponseErrorType): CustomRespons
 
 export const apiWebAuth = apiWebMain.injectEndpoints({
   endpoints: (build) => ({
+    checkPasswordStrength: build.mutation<IZXCVBNResult, { password: string }>({
+      query: (payload) => (
+        {
+          url: 'v1/auth/password-strength',
+          method: 'POST',
+          data: payload
+        }
+      ),
+      transformErrorResponse: transformAuthApiError
+    }),
     login: build.mutation<AuthSuccessResponseType, LoginPayloadType>({
       query: (payload) => (
         {
@@ -71,6 +83,7 @@ export const apiWebAuth = apiWebMain.injectEndpoints({
 });
 
 export const {
+  useCheckPasswordStrengthMutation,
   useLoginMutation,
   useLogoutMutation,
   useOtpRequestEmailMutation,

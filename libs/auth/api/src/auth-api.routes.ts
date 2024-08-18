@@ -28,6 +28,11 @@ export class AuthRoutes {
       AuthController.createAccount
     );
     router.post(
+      '/password-strength',
+      DxRateLimiters.accountCreation(),
+      AuthController.checkPasswordStrength
+    );
+    router.post(
       '/login',
       DxRateLimiters.login(),
       AuthController.login

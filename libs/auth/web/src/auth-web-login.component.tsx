@@ -176,7 +176,7 @@ export const WebLogin: React.FC = () => {
             {
               loginType === 'OTP' && (
                 <AuthWebRequestOtpEntry
-                  hasLoginError={!!loginError}
+                  hasCallbackError={!!loginError}
                   onCompleteCallback={
                     (value: string, code: string, region?: string) => {
                       const data: LoginPayloadType = {

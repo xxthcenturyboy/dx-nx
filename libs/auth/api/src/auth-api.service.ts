@@ -1,4 +1,5 @@
 import { randomUUID } from 'crypto';
+import zxcvbn from 'zxcvbn-typescript';
 
 import {
   getUserProfileState,
@@ -36,6 +37,24 @@ export class AuthService {
 
   constructor() {
     this.logger = ApiLoggingClass.instance;
+  }
+
+  public async checkPasswordStrength(password: string) {
+    if (!password) {
+      throw new Error('No value supplied.');
+    }
+
+    try {
+      const result = zxcvbn(password);
+      return {
+        score: result.score,
+        feedback: result.feedback
+      };
+    } catch (err) {
+      const message = `Error in checkPasswordStrength: ${err.message}`;
+      this.logger.logError(message);
+      throw new Error(message);
+    }
   }
 
   public async createAccount(

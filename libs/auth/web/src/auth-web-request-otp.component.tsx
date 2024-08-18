@@ -45,7 +45,7 @@ import {
 } from './auth-web.api';
 
 type AuthWebRequestOtpPropsType = {
-  hasLoginError: boolean;
+  hasCallbackError: boolean;
   onCompleteCallback: (value: string, code: string, region?: string) => void;
 };
 
@@ -54,7 +54,7 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> = Reac
   const [phone, setPhone] = React.useState('');
   const [countryData, setCountryData] = React.useState<CountryData | null>(null);
   const [hasSentOtp, setHasSentOtp] = React.useState(false);
-  const [hasSentLogin, setHasSentLogin] = React.useState(false);
+  const [hasFiredCallback, setHasFiredCallback] = React.useState(false);
   const [otp, setOtp] = React.useState('');
   const [errorMessage, setErrorMessage] = React.useState('');
   const [selectedMethod, setSelectedMethod] = React.useState<'EMAIL' | 'PHONE' | ''>('');
@@ -138,7 +138,7 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> = Reac
         ? phone
         : email
       props.onCompleteCallback(value, otp, countryData?.countryCode);
-      setHasSentLogin(true);
+      setHasFiredCallback(true);
     }
   }, [otp]);
 
@@ -180,6 +180,42 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> = Reac
     }
   };
 
+  const handleSendOtpCodeFromLoggedIn = async (
+    method: 'EMAIL' | 'PHONE',
+    value: string,
+    regionCode?: string
+  ): Promise<void> => {
+    setSelectedMethod(method);
+
+    if (
+      method === 'EMAIL'
+      && value
+    ) {
+      setEmail(value)
+      await requestOtpCodeEmail({ email: value })
+        .catch((err) => logger.error((err as Error).message, err));
+    }
+
+    if (
+      method === 'PHONE'
+      && value
+      && regionCode
+    ) {
+      setPhone(value);
+      setCountryData({
+        name: '',
+        dialCode: '',
+        countryCode: regionCode,
+        format: ''
+      });
+      await requestOtpCodePhone({
+        phone: value,
+        regionCode
+      })
+        .catch((err) => logger.error((err as Error).message, err));
+    }
+  };
+
   const handleChangeEmail = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setEmail(event.target.value);
   };
@@ -193,7 +229,7 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> = Reac
             () => {
               setSelectedMethod('');
               setHasSentOtp(false);
-              setHasSentLogin(false);
+              setHasFiredCallback(false);
             }
           }
           fullWidth
@@ -377,105 +413,87 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> = Reac
 
   const renderSelectFromLoggedIn = (): JSX.Element => {
     return (
-      <Fade
-        in={true}
-        timeout={FADE_TIMEOUT_DUR}
-      >
-        <Grid
-          container
-        >
-          <Typography
-            variant="h6"
-            style={
-              {
-                margin: '0px auto 24px'
-              }
+      <>
+        {
+          userPhones.length
+          &&  userPhones.map((userPhone) => {
+            if (
+              userPhone.isVerified
+            ) {
+              return (
+                <Grid
+                  item
+                  width={'100%'}
+                >
+                  <Button
+                    variant="contained"
+                    onClick={
+                      (event: React.FormEvent) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        handleSendOtpCodeFromLoggedIn(
+                          'PHONE',
+                          userPhone.phoneFormatted,
+                          userPhone.countryCode
+                        );
+                      }
+                    }
+                    style={
+                      {
+                        justifyContent: 'left',
+                        paddingLeft: '24px'
+                      }
+                    }
+                    fullWidth
+                    startIcon={<PhoneIcon />}
+                  >
+                    { userPhone.uiFormatted || userPhone.phone }
+                  </Button>
+                </Grid>
+              );
             }
-          >
-            Choose where to send a one-time code.
-          </Typography>
-          {
-            userPhones.length
-            && (
-              <>
-                {
-                  userPhones.map((userPhone) => {
-                    if (
-                      userPhone.default
-                      && userPhone.isVerified
-                    ) {
-                      return (
-                        <Grid
-                          item
-                          width={'100%'}
-                        >
-                          <Button
-                            variant="contained"
-                            onClick={
-                              (event: React.FormEvent) => {
-                                setSelectedMethod('PHONE');
-                                setPhone(userPhone.phoneFormatted);
-                                setCountryData({
-                                  name: '',
-                                  dialCode: '',
-                                  countryCode: userPhone.countryCode,
-                                  format: ''
-                                });
-                                void handleSendOtpCode(event);
-                              }
-                            }
-                            fullWidth
-                            startIcon={<PhoneIcon />}
-                          >
-                            { userPhone.uiFormatted }
-                          </Button>
-                        </Grid>
-                      );
+          })
+        }
+        {
+          userEmails.length
+          && userEmails.map((userEmail) => {
+            if (
+              userEmail.isVerified
+            ) {
+              return (
+                <Grid
+                  item
+                  width={'100%'}
+                >
+                  <Button
+                    variant="contained"
+                    onClick={
+                      (event: React.FormEvent) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        handleSendOtpCodeFromLoggedIn(
+                          'EMAIL',
+                          userEmail.email
+                        );
+                      }
                     }
-                  })
-                }
-              </>
-            )
-          }
-          {
-            userEmails.length
-            && (
-              <>
-                {
-                  userEmails.map((userEmail) => {
-                    if (
-                      userEmail.default
-                      && userEmail.isVerified
-                    ) {
-                      return (
-                        <Grid
-                          item
-                          width={'100%'}
-                        >
-                          <Button
-                            variant="contained"
-                            onClick={
-                              (event: React.FormEvent) => {
-                                setSelectedMethod('EMAIL');
-                                setEmail(userEmail.email);
-                                void handleSendOtpCode(event);
-                              }
-                            }
-                            fullWidth
-                            startIcon={<EmailIcon />}
-                          >
-                            { userEmail.email }
-                          </Button>
-                        </Grid>
-                      );
+                    style={
+                      {
+                        justifyContent: 'left',
+                        paddingLeft: '24px'
+                      }
                     }
-                  })
-                }
-              </>
-            )
-          }
-        </Grid>
-      </Fade>
+                    fullWidth
+                    startIcon={<EmailIcon />}
+                  >
+                    { userEmail.email }
+                  </Button>
+                </Grid>
+              );
+            }
+          })
+        }
+      </>
     );
   };
 
@@ -525,8 +543,8 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> = Reac
           onCompleteCallback={setOtp}
         />
         {
-          hasSentLogin
-          && props.hasLoginError
+          hasFiredCallback
+          && props.hasCallbackError
           && renderBackButton(true)
         }
       </>
@@ -547,13 +565,30 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> = Reac
           direction="column"
           alignItems="center"
           justifyContent="flex-start"
-          spacing={4}
+          spacing={2}
         >
           {
             isProfileValid
             && !selectedMethod
             && !errorMessage
-            && renderSelectFromLoggedIn()
+            && (
+              <>
+                <Typography
+                  variant="h6"
+                  textAlign="center"
+                  style={
+                    {
+                      margin: '0px auto 24px'
+                    }
+                  }
+                >
+                  Choose where to send a one-time code.
+                </Typography>
+                {
+                  renderSelectFromLoggedIn()
+                }
+              </>
+            )
           }
           {
             !isProfileValid

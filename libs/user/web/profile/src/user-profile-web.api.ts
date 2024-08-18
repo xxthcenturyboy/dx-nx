@@ -1,5 +1,6 @@
 import { apiWebMain } from '@dx/rtk-query-web';
 import {
+  UpdatePasswordPayloadType,
   UserProfileStateType
 } from '@dx/user-shared';
 
@@ -12,11 +13,21 @@ export const apiWebUserProfile = apiWebMain.injectEndpoints({
           method: 'GET'
         }
       )
-    })
+    }),
+    updatePassword: build.mutation<{ success: boolean }, UpdatePasswordPayloadType>({
+      query: (paylaod) => (
+        {
+          url: `v1/user/update/password`,
+          method: 'PUT',
+          data: paylaod
+        }
+      )
+    }),
   }),
   overrideExisting: true
 });
 
 export const {
-  useLazyGetProfileQuery
+  useLazyGetProfileQuery,
+  useUpdatePasswordMutation
 } = apiWebUserProfile;

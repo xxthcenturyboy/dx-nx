@@ -33,6 +33,17 @@ export const AuthController = {
     }
   },
 
+  checkPasswordStrength: async function (req: Request, res: Response) {
+    try {
+      const service = new AuthService();
+      const { password } = req.body as { password: string };
+      const result = await service.checkPasswordStrength(password);
+      sendOK(req, res, result);
+    } catch (err) {
+      sendBadRequest(req, res, err.message);
+    }
+  },
+
   createAccount: async function (req: Request, res: Response) {
     try {
       const service = new AuthService();

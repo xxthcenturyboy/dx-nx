@@ -65,8 +65,12 @@ export type UpdatePasswordPayloadType = {
   id: string;
   password: string;
   passwordConfirm: string;
-  otpCode?: string;
   signature?: string;
+  otpValues?: {
+    code: string;
+    value: string;
+    region?: string
+  }
 };
 
 export type GetUserProfileReturnType = {

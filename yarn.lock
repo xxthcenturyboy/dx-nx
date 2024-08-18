@@ -16833,7 +16833,7 @@ zod@^3.22.4:
   resolved "https://registry.yarnpkg.com/zod/-/zod-3.23.8.tgz#e37b957b5d52079769fb8097099b592f0ef4067d"
   integrity sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==
 
-zxcvbn@^4.4.2:
-  version "4.4.2"
-  resolved "https://registry.yarnpkg.com/zxcvbn/-/zxcvbn-4.4.2.tgz#28ec17cf09743edcab056ddd8b1b06262cc73c30"
-  integrity sha512-Bq0B+ixT/DMyG8kgX2xWcI5jUvCwqrMxSFam7m0lAf78nf04hv6lNCsyLYdyYTrCVMqNDY/206K7eExYCeSyUQ==
+zxcvbn-typescript@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/zxcvbn-typescript/-/zxcvbn-typescript-5.0.1.tgz#989def22a78d2b1513be3fadbb4e149d12d7f6f2"
+  integrity sha512-If2a6jdm278dfWmn6NL7oC1lNYRHOthBw0C78LsKvtAHHFNsMudvFhDn2fF/b74txWtSosJJiuJ7jBPn/xP6HQ==

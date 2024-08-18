@@ -1,8 +1,14 @@
-import zxcvbn from 'zxcvbn';
+import zxcvbn from 'zxcvbn-typescript';
 import { Op } from 'sequelize';
-import { FindOptions, WhereOptions } from 'sequelize/types';
+import {
+  FindOptions,
+  WhereOptions
+} from 'sequelize/types';
 
-import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger-api';
+import {
+  ApiLoggingClass,
+  ApiLoggingClassType
+} from '@dx/logger-api';
 import { EMAIL_MODEL_OPTIONS } from '@dx/email-api';
 import { PHONE_MODEL_OPTIONS } from '@dx/phone-api';
 import {
@@ -395,9 +401,20 @@ export class UserService {
   }
 
   public async updatePassword(payload: UpdatePasswordPayloadType) {
-    const { id, password, passwordConfirm, otpCode, signature } = payload;
+    const {
+      id,
+      password,
+      passwordConfirm,
+      otpValues,
+      signature
+    } = payload;
 
-    if (!id || !password || !passwordConfirm || !(otpCode || signature)) {
+    if (
+      !id
+      || !password
+      || !passwordConfirm
+      || !(otpValues || signature)
+    ) {
       throw new Error('Request is invalid.');
     }
 
@@ -405,11 +422,23 @@ export class UserService {
       throw new Error('Passwords must match.');
     }
 
-    if (otpCode) {
-      const isCodeValid = await OtpService.validateOptCode(id, otpCode);
+    let validated = false;
+
+    if (otpValues.code) {
+      let isCodeValid = false;
+      if (otpValues.region) {
+        const phoneUtil = new PhoneUtil(
+          otpValues.value,
+          otpValues.region || PHONE_DEFAULT_REGION_CODE
+        );
+        isCodeValid = await OtpService.validateOptCodeByPhone(id, phoneUtil.countryCode, phoneUtil.nationalNumber, otpValues.code);
+      } else {
+        isCodeValid = await OtpService.validateOptCodeByEmail(id, otpValues.value, otpValues.code)
+      }
       if (!isCodeValid) {
         throw new Error('Invalid OTP code.');
       }
+      validated = true;
     }
 
     if (signature) {
@@ -424,6 +453,11 @@ export class UserService {
           `Update Password: Device signature is invalid: ${biometricAuthPublicKey}, userid: ${id}`
         );
       }
+      validated = true;
+    }
+
+    if (!validated) {
+      throw new Error('Could not validate request.');
     }
 
     // Check password strength

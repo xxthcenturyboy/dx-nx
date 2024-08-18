@@ -32,6 +32,7 @@ import { PhoneType } from '@dx/phone-shared';
 import { Phonelist } from '@dx/phone-web';
 import { userProfileActions } from './user-profile-web.reducer';
 import { selectProfileFormatted } from './user-profile-web.selectors';
+import { UserProfileChangePasswordDialog } from './user-profile-web-change-password.dialog';
 
 export const UserProfile: React.FC = () => {
   const profile = useAppSelector((state: RootState) => selectProfileFormatted(state));
@@ -39,6 +40,7 @@ export const UserProfile: React.FC = () => {
   const dispatch = useAppDispatch();
   const theme = useTheme();
   const mdBreak = useMediaQuery(theme.breakpoints.down('md'));
+  const smBreak = useMediaQuery(theme.breakpoints.down('sm'));
 
   React.useEffect(() => {
     setDocumentTitle('Profile');
@@ -54,29 +56,10 @@ export const UserProfile: React.FC = () => {
   const handlePasswordReset = async (): Promise<void> => {
     const primaryEmail = profile?.emails.find(e => e.default);
     if (primaryEmail) {
-      const confirmationMessage = `This will log you out and send a link to your email (${primaryEmail.email}) with which you can use to reset your password.`;
       try {
         dispatch(uiActions.appDialogSet(
-          <ConfirmationDialog
-            okText="OK"
-            cancelText="Cancel"
-            bodyMessage={confirmationMessage}
-            noAwait={true}
-            onComplete={
-              async (isConfirmed: boolean) => {
-                if (isConfirmed) {
-                  // await dispatch(fetchRequestReset({
-                  //   email: primaryEmail.email
-                  // }));
-                  // await dispatch(fetchLogout());
-                  setTimeout(() => dispatch(uiActions.appDialogSet(null)), 1000);
-                }
-
-                if (!isConfirmed) {
-                  dispatch(uiActions.appDialogSet(null));
-                }
-              }
-            }
+          <UserProfileChangePasswordDialog
+            userId={profile.id}
           />
         ));
 
@@ -103,7 +86,10 @@ export const UserProfile: React.FC = () => {
   };
 
   return (
-    <Fade in={true} timeout={FADE_TIMEOUT_DUR}>
+    <Fade
+      in={true}
+      timeout={FADE_TIMEOUT_DUR}
+    >
       <Box>
         <Paper
           elevation={2}
@@ -114,7 +100,12 @@ export const UserProfile: React.FC = () => {
             alignItems="center"
             padding="20px"
           >
-            <Grid item>
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              md={6}
+            >
               <Typography
                 variant="h5"
                 color="primary"
@@ -122,11 +113,19 @@ export const UserProfile: React.FC = () => {
                 Profile: { profile.username }
               </Typography>
             </Grid>
-            <Grid item>
+            <Grid
+              item
+              display="flex"
+              xs={12}
+              sm={6}
+              md={6}
+              justifyContent={smBreak ? 'center' : 'flex-end'}
+            >
               <Button
                 variant="contained"
                 size="small"
                 onClick={handlePasswordReset}
+                fullWidth={smBreak ? true : false}
               >
                 Change Password
               </Button>

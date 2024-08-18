@@ -24,7 +24,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { ChevronLeft } from '@mui/icons-material';
-import { lightBlue } from '@mui/material/colors';
+import { lightBlue, grey } from '@mui/material/colors';
 
 import {
   RootState,
@@ -265,11 +265,15 @@ export const UserAdminEdit: React.FC = () => {
       >
         <Grid
           item
-          justifyContent="flex-start"
-          sx={{
-            overflow: 'hidden',
-            whiteSpace: 'break-spaces'
-          }}
+          xs={12}
+          sm={6}
+          md={6}
+          sx={
+            {
+              overflow: 'hidden',
+              whiteSpace: 'break-spaces'
+            }
+          }
         >
           <Typography
             variant="h5"
@@ -282,12 +286,30 @@ export const UserAdminEdit: React.FC = () => {
             >
               <ChevronLeft />
             </IconButton>
-            {title}
+            { title }
           </Typography>
         </Grid>
-        <Grid item justifyContent="flex-end">
+        <Grid
+          item
+          display="flex"
+          xs={12}
+          sm={6}
+          md={6}
+          justifyContent={smBreak ? 'center' : 'flex-end'}
+        >
           {
-            user?.optInBeta && (<Chip label="BETA" sx={{ backgroundColor: lightBlue[700], marginRight: '12px' }} />)
+            user?.optInBeta && (
+              <Chip
+                label="BETA"
+                sx={
+                  {
+                    backgroundColor: lightBlue[700],
+                    color: grey[50],
+                    margin: smBreak ? '0 0 0 12px' : '0 12px 0 0'
+                  }
+                }
+              />
+            )
           }
           {
             user?.restrictions && user.restrictions.length > 0 && (<Chip label="RESTRICTED" color="error" />)
@@ -483,12 +505,15 @@ export const UserAdminEdit: React.FC = () => {
   };
 
   return (
-    <Fade in={true} timeout={FADE_TIMEOUT_DUR}>
+    <Fade
+      in={true}
+      timeout={FADE_TIMEOUT_DUR}
+    >
       <Box>
         <Paper
           elevation={2}
         >
-          {renderHeader()}
+          { renderHeader() }
           <Divider />
           <Grid
             container
@@ -496,8 +521,8 @@ export const UserAdminEdit: React.FC = () => {
             padding="20px"
             direction={mdBreak ? 'column' : 'row'}
           >
-            {renderColumnLeft()}
-            {renderColumnRight()}
+            { renderColumnLeft() }
+            { renderColumnRight() }
           </Grid>
         </Paper>
       </Box>

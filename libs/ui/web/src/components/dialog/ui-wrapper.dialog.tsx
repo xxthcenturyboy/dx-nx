@@ -9,6 +9,7 @@ type DialogWrapperType = {
 export const DialogWrapper: React.FC<DialogWrapperType> = ({ children, maxWidth }) => {
   return (
     <Box
+      display="flex"
       flexDirection="column"
       justifyContent="flex-start"
       alignItems="center"

@@ -21,6 +21,7 @@ import {
   useTheme,
 } from '@mui/material';
 import * as MuiColors from '@mui/material/colors';
+import { BeatLoader } from 'react-spinners';
 
 import {
   RootState,
@@ -36,6 +37,7 @@ import {
   TableComponent,
   TableHeaderItem,
   TableRowType,
+  themeColors,
   uiActions,
   useFocus
 } from '@dx/ui-web';
@@ -62,6 +64,7 @@ export const UserAdminList: React.FC = () => {
   const [headerData, setHeaderData] = useState<TableHeaderItem[]>([]);
   const [tableMeta, setTableMeta] = useState(userAdminTableMetaData);
   const [rowData, setRowData] = useState<TableRowType[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false);
   const [searchInputRef, setSearchInputRef] = useFocus();
   const ROUTES = WebConfigService.getWebRoutes();
   const dispatch = useAppDispatch();
@@ -279,6 +282,8 @@ export const UserAdminList: React.FC = () => {
     }
 
     setRowData(rows);
+    // setTimeout(() => setIsInitialized(true), 300);
+    setIsInitialized(true);
   };
 
   const handleOffsetChange = (offset: number) => {
@@ -309,7 +314,10 @@ export const UserAdminList: React.FC = () => {
   };
 
   return (
-    <Fade in={true} timeout={FADE_TIMEOUT_DUR}>
+    <Fade
+      in={true}
+      timeout={FADE_TIMEOUT_DUR}
+    >
       <Grid
         container
         spacing={0}
@@ -373,25 +381,50 @@ export const UserAdminList: React.FC = () => {
             </Button>
           </Grid> */}
         </Grid>
-        <Divider style={{ width: '100%', marginBottom: '20px' }} />
-        <TableComponent
-          changeLimit={handleLimitChange}
-          changeOffset={handleOffsetChange}
-          changeSort={handleSortChange}
-          clickRow={clickRow}
-          count={usersCount || 0}
-          collapsible
-          header={headerData}
-          loading={isLoadingUserList}
-          limit={limit}
-          // maxHeight="200px"
-          offset={offset}
-          orderBy={orderBy}
-          refreshData={refreshTableData}
-          rows={rowData}
-          sortDir={sortDir}
-          tableName="Users"
+        <Divider
+          style={
+            {
+              width: '100%',
+              marginBottom: '20px'
+            }
+          }
         />
+        {
+          isInitialized && (
+            <TableComponent
+              changeLimit={handleLimitChange}
+              changeOffset={handleOffsetChange}
+              changeSort={handleSortChange}
+              clickRow={clickRow}
+              count={usersCount || 0}
+              collapsible
+              header={headerData}
+              loading={isLoadingUserList}
+              limit={limit}
+              maxHeight="200px"
+              offset={offset}
+              orderBy={orderBy}
+              refreshData={refreshTableData}
+              rows={rowData}
+              sortDir={sortDir}
+              tableName="Users"
+            />
+          )
+        }
+        {
+          !isInitialized && (
+            <BeatLoader
+              color={themeColors.secondary}
+              size={24}
+              margin="2px"
+              style={
+                {
+                  marginTop: '50px'
+                }
+              }
+            />
+          )
+        }
       </Grid>
     </Fade>
   );
