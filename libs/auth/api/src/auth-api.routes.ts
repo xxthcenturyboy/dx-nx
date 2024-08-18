@@ -48,6 +48,11 @@ export class AuthRoutes {
       DxRateLimiters.veryStrict(),
       AuthController.sendOtpToPhone
     );
+    router.post(
+      '/otp-code/send/id',
+      DxRateLimiters.veryStrict(),
+      AuthController.sendOtpById
+    );
 
     router.delete(
       '/reject/device/:id',

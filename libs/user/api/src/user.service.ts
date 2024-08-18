@@ -10,7 +10,7 @@ import {
   ApiLoggingClassType
 } from '@dx/logger-api';
 import { EMAIL_MODEL_OPTIONS } from '@dx/email-api';
-import { PHONE_MODEL_OPTIONS } from '@dx/phone-api';
+import { PHONE_MODEL_OPTIONS, PhoneModel } from '@dx/phone-api';
 import {
   DEFAULT_LIMIT,
   DEFAULT_OFFSET,
@@ -405,7 +405,7 @@ export class UserService {
       id,
       password,
       passwordConfirm,
-      otpValues,
+      otp,
       signature
     } = payload;
 
@@ -413,7 +413,7 @@ export class UserService {
       !id
       || !password
       || !passwordConfirm
-      || !(otpValues || signature)
+      || !(otp || signature)
     ) {
       throw new Error('Request is invalid.');
     }
@@ -424,17 +424,38 @@ export class UserService {
 
     let validated = false;
 
-    if (otpValues.code) {
+    if (otp.id) {
       let isCodeValid = false;
-      if (otpValues.region) {
+
+      if (otp.method === 'PHONE') {
+        const phoneRecord = await PhoneModel.findByPk(otp.id);
+        if (!phoneRecord) {
+          throw new Error('Could not get phone to validate code.');
+        }
         const phoneUtil = new PhoneUtil(
-          otpValues.value,
-          otpValues.region || PHONE_DEFAULT_REGION_CODE
+          phoneRecord.phoneFormatted,
+          phoneRecord.countryCode
         );
-        isCodeValid = await OtpService.validateOptCodeByPhone(id, phoneUtil.countryCode, phoneUtil.nationalNumber, otpValues.code);
-      } else {
-        isCodeValid = await OtpService.validateOptCodeByEmail(id, otpValues.value, otpValues.code)
+        isCodeValid = await OtpService.validateOptCodeByPhone(
+          id,
+          phoneUtil.countryCode,
+          phoneUtil.nationalNumber,
+          otp.code
+        );
       }
+
+      if (otp.method === 'EMAIL') {
+        const emailRecord = await EmailModel.findByPk(otp.id);
+        if (!emailRecord) {
+          throw new Error('Could not get email to validate code.');
+        }
+        isCodeValid = await OtpService.validateOptCodeByEmail(
+          id,
+          emailRecord.email,
+          otp.code
+        );
+      }
+
       if (!isCodeValid) {
         throw new Error('Invalid OTP code.');
       }

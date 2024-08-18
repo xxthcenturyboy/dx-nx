@@ -26,11 +26,11 @@ import {
   UserLookupQueryType,
   UserLookupResponseType,
 } from '@dx/auth-shared';
+import { EmailService } from '@dx/email-api';
+import { PhoneService } from '@dx/phone-api';
 import { USER_LOOKUPS } from './auth-api.consts';
 import { OtpCodeCache } from './otp-code.redis-cache';
 import { TokenService } from './token.service';
-import { EmailService } from '@dx/email-api';
-import { PhoneService } from '@dx/phone-api';
 
 export class AuthService {
   logger: ApiLoggingClassType;
@@ -278,7 +278,11 @@ export class AuthService {
     try {
       // Authentication in order of preference
       // Biometric Login
-      if (biometric && biometric.userId && biometric.signature) {
+      if (
+        biometric
+        && biometric.userId
+        && biometric.signature
+      ) {
         user = await this.biometricLogin({
           ...biometric,
           payload: value,
@@ -326,7 +330,11 @@ export class AuthService {
             );
           }
 
-          if (!user && !password && code) {
+          if (
+            !user
+            && !password
+            && code
+          ) {
             const otpCache = new OtpCodeCache();
             const isCodeValid = await otpCache.validateEmailOtp(
               code,
@@ -336,7 +344,10 @@ export class AuthService {
               const email = await EmailModel.findByEmail(
                 emailUtil.formattedEmail()
               );
-              if (email && email.userId) {
+              if (
+                email
+                && email.userId
+              ) {
                 user = await UserModel.findByPk(email.userId);
               }
             }
@@ -471,6 +482,41 @@ export class AuthService {
       const message = err.message || 'Error sending Otp to phone' + phone;
       this.logger.logError(message);
       throw new Error(message);
+    }
+  }
+
+  public async sentOtpById(
+    id: string,
+    type: 'PHONE' | 'EMAIL'
+  ): Promise<{ code: string }> {
+    if (type === 'PHONE') {
+      try {
+        const phoneRecord = await PhoneModel.findByPk(id);
+        if (!phoneRecord) {
+          throw new Error('No phone with that id');
+        }
+
+        return await this.sendOtpToPhone(phoneRecord.phoneFormatted, phoneRecord.countryCode);
+      } catch (err) {
+        const message = err.message || 'Error sending Otp to phone';
+        this.logger.logError(message);
+        throw new Error(message);
+      }
+    }
+
+    if (type === 'EMAIL') {
+      try {
+        const emailRecord = await EmailModel.findByPk(id);
+        if (!emailRecord) {
+          throw new Error('No email with that id');
+        }
+
+        return await this.sendOtpToEmail(emailRecord.email);
+      } catch (err) {
+        const message = err.message || 'Error sending Otp to email';
+        this.logger.logError(message);
+        throw new Error(message);
+      }
     }
   }
 

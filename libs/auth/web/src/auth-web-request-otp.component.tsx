@@ -41,6 +41,7 @@ import { Form } from './auth-web-login.ui'
 import { AuthWebOtpEntry } from './auth-web-otp.component';
 import {
   useOtpRequestEmailMutation,
+  useOtpRequestIdMutation,
   useOtpRequestPhoneMutation
 } from './auth-web.api';
 
@@ -72,6 +73,16 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> = Reac
     }
   ] = useOtpRequestEmailMutation();
   const [
+    requestOtpCodeId,
+    {
+      data: sendOtpIdResponse,
+      error: sendOtpIdError,
+      isLoading: isLoadingSendOtpId,
+      isSuccess: sendOtpIdSuccess,
+      isUninitialized: sendOtpIdUninitialized
+    }
+  ] = useOtpRequestIdMutation();
+  const [
     requestOtpCodePhone,
     {
       data: sendOtpPhoneResponse,
@@ -83,16 +94,15 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> = Reac
   ] = useOtpRequestPhoneMutation();
 
   React.useEffect(() => {
-  }, []);
-
-  React.useEffect(() => {
     if (
       !isLoadingSendOtpEmail
       && !isLoadingSendOtpPhone
+      && !isLoadingSendOtpId
     ) {
       if (
         !sendOtpEmailError
         && !sendOtpPhoneError
+        && !sendOtpIdError
       ) {
         setErrorMessage('');
         return;
@@ -111,22 +121,32 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> = Reac
       ) {
         setErrorMessage(sendOtpPhoneError['error']);
       }
+
+      if (
+        sendOtpIdError
+        && 'error' in sendOtpIdError
+      ) {
+        setErrorMessage(sendOtpIdError['error']);
+      }
     }
   }, [
     isLoadingSendOtpEmail,
-    isLoadingSendOtpPhone
+    isLoadingSendOtpPhone,
+    isLoadingSendOtpId
   ]);
 
   React.useEffect(() => {
     if (
       sendOtpEmailSuccess
       || sendOtpPhoneSuccess
+      || sendOtpIdSuccess
     ) {
       setHasSentOtp(true);
     }
   }, [
     sendOtpEmailSuccess,
-    sendOtpPhoneSuccess
+    sendOtpPhoneSuccess,
+    sendOtpIdSuccess
   ]);
 
   React.useEffect(() => {
@@ -182,38 +202,11 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> = Reac
 
   const handleSendOtpCodeFromLoggedIn = async (
     method: 'EMAIL' | 'PHONE',
-    value: string,
-    regionCode?: string
+    id: string
   ): Promise<void> => {
     setSelectedMethod(method);
-
-    if (
-      method === 'EMAIL'
-      && value
-    ) {
-      setEmail(value)
-      await requestOtpCodeEmail({ email: value })
+    await requestOtpCodeId({ id, type: method })
         .catch((err) => logger.error((err as Error).message, err));
-    }
-
-    if (
-      method === 'PHONE'
-      && value
-      && regionCode
-    ) {
-      setPhone(value);
-      setCountryData({
-        name: '',
-        dialCode: '',
-        countryCode: regionCode,
-        format: ''
-      });
-      await requestOtpCodePhone({
-        phone: value,
-        regionCode
-      })
-        .catch((err) => logger.error((err as Error).message, err));
-    }
   };
 
   const handleChangeEmail = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -359,7 +352,7 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> = Reac
             onSubmit={handleSendOtpCode}
           >
             <FormControl
-              disabled={isLoadingSendOtpEmail || !regexEmail.test(email)}
+              disabled={isLoadingSendOtpEmail}
               margin="normal"
               variant="standard"
               style={{ minWidth: 300 }}
@@ -414,6 +407,17 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> = Reac
   const renderSelectFromLoggedIn = (): JSX.Element => {
     return (
       <>
+        <Typography
+          variant="h6"
+          textAlign="center"
+          style={
+            {
+              margin: '0px auto 24px'
+            }
+          }
+        >
+          Choose where to send a one-time code.
+        </Typography>
         {
           userPhones.length
           &&  userPhones.map((userPhone) => {
@@ -422,6 +426,7 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> = Reac
             ) {
               return (
                 <Grid
+                  key={userPhone.id}
                   item
                   width={'100%'}
                 >
@@ -431,10 +436,16 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> = Reac
                       (event: React.FormEvent) => {
                         event.preventDefault();
                         event.stopPropagation();
+                        setPhone(userPhone.id);
+                        setCountryData({
+                          countryCode: userPhone.countryCode,
+                          dialCode: '',
+                          format: '',
+                          name: ''
+                        })
                         handleSendOtpCodeFromLoggedIn(
                           'PHONE',
-                          userPhone.phoneFormatted,
-                          userPhone.countryCode
+                          userPhone.id
                         );
                       }
                     }
@@ -462,6 +473,7 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> = Reac
             ) {
               return (
                 <Grid
+                  key={userEmail.id}
                   item
                   width={'100%'}
                 >
@@ -471,9 +483,11 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> = Reac
                       (event: React.FormEvent) => {
                         event.preventDefault();
                         event.stopPropagation();
+                        setEmail(userEmail.id);
+                        setCountryData(null);
                         handleSendOtpCodeFromLoggedIn(
                           'EMAIL',
-                          userEmail.email
+                          userEmail.id
                         );
                       }
                     }
@@ -538,10 +552,25 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> = Reac
   const renderOtpEntry = (): JSX.Element => {
     return (
       <>
-        <AuthWebOtpEntry
-          method={selectedMethod}
-          onCompleteCallback={setOtp}
-        />
+        {
+          !hasFiredCallback && (
+            <AuthWebOtpEntry
+              method={selectedMethod}
+              onCompleteCallback={setOtp}
+            />
+          )
+        }
+        {
+          hasFiredCallback
+          && !props.hasCallbackError
+          && (
+            <BeatLoader
+              color={themeColors.secondary}
+              size={24}
+              margin="2px"
+            />
+          )
+        }
         {
           hasFiredCallback
           && props.hasCallbackError
@@ -571,24 +600,7 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> = Reac
             isProfileValid
             && !selectedMethod
             && !errorMessage
-            && (
-              <>
-                <Typography
-                  variant="h6"
-                  textAlign="center"
-                  style={
-                    {
-                      margin: '0px auto 24px'
-                    }
-                  }
-                >
-                  Choose where to send a one-time code.
-                </Typography>
-                {
-                  renderSelectFromLoggedIn()
-                }
-              </>
-            )
+            && renderSelectFromLoggedIn()
           }
           {
             !isProfileValid
@@ -614,6 +626,15 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> = Reac
             hasSentOtp
             && !errorMessage
             && renderOtpEntry()
+          }
+          {
+            isLoadingSendOtpId && (
+              <BeatLoader
+                color={themeColors.secondary}
+                size={16}
+                margin="2px"
+              />
+            )
           }
           {
             !!errorMessage && (

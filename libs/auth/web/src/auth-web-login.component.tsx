@@ -44,6 +44,7 @@ export const WebLogin: React.FC = () => {
   const user = useAppSelector((state: RootState) => state.userProfile);
   const isProfileValid = useAppSelector((state: RootState) => selectIsUserProfileValid(state));
   const logo = useAppSelector((state: RootState) => state.ui.logoUrl);
+  // const windowHeight = useAppSelector((state: RootState) => state.ui.windowHeight) || 0;
   const windowWidth = useAppSelector((state: RootState) => state.ui.windowWidth) || 0;
   const stringLogin = useAppSelector((state: RootState) => state.ui.strings['LOGIN']);
   const location = useLocation();
@@ -145,21 +146,26 @@ export const WebLogin: React.FC = () => {
           direction="column"
           alignItems="center"
           justifyContent="center"
-          style={{ minHeight: mobileBreak ? 'unset' : '90vh' }}
+          style={{ minHeight: mobileBreak ? 'unset' : '80vh' }}
         >
           <Paper
-            elevation={2}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'flex-start',
-              padding: mobileBreak ? '20px' : '40px',
-              minWidth: windowWidth < 375 ? `${windowWidth - 40}px` : '330px',
-              minHeight: '500px',
-              maxWidth: '420px',
-              width: '100%',
-            }}
+            elevation={mobileBreak ? 0 : 2}
+            sx={
+              (theme) => {
+                return {
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                  padding: mobileBreak ? '20px' : '40px',
+                  minWidth: windowWidth < 375 ? `${windowWidth - 40}px` : '330px',
+                  minHeight: '500px',
+                  maxWidth: '420px',
+                  width: '100%',
+                  backgroundColor: mobileBreak ? 'transparent' : undefined
+                };
+              }
+            }
           >
             <UI.Logo src={logo} />
             {

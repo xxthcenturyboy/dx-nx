@@ -68,6 +68,16 @@ export const apiWebAuth = apiWebMain.injectEndpoints({
       ),
       transformErrorResponse: transformAuthApiError
     }),
+    otpRequestId: build.mutation<{ code?: string }, { id: string, type: 'PHONE' | 'EMAIL' }>({
+      query: (payload) => (
+        {
+          url: 'v1/auth/otp-code/send/id',
+          method: 'POST',
+          data: payload
+        }
+      ),
+      transformErrorResponse: transformAuthApiError
+    }),
     otpRequestPhone: build.mutation<{ code?: string }, { phone: string; regionCode?: string }>({
       query: (payload) => (
         {
@@ -87,5 +97,6 @@ export const {
   useLoginMutation,
   useLogoutMutation,
   useOtpRequestEmailMutation,
+  useOtpRequestIdMutation,
   useOtpRequestPhoneMutation
 } = apiWebAuth;

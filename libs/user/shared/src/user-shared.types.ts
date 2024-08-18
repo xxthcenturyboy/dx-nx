@@ -66,10 +66,10 @@ export type UpdatePasswordPayloadType = {
   password: string;
   passwordConfirm: string;
   signature?: string;
-  otpValues?: {
+  otp?: {
     code: string;
-    value: string;
-    region?: string
+    id: string;
+    method: 'PHONE' | 'EMAIL';
   }
 };
 

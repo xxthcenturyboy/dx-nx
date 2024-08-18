@@ -214,6 +214,18 @@ export const AuthController = {
     }
   },
 
+  sendOtpById: async function (req: Request, res: Response) {
+    try {
+      const { id, type } = req.body as { id: string, type: 'PHONE' | 'EMAIL' };
+      const service = new AuthService();
+      const result = await service.sentOtpById(id, type);
+
+      sendOK(req, res, result);
+    } catch (err) {
+      sendBadRequest(req, res, err.message);
+    }
+  },
+
   validateEmail: async function (req: Request, res: Response) {
     try {
       const { token } = req.params as { token: string };

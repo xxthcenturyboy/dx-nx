@@ -155,10 +155,10 @@ export const UserProfileChangePasswordDialog: React.FC<UserProfileChangePassword
     try {
       const payload: UpdatePasswordPayloadType = {
         id:  props.userId,
-        otpValues: {
+        otp: {
           code: data.code,
-          value: data.value,
-          region: data.region
+          id: data.value,
+          method: data.region ? 'PHONE' : 'EMAIL'
         },
         password,
         passwordConfirm
