@@ -201,7 +201,7 @@ export const TableComponent: React.FC<TableComponentProps> = React.forwardRef((p
           >
             <Typography variant="body1" color="primary">
               {/* {`${tableName}${count !== undefined ? `: ${count}` : ''}`} */}
-              {tableName}
+              { tableName }
             </Typography>
             {
               typeof refreshData === 'function' && (
@@ -211,7 +211,14 @@ export const TableComponent: React.FC<TableComponentProps> = React.forwardRef((p
                       event.stopPropagation();
                       refreshData();
                     }}
-                    style={{ cursor: 'pointer', width: '0.75em', margin: '0 10 0 0', color: 'inherit' }}
+                    style={
+                      {
+                        cursor: 'pointer',
+                        width: '0.75em',
+                        margin: '0 10 0 0',
+                        color: 'inherit'
+                      }
+                    }
                   />
                 </Tooltip>
               )
