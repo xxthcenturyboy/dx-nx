@@ -401,7 +401,7 @@ export const UserAdminList: React.FC = () => {
               header={headerData}
               loading={isLoadingUserList}
               limit={limit}
-              maxHeight="200px"
+              // maxHeight="272px"
               offset={offset}
               orderBy={orderBy}
               refreshData={refreshTableData}

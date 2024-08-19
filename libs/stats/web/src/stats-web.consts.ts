@@ -6,7 +6,7 @@ import {
 export const STATS_SUDO_WEB_ENTITY_NAME = 'stats';
 
 export const STATS_SUDO_ROUTES = {
-  HEALTHZ: `/sudo/stats/healthz`,
+  HEALTH: `/sudo/stats/api-health`,
   USERS: '/sudo/stats/users'
 };
 
@@ -20,8 +20,8 @@ export const STATS_SUDO_WEB_MENU: AppMenuType = {
       id: 'menu-item-stats-healthz',
       icon: IconNames.HEALTHZ,
       restriction: 'SUPER_ADMIN',
-      routeKey: STATS_SUDO_ROUTES.HEALTHZ,
-      title: 'API Healthz',
+      routeKey: STATS_SUDO_ROUTES.HEALTH,
+      title: 'API Health',
       type: 'ROUTE',
     },
     {

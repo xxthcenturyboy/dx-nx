@@ -35,12 +35,10 @@ export class SudoWebRouterConfig {
         errorElement: (<UnauthorizedComponent />),
         children: [
           {
-            path: ROUTES.SUDO.STATS.HEALTHZ,
-            // lazy: async () => { let { Dashboard } = await import('@dx/dashboard-web')
-            //   return { Component: Dashboard }
-            // },
-            element: (<UnauthorizedComponent />),
-            errorElement: (<GlobalErrorComponent />)
+            path: ROUTES.SUDO.STATS.HEALTH,
+            lazy: async () => { let { StatsWebApiHealthComponent } = await import('@dx/stats-web')
+              return { Component: StatsWebApiHealthComponent }
+            },
           },
           {
             path: ROUTES.SUDO.STATS.USERS,

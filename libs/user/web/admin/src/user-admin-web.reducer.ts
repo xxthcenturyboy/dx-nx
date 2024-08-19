@@ -13,7 +13,7 @@ import {
 } from '@dx/config-shared';
 import { UserType } from '@dx/user-shared';
 import {
-  UserAdminStateType
+  UserAdminStateType,
 } from './user-admin-web.types';
 import { USER_ADMIN_ENTITY_NAME } from './user-admin-web.consts';
 
@@ -49,7 +49,7 @@ const userAdminSlice = createSlice({
     limitSet(state, action: PayloadAction<number>) {
       state.limit = action.payload;
     },
-    listSet(state, action: PayloadAction<UseerType[]>) {
+    listSet(state, action: PayloadAction<UserType[]>) {
       state.users = action.payload;
     },
     offsetSet(state, action: PayloadAction<number>) {
