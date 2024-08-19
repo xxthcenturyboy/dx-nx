@@ -43,5 +43,5 @@ root.render(
         </PersistGate>
       </Provider>
     </ErrorBoundary>
-  // </StrictMode>
+  </StrictMode>
 );
