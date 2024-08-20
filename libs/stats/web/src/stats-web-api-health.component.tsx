@@ -156,6 +156,7 @@ export const StatsWebApiHealthComponent: React.FC = () => {
             direction="column"
             padding="20px"
           >
+            {/* HTTP */}
             <Grid
               item
             >
@@ -196,12 +197,14 @@ export const StatsWebApiHealthComponent: React.FC = () => {
                 </TableBody>
               </Table>
             </Grid>
+
+            {/* MEMORY */}
             <Grid
               item
             >
               <Table
                 size="medium"
-                id="http"
+                id="memory"
               >
                 <TableHead>
                   <TableRow>
@@ -286,12 +289,14 @@ export const StatsWebApiHealthComponent: React.FC = () => {
                 </TableBody>
               </Table>
             </Grid>
+
+            {/* POSTGRES */}
             <Grid
               item
             >
               <Table
                 size="medium"
-                id="http"
+                id="postgres"
               >
                 <TableHead>
                   <TableRow>
@@ -336,12 +341,14 @@ export const StatsWebApiHealthComponent: React.FC = () => {
                 </TableBody>
               </Table>
             </Grid>
+
+            {/* REDIS */}
             <Grid
               item
             >
               <Table
                 size="medium"
-                id="http"
+                id="redis"
               >
                 <TableHead>
                   <TableRow>
