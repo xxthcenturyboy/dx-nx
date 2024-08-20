@@ -5,9 +5,9 @@ import {
   NotFoundComponent,
   RateLimitComponent
 } from '@dx/ui-web';
+import { AuthWebRouterConfig } from '@dx/auth-web';
 import { WebConfigService } from '@dx/config-web';
 import { Root } from './root.component';
-import { AuthWebRouterConfig } from '@dx/auth-web';
 import { PrivateWebRouterConfig } from './private.router';
 
 export class AppRouter {

@@ -1,4 +1,7 @@
-import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger-api';
+import {
+  ApiLoggingClass,
+  ApiLoggingClassType
+} from '@dx/logger-api';
 import { ShortLinkModel } from './shortlink.postgres-model';
 
 export class ShortlinkService {

@@ -1,0 +1,9 @@
+{
+  "name": "notifications-web",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/notifications/web/src",
+  "projectType": "library",
+  "tags": ["scope:web"],
+  "// targets": "to see all targets run: nx show project notifications-web --web",
+  "targets": {}
+}

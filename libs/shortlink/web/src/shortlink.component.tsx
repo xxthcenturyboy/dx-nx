@@ -4,11 +4,6 @@ import React,
   useState
 } from 'react';
 import {
-  RootState,
-  useAppDispatch,
-  useAppSelector
-} from '@dx/store-web';
-import {
   useParams,
   useNavigate
 } from 'react-router-dom';
@@ -26,18 +21,24 @@ import {
   FADE_TIMEOUT_DUR,
   MEDIA_BREAK
 } from '@dx/ui-web';
-// import fetchShortlink from 'client/Shortlink/actions/fetchShortlink';
+import { useLazyGetShortlinkTargetQuery } from './shortlink-web-api';
 
 export const ShortlinkComponent: React.FC = () => {
   const { token } = useParams() as { token: string };
-  const dispatch = useAppDispatch();
   const theme = useTheme();
   const smBreak = useMediaQuery(theme.breakpoints.down('sm'));
   const [hasFetched, setHasFetched] = useState(false);
-  const isFetching = useAppSelector((state: RootState) => state.shortlink.isFetchingShortlink);
-  const fetchError = useAppSelector((state: RootState) => state.shortlink.fetchShortlinkError);
-  const fetchedRoute = useAppSelector((state: RootState) => state.shortlink.fetchedRoute);
   const navigate = useNavigate();
+  const [
+    fetchShortlink,
+    {
+      data: shortlinkResponse,
+      error: shortlinkError,
+      isFetching: isLoadingShortlink,
+      isSuccess: shortlinkSuccess,
+      isUninitialized: shortlinkUninitialized
+    }
+  ] = useLazyGetShortlinkTargetQuery();
 
   useEffect(() => {
     if (!token) {
@@ -45,40 +46,43 @@ export const ShortlinkComponent: React.FC = () => {
       return;
     }
 
-    // dispatch(fetchShortlink(token));
+    void fetchShortlink({ id: token })
   }, []);
 
   useEffect(() => {
-    if (isFetching) {
+    if (isLoadingShortlink) {
       setHasFetched(true);
     };
-  }, [isFetching]);
+  }, [isLoadingShortlink]);
 
   useEffect(() => {
-    if (hasFetched && fetchError) {
+    if (hasFetched && shortlinkError) {
       routeToMain();
     }
-  }, [fetchError]);
+  }, [shortlinkError]);
 
   useEffect(() => {
     if (
       hasFetched
-      && !fetchError
-      && fetchedRoute
+      && !shortlinkError
+      && shortlinkResponse
     ) {
-      navigate(fetchedRoute, { replace: true });
+      navigate(shortlinkResponse, { replace: true });
     }
-  }, [fetchedRoute]);
+  }, [shortlinkResponse]);
 
   const routeToMain = () => {
-    const routes = WebConfigService.getWebRoutes();
-    if (routes && routes.MAIN) {
-      navigate(routes.MAIN);
+    const ROUTES = WebConfigService.getWebRoutes();
+    if (ROUTES && ROUTES.MAIN) {
+      navigate(ROUTES.MAIN);
     }
   };
 
   return (
-    <Fade in={true} timeout={FADE_TIMEOUT_DUR}>
+    <Fade
+      in={true}
+      timeout={FADE_TIMEOUT_DUR}
+    >
       <Grid
         container
         spacing={0}
@@ -93,7 +97,7 @@ export const ShortlinkComponent: React.FC = () => {
           color="primary"
           align="center"
         >
-          {APP_NAME}
+          { APP_NAME }
         </Typography>
       </Grid>
     </Fade>

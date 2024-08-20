@@ -6,7 +6,7 @@ export class ShortlinkRoutes {
   static configure() {
     const router = Router();
 
-    router.get('/', ShortlinkController.redirectToTarget);
+    router.get('/:id', ShortlinkController.getTarget);
 
     return router;
   }

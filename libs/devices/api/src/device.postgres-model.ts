@@ -14,8 +14,14 @@ import {
   DeletedAt,
   Index,
 } from 'sequelize-typescript';
-import { UserModel, UserModelType } from '@dx/user-api';
-import { DEVICES_POSTGRES_DB_NAME, FACIAL_AUTH_STATE } from './devices.consts';
+import {
+  UserModel,
+  UserModelType
+} from '@dx/user-api';
+import {
+  DEVICES_POSTGRES_DB_NAME,
+  FACIAL_AUTH_STATE
+} from './devices.consts';
 
 @Table({
   modelName: DEVICES_POSTGRES_DB_NAME,
