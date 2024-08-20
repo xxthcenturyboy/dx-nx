@@ -113,8 +113,7 @@ export const StatsWebApiHealthComponent: React.FC = () => {
           >
             <Grid
               item
-              xs={12}
-              sm={6}
+              xs={6}
             >
               <Typography
                 variant="h5"
@@ -125,8 +124,7 @@ export const StatsWebApiHealthComponent: React.FC = () => {
             </Grid>
             <Grid
               item
-              xs={12}
-              sm={6}
+              xs={6}
               display="flex"
               justifyContent="flex-end"
             >
