@@ -1,1 +1,1 @@
-export * from './lib/notifications-api';
+export { NotificationRoutes } from './notification.routes';
