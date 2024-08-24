@@ -29,7 +29,7 @@ import {
   CustomDialogContent,
   DialogError,
   DialogWrapper,
-  LottieSuccess,
+  SuccessLottie,
   selectIsMobileWidth,
   themeColors,
   uiActions
@@ -357,7 +357,7 @@ export const UserProfileChangePasswordDialog: React.FC<UserProfileChangePassword
       {
         allSucceeded && (
           <CustomDialogContent>
-            <LottieSuccess
+            <SuccessLottie
               complete={
                 () => setTimeout(() => handleClose(), 500)
               }

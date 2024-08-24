@@ -30,7 +30,7 @@ import {
   CustomDialogContent,
   DialogError,
   DialogWrapper,
-  LottieSuccess,
+  SuccessLottie,
   selectIsMobileWidth,
   themeColors,
   uiActions
@@ -375,7 +375,7 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
       {
         allSucceeded && (
           <CustomDialogContent>
-            <LottieSuccess
+            <SuccessLottie
               complete={
                 () => setTimeout(() => handleClose(), 500)
               }

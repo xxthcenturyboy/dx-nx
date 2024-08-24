@@ -1,18 +1,18 @@
 import React, { ReactElement } from 'react';
-import { LottiePropTypes } from './lottieTypes';
+import { LottiePropTypes } from './lottie.types';
 import { LottieWrapper } from './LottieWrapper';
 // @ts-ignore
-import * as animationData from './files/cancel-icon.json';
+import * as animationData from './files/welcome-robot.json';
 
-export const LottieCancel: React.FC<LottiePropTypes> = ({ complete }): ReactElement => {
+export const WelcomeRobotLottie: React.FC<LottiePropTypes> = ({ complete }): ReactElement => {
   return (
     <LottieWrapper
       animationData={animationData}
       complete={complete}
-      loop={false}
-      speed={2}
+      loop={true}
+      speed={1}
       style={{
-        width: '200px',
+        width: '360px',
         alignSelf: 'center'
       }}
     />

@@ -36,7 +36,7 @@ import {
   CustomDialogContent,
   DialogError,
   DialogWrapper,
-  LottieSuccess,
+  SuccessLottie,
   selectIsMobileWidth,
   themeColors,
   uiActions
@@ -395,7 +395,7 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (props): ReactEleme
       {
         allSucceeded && (
           <CustomDialogContent>
-            <LottieSuccess
+            <SuccessLottie
               complete={
                 () => setTimeout(() => handleClose(), 700)
               }

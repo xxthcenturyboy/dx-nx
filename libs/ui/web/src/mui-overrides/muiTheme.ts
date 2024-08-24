@@ -7,7 +7,7 @@ import {
 } from './styles';
 import { toolbarItemOverrides } from './styles/menus';
 
-export const drawerWidth = 300;
+export const DRAWER_WIDTH = 300;
 
 export const appTheme: ThemeOptions = {
   palette: {
@@ -63,7 +63,7 @@ export const appTheme: ThemeOptions = {
     //   styleOverrides: {
     //     paper: {
     //       position: 'fixed',
-    //       width: drawerWidth,
+    //       width: DRAWER_WIDTH,
     //       borderRadius: 0,
     //       borderTop: 'none',
     //       borderBottom: 'none',

@@ -17,6 +17,7 @@ import {
 } from '@dx/store-web';
 import {
   MEDIA_BREAK,
+  NoDataLottie,
   themeColors
 } from '@dx/ui-web';
 import {
@@ -118,18 +119,27 @@ export const NotificationMenu: React.FC<NotificationMenuPropsType> = (props) => 
         in={notifications.length === 0}
       >
         <Grid
-          item
+          container
           minHeight="100px"
           display="flex"
           justifyContent="center"
           alignItems="center"
+          direction="column"
         >
+          {
+            props.anchorElement && (
+              <NoDataLottie />
+            )
+          }
           <Typography
-            variant="h4"
+            variant="h6"
             textAlign="center"
             color={themeColors.primary}
+            mb={3}
+            pl={4}
+            pr={4}
           >
-            You're all caught up!
+            Notifications will appear here as you receive them.
           </Typography>
         </Grid>
       </Collapse>

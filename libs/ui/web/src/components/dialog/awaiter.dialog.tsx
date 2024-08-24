@@ -9,7 +9,7 @@ import {
   store,
   useAppSelector
 } from '@dx/store-web';
-import { LottieAwaiter } from '../../lottie/LottieAwaiter';
+import { AwaiterLottie } from '../../lottie/awaiter.lottie';
 import { DialogWrapper } from './ui-wrapper.dialog';
 import { selectIsMobileWidth } from '../../store/ui-web.selector';
 
@@ -51,7 +51,7 @@ export const DialogAwaiter: React.FC<Partial<DialogProps>> = (props) => {
             }}
           >
               {
-                open && (<LottieAwaiter />)
+                open && (<AwaiterLottie />)
               }
             <DialogContentText
               id="dialog-api-alert"

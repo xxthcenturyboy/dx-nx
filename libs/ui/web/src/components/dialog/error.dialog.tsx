@@ -2,7 +2,7 @@ import React from 'react';
 import { DialogContentText } from '@mui/material';
 
 import { CustomDialogContent } from './custom-content.dialog';
-import { LottieAlert } from '../../lottie/LottieAlert';
+import { AlertLottie } from '../../lottie/alert.lottie';
 // import { ERROR_MSG } from '@dx/config-shared';
 
 type DialogErrorType = {
@@ -12,7 +12,7 @@ type DialogErrorType = {
 export const DialogError: React.FC<DialogErrorType> = ({ message }) => {
   return (
     <CustomDialogContent>
-      <LottieAlert />
+      <AlertLottie />
       <DialogContentText
         id="dialog-error"
         variant="h6"

@@ -8,7 +8,7 @@ import {
   RootState,
   useAppSelector
 } from '@dx/store-web';
-import { drawerWidth } from '@dx/ui-web';
+import { DRAWER_WIDTH } from '@dx/ui-web';
 import { AppMenu } from './app-menu.component';
 
 const DrawerContent = styled('div')<{ component?: React.ElementType }>({
@@ -25,11 +25,11 @@ export const ResponsiveMenu: React.FC = () => {
   return (
     <Drawer
       sx={{
-        width: `${drawerWidth}px`,
+        width: `${DRAWER_WIDTH}px`,
         flexShrink: 0,
         '& .MuiDrawer-paper': {
           position: 'fixed',
-          width: `${drawerWidth}px`,
+          width: `${DRAWER_WIDTH}px`,
           borderRadius: 0,
           borderTop: 'none',
           borderBottom: 'none',

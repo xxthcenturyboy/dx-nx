@@ -4,7 +4,7 @@ import {
   Typography
 } from '@mui/material';
 // import { themeColors } from '../mui-overrides/styles';
-import { LottieAccessDenied } from '../lottie/LottieAccessDenied';
+import { AccessDeniedLottie } from '../lottie/access-denied.lottie';
 
 type LoadingProps = {
   error?: Error;
@@ -32,7 +32,7 @@ export const UnauthorizedComponent = (props: LoadingProps): JSX.Element | null =
       >
         You are not authorized to access this feature.
       </Typography>
-      <LottieAccessDenied
+      <AccessDeniedLottie
         loop={false}
       />
     </Grid>

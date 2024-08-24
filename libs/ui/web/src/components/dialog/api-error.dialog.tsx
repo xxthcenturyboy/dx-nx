@@ -20,7 +20,7 @@ import {
   useAppSelector
 } from '@dx/store-web';
 import { uiActions } from '../../store/ui-web.reducer';
-import { LottieError } from '../../lottie/LottieError';
+import { ErrorLottie } from '../../lottie/error.lottie';
 import { DialogWrapper } from './ui-wrapper.dialog';
 import { selectIsMobileWidth } from '../../store/ui-web.selector';
 
@@ -73,7 +73,7 @@ export const DialogApiError: React.FC<Partial<DialogProps>> = (props) => {
               height: height
             }}>
               {
-                open && (<LottieError />)
+                open && (<ErrorLottie />)
               }
             <DialogContentText
               id="dialog-api-alert"

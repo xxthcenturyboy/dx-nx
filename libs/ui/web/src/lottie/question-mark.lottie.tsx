@@ -1,18 +1,18 @@
 import React, { ReactElement } from 'react';
-import { LottiePropTypes } from './lottieTypes';
+import { LottiePropTypes } from './lottie.types';
 import { LottieWrapper } from './LottieWrapper';
 // @ts-ignore
-import * as animationData from './files/hot-dog-man.json';
+import * as animationData from './files/question-bubble.json';
 
-export const LottieWelcomeDog: React.FC<LottiePropTypes> = ({ complete }): ReactElement => {
+export const QuestionMarkLottie: React.FC<LottiePropTypes> = ({ complete }): ReactElement => {
   return (
     <LottieWrapper
       animationData={animationData}
       complete={complete}
-      loop={true}
-      speed={1}
+      loop={false}
+      speed={2}
       style={{
-        width: '200px',
+        width: '300px',
         alignSelf: 'center'
       }}
     />

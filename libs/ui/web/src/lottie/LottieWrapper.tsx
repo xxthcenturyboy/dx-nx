@@ -7,7 +7,7 @@ import Lottie,
   LottieRef
 } from 'lottie-react';
 
-import { LottieWrapperPropTypes } from './lottieTypes';
+import { LottieWrapperPropTypes } from './lottie.types';
 
 export const LottieWrapper: React.FC<LottieWrapperPropTypes> = (props): ReactElement | null => {
   const {

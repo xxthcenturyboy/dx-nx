@@ -6,7 +6,7 @@ import {
   Typography
 } from '@mui/material';
 
-import { LottieBetaBadge } from '../lottie/LottieBetaBadge';
+import { BetaBadgeLottie } from '../lottie/beta-badge.lottie';
 
 export const BetaFeatureComponent: React.FC = () => {
   return (
@@ -18,7 +18,7 @@ export const BetaFeatureComponent: React.FC = () => {
       justifyContent="center"
       style={{ minHeight: '80vh' }}
     >
-      <LottieBetaBadge />
+      <BetaBadgeLottie />
       <Typography
         variant="h1"
         color="primary"

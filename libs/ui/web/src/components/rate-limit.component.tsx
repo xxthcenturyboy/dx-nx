@@ -6,7 +6,7 @@ import {
   Typography
 } from '@mui/material';
 
-import { LottieStopwatch } from '../lottie/LottieStopwatch';
+import { StopwatchLottie } from '../lottie/stopwatch.lottie';
 
 export const RateLimitComponent: React.FC = () => {
   return (
@@ -18,7 +18,7 @@ export const RateLimitComponent: React.FC = () => {
       justifyContent="center"
       style={{ minHeight: '80vh' }}
     >
-      <LottieStopwatch />
+      <StopwatchLottie />
       <Typography
         variant="h1"
         color="primary"

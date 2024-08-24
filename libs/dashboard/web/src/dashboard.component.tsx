@@ -7,7 +7,7 @@ import {
 
 import {
   FADE_TIMEOUT_DUR,
-  LottieWelcomeRobot,
+  WelcomeRobotLottie,
   setDocumentTitle
 } from '@dx/ui-web';
 
@@ -27,7 +27,7 @@ export const Dashboard: React.FC = () => {
         style={{ minHeight: '80vh' }}
         wrap="nowrap"
       >
-        <LottieWelcomeRobot />
+        <WelcomeRobotLottie />
         <Typography
           variant="h5"
           color="secondary"

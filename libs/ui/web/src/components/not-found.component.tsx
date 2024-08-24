@@ -6,7 +6,7 @@ import {
   Typography
 } from '@mui/material';
 
-import { LottieNotFound } from '../lottie/LottieNotFound';
+import { NotFoundLottie } from '../lottie/not-found.lottie';
 
 type NotFoundComponentPropsType = {
   routingFn?: () => void;
@@ -23,7 +23,7 @@ export const NotFoundComponent: React.FC<NotFoundComponentPropsType> = ({ routin
       justifyContent="center"
       style={{ minHeight: '80vh' }}
     >
-      <LottieNotFound />
+      <NotFoundLottie />
       <Typography
         variant="h1"
         color="primary"

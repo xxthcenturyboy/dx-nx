@@ -1,10 +1,10 @@
 import React, { ReactElement } from 'react';
-import { LottiePropTypes } from './lottieTypes';
+import { LottiePropTypes } from './lottie.types';
 import { LottieWrapper } from './LottieWrapper';
 // @ts-ignore
-import * as animationData from './files/question-bubble.json';
+import * as animationData from './files/cancel-icon.json';
 
-export const LottieQuestionMark: React.FC<LottiePropTypes> = ({ complete }): ReactElement => {
+export const CancelLottie: React.FC<LottiePropTypes> = ({ complete }): ReactElement => {
   return (
     <LottieWrapper
       animationData={animationData}
@@ -12,7 +12,7 @@ export const LottieQuestionMark: React.FC<LottiePropTypes> = ({ complete }): Rea
       loop={false}
       speed={2}
       style={{
-        width: '300px',
+        width: '200px',
         alignSelf: 'center'
       }}
     />

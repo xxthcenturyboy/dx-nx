@@ -16,9 +16,9 @@ import {
 // import Zoom from '@mui/material/Zoom';
 
 import {
-  LottieCancel,
-  LottieQuestionMark,
-  LottieSuccess
+  CancelLottie,
+  QuestionMarkLottie,
+  SuccessLottie
 } from '@dx/ui-web';
 import { DialogWrapper } from './ui-wrapper.dialog';
 import { CustomDialogContent } from './custom-content.dialog';
@@ -84,17 +84,17 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
               || showLottieSuccess
             )
             && (
-              <LottieQuestionMark />
+              <QuestionMarkLottie />
             )
           }
           {
             showLottieCancel && (
-              <LottieCancel complete={handleClose} />
+              <CancelLottie complete={handleClose} />
             )
           }
           {
             showLottieSuccess && (
-              <LottieSuccess complete={handleConfirmation} />
+              <SuccessLottie complete={handleConfirmation} />
             )
           }
           <DialogContentText id="confirm-dialog-description" variant="h6" align="center" margin="0 0 20px">

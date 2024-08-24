@@ -1,16 +1,16 @@
 import React, { ReactElement } from 'react';
-import { LottiePropTypes } from './lottieTypes';
+import { LottiePropTypes } from './lottie.types';
 import { LottieWrapper } from './LottieWrapper';
 // @ts-ignore
-import * as animationData from './files/not-found.json';
+import * as animationData from './files/grim-reaper.json';
 
-export const LottieNotFound: React.FC<LottiePropTypes> = ({ complete }): ReactElement => {
+export const ErrorLottie: React.FC<LottiePropTypes> = ({ complete }): ReactElement => {
   return (
     <LottieWrapper
       animationData={animationData}
       complete={complete}
       loop={true}
-      speed={0.5}
+      speed={2}
       style={{
         width: '300px',
         alignSelf: 'center'

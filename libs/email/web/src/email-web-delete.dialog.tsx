@@ -18,9 +18,9 @@ import {
   CustomDialogContent,
   DialogError,
   DialogWrapper,
-  LottieCancel,
-  LottieQuestionMark,
-  LottieSuccess,
+  CancelLottie,
+  QuestionMarkLottie,
+  SuccessLottie,
   selectIsMobileWidth,
   themeColors,
   uiActions
@@ -105,19 +105,19 @@ export const DeleteEmailDialog: React.FC<DeleteEmailDialogProps> = (props): Reac
   const renderLottie = (): JSX.Element => {
     if (showLottieInitial) {
       if (!(showLottieCancel || showLottieError || showLottieSuccess)) {
-        return (<LottieQuestionMark />);
+        return (<QuestionMarkLottie />);
       }
     }
 
     if (showLottieCancel) {
-      return (<LottieCancel complete={() => setTimeout(() => handleClose(), 200)} />);
+      return (<CancelLottie complete={() => setTimeout(() => handleClose(), 200)} />);
     }
 
     if (showLottieSuccess) {
-      return (<LottieSuccess complete={() => setTimeout(() => handleClose(), 500)} />);
+      return (<SuccessLottie complete={() => setTimeout(() => handleClose(), 500)} />);
     }
 
-    return (<LottieQuestionMark />);
+    return (<QuestionMarkLottie />);
   };
 
   const showActions = (): boolean => {

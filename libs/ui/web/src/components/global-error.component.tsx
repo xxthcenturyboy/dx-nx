@@ -6,7 +6,7 @@ import {
   Typography
 } from '@mui/material';
 
-import { LottieError } from '../lottie/LottieError';
+import { ErrorLottie } from '../lottie/error.lottie';
 
 type GlobalErrorComponentPropsType = {
   routingFn?: () => void;
@@ -23,7 +23,7 @@ export const GlobalErrorComponent: React.FC<GlobalErrorComponentPropsType> = ({ 
       justifyContent="center"
       style={{ minHeight: '80vh' }}
     >
-      <LottieError />
+      <ErrorLottie />
       <Typography
         variant="h1"
         color="primary"

@@ -31,7 +31,7 @@ import {
   CustomDialog,
   DialogApiError,
   // DialogAwaiter,
-  drawerWidth,
+  DRAWER_WIDTH,
   GlobalAwaiter,
   MenuNav,
   MEDIA_BREAK,
@@ -190,7 +190,7 @@ export const Root: React.FC = () => {
           easing: theme.transitions.easing.easeOut,
           duration: theme.transitions.duration.enteringScreen
         }),
-        marginLeft: `${drawerWidth}px`,
+        marginLeft: `${DRAWER_WIDTH}px`,
       };
     }
 

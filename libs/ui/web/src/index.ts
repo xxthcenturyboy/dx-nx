@@ -3,19 +3,20 @@ export {
   IconNames
 } from './Icons'
 export {
-  LottieAccessDenied,
-  LottieAlert,
-  LottieAwaiter,
-  LottieCancel,
-  LottieError,
-  LottieQuestionMark,
-  LottieSuccess,
-  LottieWelcomeDog,
-  LottieWelcomeRobot
+  AccessDeniedLottie,
+  AlertLottie,
+  AwaiterLottie,
+  CancelLottie,
+  ErrorLottie,
+  QuestionMarkLottie,
+  SuccessLottie,
+  WelcomeHotDogLottie,
+  WelcomeRobotLottie,
+  NoDataLottie
 } from './lottie';
 export {
   appTheme,
-  drawerWidth
+  DRAWER_WIDTH
 } from './mui-overrides/muiTheme';
 export {
   APP_COLOR_PALETTE,

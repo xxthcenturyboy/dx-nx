@@ -44,7 +44,7 @@ export const StyledNotification = styled(ListItem)<{
 export const StyledNotificationActionArea = styled('div')<{
   component?: React.ElementType
 }>(() => ({
-  backgroundColor: grey[300],
+  backgroundColor: grey[200],
   border: `1px solid ${grey[300]}`,
   minHeight: '30px',
   minWidth: MIN_WIDTH

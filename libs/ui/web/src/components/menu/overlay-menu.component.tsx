@@ -8,7 +8,7 @@ import {
   useAppSelector,
 } from '@dx/store-web';
 import {
-  drawerWidth,
+  DRAWER_WIDTH,
   MEDIA_BREAK,
   uiActions
 } from '@dx/ui-web';
@@ -24,7 +24,7 @@ const DrawerContent = styled('div')<{ component?: React.ElementType }>({
 
 export const OverlayMenu: React.FC = () => {
   const open = useAppSelector((state: RootState) => state.ui.menuOpen);
-  const [mobileBreak, setMobileBreak] = React.useState<boolean>(false);
+  const [mobileBreak, setMobileBreak] = React.useState(false);
   const windowWidth = useAppSelector((state: RootState) => state.ui.windowWidth) || 0;
   const dispatch = useAppDispatch();
   // const topPixel = mobileBreak ? 60 : 64;
@@ -40,25 +40,28 @@ export const OverlayMenu: React.FC = () => {
   return (
     <Drawer
       sx={{
-        width: `${drawerWidth}px`,
+        width: `${DRAWER_WIDTH}px`,
         flexShrink: 0,
         '& .MuiDrawer-paper': {
           position: 'fixed',
-          width: mobileBreak ? '90%' : `${drawerWidth}px`,
+          width: mobileBreak ? '100%' : `${DRAWER_WIDTH}px`,
           borderRadius: 0,
           borderTop: 'none',
           borderBottom: 'none',
+          height: '100%'
           // top: `${topPixel}px`,
           // height: `calc(100% - ${topPixel}px)`
         },
       }}
       variant="temporary"
-      anchor="left"
+      anchor={mobileBreak ? 'bottom' : 'left'}
       open={open}
       onClose={toggleMenuState}
     >
       <DrawerContent>
-        <AppMenu mobileBreak={mobileBreak} />
+        <AppMenu
+          mobileBreak={mobileBreak}
+        />
       </DrawerContent>
     </Drawer>
   );

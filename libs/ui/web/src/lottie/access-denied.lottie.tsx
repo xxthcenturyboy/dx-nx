@@ -1,16 +1,17 @@
 import React, { ReactElement } from 'react';
-import { LottiePropTypes } from './lottieTypes';
+
+import { LottiePropTypes } from './lottie.types';
 import { LottieWrapper } from './LottieWrapper';
 // @ts-ignore
-import * as animationData from './files/check-mark-succes.json';
+import * as animationData from './files/access-denied.json';
 
-export const LottieSuccess: React.FC<LottiePropTypes> = ({ complete }): ReactElement => {
+export const AccessDeniedLottie: React.FC<LottiePropTypes> = ({ complete, loop = true }): ReactElement => {
   return (
     <LottieWrapper
       animationData={animationData}
       complete={complete}
-      loop={false}
-      speed={2}
+      loop={loop}
+      speed={0.5}
       style={{
         width: '200px',
         alignSelf: 'center'

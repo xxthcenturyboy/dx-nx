@@ -6,7 +6,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import { useAppDispatch } from '@dx/store-web';
 import { uiActions } from '../../store/ui-web.reducer';
 import { CustomDialogContent } from './custom-content.dialog';
-import { LottieAlert } from '../../lottie/LottieAlert';
+import { AlertLottie } from '../../lottie/alert.lottie';
 
 type DialogAlertType = {
   buttonText?: string;
@@ -22,7 +22,7 @@ export const DialogAlert: React.FC<DialogAlertType> = (props) => {
 
   return (
     <CustomDialogContent>
-      <LottieAlert />
+      <AlertLottie />
       <DialogContentText
         id="dialog-api-alert"
         variant="body1"

@@ -1,10 +1,10 @@
 import React, { ReactElement } from 'react';
-import { LottiePropTypes } from './lottieTypes';
+import { LottiePropTypes } from './lottie.types';
 import { LottieWrapper } from './LottieWrapper';
 // @ts-ignore
-import * as animationData from './files/stopwatch.json';
+import * as animationData from './files/hot-dog-man.json';
 
-export const LottieStopwatch: React.FC<LottiePropTypes> = ({ complete }): ReactElement => {
+export const WelcomeHotDogLottie: React.FC<LottiePropTypes> = ({ complete }): ReactElement => {
   return (
     <LottieWrapper
       animationData={animationData}

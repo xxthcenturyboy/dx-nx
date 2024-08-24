@@ -16,7 +16,7 @@ import {
 import { WebConfigService } from '@dx/config-web';
 import {
   FADE_TIMEOUT_DUR,
-  LottieWelcomeRobot,
+  WelcomeRobotLottie,
   setDocumentTitle
 } from '@dx/ui-web';
 
@@ -51,7 +51,7 @@ export const HomeComponent: React.FC = () => {
         style={{ minHeight: '80vh' }}
         wrap="nowrap"
       >
-        <LottieWelcomeRobot />
+        <WelcomeRobotLottie />
         <Typography
           variant={smBreak ? 'h3' : 'h1'}
           color="primary"
