@@ -10,6 +10,7 @@ import ReportIcon from '@mui/icons-material/Report';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import WarningIcon from '@mui/icons-material/Warning';
 import WavingHandIcon from '@mui/icons-material/WavingHand';
+import { toast } from 'react-toastify';
 
 import {
   useAppDispatch
@@ -21,6 +22,7 @@ import {
 } from '@dx/notifications-shared';
 import { StyledNotification } from './notification-web-menu.ui';
 import { notificationActions } from './notification-web.reducer';
+import { useMarkAsDismissedMutation } from './notification-web.api';
 
 type NotificationMenuPropsType = {
   notification: NotificationType;
@@ -32,6 +34,29 @@ export const NotificationComponent: React.FC<NotificationMenuPropsType> = (props
   } = props;
   const MAX_LEN = 100;
   const dispatch = useAppDispatch();
+  const [
+    requestDismiss,
+    {
+      data: dismissResponse,
+      error: dismissError,
+      isLoading: isLoadingDismiss,
+      isSuccess: dismissSuccess,
+      isUninitialized: dismissUninitialized
+    }
+  ] = useMarkAsDismissedMutation();
+
+  React.useEffect(() => {
+    if (
+      !isLoadingDismiss
+      && !dismissUninitialized
+    ) {
+      if (!dismissError) {
+        dispatch(notificationActions.removeNotification(notification.id));
+      } else {
+        'error' in dismissError && toast.error(dismissError['error']);
+      }
+    }
+  }, [isLoadingDismiss]);
 
   const renderIcon = (): JSX.Element => {
     return (
@@ -125,7 +150,7 @@ export const NotificationComponent: React.FC<NotificationMenuPropsType> = (props
             width="10%"
           >
             <IconButton
-              onClick={() => dispatch(notificationActions.removeNotification(notification.id))}
+              onClick={() => requestDismiss({ id: notification.id })}
               style={
                 {
                   top: '-4px'

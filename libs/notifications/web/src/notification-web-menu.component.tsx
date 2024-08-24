@@ -8,6 +8,7 @@ import {
 import GradingIcon from '@mui/icons-material/Grading';
 import Collapse from '@mui/material/Collapse';
 import { TransitionGroup } from 'react-transition-group';
+import { toast } from 'react-toastify';
 
 import {
   RootState,
@@ -36,11 +37,35 @@ export const NotificationMenu: React.FC<NotificationMenuPropsType> = (props) => 
   const [mobileBreak, setMobileBreak] = React.useState(false);
   const windowWidth = useAppSelector((state: RootState) => state.ui.windowWidth) || 0;
   const notifications = useAppSelector((state: RootState) => state.notification.notifications);
+  const userId = useAppSelector((state: RootState) => state.userProfile.id);
   const dispatch = useAppDispatch();
+  const [
+    requestDismissAll,
+    {
+      data: dismissAllResponse,
+      error: dismissAllError,
+      isLoading: isLoadingDismissAll,
+      isSuccess: dismissAllSuccess,
+      isUninitialized: dismissAllUninitialized
+    }
+  ] = useMarkAllAsDismissedMutation();
 
   React.useEffect(() => {
     setMobileBreak(windowWidth < MEDIA_BREAK.MOBILE);
   }, [windowWidth]);
+
+  React.useEffect(() => {
+    if (
+      !isLoadingDismissAll
+      && !dismissAllUninitialized
+    ) {
+      if (!dismissAllError) {
+        dispatch(notificationActions.setNotifications([]));
+      } else {
+        'error' in dismissAllError && toast.error(dismissAllError['error']);
+      }
+    }
+  }, [isLoadingDismissAll]);
 
   return (
     <StyledNotificationMenu
@@ -142,7 +167,7 @@ export const NotificationMenu: React.FC<NotificationMenuPropsType> = (props) => 
                 color="info"
                 onClick={
                   async () => {
-                    dispatch(notificationActions.setNotifications([]));
+                    requestDismissAll({ userId });
                   }
                 }
               >
