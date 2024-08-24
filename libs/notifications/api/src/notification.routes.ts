@@ -15,7 +15,7 @@ export class NotificationRoutes {
     );
     router.get(
       '/user/:userId',
-      NotificationController.getAppBadgeCount
+      NotificationController.getByUserId
     );
 
     router.post(
@@ -33,6 +33,10 @@ export class NotificationRoutes {
     );
     router.put(
       '/dismiss/:id',
+      NotificationController.markAsDismissed
+    );
+    router.put(
+      '/dismiss-all/:userId',
       NotificationController.markAsDismissed
     );
     router.put(

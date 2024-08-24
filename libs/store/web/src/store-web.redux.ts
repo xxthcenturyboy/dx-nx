@@ -25,6 +25,7 @@ import {
 } from '@dx/auth-web';
 import { dashboardReducer } from '@dx/dashboard-web';
 import { homeReducer } from '@dx/home';
+import { notificationReducer } from '@dx/notifications-web';
 import {
   privilegeSetReducer,
   privilegeSetPersistConfig,
@@ -57,6 +58,7 @@ const combinedPersistReducers = combineReducers({
   auth: persistReducer<AuthStateType, any>(authPersistConfig, authReducer) as typeof authReducer,
   dashboard: dashboardReducer,
   home: homeReducer,
+  notification: notificationReducer,
   privileges: persistReducer<PrivilegeSetStateType, any>(privilegeSetPersistConfig, privilegeSetReducer) as typeof privilegeSetReducer,
   stats: persistReducer<StatsStateType, any>(statsPersistConfig, statsReducer) as typeof statsReducer,
   ui: persistReducer<UiStateType, any>(uiPersistConfig, uiReducer) as typeof uiReducer,

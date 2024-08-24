@@ -5,8 +5,6 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import MenuItem from '@mui/material/MenuItem';
-import Menu from '@mui/material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Badge from '@mui/material/Badge';
 import { Button } from '@mui/material';
@@ -23,33 +21,85 @@ import {
 } from '@dx/store-web';
 import { selectIsAuthenticated } from '@dx/auth-web';
 import { APP_NAME } from '@dx/config-shared';
-import { LogoutButton } from '@dx/auth-web';
 import { WebConfigService } from '@dx/config-web';
+import { NotificationMenu } from '@dx/notifications-web';
+import {
+  notificationActions,
+  selectNotificationCount,
+  useLazyGetNotificationsQuery
+} from '@dx/notifications-web';
+import { AccountMenu } from './app-menu-account.component';
 import { uiActions } from '../../store/ui-web.reducer';
 import { MEDIA_BREAK } from '../../ui.consts';
-import { APP_COLOR_PALETTE } from '../../mui-overrides/styles';
 
 const Logo = styled.img`
   width: 36px;
 `;
 
 export const AppNavBar: React.FC = () => {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [mobileBreak, setMobileBreak] = React.useState<boolean>(false);
+  const [anchorElementAccountMenu, setAnchorElementAccountMenu] = React.useState<null | HTMLElement>(null);
+  const [anchorElementNotificationMenu, setAnchorElementNotificaitonMenu] = React.useState<null | HTMLElement>(null);
+  const [mobileBreak, setMobileBreak] = React.useState(false);
   const dispatch = useAppDispatch();
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const isAuthenticated = useAppSelector((state: RootState) => selectIsAuthenticated(state));
+  const userId = useAppSelector((state: RootState) => state.userProfile.id);
   const windowWidth = useAppSelector((state: RootState) => state.ui.windowWidth) || 0;
   const logoUrl = useAppSelector((state: RootState) => state.ui.logoUrlSmall);
-  const notificationCount = useAppSelector((state: RootState) => state.ui.notifications);
   const menuOpen = useAppSelector((state: RootState) => state.ui.menuOpen);
   const themeMode = useAppSelector((state: RootState) => state.ui.theme.palette?.mode);
+  const notificationCount = useAppSelector((state: RootState) => selectNotificationCount(state));
   const ROUTES = WebConfigService.getWebRoutes();
+  const [
+    fetchNotifications,
+    {
+      data: notificationsResponse,
+      error: notificationsError,
+      isFetching: isLoadingNotifications,
+      isSuccess: fetchNotificationsSuccess,
+      isUninitialized: fetchNotificationsUninitialized
+    }
+  ] = useLazyGetNotificationsQuery();
+
+  React.useEffect(() => {
+    if (
+      isAuthenticated
+      && userId
+      && !isLoadingNotifications
+    ) {
+      void fetchNotifications({ userId });
+    }
+  }, []);
 
   React.useEffect(() => {
     setMobileBreak(windowWidth < MEDIA_BREAK.MOBILE);
   }, [windowWidth]);
+
+  React.useEffect(() => {
+    if (
+      isAuthenticated
+      && userId
+      && !isLoadingNotifications
+    ) {
+      void fetchNotifications({ userId });
+    }
+  }, [isAuthenticated]);
+
+  React.useEffect(() => {
+    if (
+      !isLoadingNotifications
+    ) {
+      if (!notificationsError) {
+        dispatch(notificationActions.setNotifications(notificationsResponse|| []));
+      }
+      if (
+        notificationsError
+      ) {
+        'error' in notificationsError && dispatch(uiActions.apiDialogSet(notificationsError['error']));
+      }
+    }
+  }, [isLoadingNotifications]);
 
   const toggleMenuState = (): void => {
     if (isAuthenticated) {
@@ -60,54 +110,29 @@ export const AppNavBar: React.FC = () => {
     navigate(ROUTES.MAIN);
   };
 
-  const goToProfile = (): void => {
-    navigate(ROUTES.USER_PROFILE.MAIN);
-    handleCloseAccountMenu();
-  };
-
   const goToLogin = (): void => {
     navigate(ROUTES.AUTH.LOGIN);
   };
 
   const handleClickAccountMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+    setAnchorElementAccountMenu(event.currentTarget);
   };
 
   const handleCloseAccountMenu = () => {
-    setAnchorEl(null);
+    setAnchorElementAccountMenu(null);
+  };
+
+  const handleClickNotificationMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElementNotificaitonMenu(event.currentTarget);
+  };
+
+  const handleNotificationMenu = () => {
+    setAnchorElementNotificaitonMenu(null);
   };
 
   const hideLoginForRoutes = (): boolean => {
     return pathname.includes(ROUTES.AUTH.MAIN);
   };
-
-  const renderAccountMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'right',
-      }}
-      id="app-menu"
-      keepMounted
-      transformOrigin={{
-        vertical: 'bottom',
-        horizontal: 'right',
-      }}
-      open={Boolean(anchorEl)}
-      onClose={handleCloseAccountMenu}
-    >
-      <MenuItem
-        onClick={goToProfile}
-      >
-        Profile
-      </MenuItem>
-      <LogoutButton
-        context="APP_BAR"
-        onLocalClick={handleCloseAccountMenu}
-      />
-    </Menu>
-  );
 
   return (
     <Box>
@@ -163,7 +188,10 @@ export const AppNavBar: React.FC = () => {
                 <IconButton
                   className="toolbar-icons"
                   size="large"
-                  aria-label="show 17 new notifications"
+                  aria-label="show notifications"
+                  aria-controls="notification-menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleClickNotificationMenu}
                 >
                   <Badge
                     badgeContent={notificationCount}
@@ -174,8 +202,8 @@ export const AppNavBar: React.FC = () => {
                 </IconButton>
                 <IconButton
                   size="large"
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
+                  aria-label="account menu for current user"
+                  aria-controls="account-menu-appbar"
                   aria-haspopup="true"
                   onClick={handleClickAccountMenu}
                   className="toolbar-icons"
@@ -203,7 +231,14 @@ export const AppNavBar: React.FC = () => {
           }
         </Toolbar>
       </AppBar>
-      { renderAccountMenu }
+      <AccountMenu
+        anchorElement={anchorElementAccountMenu}
+        clickCloseMenu={handleCloseAccountMenu}
+      />
+      <NotificationMenu
+        anchorElement={anchorElementNotificationMenu}
+        clickCloseMenu={handleNotificationMenu}
+      />
     </Box>
   );
 };

@@ -1,15 +1,20 @@
 import React from 'react';
 import {
   Button,
-  MenuItem,
+  Grid,
+  Typography
 } from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
 import { useAppDispatch } from '@dx/store-web';
 import { logger } from '@dx/logger-web';
 import { uiActions } from '@dx/ui-web';
-import { ConfirmationDialog } from '@dx/ui-web';
+import {
+  ConfirmationDialog,
+  StyledAccountMenuListItem
+} from '@dx/ui-web';
 import { WebConfigService } from '@dx/config-web';
 import { useLogoutMutation } from './auth-web.api';
 import { authActions } from './auth-web.reducer';
@@ -77,11 +82,30 @@ export const LogoutButton: React.FC<LogoutButtonType> = ({ context, onLocalClick
 
   if (context === 'APP_BAR') {
     return (
-      <MenuItem
+      <StyledAccountMenuListItem
         onClick={logout}
       >
-        Logout
-      </MenuItem>
+        <Grid
+          container
+          direction="row"
+          alignItems="center"
+          justifyContent="flex-start"
+        >
+          <Grid
+            item
+            mr={2}
+          >
+            <LogoutIcon />
+          </Grid>
+          <Grid item>
+           <Typography
+            variant="body2"
+           >
+            Logout
+           </Typography>
+          </Grid>
+        </Grid>
+      </StyledAccountMenuListItem>
     );
   }
 

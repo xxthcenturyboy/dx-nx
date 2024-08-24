@@ -135,6 +135,19 @@ export class NotificationModel extends Model<NotificationModel> {
     });
   }
 
+  static async markAllDismissed(userId: string): Promise<[number]> {
+    return NotificationModel.update({
+      dismissedAt: new Date(),
+      viewed: true,
+      viewedDate: new Date()
+    }, {
+      where: {
+        userId,
+        read: false
+      }
+    });
+  }
+
   static async markAsRead(id: string): Promise<[number]> {
     return NotificationModel.update({
       read: true,

@@ -183,6 +183,23 @@ export class NotificationService {
     }
   }
 
+  public async markAllDismissed(userId: string): Promise<[number]> {
+    if (
+      !userId
+      && typeof userId !== 'string'
+    ) {
+      throw new Error(NOTIFICATION_ERRORS.MISSING_PARAMS);
+    }
+
+    try {
+      const notif = await NotificationModel.markAllDismissed(userId);
+      return notif;
+    } catch (err) {
+      this.logger.logError(err);
+      throw new Error(NOTIFICATION_ERRORS.SERVER_ERROR);
+    }
+  }
+
   public async markAsDismissed(id: string): Promise<[number]> {
     if (
       !id

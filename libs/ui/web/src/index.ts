@@ -81,7 +81,8 @@ export {
   AppMenuItemType,
   AppNavBar,
   MenuNav,
-  MenuRestrictionType
+  MenuRestrictionType,
+  StyledAccountMenuListItem
 } from './components/menu';
 export {
   useFocus

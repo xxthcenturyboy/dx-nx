@@ -26,7 +26,8 @@
       },
       "configurations": {
         "development": {
-          "mode": "development"
+          "mode": "development",
+          "sourceMap": true
         },
         "production": {
           "mode": "production",

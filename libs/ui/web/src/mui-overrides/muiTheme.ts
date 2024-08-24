@@ -18,6 +18,18 @@ export const appTheme: ThemeOptions = {
     secondary: {
       main: themeColors.secondary
     },
+    error: {
+      main: themeColors.error
+    },
+    info: {
+      main: themeColors.info
+    },
+    success: {
+      main: themeColors.success
+    },
+    warning: {
+      main: themeColors.warning
+    }
   },
   typography: {
     fontFamily: 'Roboto, Helvetica, Arial, sans-serif, serif'

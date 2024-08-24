@@ -38,7 +38,11 @@ export const themeColors = {
   // secondary: '#FCC711',
   primary: APP_COLOR_PALETTE.PRIMARY[900],
   secondary: APP_COLOR_PALETTE.SECONDARY[800],
-  other: blueGrey[300],
+  blueGrey: blueGrey[300],
+  info: lightBlue[700],
+  success: green[800],
+  error: red[700],
+  warning: orange[700],
   dark: {
     primary: APP_COLOR_PALETTE.DARK.PRIMARY[500],
     secondary: APP_COLOR_PALETTE.DARK.SECONDARY[500]

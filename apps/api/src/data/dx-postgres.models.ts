@@ -8,7 +8,7 @@ import { UserPrivilegeSetModel } from '@dx/user-privilege-api';
 import { DeviceModel } from '@dx/devices-api';
 import { EmailModel } from '@dx/email-api';
 import { PhoneModel } from '@dx/phone-api';
-
+import { NotificationModel } from '@dx/notifications-api';
 import { ShortLinkModel } from '@dx/shortlink-api';
 import { logTable } from '@dx/logger-api';
 
@@ -18,6 +18,7 @@ export function getPostgresModels(): ModelCtor[] {
   models.push(DeviceModel);
   models.push(EmailModel);
   models.push(PhoneModel);
+  models.push(NotificationModel);
   models.push(ShortLinkModel);
   models.push(UserPrivilegeSetModel);
   models.push(UserModel);

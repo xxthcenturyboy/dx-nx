@@ -77,12 +77,22 @@ export const NotificationController = {
       sendBadRequest(req, res, err.message);
     }
   },
+  markAllDismissed: async function (req: Request, res: Response) {
+    try {
+      const service = new NotificationService();
+      const { userId } = req.params as { userId: string };
+      const result = await service.markAllDismissed(userId);
+      sendOK(req, res, { success: true });
+    } catch (err) {
+      sendBadRequest(req, res, err.message);
+    }
+  },
   markAsDismissed: async function (req: Request, res: Response) {
     try {
       const service = new NotificationService();
       const { id } = req.params as { id: string };
       const result = await service.markAsDismissed(id);
-      sendOK(req, res, result);
+      sendOK(req, res, { success: true });
     } catch (err) {
       sendBadRequest(req, res, err.message);
     }
