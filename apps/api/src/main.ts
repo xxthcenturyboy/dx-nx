@@ -5,6 +5,7 @@ import {
   getApiConfig
 } from '@dx/config-api';
 import { ApiLoggingClass } from '@dx/logger-api';
+import { SocketApiConnection } from '@dx/data-access-socket-io-api';
 import { DxPostgresDb } from './data/dx-postgres.db';
 import { DxRedisCache } from './data/dx-redis.cache';
 import { ApiRoutes } from './routes/api.routes';
@@ -56,6 +57,14 @@ Settings:
     );
     logger.logInfo(`[ ready ] http://${config.host}:${config.port}`);
   });
+
+  const sockets = new SocketApiConnection({ httpServer: server });
+  if (
+    !SocketApiConnection.instance
+    || !sockets.io
+  ) {
+    logger.logError('Sockets did not instantiate correctly. Sockets unavailable');
+  }
 }
 
 run();

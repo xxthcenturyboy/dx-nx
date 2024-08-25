@@ -31,6 +31,9 @@
       "@dx/data-access-socket-io-api": [
         "libs/data-access/socket-io/api/src/index.ts"
       ],
+      "@dx/data-access-socket-io-shared": [
+        "libs/data-access/socket-io/shared/src/index.ts"
+      ],
       "@dx/data-access-socket-io-web": [
         "libs/data-access/socket-io/web/src/index.ts"
       ],

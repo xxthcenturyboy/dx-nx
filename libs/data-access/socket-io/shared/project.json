@@ -1,0 +1,9 @@
+{
+  "name": "data-access-socket-io-shared",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/data-access/socket-io/shared/src",
+  "projectType": "library",
+  "tags": ["scope:shared"],
+  "// targets": "to see all targets run: nx show project data-access-socket-io-shared --web",
+  "targets": {}
+}
