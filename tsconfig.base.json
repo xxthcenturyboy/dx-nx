@@ -28,6 +28,12 @@
       "@dx/dashboard-web": ["libs/dashboard/web/src/index.ts"],
       "@dx/data-access-postgres": ["libs/data-access/postgres/src/index.ts"],
       "@dx/data-access-redis": ["libs/data-access/redis/src/index.ts"],
+      "@dx/data-access-socket-io-api": [
+        "libs/data-access/socket-io/api/src/index.ts"
+      ],
+      "@dx/data-access-socket-io-web": [
+        "libs/data-access/socket-io/web/src/index.ts"
+      ],
       "@dx/devices-api": ["libs/devices/api/src/index.ts"],
       "@dx/devices-shared": ["libs/devices/shared/src/index.ts"],
       "@dx/email-api": ["libs/email/api/src/index.ts"],

@@ -37,7 +37,7 @@ async function run() {
   const apiRoutes = new ApiRoutes(app);
   apiRoutes.loadRoutes();
 
-  app.listen(config.port, config.host, () => {
+  const server = app.listen(config.port, config.host, () => {
     logger.logInfo(
       `
 ============================================================================
