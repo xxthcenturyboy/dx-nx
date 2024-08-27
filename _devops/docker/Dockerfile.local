@@ -22,7 +22,23 @@ RUN yarn global add nx@latest nodemon --no-optional
 RUN --mount=type=secret,id=npmrc,target=/root/.npmrc
 RUN --mount=type=secret,id=gitconfig,target=/root/.gitconfig
 
-EXPOSE 4000 4200 4211 7070 8081 19000 19001 19002 36439
+EXPOSE \
+  # API
+  4000 \
+  #Web
+  4200 \
+  4211 \
+  # localstack
+  4566 \
+  # Sendgrid
+  7070 \
+  # Expo
+  8081 \
+  # Expo
+  19000 \
+  19001 \
+  19002 \
+  36439
 
 # CMD ["/bin/bash"]
 CMD ["/bin/bash", "./_devops/scripts/docker-start.dev.sh"]
