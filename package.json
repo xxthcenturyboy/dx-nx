@@ -19,6 +19,7 @@
     "@socket.io/redis-adapter": "^8.3.0",
     "axios": "^1.6.0",
     "bad-words": "^3.0.4",
+    "busboy": "^1.6.0",
     "connect-redis": "^7.1.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",

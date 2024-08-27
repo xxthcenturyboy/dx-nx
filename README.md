@@ -10,6 +10,14 @@ Enhance your Nx experience by installing [Nx Console](https://nx.dev/nx-console)
 provides an interactive UI to view your projects, run tasks, generate code, and more! Available for VSCode, IntelliJ and
 comes with a LSP for Vim users.
 
+## Prerequesites to install
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- [Localstack CLI](https://docs.localstack.cloud/getting-started/installation/#docker-compose)
+  - [awscli-local](https://github.com/localstack/awscli-local)
+    - wrapper around the aws cli
+    - requires python / pip
+    - If your Python is installed via a manager like homebrew on the Mac, you'll need to `install awscli-local` via that manager
+
 ## Initial setup
 Run `docker compose up -d` <-- starts the Docker dev environment
 Run `make initialize-pg` <-- creates the db and initial seed of data. Only run once!
