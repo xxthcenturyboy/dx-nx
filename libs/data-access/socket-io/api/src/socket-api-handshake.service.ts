@@ -23,3 +23,14 @@ export function getUserIdFromHandshake(handshake: Handshake): string {
     return '';
   }
 }
+
+export function ensureLoggedInSocket(handshake: Handshake) {
+  try {
+    const userId = getUserIdFromHandshake(handshake);
+    return !!userId;
+  } catch (err) {
+    const msg = err.message || err;
+    ApiLoggingClass.instance.logError(`Failed to authenticate socket token: ${msg}`);
+    return false;
+  }
+}

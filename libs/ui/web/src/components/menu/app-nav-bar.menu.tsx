@@ -27,8 +27,7 @@ import {
   notificationActions,
   NotificationWebSockets,
   selectNotificationCount,
-  useLazyGetNotificationsQuery,
-  useTestSocketsMutation
+  useLazyGetNotificationsQuery
 } from '@dx/notifications-web';
 import { AccountMenu } from './app-menu-account.component';
 import { uiActions } from '../../store/ui-web.reducer';
@@ -63,9 +62,6 @@ export const AppNavBar: React.FC = () => {
       isUninitialized: fetchNotificationsUninitialized
     }
   ] = useLazyGetNotificationsQuery();
-  const [
-    requestSocketsTest
-  ] = useTestSocketsMutation()
 
   React.useEffect(() => {
     if (
@@ -196,16 +192,6 @@ export const AppNavBar: React.FC = () => {
           {
             isAuthenticated && (
               <>
-                <IconButton
-                  className="toolbar-icons"
-                  size="large"
-                  aria-label="show notifications"
-                  aria-controls="notification-menu-appbar"
-                  aria-haspopup="true"
-                  onClick={() => requestSocketsTest({ userId })}
-                >
-                  <NotificationsIcon />
-                </IconButton>
                 <IconButton
                   className="toolbar-icons"
                   size="large"

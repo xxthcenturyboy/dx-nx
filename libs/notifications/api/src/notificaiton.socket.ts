@@ -5,6 +5,7 @@ import {
   ApiLoggingClassType
 } from '@dx/logger-api';
 import {
+  ensureLoggedInSocket,
   getUserIdFromHandshake,
   SocketApiConnection,
   SocketApiConnectionType
@@ -17,7 +18,6 @@ import {
   NotificationType,
   NOTIFICATION_SOCKET_NS
 } from '@dx/notifications-shared';
-import { ensureLoggedInSocket } from '@dx/auth-api';
 
 type NotificationNamespaceType =  Namespace<
   NotificationSocketClientToServerEvents,

@@ -222,7 +222,7 @@ export class NotificationService {
     const baseNotification: NotificationType = {
       createdAt: new Date(),
       id: '',
-      level: NOTIFICATION_LEVELS.WARNING,
+      level: NOTIFICATION_LEVELS.INFO,
       message: 'message',
       title: 'test',
       userId,
