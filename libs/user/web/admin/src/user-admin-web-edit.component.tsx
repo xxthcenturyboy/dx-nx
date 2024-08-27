@@ -34,9 +34,9 @@ import {
 import {
   DialogAlert,
   FADE_TIMEOUT_DUR,
-  setDocumentTitle,
   uiActions
 } from '@dx/ui-web';
+import { setDocumentTitle } from '@dx/utils-misc-web';
 import { UserRoleUi } from '@dx/user-shared';
 import { ACCOUNT_RESTRICTIONS } from '@dx/auth-shared';
 import { WebConfigService } from '@dx/config-web';
@@ -60,7 +60,7 @@ export const UserAdminEdit: React.FC = () => {
   const user = useAppSelector((state: RootState) => selectUserFormatted(state));
   const sets = useAppSelector((state: RootState) => state.privileges.sets);
   const currentUser = useAppSelector((state: RootState) => state.userProfile);
-  const [title, setTitle] = useState('Edit User');
+  const [title, setTitle] = useState('User');
   const [restrictions, setRestrictions] = useState<UserRestriction[]>([]);
   const [roles, setRoles] = useState<UserRoleUi[]>([]);
   const ROUTES = WebConfigService.getWebRoutes();
@@ -122,7 +122,7 @@ export const UserAdminEdit: React.FC = () => {
 
   useEffect(() => {
     if (user) {
-      setTitle(`Edit User: ${user.username}`);
+      setTitle(`User: ${user.username}`);
       setupRestrictions();
       setupRoles();
     }
@@ -300,7 +300,7 @@ export const UserAdminEdit: React.FC = () => {
           {
             user?.optInBeta && (
               <Chip
-                label="BETA"
+                label="Opt-in Beta"
                 sx={
                   {
                     backgroundColor: lightBlue[700],
@@ -325,13 +325,31 @@ export const UserAdminEdit: React.FC = () => {
 
   const renderDefaultChip = (): JSX.Element => {
     return (
-      <Chip label="Default" color="success" sx={{ height: '20px', marginRight: '12px' }} />
+      <Chip
+        label="Default"
+        color="info"
+        sx={
+          {
+            height: '20px',
+            marginRight: '12px'
+          }
+        }
+      />
     );
   };
 
   const renderVerifiedChip = (): JSX.Element => {
     return (
-      <Chip label="Verified" color="primary" sx={{ height: '20px', marginRight: '12px' }} />
+      <Chip
+        label="Verified"
+        color="success"
+        sx={
+          {
+            height: '20px',
+            marginRight: '12px'
+          }
+        }
+      />
     );
   };
 

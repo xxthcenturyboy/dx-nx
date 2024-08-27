@@ -7,9 +7,9 @@ import {
 
 import {
   FADE_TIMEOUT_DUR,
-  WelcomeRobotLottie,
-  setDocumentTitle
+  WelcomeRobotLottie
 } from '@dx/ui-web';
+import { setDocumentTitle } from '@dx/utils-misc-web';
 
 export const Dashboard: React.FC = () => {
   React.useEffect(() => {

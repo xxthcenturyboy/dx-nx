@@ -41,7 +41,7 @@ export class NotificationRoutes {
     );
     router.put(
       '/dismiss-all/:userId',
-      NotificationController.markAsDismissed
+      NotificationController.markAllDismissed
     );
     router.put(
       '/read/:id',

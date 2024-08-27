@@ -106,60 +106,69 @@ export const NotificationComponent: React.FC<NotificationMenuPropsType> = (props
   }
 
   return (
-    <StyledNotification>
+    <StyledNotification
+      isunread={notification.viewed ? 'false' : 'true'}
+    >
       <Grid
         container
-        direction="column"
+        direction="row"
+        height={'100%'}
       >
+
+        {/** Icon */}
         <Grid
           item
-          color={getTitleColor()}
-        >
-          <Typography
-            variant="h6"
-          >
-            { notification.title }
-          </Typography>
-        </Grid>
-        <Grid
-          container
+          width="15%"
+          alignItems="center"
           display="flex"
-          direction="row"
-          alignItems="flex-start"
-          justifyContent="space-between"
+        >
+          { renderIcon() }
+        </Grid>
+
+        {/** Title and Message */}
+        <Grid
+          item
+          width="75%"
         >
           <Grid
-            item
-            width="12%"
+            container
+            direction="column"
           >
-            { renderIcon() }
-          </Grid>
-          <Grid
-            item
-            width="72%"
-            alignSelf="center"
-          >
-            <Typography
-              variant="body2"
+            <Grid
+              item
+              color={getTitleColor()}
             >
-              { getTrimmedMessage() }
-            </Typography>
-          </Grid>
-          <Grid
-            item
-            width="10%"
-          >
-            <IconButton
-              onClick={() => requestDismiss({ id: notification.id })}
-              style={
-                {
-                  top: '-4px'
-                }
-              }
+              <Typography
+                variant="h6"
+              >
+                { notification.title }
+              </Typography>
+            </Grid>
+            <Grid
+              item
             >
-              <ClearIcon />
-            </IconButton>
+              <Typography
+                variant="body2"
+              >
+                { getTrimmedMessage() }
+              </Typography>
+            </Grid>
           </Grid>
+        </Grid>
+
+        {/** Dismiss Button */}
+        <Grid
+          item
+          width="10%"
+          alignItems="center"
+          display="flex"
+          justifyContent="flex-end"
+        >
+          <IconButton
+            onClick={() => requestDismiss({ id: notification.id })}
+          >
+            <ClearIcon />
+          </IconButton>
         </Grid>
       </Grid>
     </StyledNotification>

@@ -21,13 +21,14 @@ import {
 } from '@dx/store-web';
 import { selectIsAuthenticated } from '@dx/auth-web';
 import { APP_NAME } from '@dx/config-shared';
-import { WebConfigService } from '@dx/config-web';
+import {
+  loginBootstrap,
+  WebConfigService
+} from '@dx/config-web';
 import { NotificationMenu } from '@dx/notifications-web';
 import {
-  notificationActions,
-  NotificationWebSockets,
   selectNotificationCount,
-  useLazyGetNotificationsQuery
+  // useTestSocketsMutation
 } from '@dx/notifications-web';
 import { AccountMenu } from './app-menu-account.component';
 import { uiActions } from '../../store/ui-web.reducer';
@@ -45,68 +46,28 @@ export const AppNavBar: React.FC = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const isAuthenticated = useAppSelector((state: RootState) => selectIsAuthenticated(state));
-  const userId = useAppSelector((state: RootState) => state.userProfile.id);
+  const userProfile = useAppSelector((state: RootState) => state.userProfile);
+  // const userId = useAppSelector((state: RootState) => state.userProfile.id);
   const windowWidth = useAppSelector((state: RootState) => state.ui.windowWidth) || 0;
   const logoUrl = useAppSelector((state: RootState) => state.ui.logoUrlSmall);
   const menuOpen = useAppSelector((state: RootState) => state.ui.menuOpen);
   const themeMode = useAppSelector((state: RootState) => state.ui.theme.palette?.mode);
   const notificationCount = useAppSelector((state: RootState) => selectNotificationCount(state));
   const ROUTES = WebConfigService.getWebRoutes();
-  const [
-    fetchNotifications,
-    {
-      data: notificationsResponse,
-      error: notificationsError,
-      isFetching: isLoadingNotifications,
-      isSuccess: fetchNotificationsSuccess,
-      isUninitialized: fetchNotificationsUninitialized
-    }
-  ] = useLazyGetNotificationsQuery();
+  // const [requestTestNotifications] = useTestSocketsMutation();
 
   React.useEffect(() => {
     if (
       isAuthenticated
-      && userId
-      && !isLoadingNotifications
+      && userProfile
     ) {
-      void fetchNotifications({ userId });
+      loginBootstrap(userProfile, mobileBreak);
     }
   }, []);
 
   React.useEffect(() => {
     setMobileBreak(windowWidth < MEDIA_BREAK.MOBILE);
   }, [windowWidth]);
-
-  React.useEffect(() => {
-    if (
-      isAuthenticated
-      && userId
-      && !isLoadingNotifications
-    ) {
-      void fetchNotifications({ userId });
-
-      if (!NotificationWebSockets.instance) {
-        new NotificationWebSockets();
-      } else if (!NotificationWebSockets.instance.socket.connected) {
-        NotificationWebSockets.instance.socket.connect();
-      }
-    }
-  }, [isAuthenticated]);
-
-  React.useEffect(() => {
-    if (
-      !isLoadingNotifications
-    ) {
-      if (!notificationsError) {
-        dispatch(notificationActions.setNotifications(notificationsResponse|| []));
-      }
-      if (
-        notificationsError
-      ) {
-        'error' in notificationsError && dispatch(uiActions.apiDialogSet(notificationsError['error']));
-      }
-    }
-  }, [isLoadingNotifications]);
 
   const toggleMenuState = (): void => {
     if (isAuthenticated) {
@@ -192,6 +153,16 @@ export const AppNavBar: React.FC = () => {
           {
             isAuthenticated && (
               <>
+                {/* <IconButton
+                  className="toolbar-icons"
+                  size="large"
+                  aria-label="show notifications"
+                  aria-controls="notification-menu-appbar"
+                  aria-haspopup="true"
+                  onClick={() => requestTestNotifications({ userId })}
+                >
+                  <NotificationsIcon />
+                </IconButton> */}
                 <IconButton
                   className="toolbar-icons"
                   size="large"

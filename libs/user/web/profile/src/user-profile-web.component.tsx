@@ -23,9 +23,9 @@ import { logger } from '@dx/logger-web';
 import {
   ConfirmationDialog,
   FADE_TIMEOUT_DUR,
-  setDocumentTitle,
   uiActions
 } from '@dx/ui-web';
+import { setDocumentTitle } from '@dx/utils-misc-web';
 import { EmailList } from '@dx/email-web';
 import { EmailType } from '@dx/email-shared';
 import { PhoneType } from '@dx/phone-shared';

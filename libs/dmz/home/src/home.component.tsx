@@ -16,9 +16,9 @@ import {
 import { WebConfigService } from '@dx/config-web';
 import {
   FADE_TIMEOUT_DUR,
-  WelcomeRobotLottie,
-  setDocumentTitle
+  WelcomeRobotLottie
 } from '@dx/ui-web';
+import { setDocumentTitle } from '@dx/utils-misc-web';
 
 export const HomeComponent: React.FC = () => {
   const theme = useTheme();

@@ -6,9 +6,13 @@ import {
   Typography
 } from '@mui/material';
 
+import { setDocumentTitle } from '@dx/utils-misc-web';
 import { BetaBadgeLottie } from '../lottie/beta-badge.lottie';
 
 export const BetaFeatureComponent: React.FC = () => {
+  React.useEffect(() => {
+    setDocumentTitle('User Stats');
+  }, []);
   return (
     <Grid
       container

@@ -17,16 +17,14 @@ import {
   useAppSelector
 } from '@dx/store-web';
 import {
-  MenuConfigService,
+  loginBootstrap,
   WebConfigService
 } from '@dx/config-web';
 import {
-  AppMenuType,
   FADE_TIMEOUT_DUR,
-  MEDIA_BREAK,
-  setDocumentTitle,
-  uiActions
+  MEDIA_BREAK
 } from '@dx/ui-web';
+import { setDocumentTitle } from '@dx/utils-misc-web';
 import {
   selectIsUserProfileValid,
   userProfileActions
@@ -113,19 +111,7 @@ export const WebLogin: React.FC = () => {
       dispatch(authActions.tokenAdded(accessToken));
       dispatch(authActions.setLogoutResponse(false));
       dispatch(userProfileActions.profileUpdated(profile));
-      const menuService = new MenuConfigService();
-      let menus: AppMenuType[] = [];
-      if (profile.role.includes('SUPER_ADMIN')) {
-        menus = menuService.getMenus('SUPER_ADMIN', profile.b);
-      } else if (profile.role.includes('ADMIN')) {
-        menus = menuService.getMenus('ADMIN', profile.b);
-      } else {
-        menus = menuService.getMenus(undefined, profile.b);
-      }
-      dispatch(uiActions.menusSet({ menus }));
-      if (!mobileBreak) {
-        dispatch(uiActions.toggleMenuSet(true));
-      }
+      loginBootstrap(profile, mobileBreak);
       navigate(ROUTES.DASHBOARD.MAIN);
     }
   }, [loginIsSuccess]);

@@ -50,5 +50,6 @@ export const themeColors = {
   light: {
     background: APP_COLOR_PALETTE.LIGHT.BACKGROUND[100]
     // background: '#fbfbfb'
-  }
+  },
+  notificationHighlight: 'aliceblue'
 };

@@ -4,7 +4,7 @@ import {
   // NotificationSocketClientToServerEvents,
   // NotificationSocketServerToClientEvents,
   NotificationType,
-  // NOTIFICATION_SOCKET_NS
+  // NOTIFICATION_WEB_SOCKET_NS
 } from '@dx/notifications-shared';
 import { SocketWebConnection } from '@dx/data-access-socket-io-web';
 
@@ -13,7 +13,7 @@ import { SocketWebConnection } from '@dx/data-access-socket-io-web';
 //     const socket = SocketWebConnection.createSocket<
 //       NotificationSocketServerToClientEvents,
 //       NotificationSocketClientToServerEvents
-//     >(`${NOTIFICATION_SOCKET_NS}/${userId}`);
+//     >(`${NOTIFICATION_WEB_SOCKET_NS}/${userId}`);
 
 //     return socket;
 //   }
@@ -80,6 +80,8 @@ export const apiWebNotifications = apiWebMain.injectEndpoints({
   }),
   overrideExisting: true
 });
+
+export const fetchNotifications = apiWebNotifications.endpoints.getNotifications;
 
 export const {
   useLazyGetNotificationsQuery,

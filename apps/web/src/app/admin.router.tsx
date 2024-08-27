@@ -44,7 +44,7 @@ export class AdminWebRouterConfig {
             }
           },
           {
-            path: `${ROUTES.ADMIN.USER.EDIT}/:id`,
+            path: `${ROUTES.ADMIN.USER.DETAIL}/:id`,
             lazy: async () => { let { UserAdminEdit } = await import('@dx/user-admin-web')
               return { Component: UserAdminEdit }
             }

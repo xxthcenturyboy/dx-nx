@@ -10,7 +10,6 @@ import {
 import { NotificationModel } from './notification.postgres-model';
 import { NotificationSocketApiService } from './notificaiton.socket';
 import { sleep } from '@dx/utils-shared-misc';
-import { NotificationType } from '@dx/notifications-shared';
 // import admin from 'firebase-admin';
 
 export class NotificationService {
@@ -124,7 +123,7 @@ export class NotificationService {
         level
       });
 
-      NotificationSocketApiService.instance.sendNotification(notification);
+      NotificationSocketApiService.instance.sendNotificationToUser(notification);
 
       if (!suppressPush) {
         this.sendDeviceNotification(userId, message, title, route);
@@ -219,25 +218,17 @@ export class NotificationService {
   }
 
   public async testSockets(userId: string): Promise<void> {
-    const baseNotification: NotificationType = {
-      createdAt: new Date(),
-      id: '',
-      level: NOTIFICATION_LEVELS.INFO,
-      message: 'message',
-      title: 'test',
-      userId,
-      viewed: false
-    };
-
-    for (let i = 0, max = 10; i < max; i += 1) {
-      NotificationSocketApiService.instance.sendNotification({
-        ...baseNotification,
-        id: `${i + 1}`,
-        title: `Test: ${i + 1}`,
-        message: `This is a test message for ${i + 1} notification`
-      });
-      await sleep(500);
+    for (const level of Object.keys(NOTIFICATION_LEVELS)) {
+      await this.createAndSend(
+        userId,
+        `Test Message for: ${level}`,
+        level,
+        `${level} Notificaion`
+      );
+      await sleep(1000);
     }
+
+    NotificationSocketApiService.instance.sendAppUpdateNotification('The applicaiton has been updated. Refresh your browser to get the latest update.');
   }
 }
 

@@ -182,7 +182,7 @@ export const Phonelist: React.FC<UserPhonesProps> = (props) => {
                           phone.isVerified && (
                             <Chip
                               label="Verified"
-                              color="primary"
+                              color="success"
                               sx={{ height: '20px', marginRight: '10px' }}
                             />
                           )
@@ -191,7 +191,7 @@ export const Phonelist: React.FC<UserPhonesProps> = (props) => {
                           phone.default && (
                             <Chip
                               label="Default"
-                              color="success"
+                              color="info"
                               sx={{ height: '20px', marginRight: '10px' }}
                             />
                           )

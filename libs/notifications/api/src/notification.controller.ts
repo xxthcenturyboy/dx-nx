@@ -90,8 +90,8 @@ export const NotificationController = {
   markAsDismissed: async function (req: Request, res: Response) {
     try {
       const service = new NotificationService();
-      const { userId } = req.params as { userId: string };
-      const result = await service.markAsDismissed(userId);
+      const { id } = req.params as { id: string };
+      const result = await service.markAsDismissed(id);
       sendOK(req, res, { success: true });
     } catch (err) {
       sendBadRequest(req, res, err.message);

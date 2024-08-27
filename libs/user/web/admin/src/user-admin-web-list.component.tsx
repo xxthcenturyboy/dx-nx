@@ -33,7 +33,6 @@ import {
   DialogAlert,
   FADE_TIMEOUT_DUR,
   IconNames,
-  setDocumentTitle,
   TableComponent,
   TableHeaderItem,
   TableRowType,
@@ -41,7 +40,10 @@ import {
   uiActions,
   useFocus
 } from '@dx/ui-web';
-import { debounce } from '@dx/utils-misc-web';
+import {
+  debounce,
+  setDocumentTitle
+} from '@dx/utils-misc-web';
 import {
   GetUsersListQueryType,
   UserType
@@ -189,7 +191,7 @@ export const UserAdminList: React.FC = () => {
       return;
     }
 
-    navigate(`${ROUTES.ADMIN.USER.EDIT}/${data.id}`);
+    navigate(`${ROUTES.ADMIN.USER.DETAIL}/${data.id}`);
   };
 
   const getRowData = (user: UserType): TableRowType => {
@@ -373,7 +375,7 @@ export const UserAdminList: React.FC = () => {
             <Button
               variant="contained"
               size="small"
-              onClick={() => navigate(`${ROUTES.ADMIN.USER.EDIT}`)}
+              onClick={() => navigate(`${ROUTES.ADMIN.USER.DETAIL}`)}
               disabled={userGetXhr}
               fullWidth={smBreak}
             >

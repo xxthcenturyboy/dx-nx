@@ -16,7 +16,7 @@ import {
   NotificationSocketInterServerEvents,
   NotificationSocketServerToClientEvents,
   NotificationType,
-  NOTIFICATION_SOCKET_NS
+  NOTIFICATION_WEB_SOCKET_NS
 } from '@dx/notifications-shared';
 
 type NotificationNamespaceType =  Namespace<
@@ -36,7 +36,7 @@ export class NotificationSocketApiService {
     this.logger = ApiLoggingClass.instance;
     this.socket = SocketApiConnection.instance;
     // @ts-expect-error - type is fine
-    this.ns = this.socket.io.of(NOTIFICATION_SOCKET_NS);
+    this.ns = this.socket.io.of(NOTIFICATION_WEB_SOCKET_NS);
     NotificationSocketApiService.#instance = this;
   }
 
@@ -64,13 +64,29 @@ export class NotificationSocketApiService {
     });
   }
 
-  public sendNotification(notification: NotificationType) {
+  public sendNotificationToUser(notification: NotificationType) {
     try {
       if (notification.userId) {
         this.ns.to(notification.userId).emit('sendNotification', notification);
       }
     } catch (err) {
       this.logger.logError(`Error sending notification socket: ${err.message}`);
+    }
+  }
+
+  public sendNotificationToAll(notification: NotificationType) {
+    try {
+      this.ns.emit('sendNotification', notification);
+    } catch (err) {
+      this.logger.logError(`Error sending notification socket: ${err.message}`);
+    }
+  }
+
+  public sendAppUpdateNotification(message: string) {
+    try {
+      this.ns.emit('sendAppUpdateNotification', message);
+    } catch (err) {
+      this.logger.logError(`Error sending app update notification socket: ${err.message}`);
     }
   }
 }

@@ -138,12 +138,14 @@ export class NotificationModel extends Model<NotificationModel> {
   static async markAllDismissed(userId: string): Promise<[number]> {
     return NotificationModel.update({
       dismissedAt: new Date(),
+      lastReadDate: new Date(),
+      read: true,
       viewed: true,
       viewedDate: new Date()
     }, {
       where: {
         userId,
-        read: false
+        dismissedAt: null
       }
     });
   }
@@ -174,6 +176,8 @@ export class NotificationModel extends Model<NotificationModel> {
   static async markAsDismissed(id: string): Promise<[number]> {
     return NotificationModel.update({
       dismissedAt: new Date(),
+      lastReadDate: new Date(),
+      read: true,
       viewed: true,
       viewedDate: new Date()
     }, {

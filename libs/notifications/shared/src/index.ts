@@ -9,5 +9,5 @@ export {
 export {
   NOTIFICATION_ERRORS,
   NOTIFICATION_LEVELS,
-  NOTIFICATION_SOCKET_NS
+  NOTIFICATION_WEB_SOCKET_NS
 } from './notification-shared.consts';

@@ -1,4 +1,5 @@
 import { Socket } from 'socket.io-client';
+import { toast } from 'react-toastify';
 
 import {
   store
@@ -6,7 +7,7 @@ import {
 import {
   NotificationSocketClientToServerEvents,
   NotificationSocketServerToClientEvents,
-  NOTIFICATION_SOCKET_NS
+  NOTIFICATION_WEB_SOCKET_NS
 } from '@dx/notifications-shared';
 import { SocketWebConnection } from '@dx/data-access-socket-io-web';
 import { notificationActions } from './notification-web.reducer';
@@ -20,10 +21,23 @@ export class NotificationWebSockets {
 
   constructor() {
     this.socket = SocketWebConnection.createSocket<
-        NotificationSocketClientToServerEvents,
-        NotificationSocketServerToClientEvents
-      >(NOTIFICATION_SOCKET_NS);
+      NotificationSocketClientToServerEvents,
+      NotificationSocketServerToClientEvents
+    >(NOTIFICATION_WEB_SOCKET_NS);
     NotificationWebSockets.#instance = this;
+
+    this.socket.on('sendAppUpdateNotification', (message) => {
+      toast.info(message, {
+        autoClose: false,
+        closeButton: true,
+        closeOnClick: false,
+        // onClose: () => {
+        //   window && window.location.reload();
+        // },
+        position: 'top-center',
+        theme: 'colored'
+      })
+    });
 
     this.socket.on('sendNotification', (notification) => {
       store.dispatch(notificationActions.addNotification(notification));

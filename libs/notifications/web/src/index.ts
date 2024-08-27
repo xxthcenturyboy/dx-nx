@@ -7,6 +7,7 @@ export {
 } from './notification-web.reducer';
 
 export {
+  fetchNotifications,
   useLazyGetNotificationsQuery,
   useMarkAllAsDismissedMutation,
   useMarkAsDismissedMutation,

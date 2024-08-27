@@ -8,7 +8,7 @@ export const USER_ADMIN_ENTITY_NAME = 'userAdmin';
 export const USER_ADMIN_ROUTES = {
   MAIN: `/admin/user`,
   LIST: `/admin/user/list`,
-  EDIT: `/admin/user/edit`
+  DETAIL: `/admin/user/detail`
 };
 
 export const USER_ADMIN_MENU: AppMenuType = {

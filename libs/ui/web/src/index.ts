@@ -34,7 +34,7 @@ export {
   selectWindowHeight,
   selectWindowWidth
 } from './store/ui-web.selector';
-export { setDocumentTitle } from './set-document-title';
+
 export {
   DEBOUNCE,
   FADE_TIMEOUT_DUR,

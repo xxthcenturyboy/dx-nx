@@ -182,7 +182,7 @@ export const EmailList: React.FC<EmailListPropsType> = (props) => {
                           email.isVerified && (
                             <Chip
                               label="Verified"
-                              color="primary"
+                              color="success"
                               sx={{ height: '20px', marginRight: '10px' }}
                             />
                           )
@@ -191,7 +191,7 @@ export const EmailList: React.FC<EmailListPropsType> = (props) => {
                           email.default && (
                             <Chip
                               label="Default"
-                              color="success"
+                              color="info"
                               sx={{ height: '20px', marginRight: '10px' }}
                             />
                           )

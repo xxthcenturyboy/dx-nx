@@ -7,3 +7,4 @@ export {
   testAllMediaInputs,
   testCameraInputs
 } from './test-media-inputs';
+export { setDocumentTitle } from './set-document-title';

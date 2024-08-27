@@ -37,10 +37,10 @@ import {
 } from '@dx/store-web';
 import {
   FADE_TIMEOUT_DUR,
-  setDocumentTitle,
   selectCurrentThemeMode,
   uiActions
 } from '@dx/ui-web';
+import { setDocumentTitle } from '@dx/utils-misc-web';
 import {
   statsActions
 } from './stats-web.reducer';
