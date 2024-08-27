@@ -22,6 +22,10 @@ export class NotificationRoutes {
       '/',
       NotificationController.createNotification
     );
+    router.post(
+      '/:userId',
+      NotificationController.testSocket
+    );
 
     router.put(
       '/read-all/:userId',

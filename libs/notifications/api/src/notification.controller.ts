@@ -90,8 +90,8 @@ export const NotificationController = {
   markAsDismissed: async function (req: Request, res: Response) {
     try {
       const service = new NotificationService();
-      const { id } = req.params as { id: string };
-      const result = await service.markAsDismissed(id);
+      const { userId } = req.params as { userId: string };
+      const result = await service.markAsDismissed(userId);
       sendOK(req, res, { success: true });
     } catch (err) {
       sendBadRequest(req, res, err.message);
@@ -103,6 +103,16 @@ export const NotificationController = {
       const { id } = req.params as { id: string };
       const result = await service.markAsRead(id);
       sendOK(req, res, result);
+    } catch (err) {
+      sendBadRequest(req, res, err.message);
+    }
+  },
+  testSocket: async function (req: Request, res: Response) {
+    try {
+      const service = new NotificationService();
+      const { userId } = req.params as { userId: string };
+      await service.testSockets(userId);
+      sendOK(req, res, 'OK');
     } catch (err) {
       sendBadRequest(req, res, err.message);
     }

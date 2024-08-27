@@ -9,9 +9,15 @@ export {
 export {
   useLazyGetNotificationsQuery,
   useMarkAllAsDismissedMutation,
-  useMarkAsDismissedMutation
+  useMarkAsDismissedMutation,
+  useTestSocketsMutation
 } from './notification-web.api';
 
 export {
   selectNotificationCount
 } from './notification-web.selectors';
+
+export {
+  NotificationWebSockets,
+  NotificationWebSocketsType
+} from './notification-web.sockets';

@@ -22,3 +22,20 @@ export type NotificationType = {
   viewed: boolean;
   viewedDate?: Date;
 };
+
+export type NotificationSocketServerToClientEvents = {
+  sendNotification: (notification: NotificationType) => void;
+  sendBasic: (message: string) => void;
+}
+
+export type NotificationSocketClientToServerEvents = {
+  hello: (message: string) => void;
+}
+
+export type NotificationSocketInterServerEvents = {
+  ping: () => void;
+}
+
+export type NotificationSocketData = {
+  notification: NotificationType;
+}

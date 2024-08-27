@@ -1,5 +1,11 @@
-export { AuthRoutes, AuthRoutesType } from './auth-api.routes';
-export { ensureLoggedIn } from './ensure-logged-in.middleware';
+export {
+  AuthRoutes,
+  AuthRoutesType
+} from './auth-api.routes';
+export {
+  ensureLoggedIn,
+  ensureLoggedInSocket
+} from './ensure-logged-in.middleware';
 export {
   hasAdminRole,
   hasSuperAdminRole,

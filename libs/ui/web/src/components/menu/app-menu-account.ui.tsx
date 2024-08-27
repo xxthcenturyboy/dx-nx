@@ -35,7 +35,8 @@ export const StyledAccountMenuListItem = styled(ListItem)<{
   component?: React.ElementType
 }>(() => ({
   border: `1px solid ${grey[300]}`,
-  height: '48px'
+  height: '48px',
+  cursor: 'pointer'
 }));
 
 export const StyledAccountActionArea = styled('div')<{

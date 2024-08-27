@@ -8,9 +8,9 @@ describe('HeaderService', () => {
     expect(HeaderService).toBeDefined();
   });
 
-  describe('getTokenFromAuthHeader', () => {
+  describe('getTokenFromRequest', () => {
     it('should exist on the class as a static method.', () => {
-      expect(HeaderService.getTokenFromAuthHeader).toBeDefined();
+      expect(HeaderService.getTokenFromRequest).toBeDefined();
     });
 
     it('should return the token when called.', () => {
@@ -20,7 +20,7 @@ describe('HeaderService', () => {
         authorization: 'Bearer token'
       };
       // act
-      const token = HeaderService.getTokenFromAuthHeader(req);
+      const token = HeaderService.getTokenFromRequest(req);
       // assert
       expect(token).toBeDefined();
       expect(token).toEqual('token');

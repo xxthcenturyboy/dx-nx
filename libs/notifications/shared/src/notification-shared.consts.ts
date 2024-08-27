@@ -11,3 +11,5 @@ export const NOTIFICATION_ERRORS = {
   MISSING_USER_ID: '[NOTIFY] User ID required to fetch Notifications by User ID.',
   SERVER_ERROR: '[NOTIFY] Server error in Notifications',
 };
+
+export const NOTIFICATION_SOCKET_NS = '/notify';

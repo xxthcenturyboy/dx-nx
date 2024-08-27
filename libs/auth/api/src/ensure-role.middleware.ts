@@ -25,7 +25,7 @@ export async function hasAdminRole(
   next: NextFunction
 ): Promise<void> {
   try {
-    const token = HeaderService.getTokenFromAuthHeader(req);
+    const token = HeaderService.getTokenFromRequest(req);
     if (!token) {
       throw new Error('No Token');
     }

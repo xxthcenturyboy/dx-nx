@@ -27,7 +27,7 @@ jest.mock('@dx/utils-api-cookies', () => ({
 }));
 jest.mock('@dx/utils-api-headers', () => ({
   HeaderService: {
-    getTokenFromAuthHeader: jest.fn(),
+    getTokenFromRequest: jest.fn(),
   },
 }));
 jest.mock('@dx/utils-api-http-response', () => ({

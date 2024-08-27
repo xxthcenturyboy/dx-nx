@@ -1,1 +1,1 @@
-export * from './lib/data-access-socket-io-web';
+export { SocketWebConnection } from './socket-web.connection';

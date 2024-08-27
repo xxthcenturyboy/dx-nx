@@ -84,7 +84,7 @@ export const UserController = {
 
   getUserProfile: async function (req: Request, res: Response) {
     try {
-      const authToken = HeaderService.getTokenFromAuthHeader(req);
+      const authToken = HeaderService.getTokenFromRequest(req);
       const userId = TokenService.getUserIdFromToken(authToken);
       const service = new UserService();
       const result = await service.getProfile(userId);
@@ -116,7 +116,7 @@ export const UserController = {
 
   sendOtpCode: async function (req: Request, res: Response) {
     try {
-      const authToken = HeaderService.getTokenFromAuthHeader(req);
+      const authToken = HeaderService.getTokenFromRequest(req);
       const userId = TokenService.getUserIdFromToken(authToken);
       const service = new UserService();
       const result = await service.sendOtpCode(userId);

@@ -25,8 +25,10 @@ import { WebConfigService } from '@dx/config-web';
 import { NotificationMenu } from '@dx/notifications-web';
 import {
   notificationActions,
+  NotificationWebSockets,
   selectNotificationCount,
-  useLazyGetNotificationsQuery
+  useLazyGetNotificationsQuery,
+  useTestSocketsMutation
 } from '@dx/notifications-web';
 import { AccountMenu } from './app-menu-account.component';
 import { uiActions } from '../../store/ui-web.reducer';
@@ -61,6 +63,9 @@ export const AppNavBar: React.FC = () => {
       isUninitialized: fetchNotificationsUninitialized
     }
   ] = useLazyGetNotificationsQuery();
+  const [
+    requestSocketsTest
+  ] = useTestSocketsMutation()
 
   React.useEffect(() => {
     if (
@@ -83,6 +88,12 @@ export const AppNavBar: React.FC = () => {
       && !isLoadingNotifications
     ) {
       void fetchNotifications({ userId });
+
+      if (!NotificationWebSockets.instance) {
+        new NotificationWebSockets();
+      } else if (!NotificationWebSockets.instance.socket.connected) {
+        NotificationWebSockets.instance.socket.connect();
+      }
     }
   }, [isAuthenticated]);
 
@@ -185,6 +196,16 @@ export const AppNavBar: React.FC = () => {
           {
             isAuthenticated && (
               <>
+                <IconButton
+                  className="toolbar-icons"
+                  size="large"
+                  aria-label="show notifications"
+                  aria-controls="notification-menu-appbar"
+                  aria-haspopup="true"
+                  onClick={() => requestSocketsTest({ userId })}
+                >
+                  <NotificationsIcon />
+                </IconButton>
                 <IconButton
                   className="toolbar-icons"
                   size="large"

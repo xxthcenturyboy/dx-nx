@@ -8,9 +8,10 @@ import {
   ApiLoggingClassType
 } from '@dx/logger-api';
 import { NotificationModel } from './notification.postgres-model';
+import { NotificationSocketApiService } from './notificaiton.socket';
+import { sleep } from '@dx/utils-shared-misc';
+import { NotificationType } from '@dx/notifications-shared';
 // import admin from 'firebase-admin';
-// import { pubsub } from 'server/lib/redis';
-// import { NOTIFICATION_SUB } from 'server/graphql/resolvers/subscriptions/notifications';
 
 export class NotificationService {
   logger: ApiLoggingClassType;
@@ -122,8 +123,9 @@ export class NotificationService {
         message,
         level
       });
-      // TODO: Implement Socket
-      // pubsub.publish(NOTIFICATION_SUB, { [NOTIFICATION_SUB]: notification });
+
+      NotificationSocketApiService.instance.sendNotification(notification);
+
       if (!suppressPush) {
         this.sendDeviceNotification(userId, message, title, route);
       }
@@ -213,6 +215,28 @@ export class NotificationService {
     } catch (err) {
       this.logger.logError(err);
       throw new Error(NOTIFICATION_ERRORS.SERVER_ERROR);
+    }
+  }
+
+  public async testSockets(userId: string): Promise<void> {
+    const baseNotification: NotificationType = {
+      createdAt: new Date(),
+      id: '',
+      level: NOTIFICATION_LEVELS.WARNING,
+      message: 'message',
+      title: 'test',
+      userId,
+      viewed: false
+    };
+
+    for (let i = 0, max = 10; i < max; i += 1) {
+      NotificationSocketApiService.instance.sendNotification({
+        ...baseNotification,
+        id: `${i + 1}`,
+        title: `Test: ${i + 1}`,
+        message: `This is a test message for ${i + 1} notification`
+      });
+      await sleep(500);
     }
   }
 }

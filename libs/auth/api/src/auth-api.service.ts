@@ -411,6 +411,9 @@ export class AuthService {
       );
       const userId = TokenService.getUserIdFromToken(refreshToken);
       const updated = await UserModel.updateRefreshToken(userId, refreshTokens);
+      // Disconnect Sockets
+      // void NotificationSocketApiService.instance.disconnect(userId);
+
       return updated;
     } catch (err) {
       this.logger.logError(err);
