@@ -7,6 +7,7 @@ import {
 import { ApiLoggingClass } from '@dx/logger-api';
 import { DxPostgresDb } from './data/dx-postgres.db';
 import { DxRedisCache } from './data/dx-redis.cache';
+import { DxS3Class } from './data/dx-s3';
 import { DxSocketClass } from './data/dx-sockets';
 import { ApiRoutes } from './routes/api.routes';
 import { configureExpress } from './express';
@@ -26,6 +27,11 @@ async function run() {
   if (!redis) {
     logger.logInfo('Failed to connect to Redis. Exiting');
     return 1;
+  }
+
+  const s3 = await DxS3Class.initializeS3();
+  if (!s3) {
+    logger.logInfo('Failed to instantiate S3');
   }
 
   const config = getApiConfig(logger, postgres, redis);
@@ -58,10 +64,7 @@ Settings:
     logger.logInfo(`[ ready ] http://${config.host}:${config.port}`);
   });
 
-  const sockets = DxSocketClass.startSockets(server);
-  if (sockets) {
-    logger.logInfo('Sockets started successfully');
-  }
+  DxSocketClass.startSockets(server);
 }
 
 run();

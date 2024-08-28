@@ -17,6 +17,12 @@ comes with a LSP for Vim users.
     - wrapper around the aws cli
     - requires python / pip
     - If your Python is installed via a manager like homebrew on the Mac, you'll need to `install awscli-local` via that manager
+  - [Localstack Desktop](https://app.localstack.cloud/download)
+    - [notes for Mac Users if `/var/run/docker.sock` is not available](https://docs.docker.com/desktop/mac/permission-requirements/)
+
+      You are also given the option to enable the installation of the `/var/run/docker.sock` symlink. Creating this symlink ensures various Docker clients relying on the default Docker socket path work without additional changes.
+      As the `/var/run` is mounted as a tmpfs, its content is deleted on restart, symlink to the Docker socket included. To ensure the Docker socket exists after restart, Docker Desktop sets up a launchd startup task that creates the symlink by running `ln -s -f /Users/<user>/.docker/run/docker.sock` /var/run/docker.sock. This ensures the you aren't prompted on each startup to create the symlink. If you don't enable this option at installation, the symlink and the startup task is not created and you may have to explicitly set the `DOCKER_HOST` environment variable to `/Users/<user>/.docker/run/docker.sock`in the clients it is using. The Docker CLI relies on the current context to retrieve the socket path, the current context is set to `desktop-linux` on Docker Desktop startup.
+
 
 ## Initial setup
 Run `docker compose up -d` <-- starts the Docker dev environment

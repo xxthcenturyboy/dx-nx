@@ -23,11 +23,15 @@ export class DxSocketClass {
       }
 
       new NotificationSocketApiService();
-      NotificationSocketApiService.instance
-        ? NotificationSocketApiService.instance.configureNamespace()
-        : logger.logError('Notification sockets not instantiated.');
 
-      return true;
+      if (NotificationSocketApiService.instance) {
+        NotificationSocketApiService.instance.configureNamespace();
+        logger.logInfo('Sockets started successfully');
+        return true;
+      }
+
+      logger.logError('Notification sockets not instantiated.');
+      return false;
     } catch (err) {
       logger.logError((err as Error).message, err);
       return false;

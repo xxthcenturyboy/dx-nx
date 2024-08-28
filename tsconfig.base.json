@@ -28,6 +28,7 @@
       "@dx/dashboard-web": ["libs/dashboard/web/src/index.ts"],
       "@dx/data-access-postgres": ["libs/data-access/postgres/src/index.ts"],
       "@dx/data-access-redis": ["libs/data-access/redis/src/index.ts"],
+      "@dx/data-access-s3": ["libs/data-access/s3/src/index.ts"],
       "@dx/data-access-socket-io-api": [
         "libs/data-access/socket-io/api/src/index.ts"
       ],

@@ -5,6 +5,9 @@ export {
   JWT_SECRET,
   OTP_SALT,
   POSTGRES_URI,
+  S3_ACCESS_KEY_ID,
+  S3_APP_BUCKET_NAME,
+  S3_SECRET_ACCESS_KEY,
   SENDGRID_API_KEY,
   SENDGRID_URL,
 } from './lib/api-config.consts';

@@ -16,5 +16,5 @@ services:
         target: /root/.gitconfig
     environment:
       - DEV_PLATFORM=DOCKER
-    # volumes:
+    volumes:
     #   - ../../:/app

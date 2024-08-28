@@ -28,8 +28,6 @@ EXPOSE \
   #Web
   4200 \
   4211 \
-  # localstack
-  4566 \
   # Sendgrid
   7070 \
   # Expo
