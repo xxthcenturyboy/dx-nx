@@ -44,7 +44,6 @@
     "libphonenumber-js": "^1.11.4",
     "lodash": "^4.17.21",
     "lottie-react": "^2.4.0",
-    "morgan": "^1.10.0",
     "mui-one-time-password-input": "^2.0.3",
     "node-rsa": "^1.1.1",
     "pg": "^8.12.0",

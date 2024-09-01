@@ -1,12 +1,12 @@
 import {
   AppMenuType,
+  AppMenuItemType,
   MenuRestrictionType
 } from '@dx/ui-web';
 import { DASHBOARD_MENU } from '@dx/dashboard-web';
 import { STATS_SUDO_WEB_MENU } from '@dx/stats-web';
 import { USER_ADMIN_MENU } from '@dx/user-admin-web';
 import { USER_PROFILE_MENU } from '@dx/user-profile-web';
-import { AppMenuItemType } from 'libs/ui/web/src/components/menu/app-menu.types';
 export class MenuConfigService {
   // Order to appear in sidebar menu
   CARDINAL_MENU_SET = [

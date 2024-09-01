@@ -1,4 +1,5 @@
 export {
+  MB,
   MIME_TYPES,
   S3_BUCKETS,
   UPLOAD_FILE_SIZES

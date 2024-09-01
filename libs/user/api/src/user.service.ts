@@ -259,7 +259,7 @@ export class UserService {
         },
         include: [EMAIL_MODEL_OPTIONS, PHONE_MODEL_OPTIONS],
         attributes: USER_FIND_ATTRIBUTES,
-        logging: this.DEBUG && console.log,
+        // logging: this.DEBUG && console.debug,
       });
 
       if (!user) {
@@ -292,7 +292,7 @@ export class UserService {
         offset: offset ? Number(offset) : DEFAULT_OFFSET,
         order: orderArgs,
         attributes: USER_FIND_ATTRIBUTES,
-        logging: this.DEBUG && console.log,
+        // logging: this.DEBUG && console.debug,
       });
 
       if (!users) {

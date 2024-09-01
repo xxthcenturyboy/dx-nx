@@ -10,6 +10,7 @@ export {
   S3_SECRET_ACCESS_KEY,
   SENDGRID_API_KEY,
   SENDGRID_URL,
+  UPLOAD_MAX_FILE_SIZE,
 } from './lib/api-config.consts';
 export {
   getApiConfig,

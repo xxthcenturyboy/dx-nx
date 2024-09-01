@@ -73,7 +73,12 @@ export function endpointNotFound(
   ApiLoggingClass.instance.logError(
     `Endpoint not found: ${req.method} ${req.url}`
   );
-  sendMethodNotAllowed(req, res, 'API endpoint not found');
+  send400(res, {
+    description: getReasonPhrase(StatusCodes.METHOD_NOT_ALLOWED),
+    status: StatusCodes.METHOD_NOT_ALLOWED,
+    message: 'API endpoint not found.',
+    url: req.url,
+  });
 }
 
 export function sendBadRequest(

@@ -41,7 +41,7 @@ export class ApiLoggingClass {
 
   private initializeWinston(appName: string) {
     const logger = winston.createLogger({
-      transports: ApiLoggingClass.getTransports(appName),
+      transports: ApiLoggingClass.getTransports(appName)
     });
     return logger;
   }

@@ -4,6 +4,7 @@ import { AuthRoutes } from '@dx/auth-api';
 import { DevicesRoutes } from '@dx/devices-api';
 import { EmailRoutes } from '@dx/email-api';
 import { HealthzRoutes } from '@dx/healthz-api';
+import { MediaApiV1Routes } from '@dx/media-api';
 import { NotificationRoutes } from '@dx/notifications-api';
 import { PhoneRoutes } from '@dx/phone-api';
 import { ShortlinkRoutes } from '@dx/shortlink-api';
@@ -17,6 +18,7 @@ export class RoutesV1 {
     router.use('/device', DevicesRoutes.configure());
     router.use('/email', EmailRoutes.configure());
     router.use('/healthz', HealthzRoutes.configure());
+    router.use('/media', MediaApiV1Routes.configure());
     router.use('/notification', NotificationRoutes.configure());
     router.use('/phone', PhoneRoutes.configure());
     router.use('/privilege-set', UserPrivilegeRoutes.configure());

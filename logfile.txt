@@ -1,0 +1,68 @@
+{"level":"info","message":"Establishing Postgres Connection."}
+{"level":"info","message":"\n  Postgres:\n    DB Name:   dx-nx\n    version:   16.3\n        "}
+{"level":"info","message":"Loading Sequelize models."}
+{"level":"info","message":"Successfully Connected to Postgres"}
+{"level":"info","message":"***************************************"}
+{"level":"info","message":"Checking connection to Redis"}
+{"level":"info","message":"Redis PING: PONG"}
+{"level":"info","message":"write result: OK"}
+{"level":"info","message":"read result: {\"test\":true}"}
+{"level":"info","message":"Redis Connection Healthy"}
+{"level":"info","message":"***************************************"}
+{"level":"info","message":" "}
+{"level":"info","message":"S3 Connected successfully"}
+{"level":"info","message":"Sockets started successfully"}
+{"level":"info","message":"\n============================================================================\n                                web app shell-api\n============================================================================\nEnvironment variables:\n  Node Env:   development\n  __dirname:  /app/dist/apps/api/apps/api/src\n  cwd:        /app\n\nSettings:\n  Host:       0.0.0.0\n  Port:       4000\n  Debug:      false\n    "}
+{"level":"info","message":"[ ready ] http://0.0.0.0:4000"}
+{"level":"info","message":"notify socket user: 2cf4aebd-d30d-4c9e-9047-e52c10fe8d4d"}
+{"level":"info","message":"Establishing Postgres Connection."}
+{"level":"info","message":"\n  Postgres:\n    DB Name:   dx-nx\n    version:   16.3\n        "}
+{"level":"info","message":"Loading Sequelize models."}
+{"level":"info","message":"Successfully Connected to Postgres"}
+{"level":"info","message":"***************************************"}
+{"level":"info","message":"Checking connection to Redis"}
+{"level":"info","message":"Redis PING: PONG"}
+{"level":"info","message":"write result: OK"}
+{"level":"info","message":"read result: {\"test\":true}"}
+{"level":"info","message":"Redis Connection Healthy"}
+{"level":"info","message":"***************************************"}
+{"level":"info","message":" "}
+{"level":"info","message":"S3 Connected successfully"}
+{"level":"info","message":"Sockets started successfully"}
+{"level":"info","message":"\n============================================================================\n                                web app shell-api\n============================================================================\nEnvironment variables:\n  Node Env:   development\n  __dirname:  /app/dist/apps/api/apps/api/src\n  cwd:        /app\n\nSettings:\n  Host:       0.0.0.0\n  Port:       4000\n  Debug:      false\n    "}
+{"level":"info","message":"[ ready ] http://0.0.0.0:4000"}
+{"level":"info","message":"notify socket user: 2cf4aebd-d30d-4c9e-9047-e52c10fe8d4d"}
+{"level":"info","message":"Establishing Postgres Connection."}
+{"level":"info","message":"\n  Postgres:\n    DB Name:   dx-nx\n    version:   16.3\n        "}
+{"level":"info","message":"Loading Sequelize models."}
+{"level":"info","message":"Successfully Connected to Postgres"}
+{"level":"info","message":"***************************************"}
+{"level":"info","message":"Checking connection to Redis"}
+{"level":"info","message":"Redis PING: PONG"}
+{"level":"info","message":"write result: OK"}
+{"level":"info","message":"read result: {\"test\":true}"}
+{"level":"info","message":"Redis Connection Healthy"}
+{"level":"info","message":"***************************************"}
+{"level":"info","message":" "}
+{"level":"info","message":"S3 Connected successfully"}
+{"level":"info","message":"Sockets started successfully"}
+{"level":"info","message":"\n============================================================================\n                                web app shell-api\n============================================================================\nEnvironment variables:\n  Node Env:   development\n  __dirname:  /app/dist/apps/api/apps/api/src\n  cwd:        /app\n\nSettings:\n  Host:       0.0.0.0\n  Port:       4000\n  Debug:      false\n    "}
+{"level":"info","message":"[ ready ] http://0.0.0.0:4000"}
+{"level":"info","message":"notify socket user: 2cf4aebd-d30d-4c9e-9047-e52c10fe8d4d"}
+{"level":"info","message":"Establishing Postgres Connection."}
+{"level":"info","message":"\n  Postgres:\n    DB Name:   dx-nx\n    version:   16.3\n        "}
+{"level":"info","message":"Loading Sequelize models."}
+{"level":"info","message":"Successfully Connected to Postgres"}
+{"level":"info","message":"***************************************"}
+{"level":"info","message":"Checking connection to Redis"}
+{"level":"info","message":"Redis PING: PONG"}
+{"level":"info","message":"write result: OK"}
+{"level":"info","message":"read result: {\"test\":true}"}
+{"level":"info","message":"Redis Connection Healthy"}
+{"level":"info","message":"***************************************"}
+{"level":"info","message":" "}
+{"level":"info","message":"S3 Connected successfully"}
+{"level":"info","message":"Sockets started successfully"}
+{"level":"info","message":"\n============================================================================\n                                web app shell-api\n============================================================================\nEnvironment variables:\n  Node Env:   development\n  __dirname:  /app/dist/apps/api/apps/api/src\n  cwd:        /app\n\nSettings:\n  Host:       0.0.0.0\n  Port:       4000\n  Debug:      false\n    "}
+{"level":"info","message":"[ ready ] http://0.0.0.0:4000"}
+{"level":"info","message":"notify socket user: 2cf4aebd-d30d-4c9e-9047-e52c10fe8d4d"}

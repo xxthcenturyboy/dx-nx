@@ -13,7 +13,7 @@ import {
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Upload } from '@aws-sdk/lib-storage';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 import {
   ApiLoggingClass,
@@ -27,37 +27,43 @@ import {
 } from '@dx/config-api';
 
 export class S3Service {
-  private bucketName = S3_APP_BUCKET_NAME;
+  public bucketName = S3_APP_BUCKET_NAME;
   private logger: ApiLoggingClassType;
   private s3: typeof S3.prototype;
 
   constructor() {
     this.logger = ApiLoggingClass.instance;
+    this.s3 = S3Service.getS3Client();
+  }
 
+  public static getS3Client() {
+    let s3Instance: typeof S3.prototype;
     try {
       if (
         S3_ACCESS_KEY_ID
         && S3_SECRET_ACCESS_KEY
       ) {
-        this.s3 = new S3({
+        s3Instance = new S3({
           credentials: {
             accessKeyId: S3_ACCESS_KEY_ID,
             secretAccessKey: S3_SECRET_ACCESS_KEY
           },
         });
       } else {
-        this.s3 = new S3({
+        s3Instance = new S3({
           endpoint: 'http://localstack:4566',
           forcePathStyle: true,
           credentials: {
             accessKeyId: 'test',
             secretAccessKey: 'test'
-          },
+          }
         });
       }
     } catch (err) {
-      this.logger.logError(err);
+      ApiLoggingClass.instance.logError(err);
     }
+
+    return s3Instance;
   }
 
   private async createBucket(bucketName: string) {
@@ -143,7 +149,7 @@ export class S3Service {
     }
   }
 
-  async upload(
+  async uploadUserContent(
     fileName: string,
     filePath: string,
     asset: Buffer,
@@ -154,12 +160,12 @@ export class S3Service {
       : `${fileName}`;
 
     const params: PutObjectCommandInput = {
-      Bucket: this.bucketName,
+      Bucket: `${this.bucketName}-${S3_BUCKETS.USER_CONTENT}`,
       Key: key,
       Body: asset,
       Metadata: metadata
     };
-    const started = moment();
+    const started = dayjs();
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const _this = this;
     try {
@@ -167,11 +173,13 @@ export class S3Service {
         client: this.s3,
         params,
       }).done();
-      const elapsedMs = +moment() - +started;
+      const finished = dayjs();
+      const elapsedMs = started.diff(finished);
       this.logger.logInfo(`api:S3 upload took ${elapsedMs} ms`);
       return data;
     } catch (err) {
-      const elapsedMs = +moment() - +started;
+      const finished = dayjs();
+      const elapsedMs = started.diff(finished);
       _this.logger.logInfo(`api:S3 upload failed at ${elapsedMs} ms`);
       _this.logger.logError(err);
       return;
@@ -183,11 +191,12 @@ export class S3Service {
     key: string,
     transformTostring?: boolean
   ) {
-    const started = moment();
+    const started = dayjs();
     try {
       const command = new GetObjectCommand({ Bucket: bucket, Key: key });
       const file = await this.s3.send(command);
-      const elapsedMs = +moment() - +started;
+      const finished = dayjs();
+      const elapsedMs = started.diff(finished);
       this.logger.logInfo(`api:S3 getObject took ${elapsedMs} ms`);
 
       if (file.Body) {
@@ -199,7 +208,8 @@ export class S3Service {
 
       return null;
     } catch (ex) {
-      const elapsedMs = +moment() - +started;
+      const finished = dayjs();
+      const elapsedMs = started.diff(finished);
       this.logger.logInfo(`api:S3 get Object took ${elapsedMs} ms`);
       this.logger.logError((ex as Error).message);
       throw new Error((ex as Error).message);

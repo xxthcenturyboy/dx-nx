@@ -8,7 +8,6 @@ import express,
 } from 'express';
 // import session from 'express-session';
 // import RedisStore from 'connect-redis';
-import { Logger as WinstonLogger } from 'winston';
 import { logger as expressWinston } from 'express-winston';
 import cookieParser from 'cookie-parser';
 import morgan,
@@ -19,6 +18,7 @@ import cors from 'cors';
 
 // import { DxDateUtilClass } from '@dx/util-dates';
 import { webUrl } from '@dx/config-api';
+import { ApiLoggingClass } from '@dx/logger-api';
 // import { StatusCodes } from 'http-status-codes';
 
 // import { RedisService, REDIS_DELIMITER } from '@dx/redis';
@@ -54,19 +54,11 @@ export async function configureExpress(
 
   // Log HTTP requests
   app.use(
-    morgan(
-      (tokens: TokenIndexer<Request, Response>, req: Request, res: Response) =>
-        [
-          tokens.method(req, res),
-          tokens.url(req, res),
-          tokens.status(req, res),
-          tokens.res(req, res, 'content-length'),
-          '-',
-          tokens['response-time'](req, res),
-          'ms',
-          settings.DEBUG && `- user.id: ${req.user?.id || 'NONE'}`,
-        ].join(' ')
-    )
+    expressWinston({
+      winstonInstance: ApiLoggingClass.instance.logger,
+      meta: true,
+      msg: 'HTTP {{req.method}} {{req.url}} - userId: {{req.user?.id || "NONE"}}'
+    })
   );
 
   // Session support
@@ -91,14 +83,6 @@ export async function configureExpress(
   //   }
   // }));
 
-  // Setup logging
-  if (!settings.DEBUG) {
-    app.use(
-      expressWinston({
-        winstonInstance: new WinstonLogger(),
-      })
-    );
-  }
 
   // Serve files in the /public directory as static files.
   // app.use('/bundles', express.static(`${API_ROOT}/dist/bundles`));
