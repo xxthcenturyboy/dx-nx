@@ -32,7 +32,7 @@ export const MediaApiController = {
       filePath: '',
       fileSize: 0,
       mimeType: '',
-      ownerId: req.user?.id || 'some-user-id',
+      ownerId: req.user?.id || 'missing-user-id',
       originalFilename: '',
       newFilename: '',
       uploadId: req.uploads?.uploadId

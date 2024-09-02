@@ -25,11 +25,11 @@ import { MB, S3_BUCKETS } from '@dx/media-shared';
 import { dxGenerateRandomValue } from '@dx/util-encryption';
 
 export async function multiFileUploadMiddleware(req: Request, res: Response, next: NextFunction) {
-  if (req.method !== 'POST') {
+  if (!req.user?.id) {
     req.uploads = {
       err: {
-        httpCode: StatusCodes.METHOD_NOT_ALLOWED,
-        message: 'Method not allowed.'
+        httpCode: StatusCodes.FORBIDDEN,
+        message: 'User not allowed.'
       }
     }
     next();
@@ -130,11 +130,11 @@ export async function multiFileUploadMiddleware(req: Request, res: Response, nex
 }
 
 export async function singleFileUploadMiddleware(req: Request, res: Response, next: NextFunction) {
-  if (req.method !== 'POST') {
+  if (!req.user?.id) {
     req.uploads = {
       err: {
-        httpCode: StatusCodes.METHOD_NOT_ALLOWED,
-        message: 'Method not allowed.'
+        httpCode: StatusCodes.FORBIDDEN,
+        message: 'User not allowed.'
       }
     }
     next();

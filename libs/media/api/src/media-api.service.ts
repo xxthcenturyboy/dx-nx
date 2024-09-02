@@ -172,7 +172,7 @@ export class MediaApiService {
     const mediaRecord: AssetDataType = {
       id,
       altText: data.altText,
-      assetSubType: ASSET_SUB_TYPE,
+      assetSubType: ASSET_SUB_TYPE.toUpperCase(),
       assetType: data.mimeType,
       files: [],
       md5FileHash: hashedFilenameMimeType,
