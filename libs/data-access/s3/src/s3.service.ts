@@ -1,4 +1,6 @@
 import {
+  CopyObjectCommand,
+  CopyObjectCommandInput,
   CreateBucketCommand,
   CreateBucketCommandInput,
   DeleteObjectsCommand,
@@ -9,25 +11,21 @@ import {
   ListObjectsCommandOutput,
   PutObjectCommand,
   PutObjectCommandInput,
-  S3
+  S3,
 } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Upload } from '@aws-sdk/lib-storage';
-import dayjs from 'dayjs';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 import {
   ApiLoggingClass,
   ApiLoggingClassType
 } from '@dx/logger-api';
-import { S3_BUCKETS } from '@dx/media-shared';
 import {
   S3_ACCESS_KEY_ID,
-  S3_APP_BUCKET_NAME,
   S3_SECRET_ACCESS_KEY
 } from '@dx/config-api';
 
 export class S3Service {
-  public bucketName = S3_APP_BUCKET_NAME;
   private logger: ApiLoggingClassType;
   private s3: typeof S3.prototype;
 
@@ -140,49 +138,63 @@ export class S3Service {
     }
   }
 
-  public async instantiate() {
-    for (const bucket of Object.keys(S3_BUCKETS)) {
-      const bucketName = `${this.bucketName}-${S3_BUCKETS[bucket]}`;
+  public async instantiate(
+    appBucket: string,
+    scopedBuckets: string[]
+  ) {
+    for (const scopedBucket of scopedBuckets) {
+      const bucketName = `${appBucket}-${scopedBucket}`;
       if (!(await this.doesBucketExist(bucketName))) {
         await this.createBucket(bucketName);
       }
     }
   }
 
-  async uploadUserContent(
-    fileName: string,
-    filePath: string,
-    asset: Buffer,
-    metadata: Record<string, string>
+  public async uploadObject(
+    bucket: string,
+    key: string,
+    file: Buffer,
+    mimeType: string,
+    metadata?: Record<string, string>
   ) {
-    const key = filePath
-      ? `${filePath}/${fileName}`
-      : `${fileName}`;
-
-    const params: PutObjectCommandInput = {
-      Bucket: `${this.bucketName}-${S3_BUCKETS.USER_CONTENT}`,
-      Key: key,
-      Body: asset,
-      Metadata: metadata
-    };
-    const started = dayjs();
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const _this = this;
     try {
-      const data = await  new Upload({
+      const params: PutObjectCommandInput = {
+        Bucket: bucket,
+        Key: key,
+        Body: file,
+        ContentType: mimeType,
+        ACL: 'public-read',
+        Metadata: metadata
+      };
+      return await new Upload({
         client: this.s3,
-        params,
+        params
       }).done();
-      const finished = dayjs();
-      const elapsedMs = started.diff(finished);
-      this.logger.logInfo(`api:S3 upload took ${elapsedMs} ms`);
-      return data;
     } catch (err) {
-      const finished = dayjs();
-      const elapsedMs = started.diff(finished);
-      _this.logger.logInfo(`api:S3 upload failed at ${elapsedMs} ms`);
-      _this.logger.logError(err);
-      return;
+      this.logger.logError(err);
+    }
+  }
+
+  async moveObject(
+    sourcePath: string,
+    destinationBucket: string,
+    key: string,
+    metaData?: Record<string, string>
+  ) {
+    const params: CopyObjectCommandInput = {
+      Bucket: destinationBucket,
+      CopySource: sourcePath,
+      Key: key,
+      Metadata: metaData
+    };
+
+    try {
+      const command = new CopyObjectCommand(params);
+      const moved = await this.s3.send(command);
+      return moved.$metadata.httpStatusCode === 200;
+    } catch (err) {
+      this.logger.logError(err);
+      throw new Error(err);
     }
   }
 
@@ -191,26 +203,20 @@ export class S3Service {
     key: string,
     transformTostring?: boolean
   ) {
-    const started = dayjs();
     try {
       const command = new GetObjectCommand({ Bucket: bucket, Key: key });
       const file = await this.s3.send(command);
-      const finished = dayjs();
-      const elapsedMs = started.diff(finished);
-      this.logger.logInfo(`api:S3 getObject took ${elapsedMs} ms`);
 
       if (file.Body) {
         if (transformTostring) {
-          return file.Body.transformToString();
+          return file.Body.transformToWebStream();
         }
+
         return file.Body;
       }
 
       return null;
     } catch (ex) {
-      const finished = dayjs();
-      const elapsedMs = started.diff(finished);
-      this.logger.logInfo(`api:S3 get Object took ${elapsedMs} ms`);
       this.logger.logError((ex as Error).message);
       throw new Error((ex as Error).message);
     }

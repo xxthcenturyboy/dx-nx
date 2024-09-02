@@ -1,47 +1,26 @@
 import { CompleteMultipartUploadCommandOutput } from '@aws-sdk/client-s3';
 import { FileJSON } from 'formidable';
-// import FileJSON from 'formidable/PersistentFile';
 
 export type AssetFileType = {
-  size?: number;
-  width?: number;
-  height?: number;
-  format?: string;
   bucket?: string;
+  eTag?: string;
+  format?: string;
+  height?: number;
   key?: string;
   location?: string;
-  originalFileName?: string;
-  eTag?: string;
-};
-
-export type AssetEsDataType = {
-  id: string;
-  ownerId: string;
-  altText: string;
-  originalFileName: string;
-  campaignIds: string[];
-  canopusId: string;
-  builderUserId: string;
-  md5FileHash: string;
-  assetType: string;
-  files: AssetFileType[];
-  assetSubType: string;
+  size?: number;
+  width?: number;
 };
 
 export type AssetDataType = {
-  id: string;
-  ownerId: string;
   altText: string;
-  originalFileName: string;
-  campaignId: string;
-  campaignIds: string[];
-  canopusId: string;
-  builderUserId: string;
-  md5FileHash: string;
+  assetSubType: string;
   assetType: string;
   files: AssetFileType[];
-  assetSubType: string;
-  mediaLibraries?: string[] | AssetDataType[];
+  id: string;
+  md5FileHash: string;
+  originalFileName: string;
+  ownerId: string;
 };
 
 export type ImageResizeAssetType = {
@@ -56,14 +35,19 @@ export type ImageResizeAssetType = {
 };
 
 export type UploadAssetParams = {
-  ownerId: string[];
-  altText: string[];
-  campaignId: string[];
-  canopusId: string[];
-  builderUserId: string[];
-  assetSubType: string[];
-  mediaLibraryId: string[];
+  altText: string;
+  assetSubType: string;
+  filePath: string;
+  ownerId: string;
 };
+
+export type UploadAssetHandlerParams = {
+  fileSize: number;
+  mimeType: string;
+  newFilename: string;
+  originalFilename: string;
+  uploadId?: string;
+} & UploadAssetParams;
 
 export type UploadAssetFile = {
   format: string;

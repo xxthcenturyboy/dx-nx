@@ -8,3 +8,5 @@ export { maliciousUrlCheck } from './lib/malicious-url-check';
 export { propertiesToArray } from './lib/properties-to-array';
 
 export { sleep } from './lib/sleep';
+
+export { stream2buffer } from './lib/stream-to-buffer.uitil';

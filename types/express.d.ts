@@ -38,6 +38,7 @@ declare global {
       uploads?: {
         fields?: Fields<string>,
         files?: Files<string>,
+        uploadId?: string,
         err?: {
           httpCode?: number,
           message: string

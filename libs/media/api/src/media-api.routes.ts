@@ -4,19 +4,19 @@ import {
   ensureLoggedIn
 } from '@dx/auth-api';
 import { MediaApiController } from './media-api.controller';
-import { fileUploadMiddleware } from './media-api-file-upload.middleware';
+import { singleFileUploadMiddleware } from './media-api-file-upload.middleware';
 
 export class MediaApiV1Routes {
   static configure() {
     const router = Router();
 
     router.post(
-      '/upload',
+      '/upload-user-content',
       // [
       //   ensureLoggedIn
       // ],
-      fileUploadMiddleware,
-      MediaApiController.uploadFile
+      singleFileUploadMiddleware,
+      MediaApiController.uploadUserContent
     );
 
     return router.bind(router);
