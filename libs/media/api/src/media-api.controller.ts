@@ -4,7 +4,7 @@ import {
   Response
 } from 'express';
 
-import { UploadAssetHandlerParams } from '@dx/media-shared';
+import { ASSET_SUB_TYPES, UploadAssetHandlerParams } from '@dx/media-shared';
 import { MediaApiService } from './media-api.service';
 import {
   sendOK,
@@ -31,6 +31,7 @@ export const MediaApiController = {
       assetSubType: '',
       filePath: '',
       fileSize: 0,
+      isPrimary: false,
       mimeType: '',
       ownerId: req.user?.id || 'missing-user-id',
       originalFilename: '',
@@ -47,6 +48,18 @@ export const MediaApiController = {
       }
       if (key === 'assetSubType') {
         data.assetSubType = value;
+        if (value === ASSET_SUB_TYPES.PROFILE_IMAGE) {
+          data.isPrimary = true;
+        }
+        continue;
+      }
+      if (
+        key === 'isPrimary'
+        && !data.isPrimary
+      ) {
+        data.isPrimary = typeof value === 'string'
+          ? value === 'true'
+          : false;
         continue;
       }
       if (Object.hasOwnProperty.call(value, 'filepath')) {

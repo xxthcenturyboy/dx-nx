@@ -17,10 +17,11 @@ export type AssetDataType = {
   assetSubType: string;
   assetType: string;
   files: AssetFileType[];
+  hashedFilenameMimeType: string;
   id: string;
-  md5FileHash: string;
   originalFileName: string;
   ownerId: string;
+  primary: boolean;
 };
 
 export type ImageResizeAssetType = {
@@ -38,6 +39,7 @@ export type UploadAssetParams = {
   altText: string;
   assetSubType: string;
   filePath: string;
+  isPrimary?: boolean;
   ownerId: string;
 };
 

@@ -18,6 +18,7 @@ import dayjs from 'dayjs';
 import { S3Service } from '@dx/data-access-s3';
 import { ApiLoggingClass } from '@dx/logger-api';
 import {
+  isDebug,
   S3_APP_BUCKET_NAME,
   UPLOAD_MAX_FILE_SIZE
 } from '@dx/config-api';
@@ -25,7 +26,10 @@ import { MB, S3_BUCKETS } from '@dx/media-shared';
 import { dxGenerateRandomValue } from '@dx/util-encryption';
 
 export async function multiFileUploadMiddleware(req: Request, res: Response, next: NextFunction) {
-  if (!req.user?.id) {
+  if (
+    !isDebug()
+    && !req.user?.id
+  ) {
     req.uploads = {
       err: {
         httpCode: StatusCodes.FORBIDDEN,
@@ -130,7 +134,10 @@ export async function multiFileUploadMiddleware(req: Request, res: Response, nex
 }
 
 export async function singleFileUploadMiddleware(req: Request, res: Response, next: NextFunction) {
-  if (!req.user?.id) {
+  if (
+    !isDebug()
+    && !req.user?.id
+  ) {
     req.uploads = {
       err: {
         httpCode: StatusCodes.FORBIDDEN,

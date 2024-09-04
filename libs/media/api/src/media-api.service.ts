@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Metadata } from 'sharp';
+import { Readable } from 'stream';
 
 import {
   ApiLoggingClass,
@@ -25,7 +26,7 @@ import {
   MediaApiImageManipulationService,
   MediaApiImageManipulationServiceType
 } from './media-api-image-manipulation.service';
-import { Readable } from 'stream';
+import { MediaModel } from './media-api.postgres-model';
 
 export class MediaApiService {
   imageManipulationService: MediaApiImageManipulationServiceType;
@@ -175,9 +176,10 @@ export class MediaApiService {
       assetSubType: ASSET_SUB_TYPE.toUpperCase(),
       assetType: data.mimeType,
       files: [],
-      md5FileHash: hashedFilenameMimeType,
+      hashedFilenameMimeType: hashedFilenameMimeType,
       originalFileName: data.originalFilename,
-      ownerId: data.ownerId
+      ownerId: data.ownerId,
+      primary: data.isPrimary
     };
 
     for (const dataFile of dataFiles) {
@@ -193,9 +195,13 @@ export class MediaApiService {
       })
     }
 
-    console.log(mediaRecord);
-    // TODO: save to DB
-    return mediaRecord;
+    try {
+      const saveResult = await MediaModel.createNewProfileMedia(mediaRecord);
+      return saveResult;
+    } catch (err) {
+      this.logger.logError(err);
+      throw new Error((err as Error).message);
+    }
   }
 
   public async getUserContent(key: string) {
