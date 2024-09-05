@@ -9,7 +9,8 @@ import {
   ApiLoggingClassType
 } from '@dx/logger-api';
 import {
-  ImageResizeAssetType,
+  MEDIA_VARIANTS,
+  ImageResizeMediaType,
   UPLOAD_FILE_SIZES
 } from '@dx/media-shared';
 import { formatBytes } from '@dx/util-numbers';
@@ -66,24 +67,25 @@ export class MediaApiImageManipulationService {
     filePath: string,
     fileContent: Buffer
   ) {
-    const dataFiles: ImageResizeAssetType[] = [];
+    const dataFiles: ImageResizeMediaType[] = [];
     const originalImageMeta = await this.getMetaFromBuffer(filePath);
-    const promises = UPLOAD_FILE_SIZES.map(async f => {
-      if (f.name !== 'original') {
-        const width = originalImageMeta.width && originalImageMeta.width > f.width
-          ? f.width
+    const promises = UPLOAD_FILE_SIZES.map(async (fileSize) => {
+      if (fileSize.name !== MEDIA_VARIANTS.ORIGINAL) {
+        const width = originalImageMeta.width && originalImageMeta.width > fileSize.width
+          ? fileSize.width
           : originalImageMeta.width;
         const resizedImage = await this.resizeByFileContent(fileContent, width || 0);
         const resizedImageMeta = await this.getMetaFromBuffer(resizedImage);
 
-        const imageData: ImageResizeAssetType = {
+        const imageData: ImageResizeMediaType = {
           asset: resizedImage,
-          id: `${fileName}_${f.name}`,
+          id: `${fileName}_${fileSize.name}`,
           size: resizedImageMeta.size,
           width: resizedImageMeta.width,
           height: resizedImageMeta.height,
           format: resizedImageMeta.format,
-          metaData: this.stringifyMetaForS3(resizedImageMeta)
+          metaData: this.stringifyMetaForS3(resizedImageMeta),
+          variant: fileSize.name
         };
         dataFiles.push(imageData);
       }
@@ -97,22 +99,23 @@ export class MediaApiImageManipulationService {
     fileName: string,
     fileContent: Readable
   ) {
-    const dataFiles: ImageResizeAssetType[] = [];
+    const dataFiles: ImageResizeMediaType[] = [];
     const originalBuffer = await fileContent.pipe(
       await sharp()
     ).toBuffer();
     const originalImageMeta = await this.getMetaFromBuffer(originalBuffer);
 
     const promises = UPLOAD_FILE_SIZES.map(async (fileSize) => {
-      if (fileSize.name === 'original') {
-        const imageData: ImageResizeAssetType = {
+      if (fileSize.name === MEDIA_VARIANTS.ORIGINAL) {
+        const imageData: ImageResizeMediaType = {
           asset: originalBuffer,
           id: `${fileName}`,
           size: originalImageMeta.size,
           width: originalImageMeta.width,
           height: originalImageMeta.height,
           format: originalImageMeta.format,
-          metaData: this.stringifyMetaForS3(originalImageMeta)
+          metaData: this.stringifyMetaForS3(originalImageMeta),
+          variant: fileSize.name
         };
 
         dataFiles.push(imageData);
@@ -124,14 +127,15 @@ export class MediaApiImageManipulationService {
         // this.logSizes(originalImageMeta.size, resizedImage);
         const resizedImageMeta = await this.getMetaFromBuffer(resizedImage);
 
-        const imageData: ImageResizeAssetType = {
+        const imageData: ImageResizeMediaType = {
           asset: resizedImage,
           id: `${fileName}_${fileSize.name}`,
           size: resizedImageMeta.size,
           width: resizedImageMeta.width,
           height: resizedImageMeta.height,
           format: resizedImageMeta.format,
-          metaData: this.stringifyMetaForS3(resizedImageMeta)
+          metaData: this.stringifyMetaForS3(resizedImageMeta),
+          variant: fileSize.name
         };
 
         dataFiles.push(imageData);

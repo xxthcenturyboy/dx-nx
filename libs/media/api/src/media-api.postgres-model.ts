@@ -15,9 +15,9 @@ import {
 
 import { MEDIA_API_POSTGRES_DB_NAME } from './media-api.consts';
 import {
-  AssetFileType,
-  ASSET_SUB_TYPES,
-  AssetDataType
+  MediaFileType,
+  MEDIA_SUB_TYPES,
+  MediaDataType
 } from '@dx/media-shared';
 import { parseJson } from '@dx/utils-shared-misc';
 
@@ -26,7 +26,7 @@ import { parseJson } from '@dx/utils-shared-misc';
   indexes: [
     {
       name: 'media_sub_type_index',
-      fields: ['asset_sub_type']
+      fields: ['media_sub_type']
     },
     {
       name: 'media_owner_id_index',
@@ -34,7 +34,7 @@ import { parseJson } from '@dx/utils-shared-misc';
     },
     {
       name: 'media_sub_type_primary_index',
-      fields: ['primary', { name: 'asset_sub_type' }]
+      fields: ['primary', { name: 'media_sub_type' }]
     }
   ],
   underscored: true,
@@ -52,20 +52,20 @@ export class MediaModel extends Model<MediaModel> {
   altText: string;
 
   @Column({
-    field: 'asset_sub_type',
+    field: 'media_sub_type',
     type: DataType.STRING
   })
-  assetSubType: string;
+  mediaSubType: string;
 
   @Column({
-    field: 'asset_type',
+    field: 'media_type',
     type: DataType.STRING
   })
-  assetType: string;
+  mediaType: string;
 
   @Column({
     field: 'files',
-    type: DataType.ARRAY(DataType.JSONB)
+    type: DataType.JSONB
   })
   files: any;
 
@@ -107,7 +107,7 @@ export class MediaModel extends Model<MediaModel> {
 
   parseFiles(): void {
     if (this.files) {
-      this.files = parseJson<AssetFileType[]>(this.files);
+      this.files = parseJson<MediaFileType[]>(this.files);
     }
   }
 
@@ -124,7 +124,7 @@ export class MediaModel extends Model<MediaModel> {
     return await MediaModel.findOne({
       where: {
         ownerId,
-        assetSubType: ASSET_SUB_TYPES.PROFILE_IMAGE,
+        mediaSubType: MEDIA_SUB_TYPES.PROFILE_IMAGE,
         deletedAt: null,
         primary: true
       },
@@ -135,7 +135,7 @@ export class MediaModel extends Model<MediaModel> {
     return await MediaModel.findAll({
       where: {
         ownerId,
-        assetSubType: ASSET_SUB_TYPES.PROFILE_IMAGE,
+        mediaSubType: MEDIA_SUB_TYPES.PROFILE_IMAGE,
         deletedAt: null,
       },
     });
@@ -149,7 +149,7 @@ export class MediaModel extends Model<MediaModel> {
     }
   }
 
-  static async createNewProfileMedia(data: AssetDataType): Promise<MediaModel> {
+  static async createNewProfileMedia(data: MediaDataType): Promise<MediaModel> {
     await MediaModel.clearAllPrimaryProfileMedia(data.ownerId);
     return await MediaModel.create(data);
   }

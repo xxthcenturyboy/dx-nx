@@ -1,9 +1,10 @@
 export {
-  ASSET_SUB_TYPES,
-  ASSET_TYPES,
-  ASSET_TYPE_BY_MIME_TYPE_MAP,
+  MEDIA_SUB_TYPES,
+  MEDIA_TYPES,
+  MEDIA_TYPE_BY_MIME_TYPE_MAP,
   FILE_EXTENSIONS,
   MB,
+  MEDIA_VARIANTS,
   MIME_TYPES,
   MIME_TYPE_BY_SUB_TYPE,
   S3_BUCKETS,
@@ -11,10 +12,10 @@ export {
 } from './media-shared.consts';
 
 export {
-  AssetDataType,
-  AssetFileType,
-  ImageResizeAssetType,
-  UploadAssetFile,
-  UploadAssetParams,
-  UploadAssetHandlerParams
+  MediaDataType,
+  MediaFileType,
+  ImageResizeMediaType,
+  UploadMediaFile,
+  UploadMediaParams,
+  UploadMediaHandlerParams
 } from './media-shared.types';

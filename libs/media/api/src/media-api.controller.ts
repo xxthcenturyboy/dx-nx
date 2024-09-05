@@ -4,7 +4,7 @@ import {
   Response
 } from 'express';
 
-import { ASSET_SUB_TYPES, UploadAssetHandlerParams } from '@dx/media-shared';
+import { MEDIA_SUB_TYPES, UploadMediaHandlerParams } from '@dx/media-shared';
 import { MediaApiService } from './media-api.service';
 import {
   sendOK,
@@ -26,9 +26,9 @@ export const MediaApiController = {
       return;
     }
 
-    const data: UploadAssetHandlerParams = {
+    const data: UploadMediaHandlerParams = {
       altText: '',
-      assetSubType: '',
+      mediaSubType: '',
       filePath: '',
       fileSize: 0,
       isPrimary: false,
@@ -46,9 +46,9 @@ export const MediaApiController = {
         data.altText = value;
         continue;
       }
-      if (key === 'assetSubType') {
-        data.assetSubType = value;
-        if (value === ASSET_SUB_TYPES.PROFILE_IMAGE) {
+      if (key === 'mediaSubType') {
+        data.mediaSubType = value;
+        if (value === MEDIA_SUB_TYPES.PROFILE_IMAGE) {
           data.isPrimary = true;
         }
         continue;

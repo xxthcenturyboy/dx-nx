@@ -1,6 +1,7 @@
 import { ApiLoggingClass } from '@dx/logger-api';
 import { UserModel } from './user.postgres-model';
 import { UserProfileStateType } from '@dx/user-shared';
+import { MediaModel } from '@dx/media-api';
 
 export async function getUserProfileState(
   user: UserModel,
@@ -14,6 +15,7 @@ export async function getUserProfileState(
     const mailVerified = !!defaultEmail?.verifiedAt;
     const phoneVerified = !!defaultPhone?.verifiedAt;
     const connectedDevice = await user.fetchConnectedDevice();
+    const profileImage = await MediaModel.findPrimaryProfile(id)
 
     const profile: UserProfileStateType = {
       id,
@@ -32,6 +34,7 @@ export async function getUserProfileState(
       lastName: user.lastName,
       b: user.optInBeta,
       phones: await user.getPhoneData(),
+      profileImage,
       restrictions: user.restrictions || [],
       role: user.roles,
       username: user.username,

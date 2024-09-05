@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Metadata } from 'sharp';
+// import { Metadata } from 'sharp';
 import { Readable } from 'stream';
 
 import {
@@ -11,13 +11,14 @@ import {
   S3ServiceType
 } from '@dx/data-access-s3';
 import {
-  AssetDataType,
-  ASSET_TYPES,
-  ASSET_TYPE_BY_MIME_TYPE_MAP,
-  ImageResizeAssetType,
+  MediaDataType,
+  MEDIA_TYPES,
+  MEDIA_TYPE_BY_MIME_TYPE_MAP,
+  ImageResizeMediaType,
   MIME_TYPE_BY_SUB_TYPE,
   S3_BUCKETS,
-  UploadAssetHandlerParams
+  UploadMediaHandlerParams,
+  MEDIA_VARIANTS
 } from '@dx/media-shared';
 import { S3_APP_BUCKET_NAME } from '@dx/config-api';
 import { stream2buffer } from '@dx/utils-shared-misc';
@@ -57,10 +58,10 @@ export class MediaApiService {
   }
 
   private isFileTypeAllowed(
-    assetSubType: string,
+    mediaSubType: string,
     mimetype: string
   ) {
-    const allowedTypes = MIME_TYPE_BY_SUB_TYPE[assetSubType];
+    const allowedTypes = MIME_TYPE_BY_SUB_TYPE[mediaSubType];
     if (!Array.isArray(allowedTypes)) {
       return false;
     }
@@ -72,11 +73,53 @@ export class MediaApiService {
     return false;
   }
 
+  private async processFile(
+    mediaType: string,
+    data: UploadMediaHandlerParams,
+    file: Readable,
+    id: string
+  ) {
+    switch (mediaType) {
+      case MEDIA_TYPES.ICON:
+      case MEDIA_TYPES.SVG:
+      case MEDIA_TYPES.GIF:
+        const imageBuffer = await stream2buffer(file);
+        const imageMeta = await this.imageManipulationService.getMetaFromBuffer(imageBuffer);
+        return [{
+          asset: await stream2buffer(file),
+          id: `${id}_${mediaType}`,
+          size: data.fileSize,
+          width: imageMeta.width,
+          height: imageMeta.height,
+          format: imageMeta.format,
+          variant: MEDIA_VARIANTS.ORIGINAL
+        }];
+      case MEDIA_TYPES.AUDIO:
+      case MEDIA_TYPES.FONT:
+      case MEDIA_TYPES.PDF:
+      case MEDIA_TYPES.VIDEO:
+        return [{
+          asset: await stream2buffer(file),
+          id: `${id}_${mediaType}`,
+          size: data.fileSize,
+          width: 0,
+          height: 0,
+          format: data.mimeType || '',
+          variant: MEDIA_VARIANTS.ORIGINAL
+        }];
+      case MEDIA_TYPES.IMAGE: {
+        return await this.imageManipulationService.resizeImageStream(id, file);
+      }
+      default:
+        throw new Error(`103 Unsupported file uploaded: ${data.mimeType || 'no file type'}.`);
+    }
+  }
+
   public async userContentUpload(
-    data: UploadAssetHandlerParams
+    data: UploadMediaHandlerParams
   ) {
     if (
-      !data.assetSubType
+      !data.mediaSubType
       || !data.filePath
       || !data.mimeType
       || !data.ownerId
@@ -86,12 +129,12 @@ export class MediaApiService {
       throw new Error('102 Missing required data.');
     }
 
-    if (!this.isFileTypeAllowed(data.assetSubType, data.mimeType)) {
+    if (!this.isFileTypeAllowed(data.mediaSubType, data.mimeType)) {
       await this.clearUpload(data.uploadId);
       throw new Error('103 Incorrect file type.');
     }
     const id = uuidv4();
-    const ASSET_SUB_TYPE = data.assetSubType.toLowerCase();
+    const ASSET_SUB_TYPE = data.mediaSubType.toLowerCase();
     const BUCKET = `${S3_APP_BUCKET_NAME}-${S3_BUCKETS.USER_CONTENT}`;
     const KEY = `${data.ownerId}/${ASSET_SUB_TYPE}/${id}`;
 
@@ -105,57 +148,17 @@ export class MediaApiService {
       await this.clearUpload(data.uploadId);
     }
 
-    const assetType = ASSET_TYPE_BY_MIME_TYPE_MAP[data.mimeType];
+    const mediaType = MEDIA_TYPE_BY_MIME_TYPE_MAP[data.mimeType];
     const hashedFilenameMimeType = dxHashAnyToString(`${data.originalFilename}${data.mimeType}`);
-    const dataFiles: ImageResizeAssetType[] = [];
-    let imageMeta: Metadata | null = null;
 
     const file = await this.s3Service.getObject(
       BUCKET,
       KEY
     );
 
-    switch (assetType) {
-      case ASSET_TYPES.ICON:
-      case ASSET_TYPES.SVG:
-      case ASSET_TYPES.GIF:
-        const imageBuffer = await stream2buffer(file as Readable);
-        imageMeta = await this.imageManipulationService.getMetaFromBuffer(imageBuffer);
-        dataFiles.push({
-          asset: await stream2buffer(file as Readable),
-          id: `${id}_${assetType}`,
-          size: data.fileSize,
-          width: imageMeta.width,
-          height: imageMeta.height,
-          format: imageMeta.format,
-        });
-        break;
-      case ASSET_TYPES.AUDIO:
-      case ASSET_TYPES.FONT:
-      case ASSET_TYPES.PDF:
-      case ASSET_TYPES.VIDEO:
-        dataFiles.push({
-          asset: await stream2buffer(file as Readable),
-          id: `${id}_${assetType}`,
-          size: data.fileSize,
-          width: 0,
-          height: 0,
-          format: data.mimeType || ''
-        });
-        break;
-      case ASSET_TYPES.IMAGE: {
-        const result = await this.imageManipulationService.resizeImageStream(
-          id,
-          file as Readable
-        );
-        dataFiles.push(...result);
-        break;
-      }
-      default:
-        throw new Error(`103 Unsupported file uploaded: ${data.mimeType || 'no file type'}.`);
-    }
+    const processedFiles: ImageResizeMediaType[] = await this.processFile(mediaType, data, file as Readable, id);
 
-    const s3Promises = dataFiles.map(
+    const s3Promises = processedFiles.map(
       async (file) => await this.s3Service.uploadObject(
         BUCKET,
         `${data.ownerId}/${ASSET_SUB_TYPE}/${file.id}`,
@@ -167,32 +170,32 @@ export class MediaApiService {
 
     const uploads = await Promise.all(s3Promises);
     for (let i = 0, max = uploads.length; i < max; i += 1) {
-      dataFiles[i].s3UploadedFile = uploads[i];
+      processedFiles[i].s3UploadedFile = uploads[i];
     }
 
-    const mediaRecord: AssetDataType = {
+    const mediaRecord: MediaDataType = {
       id,
       altText: data.altText,
-      assetSubType: ASSET_SUB_TYPE.toUpperCase(),
-      assetType: data.mimeType,
-      files: [],
+      mediaSubType: ASSET_SUB_TYPE.toUpperCase(),
+      mediaType: data.mimeType,
+      files: {},
       hashedFilenameMimeType: hashedFilenameMimeType,
       originalFileName: data.originalFilename,
       ownerId: data.ownerId,
       primary: data.isPrimary
     };
 
-    for (const dataFile of dataFiles) {
-      mediaRecord.files.push({
-        size: dataFile.size,
-        width: dataFile.width,
-        height: dataFile.height,
-        format: dataFile.format,
-        bucket: dataFile.s3UploadedFile.Bucket,
-        key: dataFile.s3UploadedFile.Key,
-        location: dataFile.s3UploadedFile.Location,
-        eTag: dataFile.s3UploadedFile.ETag
-      })
+    for (const processedFile of processedFiles) {
+      mediaRecord.files[processedFile.variant] = {
+        size: processedFile.size,
+        width: processedFile.width,
+        height: processedFile.height,
+        format: processedFile.format,
+        bucket: processedFile.s3UploadedFile.Bucket,
+        key: processedFile.s3UploadedFile.Key,
+        location: processedFile.s3UploadedFile.Location,
+        eTag: processedFile.s3UploadedFile.ETag
+      };
     }
 
     try {

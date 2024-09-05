@@ -1,7 +1,7 @@
 import { CompleteMultipartUploadCommandOutput } from '@aws-sdk/client-s3';
 import { FileJSON } from 'formidable';
 
-export type AssetFileType = {
+export type MediaFileType = {
   bucket?: string;
   eTag?: string;
   format?: string;
@@ -12,11 +12,13 @@ export type AssetFileType = {
   width?: number;
 };
 
-export type AssetDataType = {
+export type MediaDataType = {
   altText: string;
-  assetSubType: string;
-  assetType: string;
-  files: AssetFileType[];
+  mediaSubType: string;
+  mediaType: string;
+  files: {
+    [variant: string]: MediaFileType
+  };
   hashedFilenameMimeType: string;
   id: string;
   originalFileName: string;
@@ -24,7 +26,7 @@ export type AssetDataType = {
   primary: boolean;
 };
 
-export type ImageResizeAssetType = {
+export type ImageResizeMediaType = {
   asset: string | Buffer;
   id: string;
   size?: number;
@@ -33,25 +35,26 @@ export type ImageResizeAssetType = {
   format?: string;
   metaData?: { [key: string]: string };
   s3UploadedFile?: CompleteMultipartUploadCommandOutput;
+  variant?: string;
 };
 
-export type UploadAssetParams = {
+export type UploadMediaParams = {
   altText: string;
-  assetSubType: string;
+  mediaSubType: string;
   filePath: string;
   isPrimary?: boolean;
   ownerId: string;
 };
 
-export type UploadAssetHandlerParams = {
+export type UploadMediaHandlerParams = {
   fileSize: number;
   mimeType: string;
   newFilename: string;
   originalFilename: string;
   uploadId?: string;
-} & UploadAssetParams;
+} & UploadMediaParams;
 
-export type UploadAssetFile = {
+export type UploadMediaFile = {
   format: string;
   key: string;
   width: number;

@@ -1,5 +1,6 @@
 import { EmailType } from '@dx/email-shared';
 import { PhoneType } from '@dx/phone-shared';
+import { MediaDataType } from '@dx/media-shared';
 
 export type UserType = {
   id: string;
@@ -47,6 +48,7 @@ export type UserProfileStateType = {
   lastName: string;
   b: boolean;
   phones: PhoneType[];
+  profileImage?: MediaDataType;
   restrictions: string[];
   role: string[];
   username: string;

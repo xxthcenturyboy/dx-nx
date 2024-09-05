@@ -28,6 +28,7 @@ export const userProfileInitialState: UserProfileStateType = {
   lastName: '',
   b: false,
   phones: [],
+  profileImage: undefined,
   restrictions: [],
   role: [],
   username: ''
@@ -58,6 +59,7 @@ const userProfileSlice = createSlice({
       state.sa = action.payload.sa;
       state.lastName = action.payload.lastName;
       state.phones = action.payload.phones;
+      state.profileImage = action.payload.profileImage;
       state.restrictions = action.payload.restrictions;
       state.role = action.payload.role;
       state.username = action.payload.username;
@@ -76,6 +78,7 @@ const userProfileSlice = createSlice({
       state.sa = userProfileInitialState.sa;
       state.lastName = userProfileInitialState.lastName;
       state.phones = userProfileInitialState.phones;
+      state.profileImage = userProfileInitialState.profileImage;
       state.restrictions = userProfileInitialState.restrictions;
       state.role = userProfileInitialState.role;
       state.username = userProfileInitialState.username;
