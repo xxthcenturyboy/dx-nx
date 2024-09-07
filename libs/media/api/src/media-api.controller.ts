@@ -4,7 +4,10 @@ import {
   Response
 } from 'express';
 
-import { MEDIA_SUB_TYPES, UploadMediaHandlerParams } from '@dx/media-shared';
+import {
+  MEDIA_SUB_TYPES,
+  UploadMediaHandlerParams
+} from '@dx/media-shared';
 import { MediaApiService } from './media-api.service';
 import {
   sendOK,
@@ -14,6 +17,17 @@ import {
 import { StatusCodes } from 'http-status-codes';
 
 export const MediaApiController = {
+  getMedia: async function (req: Request, res: Response, next: NextFunction) {
+    const { id, size } = req.params as { id: string, size: string };
+
+    const service = new MediaApiService();
+    const key = await service.getContentKey(id, size);
+    if (!key) {
+      return sendOK(req, res, null);
+    }
+    await service.getUserContent(key, res)
+  },
+
   uploadUserContent: async function (req: Request, res: Response, next: NextFunction) {
     if (req.uploads.err) {
       const service = new MediaApiService();

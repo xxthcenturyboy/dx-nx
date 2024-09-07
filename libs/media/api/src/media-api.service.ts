@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 // import { Metadata } from 'sharp';
 import { Readable } from 'stream';
+import { Response } from 'express';
 
 import {
   ApiLoggingClass,
@@ -207,11 +208,30 @@ export class MediaApiService {
     }
   }
 
-  public async getUserContent(key: string) {
+  public async getContentKey(id: string, variant: string) {
     try {
+      const media = await MediaModel.findByPk(id);
+      if (
+        !media
+        || !media.files[variant]
+      ) {
+        return;
+      }
+
+      return media.files[variant].key;
+    } catch (err) {
+      this.logger.logError(err);
+      throw new Error('105 Could not retrieve key.');
+    }
+  }
+
+  public async getUserContent(key: string, res: Response) {
+    try {
+
       const result = await this.s3Service.getObject(
         `${S3_APP_BUCKET_NAME}-${S3_BUCKETS.USER_CONTENT}`,
-        key
+        key,
+        res
       );
       return result;
     } catch (err) {

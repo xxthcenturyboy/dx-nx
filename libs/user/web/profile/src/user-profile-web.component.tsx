@@ -8,11 +8,11 @@ import {
   Grid,
   // IconButton,
   Paper,
-  // Skeleton,
   Typography,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+
 
 import {
   RootState,
@@ -33,12 +33,14 @@ import { Phonelist } from '@dx/phone-web';
 import { userProfileActions } from './user-profile-web.reducer';
 import { selectProfileFormatted } from './user-profile-web.selectors';
 import { UserProfileChangePasswordDialog } from './user-profile-web-change-password.dialog';
+import { UserProfileAvatar } from './user-profile-web-avatar.component';
 
 export const UserProfile: React.FC = () => {
   const profile = useAppSelector((state: RootState) => selectProfileFormatted(state));
   const appMode = useAppSelector((state: RootState) => state.ui.theme.palette?.mode);
   const dispatch = useAppDispatch();
   const theme = useTheme();
+  const lgBreak = useMediaQuery(theme.breakpoints.down('lg'));
   const mdBreak = useMediaQuery(theme.breakpoints.down('md'));
   const smBreak = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -136,26 +138,83 @@ export const UserProfile: React.FC = () => {
             container
             justifyContent="flex-start"
             padding="20px"
-            direction={mdBreak ? 'column' : 'row'}
           >
             <Grid
               container
-              direction="column"
-              width={mdBreak ? '100%' : '50%'}
-              padding="10px"
+              direction={mdBreak ? 'column' : 'row'}
+              justifyContent={'center'}
             >
-              <EmailList
-                emails={profile.emails}
-                userId={profile.id}
-                emailDataCallback={addEmailToProfile}
-                emailDeleteCallback={removeEmailFromProfile}
-              />
-              <Phonelist
-                phones={profile.phones}
-                userId={profile.id}
-                phoneDataCallback={addPhoneToProfile}
-                phoneDeleteCallback={removePhoneFromProfile}
-              />
+              <Grid
+                xs={12}
+                justifyContent={'center'}
+                alignItems={'center'}
+                width={'100%'}
+              >
+                <UserProfileAvatar
+                  fontSize='6rem'
+                  justifyContent="center"
+                  handleChangeImage={
+                    () => console.log('click')
+                  }
+                  size={
+                    {
+                      height: 142,
+                      width: 142
+                    }
+                  }
+                />
+              </Grid>
+            </Grid>
+            <Divider
+              sx={
+                {
+                  width: '100%',
+                  margin: '24px 0 0 0'
+                }
+              }
+            />
+
+            <Grid
+              container
+              direction={mdBreak ? 'column' : 'row'}
+              justifyContent={'center'}
+              // width={'100%'}
+            >
+              <Grid
+                item
+                md={12}
+                lg={6}
+                padding="10px"
+                width={'100%'}
+              >
+                <EmailList
+                  emails={profile.emails}
+                  userId={profile.id}
+                  emailDataCallback={addEmailToProfile}
+                  emailDeleteCallback={removeEmailFromProfile}
+                />
+              </Grid>
+              <Grid
+                item
+                md={12}
+                lg={6}
+                padding="10px"
+                width={'100%'}
+              >
+                <Phonelist
+                  phones={profile.phones}
+                  userId={profile.id}
+                  phoneDataCallback={addPhoneToProfile}
+                  phoneDeleteCallback={removePhoneFromProfile}
+                />
+              </Grid>
+            </Grid>
+
+            <Grid
+              container
+              direction={mdBreak ? 'column' : 'row'}
+              justifyContent={'flex-start'}
+            >
               <Grid
                 item
                 width={mdBreak ? '100%' : '50%'}

@@ -34,7 +34,7 @@ export async function getUserProfileState(
       lastName: user.lastName,
       b: user.optInBeta,
       phones: await user.getPhoneData(),
-      profileImage,
+      profileImage: profileImage?.id || null,
       restrictions: user.restrictions || [],
       role: user.roles,
       username: user.username,

@@ -48,7 +48,7 @@ export type UserProfileStateType = {
   lastName: string;
   b: boolean;
   phones: PhoneType[];
-  profileImage?: MediaDataType;
+  profileImage: string | null;
   restrictions: string[];
   role: string[];
   username: string;

@@ -28,7 +28,7 @@ export const userProfileInitialState: UserProfileStateType = {
   lastName: '',
   b: false,
   phones: [],
-  profileImage: undefined,
+  profileImage: null,
   restrictions: [],
   role: [],
   username: ''
