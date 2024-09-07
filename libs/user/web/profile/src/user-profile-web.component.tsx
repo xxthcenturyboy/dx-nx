@@ -2,11 +2,9 @@ import React from 'react';
 import {
   Box,
   Button,
-  // Container,
   Divider,
   Fade,
   Grid,
-  // IconButton,
   Paper,
   Typography,
   useMediaQuery,
@@ -145,6 +143,7 @@ export const UserProfile: React.FC = () => {
               justifyContent={'center'}
             >
               <Grid
+                item
                 xs={12}
                 justifyContent={'center'}
                 alignItems={'center'}
