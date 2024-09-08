@@ -3,7 +3,8 @@ export {
   AuthRoutesType
 } from './auth-api.routes';
 export {
-  ensureLoggedIn
+  ensureLoggedIn,
+  ensureLoggedInMedia
 } from './ensure-logged-in.middleware';
 export {
   hasAdminRole,

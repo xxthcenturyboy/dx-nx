@@ -14,7 +14,8 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  SelectChangeEvent
+  SelectChangeEvent,
+  TextField
 } from '@mui/material';
 
 import {
@@ -271,30 +272,33 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
           name="form-add-email"
           onSubmit={handleCreate}
         >
+          <TextField
+            disabled={isLoadingAddEmail}
+            margin="normal"
+            variant="outlined"
+            sx={
+              {
+                minWidth: 300,
+                // border: '1px solid lightgray',
+                borderRadius: '6px'
+              }
+            }
+            label={'Email'}
+            id='email'
+            name='email'
+            onChange={handleChangeEmail}
+            type='email'
+            autoCapitalize="off"
+            autoCorrect="off"
+            value={email || ''}
+            fullWidth
+          />
           <FormControl
             disabled={isLoadingAddEmail}
             margin="normal"
-            variant="standard"
-            style={{ minWidth: 300 }}
+            variant="outlined"
           >
-            <InputLabel htmlFor="email">Email</InputLabel>
-            <Input
-              id="email"
-              name="email"
-              onChange={handleChangeEmail}
-              type="email"
-              autoCorrect="off"
-              autoComplete="off"
-              value={email || ''}
-              fullWidth
-            />
-          </FormControl>
-          <FormControl
-            disabled={isLoadingAddEmail}
-            margin="normal"
-            variant="standard"
-          >
-            <InputLabel htmlFor="label-select">Label</InputLabel>
+            {/* <InputLabel htmlFor="label-select">Label</InputLabel> */}
             <Select
               id="label-select"
               name="label-select"
