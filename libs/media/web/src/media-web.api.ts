@@ -3,23 +3,24 @@ import {
   MEDIA_SUB_TYPES,
   MediaDataType
 } from '@dx/media-shared';
+import { MediaWebAvatarUploadParamsType } from './media-web.types';
 
 export const apiWebMedia = apiWebMain.injectEndpoints({
   endpoints: (build) => ({
-    uploadAvatar: build.mutation<MediaDataType, Blob>({
+    uploadAvatar: build.mutation<MediaDataType, MediaWebAvatarUploadParamsType>({
       // @ts-expect-error - types are good - error is wrong
-      query: (paylaod) => {
+      query: (payload) => {
         const bodyFormData = new FormData();
-        bodyFormData.append('file', paylaod);
+        bodyFormData.append('file', payload.file, payload.fileName);
         bodyFormData.append('mediaSubType', MEDIA_SUB_TYPES.PROFILE_IMAGE);
         return {
           url: 'v1/media/upload-user-content',
           method: 'POST',
           headers: {
-            'Content-Type': 'multipart/form-data;'
+            'Content-Type': 'multipart/form-data'
           },
           data: bodyFormData,
-          formData: true
+          uploadProgressHandler: payload.uploadProgressHandler
         }
       }
     })

@@ -8,11 +8,14 @@ import DialogTitle from '@mui/material/DialogTitle';
 import {
   Button,
   Grid,
+  LinearProgress,
   Slider,
+  Typography,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
 import AvatarEditor from 'react-avatar-editor';
+import { AxiosProgressEvent } from 'axios';
 
 import {
   store,
@@ -20,6 +23,7 @@ import {
 } from '@dx/store-web';
 import { logger } from '@dx/logger-web';
 import {
+  APP_COLOR_PALETTE,
   CustomDialogContent,
   DialogError,
   DialogWrapper,
@@ -28,7 +32,11 @@ import {
   themeColors,
   uiActions
 } from '@dx/ui-web';
-import { useUploadAvatarMutation } from '@dx/media-web';
+import {
+  useUploadAvatarMutation,
+  MediaWebAvatarUploadParamsType,
+  UploadProgressComponent
+} from '@dx/media-web';
 import { MediaDataType } from '@dx/media-shared';
 
 type UserProfileWebAvatarPropTypes = {
@@ -41,6 +49,9 @@ export const UserProfileWebAvatarDialog: React.FC<UserProfileWebAvatarPropTypes>
   const [errorMessage, setErrorMessage] = React.useState('');
   const [imageSource, setImageSource] = React.useState<File | string >('');
   const [scale, setScale] = React.useState(1.2);
+  const [uploadProgress, setUploadProgress] = React.useState(0);
+  const [processStarted, setProcessStarted] = React.useState(false);
+  const [imageMeta, setImageMeta] = React.useState<{ name: string, type: string } | null>(null);
   const isMobileWidth = selectIsMobileWidth(store.getState());
   const avatarEditorRef = React.useRef<null | AvatarEditor>(null);
   const dispatch = useAppDispatch();
@@ -89,22 +100,41 @@ export const UserProfileWebAvatarDialog: React.FC<UserProfileWebAvatarPropTypes>
   };
 
   const submitDisabled = (): boolean => {
-    return !imageSource || isUploadingdAvatar;
+    return !imageSource || isUploadingdAvatar || processStarted;
   };
+
+  const uploadProgressHandler = (progressEvent: AxiosProgressEvent) => {
+    if (
+      progressEvent.lengthComputable
+      && progressEvent.total
+    ) {
+      const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+      setUploadProgress(percentCompleted);
+    }
+  }
 
   const handleCreate = async (): Promise<void> => {
     if (
       !submitDisabled()
     ) {
       if (avatarEditorRef.current) {
+        setProcessStarted(true);
         const canvas = avatarEditorRef.current.getImage();
         if (canvas) {
           canvas.toBlob((blob) => {
             if (blob) {
               try {
-                void uplodAvatar(blob);
+                const payload: MediaWebAvatarUploadParamsType = {
+                  file: blob,
+                  fileName: imageMeta?.name || 'no-name-profile-image',
+                  uploadProgressHandler
+                };
+                void uplodAvatar(payload);
+                setProcessStarted(false);
               } catch (err) {
                 logger.error((err as Error).message, err);
+                setUploadProgress(0);
+                setProcessStarted(false);
               }
 
             }
@@ -144,6 +174,12 @@ export const UserProfileWebAvatarDialog: React.FC<UserProfileWebAvatarPropTypes>
               width={smBreak ? 290 : 390}
               height={smBreak ? 290 : 390}
               scale={scale}
+              style={
+                {
+                  background: APP_COLOR_PALETTE.PRIMARY[900],
+                  borderRadius: '20px'
+                }
+              }
               image={imageSource}
             />
           </Grid>
@@ -158,7 +194,7 @@ export const UserProfileWebAvatarDialog: React.FC<UserProfileWebAvatarPropTypes>
           >
             <Slider
               color='secondary'
-              disabled={!imageSource}
+              disabled={!imageSource || isUploadingdAvatar || processStarted}
               value={scale}
               step={0.1}
               min={1}
@@ -180,6 +216,7 @@ export const UserProfileWebAvatarDialog: React.FC<UserProfileWebAvatarPropTypes>
               variant='contained'
               component="label"
               fullWidth={smBreak}
+              disabled={isUploadingdAvatar || processStarted}
             >
               Choose Image
               <input
@@ -192,6 +229,10 @@ export const UserProfileWebAvatarDialog: React.FC<UserProfileWebAvatarPropTypes>
                   (event) => {
                     const files = event.target.files;
                     if (files) {
+                      setImageMeta({
+                        name: files[0].name,
+                        type: files[0].type
+                      });
                       setImageSource(URL.createObjectURL(files[0]))
                     }
                   }
@@ -201,6 +242,30 @@ export const UserProfileWebAvatarDialog: React.FC<UserProfileWebAvatarPropTypes>
           </Grid>
         </Grid>
 
+        <Grid
+          container
+          display={'flex'}
+          flexDirection={'column'}
+          flexWrap={'nowrap'}
+          alignItems={'center'}
+        >
+          <Grid
+            item
+            xs={12}
+            width={'100%'}
+            minHeight={'24px'}
+          >
+            {
+              isUploadingdAvatar
+              && (
+                <UploadProgressComponent
+                  value={uploadProgress}
+                  color="secondary"
+                />
+              )
+            }
+          </Grid>
+        </Grid>
       </CustomDialogContent>
     );
   };

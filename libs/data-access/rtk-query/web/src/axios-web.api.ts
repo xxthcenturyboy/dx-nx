@@ -5,7 +5,7 @@ import axios,
   AxiosResponse
 } from 'axios';
 import { toast } from 'react-toastify';
-import { Navigate } from 'react-router-dom';
+// import { Navigate } from 'react-router-dom';
 
 import { store } from '@dx/store-web';
 import { authActions } from '@dx/auth-web';
@@ -161,7 +161,8 @@ export const axiosBaseQuery = ({ baseUrl } = { baseUrl: '' }): BaseQueryFn<Axios
     method,
     data,
     params,
-    headers
+    headers,
+    uploadProgressHandler
   }: AxiosBaseQueryParamsType): Promise<RequestResponseType<TReturnData>> => {
     try {
       const axiosInstance = AxiosInstance({
@@ -176,6 +177,7 @@ export const axiosBaseQuery = ({ baseUrl } = { baseUrl: '' }): BaseQueryFn<Axios
         data,
         params,
         headers,
+        onUploadProgress: uploadProgressHandler
       });
       return {
         data: result.data,

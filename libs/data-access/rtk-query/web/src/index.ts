@@ -1,2 +1,5 @@
 export { apiWebMain } from './web-main.api';
-export { CustomResponseErrorType } from './axios-web.types';
+export {
+  CustomResponseErrorType,
+  UploadProgressHandlerType
+} from './axios-web.types';

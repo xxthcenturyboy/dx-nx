@@ -4,6 +4,7 @@ import {
 import { QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes';
 import {
   AxiosHeaders,
+  AxiosProgressEvent,
   AxiosRequestConfig,
   HeadersDefaults,
   HttpStatusCode,
@@ -15,12 +16,15 @@ export type AxiosInstanceHeadersParamType = {
   headers: AxiosHeaders | Partial<HeadersDefaults> | RawAxiosRequestHeaders;
 };
 
+export type UploadProgressHandlerType = (progress: AxiosProgressEvent) => void;
+
 export type AxiosBaseQueryParamsType = {
   url: string;
   method?: Method;
   data?: AxiosRequestConfig['data'];
   params?: AxiosRequestConfig['params'];
-  headers?: (RawAxiosRequestHeaders & AxiosHeaders) | AxiosHeaders
+  headers?: (RawAxiosRequestHeaders & AxiosHeaders) | AxiosHeaders;
+  uploadProgressHandler?: UploadProgressHandlerType;
 };
 
 export type BaseQueryFnType = BaseQueryFn<any, unknown, CustomResponseErrorType, {}>;

@@ -5,4 +5,8 @@ export {
   mediaReducer,
   mediaPersistConfig
 } from './media-web.reducer';
-export { MediaStateType } from './media-web.types';
+export {
+  MediaStateType,
+  MediaWebAvatarUploadParamsType
+} from './media-web.types';
+export { UploadProgressComponent } from './media-web-upload-progress.component';
