@@ -52,6 +52,7 @@
       "@dx/mail-api": ["libs/mail/api/src/index.ts"],
       "@dx/media-api": ["libs/media/api/src/index.ts"],
       "@dx/media-shared": ["libs/media/shared/src/index.ts"],
+      "@dx/media-web": ["libs/media/web/src/index.ts"],
       "@dx/notifications-api": ["libs/notifications/api/src/index.ts"],
       "@dx/notifications-shared": ["libs/notifications/shared/src/index.ts"],
       "@dx/notifications-web": ["libs/notifications/web/src/index.ts"],

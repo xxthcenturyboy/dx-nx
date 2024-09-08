@@ -11,7 +11,6 @@ import {
   useTheme,
 } from '@mui/material';
 
-
 import {
   RootState,
   useAppDispatch,
@@ -19,7 +18,6 @@ import {
 } from '@dx/store-web';
 import { logger } from '@dx/logger-web';
 import {
-  ConfirmationDialog,
   FADE_TIMEOUT_DUR,
   uiActions
 } from '@dx/ui-web';
@@ -28,17 +26,18 @@ import { EmailList } from '@dx/email-web';
 import { EmailType } from '@dx/email-shared';
 import { PhoneType } from '@dx/phone-shared';
 import { Phonelist } from '@dx/phone-web';
+import { MediaDataType } from '@dx/media-shared';
 import { userProfileActions } from './user-profile-web.reducer';
 import { selectProfileFormatted } from './user-profile-web.selectors';
 import { UserProfileChangePasswordDialog } from './user-profile-web-change-password.dialog';
 import { UserProfileAvatar } from './user-profile-web-avatar.component';
+import { UserProfileWebAvatarDialog } from './user-profile-web-avatar.dialog';
 
 export const UserProfile: React.FC = () => {
   const profile = useAppSelector((state: RootState) => selectProfileFormatted(state));
   const appMode = useAppSelector((state: RootState) => state.ui.theme.palette?.mode);
   const dispatch = useAppDispatch();
   const theme = useTheme();
-  const lgBreak = useMediaQuery(theme.breakpoints.down('lg'));
   const mdBreak = useMediaQuery(theme.breakpoints.down('md'));
   const smBreak = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -83,6 +82,10 @@ export const UserProfile: React.FC = () => {
 
   const removePhoneFromProfile = (phone: PhoneType) => {
     dispatch(userProfileActions.phoneRemovedFromProfile(phone.id));
+  };
+
+  const avatarDataCallback = (data: MediaDataType) => {
+    dispatch(userProfileActions.profileImageUpdate(data.id));
   };
 
   return (
@@ -153,7 +156,11 @@ export const UserProfile: React.FC = () => {
                   fontSize='6rem'
                   justifyContent="center"
                   handleChangeImage={
-                    () => console.log('click')
+                    () => dispatch(uiActions.appDialogSet(
+                      <UserProfileWebAvatarDialog
+                        avatarDataCallback={avatarDataCallback}
+                      />
+                    ))
                   }
                   size={
                     {

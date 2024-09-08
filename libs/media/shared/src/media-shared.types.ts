@@ -41,16 +41,16 @@ export type ImageResizeMediaType = {
 export type UploadMediaParams = {
   altText: string;
   mediaSubType: string;
-  filePath: string;
-  isPrimary?: boolean;
-  ownerId: string;
 };
 
 export type UploadMediaHandlerParams = {
+  filePath: string;
   fileSize: number;
+  isPrimary?: boolean;
   mimeType: string;
   newFilename: string;
   originalFilename: string;
+  ownerId: string;
   uploadId?: string;
 } & UploadMediaParams;
 

@@ -83,6 +83,9 @@ const userProfileSlice = createSlice({
       state.role = userProfileInitialState.role;
       state.username = userProfileInitialState.username;
     },
+    profileImageUpdate(state, action: PayloadAction<string | null>) {
+      state.profileImage = action.payload;
+    },
     emailAddedToProfile(state, action: PayloadAction<EmailType>) {
       const nextEmails = state.emails;
       nextEmails.push(action.payload);

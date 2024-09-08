@@ -25,6 +25,11 @@ import {
 } from '@dx/auth-web';
 import { dashboardReducer } from '@dx/dashboard-web';
 import { homeReducer } from '@dx/home';
+import {
+  mediaReducer,
+  mediaPersistConfig,
+  MediaStateType
+} from '@dx/media-web';
 import { notificationReducer } from '@dx/notifications-web';
 import {
   privilegeSetReducer,
@@ -58,6 +63,7 @@ const combinedPersistReducers = combineReducers({
   auth: persistReducer<AuthStateType, any>(authPersistConfig, authReducer) as typeof authReducer,
   dashboard: dashboardReducer,
   home: homeReducer,
+  media: persistReducer<MediaStateType, any>(mediaPersistConfig, mediaReducer) as typeof mediaReducer,
   notification: notificationReducer,
   privileges: persistReducer<PrivilegeSetStateType, any>(privilegeSetPersistConfig, privilegeSetReducer) as typeof privilegeSetReducer,
   stats: persistReducer<StatsStateType, any>(statsPersistConfig, statsReducer) as typeof statsReducer,

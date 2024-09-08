@@ -14,6 +14,7 @@ import { selectIsMobileWidth } from '../../store/ui-web.selector';
 
 type CustomDialogContentType = {
   justifyContent?: string;
+  maxWidth?: string;
   children?: React.ReactNode;
 };
 
@@ -28,17 +29,19 @@ export const CustomDialogContent: React.FC<CustomDialogContentType> = (props) =>
 
   return (
     <DialogContent
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: props.justifyContent || 'space-around',
-        alignItems: 'center',
-        minHeight: '360px',
-        minWidth: smBreak ? '' : '320px',
-        maxWidth: '400px',
-        overflow: 'visible',
-        height: height
-      }}
+      style={
+        {
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: props.justifyContent || 'space-around',
+          alignItems: 'center',
+          minHeight: '360px',
+          minWidth: smBreak ? '' : '320px',
+          maxWidth: props.maxWidth || '400px',
+          overflow: 'visible',
+          height: height
+        }
+      }
     >
       { props.children }
     </DialogContent>
