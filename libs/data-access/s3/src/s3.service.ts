@@ -207,7 +207,11 @@ export class S3Service {
     res?: Response
   ) {
     try {
-      const command = new GetObjectCommand({ Bucket: bucket, Key: key });
+      const command = new GetObjectCommand({
+        Bucket: bucket,
+        Key: key,
+        ResponseCacheControl: 'max-age=31536000'
+      });
       const file = await this.s3.send(command);
 
       if (
@@ -217,6 +221,9 @@ export class S3Service {
           file.Body.once('error', (err) => {
             this.logger.logError('Error downloading S3 File', err);
           });
+
+          res.set('etag', file.ETag);
+          res.set('cache-control', file.CacheControl);
 
           file.Body.pipe(res);
         }
