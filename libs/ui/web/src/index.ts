@@ -88,3 +88,5 @@ export {
 export {
   useFocus
 } from './hooks/use-focus.hook';
+
+export { ContentWrapper } from './components/content/content-wrapper.component';

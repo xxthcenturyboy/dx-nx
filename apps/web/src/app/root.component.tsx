@@ -170,12 +170,12 @@ export const Root: React.FC = () => {
 
   const getContentWrapperStyles = (): React.CSSProperties => {
     const baseStyle: React.CSSProperties = {
-      padding: theme.spacing(3),
+      // padding: theme.spacing(3),
+      // paddingBottom: theme.spacing(3),
       overflow: 'auto',
       position: 'relative',
       top: `${topPixel}px`,
-      // height: `calc(100% - ${topPixel}px)`, // Subtract width of header
-      flexGrow: 1,
+      height: `calc(100vh - ${topPixel}px)`, // Subtract width of header
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen

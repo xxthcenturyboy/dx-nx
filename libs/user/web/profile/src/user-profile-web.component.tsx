@@ -18,7 +18,7 @@ import {
 } from '@dx/store-web';
 import { logger } from '@dx/logger-web';
 import {
-  FADE_TIMEOUT_DUR,
+  ContentWrapper,
   uiActions
 } from '@dx/ui-web';
 import { setDocumentTitle } from '@dx/utils-misc-web';
@@ -38,8 +38,8 @@ export const UserProfile: React.FC = () => {
   const appMode = useAppSelector((state: RootState) => state.ui.theme.palette?.mode);
   const dispatch = useAppDispatch();
   const theme = useTheme();
-  const mdBreak = useMediaQuery(theme.breakpoints.down('md'));
-  const smBreak = useMediaQuery(theme.breakpoints.down('sm'));
+  const MD_BREAK = useMediaQuery(theme.breakpoints.down('md'));
+  const SM_BREAK = useMediaQuery(theme.breakpoints.down('sm'));
 
   React.useEffect(() => {
     setDocumentTitle('Profile');
@@ -89,155 +89,139 @@ export const UserProfile: React.FC = () => {
   };
 
   return (
-    <Fade
-      in={true}
-      timeout={FADE_TIMEOUT_DUR}
+    <ContentWrapper
+      headerTitle={`Profile: ${profile.username}`}
+      contentMarginTop={SM_BREAK ? '90px' : '64px'}
+      headerColumnRightJustification={SM_BREAK ? 'center' : 'flex-end'}
+      headerColumnsBreaks={
+        {
+          left: {
+            xs: 12,
+            sm: 6
+          },
+          right: {
+            xs: 12,
+            sm: 6
+          }
+        }
+      }
+      headerContent={(
+        <Button
+          variant="contained"
+          size="small"
+          onClick={handlePasswordReset}
+          fullWidth={SM_BREAK ? true : false}
+        >
+          Change Password
+        </Button>
+      )}
     >
-      <Box>
-        <Paper
-          elevation={2}
+      <Paper
+        elevation={2}
+      >
+        <Grid
+          container
+          justifyContent="flex-start"
+          padding={SM_BREAK ? '16px' : '24px'}
         >
           <Grid
             container
-            justifyContent="space-between"
-            alignItems="center"
-            padding="20px"
+            direction={MD_BREAK ? 'column' : 'row'}
+            justifyContent={'center'}
           >
             <Grid
               item
               xs={12}
-              sm={6}
-              md={6}
+              justifyContent={'center'}
+              alignItems={'center'}
+              width={'100%'}
+              paddingTop={'12px'}
             >
-              <Typography
-                variant="h5"
-                color="primary"
-              >
-                Profile: { profile.username }
-              </Typography>
+              <UserProfileAvatar
+                fontSize='6rem'
+                justifyContent="center"
+                handleChangeImage={
+                  () => dispatch(uiActions.appDialogSet(
+                    <UserProfileWebAvatarDialog
+                      avatarDataCallback={avatarDataCallback}
+                    />
+                  ))
+                }
+                size={
+                  {
+                    height: 142,
+                    width: 142
+                  }
+                }
+              />
+            </Grid>
+          </Grid>
+          <Divider
+            sx={
+              {
+                width: '100%',
+                margin: '24px 0 0 0'
+              }
+            }
+          />
+
+          <Grid
+            container
+            direction={MD_BREAK ? 'column' : 'row'}
+            justifyContent={'center'}
+            // width={'100%'}
+          >
+            <Grid
+              item
+              md={12}
+              lg={6}
+              padding="10px"
+              width={'100%'}
+            >
+              <EmailList
+                emails={profile.emails}
+                userId={profile.id}
+                emailDataCallback={addEmailToProfile}
+                emailDeleteCallback={removeEmailFromProfile}
+              />
             </Grid>
             <Grid
               item
-              display="flex"
-              xs={12}
-              sm={6}
-              md={6}
-              justifyContent={smBreak ? 'center' : 'flex-end'}
+              md={12}
+              lg={6}
+              padding="10px"
+              width={'100%'}
+            >
+              <Phonelist
+                phones={profile.phones}
+                userId={profile.id}
+                phoneDataCallback={addPhoneToProfile}
+                phoneDeleteCallback={removePhoneFromProfile}
+              />
+            </Grid>
+          </Grid>
+
+          <Grid
+            container
+            direction={MD_BREAK ? 'column' : 'row'}
+            justifyContent={'flex-start'}
+          >
+            <Grid
+              item
+              width={MD_BREAK ? '100%' : '50%'}
+              padding="10px"
             >
               <Button
-                variant="contained"
-                size="small"
-                onClick={handlePasswordReset}
-                fullWidth={smBreak ? true : false}
+                variant="outlined"
+                onClick={toggleDarkMode}
               >
-                Change Password
+                Toggle Dark Mode
               </Button>
             </Grid>
           </Grid>
-          <Divider />
-          <Grid
-            container
-            justifyContent="flex-start"
-            padding="20px"
-          >
-            <Grid
-              container
-              direction={mdBreak ? 'column' : 'row'}
-              justifyContent={'center'}
-            >
-              <Grid
-                item
-                xs={12}
-                justifyContent={'center'}
-                alignItems={'center'}
-                width={'100%'}
-              >
-                <UserProfileAvatar
-                  fontSize='6rem'
-                  justifyContent="center"
-                  handleChangeImage={
-                    () => dispatch(uiActions.appDialogSet(
-                      <UserProfileWebAvatarDialog
-                        avatarDataCallback={avatarDataCallback}
-                      />
-                    ))
-                  }
-                  size={
-                    {
-                      height: 142,
-                      width: 142
-                    }
-                  }
-                />
-              </Grid>
-            </Grid>
-            <Divider
-              sx={
-                {
-                  width: '100%',
-                  margin: '24px 0 0 0'
-                }
-              }
-            />
 
-            <Grid
-              container
-              direction={mdBreak ? 'column' : 'row'}
-              justifyContent={'center'}
-              // width={'100%'}
-            >
-              <Grid
-                item
-                md={12}
-                lg={6}
-                padding="10px"
-                width={'100%'}
-              >
-                <EmailList
-                  emails={profile.emails}
-                  userId={profile.id}
-                  emailDataCallback={addEmailToProfile}
-                  emailDeleteCallback={removeEmailFromProfile}
-                />
-              </Grid>
-              <Grid
-                item
-                md={12}
-                lg={6}
-                padding="10px"
-                width={'100%'}
-              >
-                <Phonelist
-                  phones={profile.phones}
-                  userId={profile.id}
-                  phoneDataCallback={addPhoneToProfile}
-                  phoneDeleteCallback={removePhoneFromProfile}
-                />
-              </Grid>
-            </Grid>
-
-            <Grid
-              container
-              direction={mdBreak ? 'column' : 'row'}
-              justifyContent={'flex-start'}
-            >
-              <Grid
-                item
-                width={mdBreak ? '100%' : '50%'}
-                padding="10px"
-              >
-                <Button
-                  variant="outlined"
-                  onClick={toggleDarkMode}
-                >
-                  Toggle Dark Mode
-                </Button>
-              </Grid>
-            </Grid>
-
-          </Grid>
-        </Paper>
-      </Box>
-    </Fade>
+        </Grid>
+      </Paper>
+    </ContentWrapper>
   );
 };
