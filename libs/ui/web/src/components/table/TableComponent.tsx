@@ -73,7 +73,7 @@ export const TableComponent: React.FC<TableComponentProps> = React.forwardRef((p
   } = props;
   // const theme = useTheme();
   const themeMode = useAppSelector((state: RootState) => selectCurrentThemeMode(state));
-  const tableId = tableName.toLowerCase().replace(' ', '-');
+  const tableId = tableName?.toLowerCase().replace(' ', '-') || '';
   // const smBreak = useMediaQuery(theme.breakpoints.down('sm'));
   const [expanded, setExpanded] = useState<string | false>(tableId);
   const [dummyData, setDummyData] = useState<TableDummyRow>([]);

@@ -18,3 +18,4 @@ export {
   selectUserPhones
 } from './user-profile-web.selectors';
 export { UserProfile } from './user-profile-web.component';
+export { UserProfileAvatar } from './user-profile-web-avatar.component';

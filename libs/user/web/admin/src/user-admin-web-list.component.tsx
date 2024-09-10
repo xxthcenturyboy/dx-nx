@@ -9,18 +9,18 @@ import {
   useNavigate
 } from 'react-router-dom';
 import {
-  Button,
-  Divider,
-  Fade,
   FormControl,
   Grid,
   Input,
   InputLabel,
-  Typography,
+  Tooltip,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
 import * as MuiColors from '@mui/material/colors';
+import {
+  Cached
+} from '@mui/icons-material';
 import { BeatLoader } from 'react-spinners';
 
 import {
@@ -29,9 +29,9 @@ import {
   useAppSelector
 } from '@dx/store-web';
 import {
+  ContentWrapper,
   DEBOUNCE,
   DialogAlert,
-  FADE_TIMEOUT_DUR,
   IconNames,
   TableComponent,
   TableHeaderItem,
@@ -72,7 +72,8 @@ export const UserAdminList: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
-  const smBreak = useMediaQuery(theme.breakpoints.down('sm'));
+  const MD_BREAK = useMediaQuery(theme.breakpoints.down('md'));
+  const SM_BREAK = useMediaQuery(theme.breakpoints.down('sm'));
   const location = useLocation();
   const [
     fetchUserList,
@@ -316,40 +317,57 @@ export const UserAdminList: React.FC = () => {
   };
 
   return (
-    <Fade
-      in={true}
-      timeout={FADE_TIMEOUT_DUR}
-    >
-      <Grid
-        container
-        spacing={0}
-        direction="column"
-        alignItems="center"
-        justifyContent="flex-start"
-      >
+    <ContentWrapper
+      headerTitle={'User List'}
+      contentMarginTop={SM_BREAK ? '124px' : '74px'}
+      headerColumnRightJustification={SM_BREAK ? 'center' : 'flex-end'}
+      headerColumnsBreaks={
+        {
+          left: {
+            xs: 12,
+            sm: 6
+          },
+          right: {
+            xs: 12,
+            sm: 6
+          }
+        }
+      }
+      headerContent={(
         <Grid
           container
-          direction={smBreak ? 'column-reverse' : 'row'}
-          justifyContent={smBreak ? 'center' : 'space-between'}
+          direction={SM_BREAK ? 'column-reverse' : 'row'}
+          justifyContent={SM_BREAK ? 'center' : 'flex-end'}
           alignItems="center"
-          style={{ marginBottom: '14px' }}
+          style={
+            {
+              marginRight: MD_BREAK ? '0px' : '24px'
+            }
+          }
         >
           {/* Filter */}
           <Grid
             item
-            style={{
-              minWidth: smBreak ? '' : '260px',
-              width: smBreak ? '100%' : '260px'
-            }}
+            display={'flex'}
+            alignItems={'center'}
+            justifyContent={'center'}
+            style={
+              {
+                minWidth: SM_BREAK ? '' : '360px',
+                width: SM_BREAK ? '100%' : '360px'
+              }
+            }
           >
             <FormControl
               margin="normal"
-              variant="standard"
-              style={{
-                marginBottom: '16px',
-                marginTop: 0,
-                width: '100%'
-              }}
+              variant="filled"
+              style={
+                {
+                  marginRight: SM_BREAK ? '24px' : '24px',
+                  marginTop: 0,
+                  width: '100%'
+                }
+              }
             >
               <InputLabel htmlFor="input-filter">Filter</InputLabel>
               <Input
@@ -363,13 +381,33 @@ export const UserAdminList: React.FC = () => {
                 fullWidth
               />
             </FormControl>
+            <span>
+              <Tooltip title="Refresh List">
+                <Cached
+                  onClick={
+                    (event: React.SyntheticEvent) => {
+                      event.stopPropagation();
+                      void refreshTableData();
+                    }
+                  }
+                  style={
+                    {
+                      cursor: 'pointer',
+                      width: '0.75em',
+                      margin: '0 10 0 0',
+                      color: 'inherit'
+                    }
+                  }
+                />
+              </Tooltip>
+            </span>
           </Grid>
           {/* New User */}
           {/* <Grid
             item
             style={{
-              width: smBreak ? '100%' : '',
-              marginBottom: smBreak ? '20px' : ''
+              width: SM_BREAK ? '100%' : '',
+              marginBottom: SM_BREAK ? '20px' : ''
             }}
           >
             <Button
@@ -377,20 +415,21 @@ export const UserAdminList: React.FC = () => {
               size="small"
               onClick={() => navigate(`${ROUTES.ADMIN.USER.DETAIL}`)}
               disabled={userGetXhr}
-              fullWidth={smBreak}
+              fullWidth={SM_BREAK}
             >
               Create User
             </Button>
           </Grid> */}
         </Grid>
-        <Divider
-          style={
-            {
-              width: '100%',
-              marginBottom: '20px'
-            }
-          }
-        />
+      )}
+    >
+      <Grid
+        container
+        spacing={0}
+        direction="column"
+        alignItems="center"
+        justifyContent="flex-start"
+      >
         {
           isInitialized && (
             <TableComponent
@@ -406,7 +445,7 @@ export const UserAdminList: React.FC = () => {
               // maxHeight="272px"
               offset={offset}
               orderBy={orderBy}
-              refreshData={refreshTableData}
+              // refreshData={refreshTableData}
               rows={rowData}
               sortDir={sortDir}
               tableName="Users"
@@ -428,6 +467,6 @@ export const UserAdminList: React.FC = () => {
           )
         }
       </Grid>
-    </Fade>
+    </ContentWrapper>
   );
 };

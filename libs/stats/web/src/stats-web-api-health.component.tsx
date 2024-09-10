@@ -4,8 +4,6 @@ import React,
 } from 'react';
 import {
   Chip,
-  Divider,
-  Fade,
   Grid,
   Paper,
   Table,
@@ -15,7 +13,6 @@ import {
   TableHead,
   TableRow,
   Tooltip,
-  Typography,
   useMediaQuery,
   useTheme
 } from '@mui/material';
@@ -36,7 +33,7 @@ import {
   useAppSelector
 } from '@dx/store-web';
 import {
-  FADE_TIMEOUT_DUR,
+  ContentWrapper,
   selectCurrentThemeMode,
   uiActions
 } from '@dx/ui-web';
@@ -52,7 +49,8 @@ export const StatsWebApiHealthComponent: React.FC = () => {
   const apiStats = useAppSelector((state: RootState) => state.stats.api);
   const themeMode = useAppSelector((state: RootState) => selectCurrentThemeMode(state));
   const theme = useTheme();
-  const mdBreak = useMediaQuery(theme.breakpoints.down('md'));
+  const MD_BREAK = useMediaQuery(theme.breakpoints.down('md'));
+  const SM_BREAK = useMediaQuery(theme.breakpoints.down('sm'));
   const dispatch = useAppDispatch();
   const [
     fetchApiStats,
@@ -95,9 +93,40 @@ export const StatsWebApiHealthComponent: React.FC = () => {
   }));
 
   return (
-    <Fade
-      in={true}
-      timeout={FADE_TIMEOUT_DUR}
+    <ContentWrapper
+      headerTitle={'API Health'}
+      contentMarginTop={'56px'}
+      headerColumnRightJustification={'flex-end'}
+      headerColumnsBreaks={
+        {
+          left: {
+            xs: 6
+          },
+          right: {
+            xs: 6
+          }
+        }
+      }
+      headerContent={(
+        <Tooltip title="Refresh Data">
+          <Cached
+            onClick={
+              (event: React.SyntheticEvent) => {
+                event.stopPropagation();
+                void fetchApiStats();
+              }
+            }
+            style={
+              {
+                cursor: 'pointer',
+                width: '0.75em',
+                margin: '0 10 0 0',
+                color: 'inherit'
+              }
+            }
+          />
+        </Tooltip>
+      )}
     >
       <Paper
         elevation={2}
@@ -107,338 +136,290 @@ export const StatsWebApiHealthComponent: React.FC = () => {
           direction="column"
           padding="20px"
         >
+          {/* HTTP */}
           <Grid
-            container
-            direction="row"
+            item
           >
-            <Grid
-              item
-              xs={6}
+            <Table
+              size="medium"
+              id="http"
             >
-              <Typography
-                variant="h5"
-                color="primary"
-              >
-                API Health
-              </Typography>
-            </Grid>
-            <Grid
-              item
-              xs={6}
-              display="flex"
-              justifyContent="flex-end"
-            >
-              <Tooltip title="Refresh Data">
-                <Cached
-                  onClick={
-                    (event: React.SyntheticEvent) => {
-                      event.stopPropagation();
-                      void fetchApiStats();
-                    }
-                  }
-                  style={
-                    {
-                      cursor: 'pointer',
-                      width: '0.75em',
-                      margin: '0 10 0 0',
-                      color: 'inherit'
-                    }
-                  }
-                />
-              </Tooltip>
-            </Grid>
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell
+                    colSpan={2}
+                  >
+                    HTTP
+                  </StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow>
+                  <StyledTableCell
+                    width={MD_BREAK ? '80%' : '20%'}
+                  >
+                    Status
+                  </StyledTableCell>
+                  <StyledTableCell
+                    align={MD_BREAK ? 'right' : 'left'}
+                  >
+                    <Chip
+                      label={apiStats?.http?.status || 'Down'}
+                      sx={
+                        {
+                          backgroundColor: apiStats?.http?.status === 'OK' ? green[500] : grey[600],
+                          color: grey[50]
+                        }
+                      }
+                    />
+                  </StyledTableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
           </Grid>
-          <Divider />
+
+          {/* MEMORY */}
           <Grid
-            container
-            direction="column"
-            padding="20px"
+            item
           >
-            {/* HTTP */}
-            <Grid
-              item
+            <Table
+              size="medium"
+              id="memory"
             >
-              <Table
-                size="medium"
-                id="http"
-              >
-                <TableHead>
-                  <TableRow>
-                    <StyledTableCell
-                      colSpan={2}
-                    >
-                      HTTP
-                    </StyledTableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <StyledTableCell
-                      width={mdBreak ? '80%' : '20%'}
-                    >
-                      Status
-                    </StyledTableCell>
-                    <StyledTableCell
-                      align={mdBreak ? 'right' : 'left'}
-                    >
-                      <Chip
-                        label={apiStats?.http?.status || 'Down'}
-                        sx={
-                          {
-                            backgroundColor: apiStats?.http?.status === 'OK' ? green[500] : grey[600],
-                            color: grey[50]
-                          }
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell
+                    colSpan={2}
+                  >
+                    MEMORY
+                  </StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow>
+                  <StyledTableCell
+                    width={MD_BREAK ? '80%' : '20%'}
+                  >
+                    Status
+                  </StyledTableCell>
+                  <StyledTableCell
+                    align={MD_BREAK ? 'right' : 'left'}
+                  >
+                    <Chip
+                      label={apiStats?.memory?.status || 'Down'}
+                      sx={
+                        {
+                          backgroundColor: apiStats?.memory?.status === 'OK' ? green[500] : grey[600],
+                          color: grey[50]
                         }
-                      />
-                    </StyledTableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </Grid>
-
-            {/* MEMORY */}
-            <Grid
-              item
-            >
-              <Table
-                size="medium"
-                id="memory"
-              >
-                <TableHead>
-                  <TableRow>
-                    <StyledTableCell
-                      colSpan={2}
-                    >
-                      MEMORY
-                    </StyledTableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <StyledTableCell
-                      width={mdBreak ? '80%' : '20%'}
-                    >
-                      Status
-                    </StyledTableCell>
-                    <StyledTableCell
-                      align={mdBreak ? 'right' : 'left'}
-                    >
-                      <Chip
-                        label={apiStats?.memory?.status || 'Down'}
-                        sx={
-                          {
-                            backgroundColor: apiStats?.memory?.status === 'OK' ? green[500] : grey[600],
-                            color: grey[50]
-                          }
-                        }
-                      />
-                    </StyledTableCell>
-                  </TableRow>
-                  <TableRow>
-                    <StyledTableCell>
-                      Array Buffers
-                    </StyledTableCell>
-                    <StyledTableCell
-                      align={mdBreak ? 'right' : 'left'}
-                    >
-                      { apiStats?.memory?.usage.arrayBuffers || 0 }
-                    </StyledTableCell>
-                  </TableRow>
-                  <TableRow>
-                    <StyledTableCell>
-                      External
-                    </StyledTableCell>
-                    <StyledTableCell
-                      align={mdBreak ? 'right' : 'left'}
-                    >
-                      { apiStats?.memory?.usage.external || 0 }
-                    </StyledTableCell>
-                  </TableRow>
-                  <TableRow>
-                    <StyledTableCell>
-                      Heap Total
-                    </StyledTableCell>
-                    <StyledTableCell
-                      align={mdBreak ? 'right' : 'left'}
-                    >
-                      { apiStats?.memory?.usage.heapTotal || 0 }
-                    </StyledTableCell>
-                  </TableRow>
-                  <TableRow>
-                    <StyledTableCell>
-                      Heap Used
-                    </StyledTableCell>
-                    <StyledTableCell
-                      align={mdBreak ? 'right' : 'left'}
-                    >
-                      { apiStats?.memory?.usage.heapUsed || 0 }
-                    </StyledTableCell>
-                  </TableRow>
-                  <TableRow>
-                    <StyledTableCell>
-                      RSS
-                    </StyledTableCell>
-                    <StyledTableCell
-                      align={mdBreak ? 'right' : 'left'}
-                    >
-                      { apiStats?.memory?.usage.rss || 0 }
-                    </StyledTableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </Grid>
-
-            {/* POSTGRES */}
-            <Grid
-              item
-            >
-              <Table
-                size="medium"
-                id="postgres"
-              >
-                <TableHead>
-                  <TableRow>
-                    <StyledTableCell
-                      colSpan={2}
-                    >
-                      POSTGRES
-                    </StyledTableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <StyledTableCell
-                      width={mdBreak ? '80%' : '20%'}
-                    >
-                      Status
-                    </StyledTableCell>
-                    <StyledTableCell
-                      align={mdBreak ? 'right' : 'left'}
-                    >
-                      <Chip
-                        label={apiStats?.postgres?.status || 'No Data'}
-                        sx={
-                          {
-                            backgroundColor: apiStats?.postgres?.status === 'OK' ? green[500] : grey[600],
-                            color: grey[50]
-                          }
-                        }
-                      />
-                    </StyledTableCell>
-                  </TableRow>
-                  <TableRow>
-                    <StyledTableCell>
-                      Version
-                    </StyledTableCell>
-                    <StyledTableCell
-                      align={mdBreak ? 'right' : 'left'}
-                    >
-                      { apiStats?.postgres?.version || '-' }
-                    </StyledTableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </Grid>
-
-            {/* REDIS */}
-            <Grid
-              item
-            >
-              <Table
-                size="medium"
-                id="redis"
-              >
-                <TableHead>
-                  <TableRow>
-                    <StyledTableCell
-                      colSpan={2}
-                    >
-                      REDIS
-                    </StyledTableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <StyledTableCell
-                      width={mdBreak ? '80%' : '20%'}
-                    >
-                      Status
-                    </StyledTableCell>
-                    <StyledTableCell
-                      align={mdBreak ? 'right' : 'left'}
-                    >
-                      <Chip
-                        label={apiStats?.redis?.status || 'Down'}
-                        sx={
-                          {
-                            backgroundColor: apiStats?.redis?.status === 'OK' ? green[500] : grey[600],
-                            color: grey[50]
-                          }
-                        }
-                      />
-                    </StyledTableCell>
-                  </TableRow>
-                  <TableRow>
-                    <StyledTableCell>
-                      Ping
-                    </StyledTableCell>
-                    <StyledTableCell
-                      align={mdBreak ? 'right' : 'left'}
-                    >
-                      <Chip
-                        label={apiStats?.redis?.profile.ping ? 'OK' : 'FAIL'}
-                        sx={
-                          {
-                            backgroundColor: apiStats?.redis?.profile.ping ? green[500] : red[600],
-                            color: grey[50]
-                          }
-                        }
-                      />
-                    </StyledTableCell>
-                  </TableRow>
-                  <TableRow>
-                    <StyledTableCell>
-                      Read
-                    </StyledTableCell>
-                    <StyledTableCell
-                      align={mdBreak ? 'right' : 'left'}
-                    >
-                       <Chip
-                        label={apiStats?.redis?.profile.read ? 'OK' : 'FAIL'}
-                        sx={
-                          {
-                            backgroundColor: apiStats?.redis?.profile.read ? green[500] : red[600],
-                            color: grey[50]
-                          }
-                        }
-                      />
-                    </StyledTableCell>
-                  </TableRow>
-                  <TableRow>
-                    <StyledTableCell>
-                      Write
-                    </StyledTableCell>
-                    <StyledTableCell
-                      align={mdBreak ? 'right' : 'left'}
-                    >
-                       <Chip
-                        label={apiStats?.redis?.profile.write ? 'OK' : 'FAIL'}
-                        sx={
-                          {
-                            backgroundColor: apiStats?.redis?.profile.write ? green[500] : red[600],
-                            color: grey[50]
-                          }
-                        }
-                      />
-                    </StyledTableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </Grid>
-
+                      }
+                    />
+                  </StyledTableCell>
+                </TableRow>
+                <TableRow>
+                  <StyledTableCell>
+                    Array Buffers
+                  </StyledTableCell>
+                  <StyledTableCell
+                    align={MD_BREAK ? 'right' : 'left'}
+                  >
+                    { apiStats?.memory?.usage.arrayBuffers || 0 }
+                  </StyledTableCell>
+                </TableRow>
+                <TableRow>
+                  <StyledTableCell>
+                    External
+                  </StyledTableCell>
+                  <StyledTableCell
+                    align={MD_BREAK ? 'right' : 'left'}
+                  >
+                    { apiStats?.memory?.usage.external || 0 }
+                  </StyledTableCell>
+                </TableRow>
+                <TableRow>
+                  <StyledTableCell>
+                    Heap Total
+                  </StyledTableCell>
+                  <StyledTableCell
+                    align={MD_BREAK ? 'right' : 'left'}
+                  >
+                    { apiStats?.memory?.usage.heapTotal || 0 }
+                  </StyledTableCell>
+                </TableRow>
+                <TableRow>
+                  <StyledTableCell>
+                    Heap Used
+                  </StyledTableCell>
+                  <StyledTableCell
+                    align={MD_BREAK ? 'right' : 'left'}
+                  >
+                    { apiStats?.memory?.usage.heapUsed || 0 }
+                  </StyledTableCell>
+                </TableRow>
+                <TableRow>
+                  <StyledTableCell>
+                    RSS
+                  </StyledTableCell>
+                  <StyledTableCell
+                    align={MD_BREAK ? 'right' : 'left'}
+                  >
+                    { apiStats?.memory?.usage.rss || 0 }
+                  </StyledTableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
           </Grid>
+
+          {/* POSTGRES */}
+          <Grid
+            item
+          >
+            <Table
+              size="medium"
+              id="postgres"
+            >
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell
+                    colSpan={2}
+                  >
+                    POSTGRES
+                  </StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow>
+                  <StyledTableCell
+                    width={MD_BREAK ? '80%' : '20%'}
+                  >
+                    Status
+                  </StyledTableCell>
+                  <StyledTableCell
+                    align={MD_BREAK ? 'right' : 'left'}
+                  >
+                    <Chip
+                      label={apiStats?.postgres?.status || 'No Data'}
+                      sx={
+                        {
+                          backgroundColor: apiStats?.postgres?.status === 'OK' ? green[500] : grey[600],
+                          color: grey[50]
+                        }
+                      }
+                    />
+                  </StyledTableCell>
+                </TableRow>
+                <TableRow>
+                  <StyledTableCell>
+                    Version
+                  </StyledTableCell>
+                  <StyledTableCell
+                    align={MD_BREAK ? 'right' : 'left'}
+                  >
+                    { apiStats?.postgres?.version || '-' }
+                  </StyledTableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </Grid>
+
+          {/* REDIS */}
+          <Grid
+            item
+          >
+            <Table
+              size="medium"
+              id="redis"
+            >
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell
+                    colSpan={2}
+                  >
+                    REDIS
+                  </StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow>
+                  <StyledTableCell
+                    width={MD_BREAK ? '80%' : '20%'}
+                  >
+                    Status
+                  </StyledTableCell>
+                  <StyledTableCell
+                    align={MD_BREAK ? 'right' : 'left'}
+                  >
+                    <Chip
+                      label={apiStats?.redis?.status || 'Down'}
+                      sx={
+                        {
+                          backgroundColor: apiStats?.redis?.status === 'OK' ? green[500] : grey[600],
+                          color: grey[50]
+                        }
+                      }
+                    />
+                  </StyledTableCell>
+                </TableRow>
+                <TableRow>
+                  <StyledTableCell>
+                    Ping
+                  </StyledTableCell>
+                  <StyledTableCell
+                    align={MD_BREAK ? 'right' : 'left'}
+                  >
+                    <Chip
+                      label={apiStats?.redis?.profile.ping ? 'OK' : 'FAIL'}
+                      sx={
+                        {
+                          backgroundColor: apiStats?.redis?.profile.ping ? green[500] : red[600],
+                          color: grey[50]
+                        }
+                      }
+                    />
+                  </StyledTableCell>
+                </TableRow>
+                <TableRow>
+                  <StyledTableCell>
+                    Read
+                  </StyledTableCell>
+                  <StyledTableCell
+                    align={MD_BREAK ? 'right' : 'left'}
+                  >
+                      <Chip
+                      label={apiStats?.redis?.profile.read ? 'OK' : 'FAIL'}
+                      sx={
+                        {
+                          backgroundColor: apiStats?.redis?.profile.read ? green[500] : red[600],
+                          color: grey[50]
+                        }
+                      }
+                    />
+                  </StyledTableCell>
+                </TableRow>
+                <TableRow>
+                  <StyledTableCell>
+                    Write
+                  </StyledTableCell>
+                  <StyledTableCell
+                    align={MD_BREAK ? 'right' : 'left'}
+                  >
+                      <Chip
+                      label={apiStats?.redis?.profile.write ? 'OK' : 'FAIL'}
+                      sx={
+                        {
+                          backgroundColor: apiStats?.redis?.profile.write ? green[500] : red[600],
+                          color: grey[50]
+                        }
+                      }
+                    />
+                  </StyledTableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </Grid>
+
         </Grid>
       </Paper>
-    </Fade>
+    </ContentWrapper>
   );
 };

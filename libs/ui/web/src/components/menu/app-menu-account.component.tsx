@@ -3,7 +3,6 @@ import Typography from '@mui/material/Typography';
 import {
   Grid
 } from '@mui/material';
-import AccessibilityIcon from '@mui/icons-material/Accessibility';
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -16,6 +15,7 @@ import {
 } from '@dx/ui-web';
 import { LogoutButton } from '@dx/auth-web';
 import { WebConfigService } from '@dx/config-web';
+import { UserProfileAvatar } from '@dx/user-profile-web';
 import {
   StyledAccountActionArea,
   StyledAccountList,
@@ -96,7 +96,14 @@ export const AccountMenu: React.FC<AccountMenuPropsType> = (props) => {
               item
               mr={2}
             >
-              <AccessibilityIcon />
+              <UserProfileAvatar
+                size={
+                  {
+                    height: 24,
+                    width: 24
+                  }
+                }
+              />
             </Grid>
             <Grid item>
             <Typography

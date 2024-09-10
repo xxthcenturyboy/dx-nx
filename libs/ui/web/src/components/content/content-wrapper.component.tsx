@@ -102,9 +102,9 @@ import { FADE_TIMEOUT_DUR } from '../../ui.consts';
         <Grid
           container
           justifyContent="space-between"
-          alignItems={MD_BREAK ? 'flex-start' : 'center'}
+          alignItems={'center'}
           padding="14px 16px 14px"
-          direction={SM_BREAK ? 'column' : 'row'}
+          direction={'row'}
         >
           <Grid
             item
@@ -112,6 +112,7 @@ import { FADE_TIMEOUT_DUR } from '../../ui.consts';
             sm={headerColumnsBreaks?.left?.sm || 6}
             md={headerColumnsBreaks?.left?.md || 6}
             width="100%"
+            mb={SM_BREAK && (headerColumnsBreaks?.left?.xs || 12) === 12 ? '12px' : undefined}
           >
             <Typography
               variant="h5"
@@ -178,7 +179,7 @@ import { FADE_TIMEOUT_DUR } from '../../ui.consts';
         wrap="nowrap"
         sx={
           {
-            height: '100%'
+            height: MD_BREAK ? undefined : '100%'
           }
         }
       >

@@ -9,21 +9,17 @@ import {
   useParams
 } from 'react-router-dom';
 import {
-  Box,
   Checkbox,
   Chip,
   Divider,
-  Fade,
   FormControlLabel,
   FormGroup,
   Grid,
-  IconButton,
   Paper,
   Typography,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { ChevronLeft } from '@mui/icons-material';
 import { lightBlue, grey } from '@mui/material/colors';
 
 import {
@@ -32,8 +28,8 @@ import {
   useAppSelector
 } from '@dx/store-web';
 import {
+  ContentWrapper,
   DialogAlert,
-  FADE_TIMEOUT_DUR,
   uiActions
 } from '@dx/ui-web';
 import { setDocumentTitle } from '@dx/utils-misc-web';
@@ -69,8 +65,8 @@ export const UserAdminEdit: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const theme = useTheme();
-  const mdBreak = useMediaQuery(theme.breakpoints.down('md'));
-  const smBreak = useMediaQuery(theme.breakpoints.down('sm'));
+  const MD_BREAK = useMediaQuery(theme.breakpoints.down('md'));
+  const SM_BREAK = useMediaQuery(theme.breakpoints.down('sm'));
   const [
     fetchPrivilegeSets,
     {
@@ -254,71 +250,6 @@ export const UserAdminEdit: React.FC = () => {
     }
   };
 
-  const renderHeader = (): JSX.Element => {
-    return (
-      <Grid
-        container
-        justifyContent="space-between"
-        alignItems={mdBreak ? 'flex-start' : 'center'}
-        padding="20px 10px"
-        direction={smBreak ? 'column' : 'row'}
-      >
-        <Grid
-          item
-          xs={12}
-          sm={6}
-          md={6}
-          sx={
-            {
-              overflow: 'hidden',
-              whiteSpace: 'break-spaces'
-            }
-          }
-        >
-          <Typography
-            variant="h5"
-            color="primary"
-          >
-            <IconButton
-              color="primary"
-              component="span"
-              onClick={() => navigate(ROUTES.ADMIN.USER.LIST)}
-            >
-              <ChevronLeft />
-            </IconButton>
-            { title }
-          </Typography>
-        </Grid>
-        <Grid
-          item
-          display="flex"
-          xs={12}
-          sm={6}
-          md={6}
-          justifyContent={smBreak ? 'center' : 'flex-end'}
-        >
-          {
-            user?.optInBeta && (
-              <Chip
-                label="Opt-in Beta"
-                sx={
-                  {
-                    backgroundColor: lightBlue[700],
-                    color: grey[50],
-                    margin: smBreak ? '0 0 0 12px' : '0 12px 0 0'
-                  }
-                }
-              />
-            )
-          }
-          {
-            user?.restrictions && user.restrictions.length > 0 && (<Chip label="RESTRICTED" color="error" />)
-          }
-        </Grid>
-      </Grid>
-    );
-  };
-
   const renderDivider = (m?: string): JSX.Element => {
     return (<Divider sx={{ margin: m ? m : '10px 0', width: '100%' }} />);
   };
@@ -357,8 +288,8 @@ export const UserAdminEdit: React.FC = () => {
     return (
       <Grid
         container
-        width={mdBreak ? '100%' : '50%'}
-        padding={mdBreak ? '10px' : '10px 24px'}
+        width={MD_BREAK ? '100%' : '50%'}
+        padding={MD_BREAK ? '10px' : '10px 24px'}
         direction="column"
       >
         <Grid container  margin="0 0 20px">
@@ -464,8 +395,8 @@ export const UserAdminEdit: React.FC = () => {
     return (
       <Grid
         container
-        width={mdBreak ? '100%' : '50%'}
-        padding={mdBreak ? '10px' : '10px 24px'}
+        width={MD_BREAK ? '100%' : '50%'}
+        padding={MD_BREAK ? '10px' : '10px 24px'}
         direction="column"
       >
         <Grid container margin="0 0 20px" direction="column">
@@ -523,27 +454,58 @@ export const UserAdminEdit: React.FC = () => {
   };
 
   return (
-    <Fade
-      in={true}
-      timeout={FADE_TIMEOUT_DUR}
+    <ContentWrapper
+      headerTitle={title}
+      contentMarginTop={SM_BREAK ? '108px' : '64px'}
+      headerColumnRightJustification={SM_BREAK ? 'flex-start' : 'flex-end'}
+      headerColumnsBreaks={
+        {
+          left: {
+            xs: 12,
+            sm: 6
+          },
+          right: {
+            xs: 12,
+            sm: 6
+          }
+        }
+      }
+      navigation={() => navigate(ROUTES.ADMIN.USER.LIST)}
+      headerContent={(
+        <>
+          {
+            user?.optInBeta && (
+              <Chip
+                label="Opt-in Beta"
+                sx={
+                  {
+                    backgroundColor: lightBlue[700],
+                    color: grey[50],
+                    margin: SM_BREAK ? '0 0 0 12px' : '0 12px 0 0'
+                  }
+                }
+              />
+            )
+          }
+          {
+            user?.restrictions && user.restrictions.length > 0 && (<Chip label="RESTRICTED" color="error" />)
+          }
+        </>
+      )}
     >
-      <Box>
-        <Paper
-          elevation={2}
+      <Paper
+        elevation={2}
+      >
+        <Grid
+          container
+          justifyContent="flex-start"
+          padding="20px"
+          direction={MD_BREAK ? 'column' : 'row'}
         >
-          { renderHeader() }
-          <Divider />
-          <Grid
-            container
-            justifyContent="flex-start"
-            padding="20px"
-            direction={mdBreak ? 'column' : 'row'}
-          >
-            { renderColumnLeft() }
-            { renderColumnRight() }
-          </Grid>
-        </Paper>
-      </Box>
-    </Fade>
+          { renderColumnLeft() }
+          { renderColumnRight() }
+        </Grid>
+      </Paper>
+    </ContentWrapper>
   );
 };

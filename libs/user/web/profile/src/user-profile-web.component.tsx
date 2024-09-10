@@ -91,7 +91,7 @@ export const UserProfile: React.FC = () => {
   return (
     <ContentWrapper
       headerTitle={`Profile: ${profile.username}`}
-      contentMarginTop={SM_BREAK ? '90px' : '64px'}
+      contentMarginTop={SM_BREAK ? '98px' : '56px'}
       headerColumnRightJustification={SM_BREAK ? 'center' : 'flex-end'}
       headerColumnsBreaks={
         {

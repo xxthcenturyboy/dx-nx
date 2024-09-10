@@ -1,12 +1,11 @@
 import * as React from 'react';
 import {
-  Fade,
   Grid,
   Typography
 } from '@mui/material';
 
 import {
-  FADE_TIMEOUT_DUR,
+  ContentWrapper,
   WelcomeRobotLottie
 } from '@dx/ui-web';
 import { setDocumentTitle } from '@dx/utils-misc-web';
@@ -17,7 +16,18 @@ export const Dashboard: React.FC = () => {
   }, []);
 
   return (
-    <Fade in={true} timeout={FADE_TIMEOUT_DUR}>
+    <ContentWrapper
+      headerTitle={'Dashboard'}
+      contentMarginTop={'64px'}
+      headerColumnRightJustification={'flex-end'}
+      headerColumnsBreaks={
+        {
+          left: {
+            xs: 11
+          }
+        }
+      }
+    >
       <Grid
         container
         spacing={0}
@@ -37,6 +47,6 @@ export const Dashboard: React.FC = () => {
           Have a look around.
         </Typography>
       </Grid>
-    </Fade>
+    </ContentWrapper>
   );
 };

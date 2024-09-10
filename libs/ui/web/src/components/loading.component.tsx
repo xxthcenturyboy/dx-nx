@@ -6,6 +6,7 @@ import {
 } from '@mui/material';
 
 import { themeColors } from '../mui-overrides/styles';
+import { StyledContentWrapper } from './content/content-wrapper.styled';
 
 type LoadingProps = {
   error?: Error;
@@ -23,54 +24,60 @@ export const UiLoadingComponent = (props: LoadingProps): JSX.Element | null => {
 
   if (props.error) {
     return (
-      <Grid
-        container
-        spacing={0}
-        direction="column"
-        alignItems="center"
-        justifyContent="center"
-        style={{ minHeight: '90vh' }}
-      >
-        <Button onClick={handleRetry}>retry</Button>
-        <Typography>{props.error.message}</Typography>
-      </Grid>
+      <StyledContentWrapper>
+        <Grid
+          container
+          spacing={0}
+          direction="column"
+          alignItems="center"
+          justifyContent="center"
+          style={{ minHeight: '90vh' }}
+        >
+          <Button onClick={handleRetry}>retry</Button>
+          <Typography>{props.error.message}</Typography>
+        </Grid>
+      </StyledContentWrapper>
     );
   }
 
   if (props.timedOut) {
     return (
-      <Grid
-        container
-        spacing={0}
-        direction="column"
-        alignItems="center"
-        justifyContent="center"
-        style={{ minHeight: '90vh' }}
-      >
-        <Button onClick={handleRetry}>retry</Button>
-        <Typography>timed out</Typography>
-      </Grid>
+      <StyledContentWrapper>
+        <Grid
+          container
+          spacing={0}
+          direction="column"
+          alignItems="center"
+          justifyContent="center"
+          style={{ minHeight: '90vh' }}
+        >
+          <Button onClick={handleRetry}>retry</Button>
+          <Typography>timed out</Typography>
+        </Grid>
+      </StyledContentWrapper>
     );
   }
 
   if (props.pastDelay) {
     return (
-      <Grid
-        container
-        spacing={0}
-        direction="column"
-        alignItems="center"
-        justifyContent="center"
-        style={{
-          minHeight: '90vh',
-        }}
-      >
-        <BeatLoader
-          color={themeColors.secondary}
-          size={30}
-          margin="2px"
-        />
-      </Grid>
+      <StyledContentWrapper>
+        <Grid
+          container
+          spacing={0}
+          direction="column"
+          alignItems="center"
+          justifyContent="center"
+          style={{
+            minHeight: '90vh',
+          }}
+        >
+          <BeatLoader
+            color={themeColors.secondary}
+            size={30}
+            margin="2px"
+          />
+        </Grid>
+      </StyledContentWrapper>
     );
   }
 
