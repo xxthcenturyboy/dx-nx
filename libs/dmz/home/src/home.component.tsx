@@ -41,14 +41,22 @@ export const HomeComponent: React.FC = () => {
   };
 
   return (
-    <Fade in={true} timeout={FADE_TIMEOUT_DUR}>
+    <Fade
+      in={true}
+      timeout={FADE_TIMEOUT_DUR}
+    >
       <Grid
         container
         spacing={0}
         direction="column"
         alignItems="center"
         justifyContent="center"
-        style={{ minHeight: '80vh' }}
+        sx={
+          {
+            padding: '24px',
+            minHeight: '80vh'
+          }
+        }
         wrap="nowrap"
       >
         <WelcomeRobotLottie />

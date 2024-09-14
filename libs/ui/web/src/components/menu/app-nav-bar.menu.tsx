@@ -1,12 +1,4 @@
 import React from 'react';
-// import AppBar from '@mui/material/AppBar';
-// import Box from '@mui/material/Box';
-// import Toolbar from '@mui/material/Toolbar';
-// import Typography from '@mui/material/Typography';
-// import IconButton from '@mui/material/IconButton';
-// import AccountCircle from '@mui/icons-material/AccountCircle';
-// import NotificationsIcon from '@mui/icons-material/Notifications';
-// import Badge from '@mui/material/Badge';
 import {
   AppBar,
   Badge,
@@ -14,6 +6,7 @@ import {
   Button,
   Icon,
   IconButton,
+  Slide,
   Toolbar,
   Typography
 } from '@mui/material';
@@ -147,26 +140,35 @@ export const AppNavBar: React.FC = () => {
         }
       >
         <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={
-              { mr: 1 }
-            }
-            onClick={toggleMenuState}
-          >
-            {
-              menuOpen
-                ? (
-                  <MenuOpen className="toolbar-icons" />
-                )
-                : (
-                  <Menu className="toolbar-icons" />
-                )
-            }
-          </IconButton>
+          {
+            <Slide
+              direction="right"
+              in={isAuthenticated}
+              mountOnEnter
+              unmountOnExit
+            >
+              <IconButton
+                size="large"
+                edge="start"
+                color="inherit"
+                aria-label="menu"
+                sx={
+                  { mr: 1 }
+                }
+                onClick={toggleMenuState}
+              >
+                {
+                  menuOpen
+                    ? (
+                      <MenuOpen className="toolbar-icons" />
+                    )
+                    : (
+                      <Menu className="toolbar-icons" />
+                    )
+                }
+              </IconButton>
+            </Slide>
+          }
           <Icon
             color="inherit"
             aria-label="menu"
@@ -176,6 +178,14 @@ export const AppNavBar: React.FC = () => {
                 mr: 1,
                 height: '1.75em',
                 width: '1.75em',
+                cursor: !isAuthenticated ? 'pointer' : 'initial'
+              }
+            }
+            onClick={
+              () => {
+                if (!isAuthenticated) {
+                  navigate(ROUTES.MAIN);
+                }
               }
             }
           >
@@ -199,9 +209,13 @@ export const AppNavBar: React.FC = () => {
               <div style={{ flexGrow: 1 }}><span>&nbsp;</span></div>
             )
           }
-          {
-            isAuthenticated && (
-              <>
+            <Slide
+              direction="left"
+              in={isAuthenticated}
+              mountOnEnter
+              unmountOnExit
+            >
+              <span>
                 <IconButton
                   className="toolbar-icons"
                   size="large"
@@ -227,23 +241,20 @@ export const AppNavBar: React.FC = () => {
                 >
                   <AccountCircle />
                 </IconButton>
-              </>
-            )
-          }
+              </span>
+            </Slide>
           {
-            (
-              !isAuthenticated &&
-              !mobileBreak
-              && !hideLoginForRoutes()
-            ) && (
-              <>
-                <Button
-                  variant="text"
-                  onClick={goToLogin}
-                >
-                  Login
-                </Button>
-              </>
+            !isAuthenticated
+            && !mobileBreak
+            && !hideLoginForRoutes()
+            && (
+              <Button
+                variant="contained"
+                color='primary'
+                onClick={goToLogin}
+              >
+                Login
+              </Button>
             )
           }
         </Toolbar>
