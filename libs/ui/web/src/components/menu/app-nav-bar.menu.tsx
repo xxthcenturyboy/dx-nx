@@ -1,13 +1,28 @@
 import React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import Badge from '@mui/material/Badge';
-import { Button } from '@mui/material';
+// import AppBar from '@mui/material/AppBar';
+// import Box from '@mui/material/Box';
+// import Toolbar from '@mui/material/Toolbar';
+// import Typography from '@mui/material/Typography';
+// import IconButton from '@mui/material/IconButton';
+// import AccountCircle from '@mui/icons-material/AccountCircle';
+// import NotificationsIcon from '@mui/icons-material/Notifications';
+// import Badge from '@mui/material/Badge';
+import {
+  AppBar,
+  Badge,
+  Box,
+  Button,
+  Icon,
+  IconButton,
+  Toolbar,
+  Typography
+} from '@mui/material';
+import {
+  AccountCircle,
+  Menu,
+  MenuOpen,
+  Notifications
+} from '@mui/icons-material';
 import {
   useLocation,
   useNavigate
@@ -30,6 +45,7 @@ import {
   selectNotificationCount,
   // useTestSocketsMutation
 } from '@dx/notifications-web';
+import { APP_COLOR_PALETTE } from '../../mui-overrides/styles';
 import { AccountMenu } from './app-menu-account.component';
 import { uiActions } from '../../store/ui-web.reducer';
 import { MEDIA_BREAK } from '../../ui.consts';
@@ -99,27 +115,36 @@ export const AppNavBar: React.FC = () => {
   };
 
   const hideLoginForRoutes = (): boolean => {
-    return pathname.includes(ROUTES.AUTH.MAIN);
+    return pathname.includes(ROUTES.AUTH.LOGIN);
   };
 
   return (
     <Box>
       <AppBar
-        color={themeMode === 'dark' ? 'default' : 'primary'}
+        color={
+          themeMode === 'dark'
+            ? 'default'
+            : 'primary'
+        }
         position="static"
         elevation={2}
         enableColorOnDark
-        style={{
-          zIndex: 1200
-        }}
-        sx={{
-          width: '100%',
-          position: 'fixed',
-          '& .MuiAppBar': {
-            root:  {
-            }
-          },
-        }}
+        // style={
+        //   {
+        //     zIndex: 1200
+        //   }
+        // }
+        sx={
+          {
+            width: '100%',
+            position: 'fixed',
+            '& .MuiAppBar': {
+              root:  {
+              }
+            },
+            zIndex: 1200
+          }
+        }
       >
         <Toolbar>
           <IconButton
@@ -127,11 +152,35 @@ export const AppNavBar: React.FC = () => {
             edge="start"
             color="inherit"
             aria-label="menu"
-            sx={{ mr: 2 }}
+            sx={
+              { mr: 1 }
+            }
             onClick={toggleMenuState}
           >
-            <Logo src={logoUrl} />
+            {
+              menuOpen
+                ? (
+                  <MenuOpen className="toolbar-icons" />
+                )
+                : (
+                  <Menu className="toolbar-icons" />
+                )
+            }
           </IconButton>
+          <Icon
+            color="inherit"
+            aria-label="menu"
+            sx={
+              {
+                display: 'flex',
+                mr: 1,
+                height: '1.75em',
+                width: '1.75em',
+              }
+            }
+          >
+            <Logo src={logoUrl} />
+          </Icon>
           {
             !mobileBreak ? (
               <Typography
@@ -153,16 +202,6 @@ export const AppNavBar: React.FC = () => {
           {
             isAuthenticated && (
               <>
-                {/* <IconButton
-                  className="toolbar-icons"
-                  size="large"
-                  aria-label="show notifications"
-                  aria-controls="notification-menu-appbar"
-                  aria-haspopup="true"
-                  onClick={() => requestTestNotifications({ userId })}
-                >
-                  <NotificationsIcon />
-                </IconButton> */}
                 <IconButton
                   className="toolbar-icons"
                   size="large"
@@ -175,7 +214,7 @@ export const AppNavBar: React.FC = () => {
                     badgeContent={notificationCount}
                     color="info"
                   >
-                    <NotificationsIcon />
+                    <Notifications />
                   </Badge>
                 </IconButton>
                 <IconButton
