@@ -11,6 +11,7 @@ import {
 import {
   FormControl,
   Grid,
+  FilledInput,
   Input,
   InputLabel,
   Tooltip,
@@ -360,7 +361,6 @@ export const UserAdminList: React.FC = () => {
           >
             <FormControl
               margin="normal"
-              variant="filled"
               style={
                 {
                   marginRight: SM_BREAK ? '24px' : '24px',
@@ -369,8 +369,7 @@ export const UserAdminList: React.FC = () => {
                 }
               }
             >
-              <InputLabel htmlFor="input-filter">Filter</InputLabel>
-              <Input
+              <FilledInput
                 id="input-filter"
                 name="input-filter"
                 ref={searchInputRef}
@@ -379,6 +378,9 @@ export const UserAdminList: React.FC = () => {
                 autoCorrect="off"
                 value={filterValue}
                 fullWidth
+                placeholder={'Filter'}
+                hiddenLabel
+                size="small"
               />
             </FormControl>
             <span>

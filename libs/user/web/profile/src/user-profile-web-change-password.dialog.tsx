@@ -10,6 +10,7 @@ import {
   FormControl,
   Input,
   InputLabel,
+  OutlinedInput,
   Typography
 } from '@mui/material';
 import {
@@ -205,7 +206,6 @@ export const UserProfileChangePasswordDialog: React.FC<UserProfileChangePassword
           <FormControl
             disabled={isLoadingCheckStrength}
             margin="normal"
-            variant="standard"
             style={
               {
                 minWidth: 300
@@ -213,19 +213,20 @@ export const UserProfileChangePasswordDialog: React.FC<UserProfileChangePassword
             }
           >
             <InputLabel
-              htmlFor="password"
+              htmlFor="input-password"
             >
               Password
             </InputLabel>
-            <Input
-              id="password"
-              name="password"
+            <OutlinedInput
+              id="input-password"
+              name="input-password"
               onChange={handleChangePassword}
               type={showPassword ? 'text' : 'password'}
               autoCorrect="off"
               autoComplete="off"
               value={password || ''}
               fullWidth
+              label={'Password'}
               endAdornment={showPassword ?
                 <Visibility
                   sx={{
@@ -248,7 +249,6 @@ export const UserProfileChangePasswordDialog: React.FC<UserProfileChangePassword
           <FormControl
             disabled={isLoadingCheckStrength}
             margin="normal"
-            variant="standard"
             style={
               {
                 minWidth: 300
@@ -256,19 +256,20 @@ export const UserProfileChangePasswordDialog: React.FC<UserProfileChangePassword
             }
           >
             <InputLabel
-              htmlFor="label-select"
+              htmlFor="input-password-confirm"
             >
               Confirm Password
             </InputLabel>
-            <Input
-              id="password-confirm"
-              name="password-confirm"
+            <OutlinedInput
+              id="input-password-confirm"
+              name="input-password-confirm"
               onChange={handleChangePasswordConfirm}
               type={showPassword ? 'text' : 'password'}
               autoCorrect="off"
               autoComplete="off"
               value={passwordConfirm || ''}
               fullWidth
+              label={'Confirm Password'}
               endAdornment={showPassword ?
                 <Visibility
                   sx={{

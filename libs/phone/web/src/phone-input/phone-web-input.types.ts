@@ -9,6 +9,7 @@ export type PhoneInputProps = {
   required: boolean;
   value: string;
   disabled?: boolean;
+  label?: string;
   buttonStyle?: React.CSSProperties;
   containerStyle?: React.CSSProperties;
   dropdownStyle?: React.CSSProperties;

@@ -6,8 +6,8 @@ import {
   Fade,
   FormControl,
   Grid,
-  Input,
   InputLabel,
+  OutlinedInput,
   Typography
 } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -277,27 +277,19 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> = Reac
             <FormControl
               disabled={phoneSubmitButtonDisabled()}
               margin="normal"
-              variant="standard"
-              style={{ minWidth: 300 }}
+              variant="outlined"
+              style={
+                { minWidth: 300 }
+              }
             >
-              <InputLabel
-                htmlFor="new-user-phone"
-                style={{
-                  position: 'absolute',
-                  top: -33,
-                  left: 5,
-                  fontSize: '14px'
-                }}
-              >
-                Phone
-              </InputLabel>
               <PhoneNumberInput
                 defaultCountry="us"
                 defaultValue=""
-                inputId="user-phone"
+                inputId="input-user-phone"
                 preferredCountries={['us']}
                 required={true}
                 disabled={false}
+                label='Phone'
                 onChange={
                   (value: string, data: CountryData) => {
                     setPhone(value);
@@ -354,23 +346,26 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> = Reac
             <FormControl
               disabled={isLoadingSendOtpEmail}
               margin="normal"
-              variant="standard"
+              variant="outlined"
               style={{ minWidth: 300 }}
             >
               <InputLabel
-                htmlFor="email"
+                htmlFor="input-email"
               >
                 Email
               </InputLabel>
-              <Input
-                id="email"
-                name="email"
+              <OutlinedInput
+                id="input-email"
+                name="input-email"
                 onChange={handleChangeEmail}
                 type="email"
+                autoCapitalize="off"
                 autoCorrect="off"
                 autoComplete="off"
                 value={email || ''}
+                placeholder={'Email'}
                 fullWidth
+                label={'Email'}
               />
             </FormControl>
             <Button

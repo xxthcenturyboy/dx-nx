@@ -283,38 +283,32 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (props): ReactEleme
           <FormControl
             disabled={isLoadingAddPhone}
             margin="normal"
-            variant="standard"
-            style={{ minWidth: 300 }}
+            variant="outlined"
+            style={
+              { minWidth: 300 }
+            }
           >
-            <InputLabel
-              htmlFor="new-user-phone"
-              style={{
-                position: 'absolute',
-                top: -33,
-                left: 5,
-                fontSize: '14px'
-              }}
-            >
-              Phone
-            </InputLabel>
             <PhoneNumberInput
               defaultCountry="us"
               defaultValue=""
-              inputId="new-user-phone"
+              inputId="input-new-user-phone"
               preferredCountries={['us']}
               required={true}
               disabled={false}
-              onChange={(value: string, data: CountryData) => {
-                setPhone(value);
-                setCountryData(data);
-              }}
+              label='Phone'
+              onChange={
+                (value: string, data: CountryData) => {
+                  setPhone(value);
+                  setCountryData(data);
+                }
+              }
               value={phone || ''}
             />
           </FormControl>
           <FormControl
             disabled={isLoadingAddPhone}
             margin="normal"
-            variant="standard"
+            variant="outlined"
           >
             <InputLabel htmlFor="label-select">Label</InputLabel>
             <Select
@@ -322,6 +316,8 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (props): ReactEleme
               name="label-select"
               value={label || ''}
               onChange={handleChangeLabel}
+              notched
+              label="Label"
             >
               {
                 Object.values(PHONE_LABEL).map((labelValue) => {

@@ -68,6 +68,11 @@ input:-webkit-autofill {
   display: none;
 }
 
+.react-tel-input .special-label {
+  left: 10px !important;
+  color: rgba(0, 0, 0, 0.6);
+}
+
 
 /* =============================================================================
 =    Circlular animated checkmark icon

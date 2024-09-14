@@ -431,6 +431,13 @@ export class AuthService {
     try {
       const emailUtil = new EmailUtil(email);
       if (emailUtil.validate()) {
+        const existingNonDeletedEmail = await EmailModel.findByEmail(
+          emailUtil.formattedEmail()
+        );
+        if (!existingNonDeletedEmail) {
+          return { code: '' };
+        }
+
         const otpCache = new OtpCodeCache();
         otpCode = await otpCache.setEmailOtp(emailUtil.formattedEmail());
         const mail = new MailSendgrid();
@@ -472,6 +479,14 @@ export class AuthService {
         regionCode || PHONE_DEFAULT_REGION_CODE
       );
       if (phoneUtil.isValid) {
+        const existingNonDeletedPhone = await PhoneModel.findByPhoneAndCode(
+          phoneUtil.nationalNumber,
+          phoneUtil.countryCode
+        );
+        if (!existingNonDeletedPhone) {
+          return { code: '' };
+        }
+
         const otpCache = new OtpCodeCache();
         otpCode = await otpCache.setPhoneOtp(
           phoneUtil.countryCode,

@@ -17,9 +17,11 @@ export {
 export {
   appTheme,
   DRAWER_WIDTH
-} from './mui-overrides/muiTheme';
+} from './mui-overrides/mui.theme';
 export {
   APP_COLOR_PALETTE,
+  BORDER_RADIUS,
+  BOX_SHADOW,
   themeColors
 } from './mui-overrides/styles';
 export {

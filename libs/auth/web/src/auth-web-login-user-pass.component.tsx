@@ -6,6 +6,7 @@ import {
   FormControl,
   Input,
   InputLabel,
+  OutlinedInput,
   Typography
 } from '@mui/material';
 import Zoom from '@mui/material/Zoom';
@@ -118,39 +119,40 @@ export const WebLoginUserPass: React.FC<WebLoginUserPassPropType> = React.forwar
           <FormControl
             disabled={isFetchingLogin}
             margin="normal"
-            variant="standard"
+            variant="outlined"
           >
             <InputLabel
-              htmlFor="username"
+              htmlFor="input-username"
             >
               { S_USERNAME }
             </InputLabel>
-            <Input
-              id="username"
-              name="username"
+            <OutlinedInput
+              id="input-username"
+              name="input-username"
               onChange={handleChangeUsername}
               type="text"
               spellCheck={false}
               autoCorrect="off"
               autoCapitalize="none"
-              autoComplete="email"
+              // autoComplete="email"
               value={username}
               fullWidth
+              label={S_USERNAME}
             />
           </FormControl>
           <FormControl
             disabled={isFetchingLogin}
             margin="normal"
-            variant="standard"
+            variant="outlined"
           >
             <InputLabel
-              htmlFor="password"
+              htmlFor="input-password"
             >
               { S_PASSWORD }
             </InputLabel>
-            <Input
-              id="password"
-              name="password"
+            <OutlinedInput
+              id="input-password"
+              name="input-password"
               onChange={handleChangePassword}
               type={showPassword ? 'text' : 'password'}
               spellCheck={false}
@@ -159,6 +161,7 @@ export const WebLoginUserPass: React.FC<WebLoginUserPassPropType> = React.forwar
               autoComplete="current-password"
               value={password}
               fullWidth
+              label={S_PASSWORD}
               endAdornment={showPassword ?
                 <Visibility
                   sx={{

@@ -1,8 +1,12 @@
 import { ThemeOptions } from '@mui/material/styles';
 import {
   dialogOverrides,
+  filledInputDefaults,
+  filledInputSyleOverrides,
   listItemOverrides,
   listItemButtonOverrides,
+  outlinedInputSyleOverrides,
+  outlinedInputInputDefaults,
   themeColors,
 } from './styles';
 import { toolbarItemOverrides } from './styles/menus';
@@ -38,11 +42,19 @@ export const appTheme: ThemeOptions = {
     MuiDialog: {
       styleOverrides: dialogOverrides
     },
+    MuiFilledInput: {
+      defaultProps: filledInputDefaults,
+      styleOverrides: filledInputSyleOverrides
+    },
     MuiListItem: {
       styleOverrides: listItemOverrides
     },
     MuiListItemButton: {
       styleOverrides: listItemButtonOverrides
+    },
+    MuiOutlinedInput: {
+      defaultProps: outlinedInputInputDefaults,
+      styleOverrides: outlinedInputSyleOverrides
     },
     MuiToolbar: {
       styleOverrides: toolbarItemOverrides

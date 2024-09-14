@@ -1,13 +1,15 @@
 import React from 'react';
 import { Theme } from '@mui/material';
 
+import {
+  BORDER_RADIUS
+} from '@dx/ui-web';
+
 export const getDefaultStyles = (theme: Theme): { [key: string]: React.CSSProperties} => {
   const buttonStyleDefaults: React.CSSProperties = {
     borderRadius: 0,
     background: 'transparent',
     color: 'inherit',
-    border: 'none',
-    borderBottom: `1px solid ${theme.palette.primary.main}`,
   };
 
   const containerStyleDefaults: React.CSSProperties = {
@@ -22,10 +24,9 @@ export const getDefaultStyles = (theme: Theme): { [key: string]: React.CSSProper
   const inputStyleDefaults: React.CSSProperties = {
     width: '100%',
     boxSizing: 'border-box',
-    height: '1.4375em',
-    border: 'none',
-    borderBottom: `1px solid ${theme.palette.primary.main}`,
-    borderRadius: 0,
+    boxShadow: 'none',
+    // height: '1.4375em',
+    borderRadius: BORDER_RADIUS,
     resize: 'vertical',
     background: 'transparent',
     color: 'inherit',

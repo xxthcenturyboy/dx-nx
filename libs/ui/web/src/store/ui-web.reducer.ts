@@ -12,7 +12,7 @@ import { UI_WEB_ENTITY_NAME } from '../ui.consts';
 import {
   APP_NAME
 } from '@dx/config-shared';
-import { appTheme } from '../mui-overrides/muiTheme';
+import { appTheme } from '../mui-overrides/mui.theme';
 import { AppMenuType } from '../components/menu';
 
 export const uiInitialState: UiStateType = {

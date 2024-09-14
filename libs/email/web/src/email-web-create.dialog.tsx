@@ -10,12 +10,11 @@ import {
   Checkbox,
   FormControl,
   FormControlLabel,
-  Input,
   InputLabel,
   MenuItem,
+  OutlinedInput,
   Select,
-  SelectChangeEvent,
-  TextField
+  SelectChangeEvent
 } from '@mui/material';
 
 import {
@@ -272,38 +271,41 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
           name="form-add-email"
           onSubmit={handleCreate}
         >
-          <TextField
-            disabled={isLoadingAddEmail}
+          <FormControl
             margin="normal"
-            variant="outlined"
             sx={
               {
                 minWidth: 300,
-                // border: '1px solid lightgray',
-                borderRadius: '6px'
               }
             }
-            label={'Email'}
-            id='email'
-            name='email'
-            onChange={handleChangeEmail}
-            type='email'
-            autoCapitalize="off"
-            autoCorrect="off"
-            value={email || ''}
-            fullWidth
-          />
+          >
+            <InputLabel htmlFor="input-email">Email</InputLabel>
+            <OutlinedInput
+              id="input-email"
+              name="input-email"
+              onChange={handleChangeEmail}
+              type="email"
+              autoCapitalize="off"
+              autoCorrect="off"
+              value={email || ''}
+              placeholder={'Email'}
+              fullWidth
+              label={'Email'}
+            />
+          </FormControl>
           <FormControl
             disabled={isLoadingAddEmail}
             margin="normal"
             variant="outlined"
           >
-            {/* <InputLabel htmlFor="label-select">Label</InputLabel> */}
+            <InputLabel htmlFor="label-select">Label</InputLabel>
             <Select
               id="label-select"
               name="label-select"
               value={label || ''}
               onChange={handleChangeLabel}
+              notched
+              label="Label"
             >
               {
                 Object.values(EMAIL_LABEL).map((labelValue) => {
