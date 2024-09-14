@@ -30,7 +30,12 @@ export const APP_COLOR_PALETTE = {
   LIGHT: {
     BACKGROUND: grey
   },
-  BLUE: blue
+  BLUE: blue,
+  BLUE_GREY: blueGrey,
+  GREEN: green,
+  INFO: lightBlue,
+  ORANGE: orange,
+  RED: red
 };
 
 export const themeColors = {

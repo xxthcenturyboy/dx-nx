@@ -325,6 +325,7 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (props): ReactElement
             label="Set as Default"
             control={
               <Checkbox
+                size='large'
                 checked={isDefault}
                 onChange={() => setIsDefault(!isDefault)}
               />

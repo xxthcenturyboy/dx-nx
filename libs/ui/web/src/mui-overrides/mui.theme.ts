@@ -1,5 +1,6 @@
 import { ThemeOptions } from '@mui/material/styles';
 import {
+  checkboxStyleOverrides,
   dialogOverrides,
   filledInputDefaults,
   filledInputSyleOverrides,
@@ -39,6 +40,9 @@ export const appTheme: ThemeOptions = {
     fontFamily: 'Roboto, Helvetica, Arial, sans-serif, serif'
   },
   components: {
+    MuiCheckbox: {
+      styleOverrides: checkboxStyleOverrides
+    },
     MuiDialog: {
       styleOverrides: dialogOverrides
     },
@@ -60,29 +64,4 @@ export const appTheme: ThemeOptions = {
       styleOverrides: toolbarItemOverrides
     }
   }
-  // components: {
-  //   MuiAppBar: {
-  //     defaultProps: {
-  //       enableColorOnDark: false
-  //     }
-    //   styleOverrides: {
-    //     root: {
-    //       backgroundColor: themeColors.primary
-    //     }
-    //   }
-    // },
-    // MuiDrawer: {
-    //   styleOverrides: {
-    //     paper: {
-    //       position: 'fixed',
-    //       width: DRAWER_WIDTH,
-    //       borderRadius: 0,
-    //       borderTop: 'none',
-    //       borderBottom: 'none',
-    //       top: '64px',
-    //       height: `calc(100% - 64px)`
-    //     },
-    //   }
-    // }
-  // }
 };

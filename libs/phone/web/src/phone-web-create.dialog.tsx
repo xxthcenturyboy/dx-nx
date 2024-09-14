@@ -335,10 +335,13 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (props): ReactEleme
           </FormControl>
           <FormControlLabel
             label="Set as Default"
-            control={<Checkbox
-              checked={isDefault}
-              onChange={() => setIsDefault(!isDefault)}
-            />}
+            control={
+              <Checkbox
+                size='large'
+                checked={isDefault}
+                onChange={() => setIsDefault(!isDefault)}
+              />
+            }
           />
         </AddPhoneForm>
       </CustomDialogContent>

@@ -410,12 +410,15 @@ export const UserAdminEdit: React.FC = () => {
                     <Grid item>
                       <FormGroup>
                         <FormControlLabel
-                          control={<Checkbox
-                            checked={role.hasRole}
-                            onClick={
-                              () => void handleRoleClick(role.role)
-                            }
-                          />}
+                          control={
+                            <Checkbox
+                              size='large'
+                              checked={role.hasRole}
+                              onClick={
+                                () => void handleRoleClick(role.role)
+                              }
+                            />
+                          }
                           label={role.role}
                         />
                       </FormGroup>
@@ -436,10 +439,14 @@ export const UserAdminEdit: React.FC = () => {
                   <Grid container key={`restriction-${index}`}>
                     <FormGroup>
                       <FormControlLabel
-                        control={<Checkbox
-                          checked={restriction.isRestricted}
-                          onClick={() => console.log('clicked', restriction.restriction)}
-                        />}
+                        control={
+                          <Checkbox
+                            className='Mui-checked-error'
+                            size='large'
+                            checked={restriction.isRestricted}
+                            onClick={() => console.log('clicked', restriction.restriction)}
+                          />
+                        }
                         label={restriction.restriction}
                       />
                     </FormGroup>

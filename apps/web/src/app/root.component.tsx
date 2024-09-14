@@ -67,7 +67,7 @@ export const Root: React.FC = () => {
   const isAuthenticated = useAppSelector((state: RootState) => selectIsAuthenticated(state));
   const logoutResponse = useAppSelector((state: RootState) => state.auth.logoutResponse);
   const windowWidth = useAppSelector((state: RootState) => state.ui.windowWidth) || 0;
-  const toastTheme: ToastifyTheme = useAppSelector((state: RootState) => state.ui.theme.palette?.mode || 'color');
+  // const toastTheme: ToastifyTheme = useAppSelector((state: RootState) => state.ui.theme.palette?.mode || 'color');
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const ROUTES = WebConfigService.getWebRoutes();
@@ -228,7 +228,7 @@ export const Root: React.FC = () => {
         autoClose={TOAST_TIMEOUT}
         closeOnClick
         transition={Slide}
-        theme={toastTheme}
+        theme={'colored'}
       />
     </ThemeProvider>
   );

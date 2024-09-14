@@ -8,6 +8,7 @@ export {
   themeColors
 } from './themeColors';
 export {
+  checkboxStyleOverrides,
   filledInputDefaults,
   filledInputSyleOverrides,
   outlinedInputSyleOverrides,

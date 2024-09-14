@@ -71,6 +71,9 @@ export const PhoneNumberInput: React.FC<PhoneInputProps> = (props): JSX.Element 
 
   const inputStyle = {
     ...inputStyleDefaults,
+    backgroundColor: focused
+      ? APP_COLOR_PALETTE.SECONDARY[50]
+      : 'transparent',
     borderColor: getBorderColor(),
     borderWidth: getBorderWidth(),
     ...props.inputStyle
