@@ -10,18 +10,16 @@ import {
 } from 'react-router-dom';
 import {
   FormControl,
-  Grid,
   FilledInput,
+  Grid,
   IconButton,
   Tooltip,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import * as MuiColors from '@mui/material/colors';
 import {
   Cached
 } from '@mui/icons-material';
-import { BeatLoader } from 'react-spinners';
 
 import {
   RootState,
@@ -32,11 +30,8 @@ import {
   ContentWrapper,
   DEBOUNCE,
   DialogAlert,
-  IconNames,
   TableComponent,
-  TableHeaderItem,
   TableRowType,
-  themeColors,
   uiActions,
   useFocus
 } from '@dx/ui-web';
@@ -45,28 +40,30 @@ import {
   setDocumentTitle
 } from '@dx/utils-misc-web';
 import {
-  GetUsersListQueryType,
-  UserType
+  GetUsersListQueryType
 } from '@dx/user-shared';
 import { WebConfigService } from '@dx/config-web';
 import { userAdminActions } from './user-admin-web.reducer';
-import { userAdminTableMetaData } from './user-admin-web-list.config';
-import { selectUsersFormatted } from './user-admin-web.selectors';
+import {
+  selectUsersFormatted,
+  selectUsersListData
+} from './user-admin-web.selectors';
 import { useLazyGetUserAdminListQuery } from './user-admin-web.api';
+import { UserAdminWebListService } from './user-admin-web-list.service';
 
 export const UserAdminList: React.FC = () => {
   const filterValue = useAppSelector((state: RootState) => state.userAdmin.filterValue);
-  const limit = useAppSelector((state: RootState) => state.userAdmin.limit);
+  const limit = useAppSelector((state: RootState) => state.userAdmin.limit || 10);
   const offset = useAppSelector((state: RootState) => state.userAdmin.offset);
   const orderBy = useAppSelector((state: RootState) => state.userAdmin.orderBy);
   const sortDir = useAppSelector((state: RootState) => state.userAdmin.sortDir);
   const users = useAppSelector((state: RootState) => selectUsersFormatted(state));
+  const userRowData = useAppSelector((state: RootState) => selectUsersListData(state));
   const usersCount = useAppSelector((state: RootState) => state.userAdmin.usersCount);
   const currentUser = useAppSelector((state: RootState) => state.userProfile);
-  const [headerData, setHeaderData] = useState<TableHeaderItem[]>([]);
-  const [tableMeta, setTableMeta] = useState(userAdminTableMetaData);
-  const [rowData, setRowData] = useState<TableRowType[]>([]);
+  const usersListHeaders = UserAdminWebListService.getListHeaders();
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
   const [searchInputRef, setSearchInputRef] = useFocus();
   const ROUTES = WebConfigService.getWebRoutes();
   const dispatch = useAppDispatch();
@@ -104,18 +101,9 @@ export const UserAdminList: React.FC = () => {
       users
       && users.length
     ) {
-      setupRows();
+      setTimeout(() => setIsInitialized(true), 1000);
     }
   }, []);
-
-  useEffect(() => {
-    setupHeaders();
-    setupRows();
-  }, [tableMeta]);
-
-  useEffect(() => {
-    setupRows();
-  }, [users]);
 
   useEffect(() => {
     !isLoadingUserList
@@ -126,14 +114,19 @@ export const UserAdminList: React.FC = () => {
     if (
       !isLoadingUserList
     ) {
-      if (!userListError) {
+      if (
+        !userListError
+        && userListResponse?.rows
+      ) {
         dispatch(userAdminActions.listSet(userListResponse?.rows || []));
         dispatch(userAdminActions.userCountSet(userListResponse?.count));
+        setIsFetching(false);
       }
       if (
         userListError
       ) {
         'error' in userListError && dispatch(uiActions.apiDialogSet(userListError['error']));
+        setIsFetching(false);
       }
     }
   }, [isLoadingUserList]);
@@ -143,6 +136,7 @@ export const UserAdminList: React.FC = () => {
   }, DEBOUNCE)).current;
 
   const fetchUsers = async (searchValue?: string): Promise<void> => {
+    setIsFetching(true);
     const params: GetUsersListQueryType = {
       limit,
       offset,
@@ -154,27 +148,7 @@ export const UserAdminList: React.FC = () => {
   };
 
   const refreshTableData = async (): Promise<void> => {
-    dispatch(uiActions.awaitDialogMessageSet('Refreshing Data...'));
-    dispatch(uiActions.awaitDialogOpenSet(true));
     await fetchUsers();
-    dispatch(uiActions.awaitDialogMessageSet(''));
-    dispatch(uiActions.awaitDialogOpenSet(false));
-  };
-
-  const setupHeaders = (): void => {
-    const data: TableHeaderItem[] = [];
-
-    for (const meta of tableMeta) {
-      data.push({
-        align: meta.headerAlign,
-        fieldName: meta.fieldName,
-        title: meta.title,
-        sortable: meta.sortable,
-        width: meta.width
-      });
-    }
-
-    setHeaderData(data);
   };
 
   const clickRow = (data: TableRowType ): void => {
@@ -193,100 +167,6 @@ export const UserAdminList: React.FC = () => {
     }
 
     navigate(`${ROUTES.ADMIN.USER.DETAIL}/${data.id}`);
-  };
-
-  const getRowData = (user: UserType): TableRowType => {
-    const row: TableRowType = {
-      id: user.id,
-      columns: [],
-    };
-
-    for (const meta of tableMeta) {
-      let cellData: any;
-      let icon: any;
-      let color: string | undefined = undefined;
-
-      if (meta.fieldName === 'emails') {
-        const e = user.emails?.find(email => email.default);
-        if (e) {
-          cellData = e.email;
-        }
-        if (!e && user.emails?.length > 0) {
-          cellData = user.emails[0].email;
-        }
-      }
-      if (meta.fieldName === 'phones') {
-        const p = user.phones?.find(phone => phone.default);
-        if (p) {
-          cellData = p.uiFormatted || p.phone;
-        }
-        if (!p && user.phones?.length > 0) {
-          cellData = user.phones[0].uiFormatted || user.phones[0].phone;
-        }
-      }
-      if (meta.fieldName === 'restrictions') {
-        cellData = Array.isArray(user.restrictions) && user.restrictions.length > 0;
-        if (cellData) {
-          icon = IconNames.CHECK;
-          color = MuiColors.red[300];
-        }
-      }
-      if (meta.fieldName === 'isAdmin') {
-        cellData = user.isAdmin;
-        if (cellData) {
-          icon = IconNames.CHECK;
-          color = MuiColors.blue[200];
-        }
-      }
-      if (meta.fieldName === 'isSuperAdmin') {
-        cellData = user.isSuperAdmin;
-        if (cellData) {
-          icon = IconNames.CHECK;
-          color = MuiColors.blue[700];
-        }
-      }
-      if (meta.fieldName === 'optInBeta') {
-        cellData = user.optInBeta;
-        if (cellData) {
-          icon = IconNames.CHECK;
-          color = MuiColors.green[600];
-        }
-      }
-
-      if (cellData === undefined) {
-        // @ts-expect-error - error lame
-        cellData = user[meta.fieldName];
-      }
-      row.columns.push({
-        align: meta.align,
-        color,
-        componentType: meta.componentType,
-        data: cellData,
-        dataType: meta.fieldType,
-        icon,
-        onClick: (id: string, actionType: string) => console.log(id, actionType)
-      });
-    }
-
-    return row;
-  };
-
-  const setupRows = (): void => {
-    const rows: TableRowType[] = [];
-
-    if (
-      users
-      && users.length
-    ) {
-      for (const user of users) {
-        const data = getRowData(user);
-        rows.push(data);
-      }
-    }
-
-    setRowData(rows);
-    // setTimeout(() => setIsInitialized(true), 300);
-    setIsInitialized(true);
   };
 
   const handleOffsetChange = (offset: number) => {
@@ -432,40 +312,23 @@ export const UserAdminList: React.FC = () => {
         alignItems="center"
         justifyContent="flex-start"
       >
-        {
-          isInitialized && (
-            <TableComponent
-              changeLimit={handleLimitChange}
-              changeOffset={handleOffsetChange}
-              changeSort={handleSortChange}
-              clickRow={clickRow}
-              count={usersCount || 0}
-              header={headerData}
-              loading={isLoadingUserList}
-              limit={limit}
-              // maxHeight="272px"
-              offset={offset}
-              orderBy={orderBy}
-              rows={rowData}
-              sortDir={sortDir}
-              tableName="Users"
-            />
-          )
-        }
-        {
-          !isInitialized && (
-            <BeatLoader
-              color={themeColors.secondary}
-              size={24}
-              margin="2px"
-              style={
-                {
-                  marginTop: '50px'
-                }
-              }
-            />
-          )
-        }
+        <TableComponent
+          changeLimit={handleLimitChange}
+          changeOffset={handleOffsetChange}
+          changeSort={handleSortChange}
+          clickRow={clickRow}
+          count={usersCount || limit}
+          header={usersListHeaders}
+          isInitialized={isInitialized}
+          loading={isFetching}
+          limit={limit}
+          // maxHeight="272px"
+          offset={offset}
+          orderBy={orderBy}
+          rows={userRowData}
+          sortDir={sortDir}
+          tableName="Users"
+        />
       </Grid>
     </ContentWrapper>
   );

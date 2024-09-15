@@ -5,7 +5,9 @@ import React,
 } from 'react';
 import {
   Box,
+  Collapse,
   Fade,
+  Paper,
   Table,
   TableBody,
   TableCell,
@@ -14,9 +16,11 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  Typography,
   // useMediaQuery,
-  // useTheme,
+  useTheme,
 } from '@mui/material';
+import { BeatLoader } from 'react-spinners';
 
 import {
   RootState,
@@ -34,10 +38,16 @@ import {
   TableHeaderItem,
   TableRowType,
 } from './types';
-import { getIcon, IconNames } from '../../Icons';
+import {
+  getIcon,
+  IconNames
+} from '../../Icons';
 import { waveItem } from '../skeletons.ui';
 import { TablePaginationActions } from './pagination.component';
-import { themeColors } from '../../mui-overrides/styles';
+import {
+  BORDER_RADIUS,
+  themeColors
+} from '../../mui-overrides/styles';
 import {
   StyledTableCell,
   StyledTableRow,
@@ -52,6 +62,7 @@ export const TableComponent: React.FC<TableComponentProps> = React.forwardRef((p
     clickRow,
     count,
     header,
+    isInitialized,
     loading,
     limit,
     maxHeight,
@@ -61,7 +72,7 @@ export const TableComponent: React.FC<TableComponentProps> = React.forwardRef((p
     sortDir,
     tableName,
   } = props;
-  // const theme = useTheme();
+  const theme = useTheme();
   const themeMode = useAppSelector((state: RootState) => selectCurrentThemeMode(state));
   const tableId = tableName?.toLowerCase().replace(' ', '-') || '';
   // const smBreak = useMediaQuery(theme.breakpoints.down('sm'));
@@ -71,6 +82,7 @@ export const TableComponent: React.FC<TableComponentProps> = React.forwardRef((p
   const order = sortDir === 'ASC' ? 'asc' : 'desc';
 
   useEffect(() => {
+    getLoadingData();
     setupRowsPerPage();
   }, []);
 
@@ -126,187 +138,279 @@ export const TableComponent: React.FC<TableComponentProps> = React.forwardRef((p
   };
 
   return (
-    <Fade
-      in={true}
-      timeout={FADE_TIMEOUT_DUR}
+    <Paper
+      elevation={2}
+      sx={
+        {
+          borderRadius: '6px',
+          width: '100%'
+        }
+      }
     >
-      <Box
-        padding="0"
-        ref={ref}
-        width="100%"
+      <Collapse
+        in={isInitialized}
       >
-        <TableContainer
-          component={Box}
-          style={{ maxHeight }}
+        <Box
+          padding="0"
+          ref={ref}
+          width="100%"
         >
-          <Table
-            stickyHeader
-            sx={{ minWidth: 1200 }}
-            size="small"
-            aria-label=""
-            id={tableId}
-          >
-            <TableHead>
-              <TableRow>
-                {
-                  header.map((data: TableHeaderItem, index: number) => {
-                    return (
-                      <StyledTableCell
-                        key={`table-header-cell-${tableId}-${index}`}
-                        align={data.align}
-                        width={data.width}
-                        sx={
-                          {
-                            cursor: data.sortable ? 'pointer' : ''
-                          }
-                        }
-                        sortDirection={orderBy === data.fieldName ? order : false}
-                        themeMode={themeMode || 'light'}
-                      >
-                        {
-                          data.sortable ? (
-                            <StyledTableSortLabel
-                              active={orderBy === data.fieldName}
-                              direction={orderBy === data.fieldName ? order : 'asc'}
-                              onClick={
-                                () => typeof changeSort === 'function' && changeSort(data.fieldName)
-                              }
-                            >
-                              { data.title }
-                            </StyledTableSortLabel>
-                          ) : (
-                            <>{ data.title }</>
-                          )
-                        }
-                      </StyledTableCell>
-                    );
-                  })
-                }
-              </TableRow>
-            </TableHead>
-            <TableBody>
+          <TableContainer
+            component={Box}
+            style={
               {
-                !loading && !rows.length && (
-                  <StyledTableRow
-                    loading={loading ? 'true' : ''}
-                    style={{ height: '100px' }}
-                    themeMode={themeMode || 'light'}
-                  >
-                    <TableCell
-                      colSpan={header.length + 1}
-                      sx={{
-                        height: '200px',
-                        textAlign: 'center',
-                        fontSize: '42px',
-                        color: 'primary'
-                      }}
-                    >
-                      No Data
-                    </TableCell>
-                  </StyledTableRow>
-                )
-              }
-              {
-                loading &&
-                dummyData.map((row, index) => {
-                  return (
-                    <StyledTableRow
-                      key={`dummy-row-${index}`}
-                      loading={loading ? 'true' : ''}
-                      sx={{
-                        height: rowHeight
-                      }}
-                      themeMode={themeMode || 'light'}
-                    >
-                      {
-                        row.map((item, index) => {
-                          return (
-                            <TableCell
-                              key={`dummy-cell-${item}-${index}`}
-                              sx={{ minHeight: rowHeight }}
-                            >
-                              {waveItem('22px')}
-                            </TableCell>
-                          )
-                        })
-                      }
-                    </StyledTableRow>
-                  );
-                })
-              }
-              {
-                !loading && !!rows.length &&
-                rows.map((row: TableRowType) => {
-                  const clickable = !!clickRow && typeof clickRow === 'function';
-                  return (
-                    <StyledTableRow
-                      key={row.id}
-                      loading={loading ? 'true' : ''}
-                      sx={{
-                        cursor: clickable ? 'pointer' : '',
-                        height: rowHeight
-                      }}
-                      onClick={() => clickRow && clickRow(row)}
-                      themeMode={themeMode || 'light'}
-                    >
-                      {
-                        row.columns.map((cell: TableCellData, index: number) => {
-                          return (
-                            <TableCell
-                              key={`table-data-cell-${row.id}-${index}`}
-                              align={cell.align}
-                              sx={{ height: '20px' }}
-                            >
-                              {
-                                cell.componentType === 'text' && cell.data as string
-                              }
-                              {
-                                cell.componentType === 'icon' && !!cell.icon && renderIcon(cell.icon, cell.color)
-                              }
-                            </TableCell>
-                          );
-                        })
-                      }
-                    </StyledTableRow>
-                  );
-                })
-              }
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <Table>
-          <TableFooter
-            sx={
-              {
-                display: 'flex',
-                justifyContent: 'flex-end',
-                marginTop: '12px'
+                maxHeight,
+                borderRadius: BORDER_RADIUS
               }
             }
           >
-            <TableRow>
-              <TablePagination
-                rowsPerPageOptions={count > 10 ? rowsPerPageOptions : undefined}
-                colSpan={header.length + 1}
-                count={count}
-                rowsPerPage={limit}
-                page={offset}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                ActionsComponent={TablePaginationActions}
-                sx={
-                  {
-                    borderBottom: 'none',
-                    borderTop: 'none',
-                    // borderTop: `1px solid ${theme.palette.grey[400]}`,
-                    color: themeColors.primary
-                  }
+            <Table
+              stickyHeader
+              sx={
+                {
+                  minWidth: 1200
                 }
-              />
-            </TableRow>
-          </TableFooter>
-        </Table>
-      </Box>
-    </Fade>
+              }
+              size="small"
+              aria-label=""
+              id={tableId}
+            >
+              <TableHead>
+                <TableRow>
+                  {
+                    header.map((data: TableHeaderItem, index: number) => {
+                      return (
+                        <StyledTableCell
+                          key={`table-header-cell-${tableId}-${index}`}
+                          align={data.align}
+                          width={data.width}
+                          sx={
+                            {
+                              cursor: data.sortable ? 'pointer' : ''
+                            }
+                          }
+                          sortDirection={orderBy === data.fieldName ? order : false}
+                          themeMode={themeMode || 'light'}
+                        >
+                          {
+                            data.sortable ? (
+                              <StyledTableSortLabel
+                                active={orderBy === data.fieldName}
+                                direction={orderBy === data.fieldName ? order : 'asc'}
+                                onClick={
+                                  () => typeof changeSort === 'function' && changeSort(data.fieldName)
+                                }
+                              >
+                                { data.title }
+                              </StyledTableSortLabel>
+                            ) : (
+                              <>{ data.title }</>
+                            )
+                          }
+                        </StyledTableCell>
+                      );
+                    })
+                  }
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {
+                  isInitialized
+                  && !loading
+                  && !rows.length
+                  && (
+                    <TableRow
+                      sx={
+                        {
+                          height: '100px',
+                          backgroundColor: themeMode === 'dark'
+                            ? theme.palette.grey[700]
+                            : theme.palette.grey[200],
+                          '&:hover': {
+                            backgroundColor: 'default'
+                          }
+                        }
+                      }
+                    >
+                      <TableCell
+                        colSpan={header.length + 1}
+                        sx={
+                          {
+                            height: '200px',
+                            textAlign: 'center',
+                            fontSize: '42px',
+                            color: 'primary'
+                          }
+                        }
+                      >
+                        <Fade
+                          in={true}
+                          timeout={FADE_TIMEOUT_DUR}
+                        >
+                          <Typography
+                            variant='h2'
+                          >
+                            No Data
+                          </Typography>
+                        </Fade>
+                      </TableCell>
+                    </TableRow>
+                  )
+                }
+                {
+                  isInitialized
+                  && loading
+                  && dummyData.map((row, index) => {
+                    return (
+                      <StyledTableRow
+                        key={`dummy-row-${index}`}
+                        loading={loading ? 'true' : ''}
+                        sx={
+                          {
+                            height: rowHeight
+                          }
+                        }
+                        themeMode={themeMode || 'light'}
+                      >
+                        <TableCell
+                          key={`dummy-cell-${index}`}
+                          colSpan={row.length + 1}
+                          sx={
+                            {
+                              minHeight: rowHeight
+                            }
+                          }
+                        >
+                          <Fade in={true} timeout={FADE_TIMEOUT_DUR}>
+                            { waveItem(rowHeight) }
+                          </Fade>
+                        </TableCell>
+                        {/* {
+                          row.map((item, index) => {
+                            return (
+                              <TableCell
+                                key={`dummy-cell-${item}-${index}`}
+                                sx={
+                                  {
+                                    minHeight: rowHeight
+                                  }
+                                }
+                              >
+                                { waveItem(rowHeight) }
+                              </TableCell>
+                            )
+                          })
+                        } */}
+                      </StyledTableRow>
+                    );
+                  })
+                }
+                {
+                  !loading
+                  && rows.length > 0
+                  && rows.map((row: TableRowType) => {
+                    const clickable = !!clickRow && typeof clickRow === 'function';
+                    return (
+                      <StyledTableRow
+                        key={row.id}
+                        loading={loading ? 'true' : ''}
+                        sx={
+                          {
+                            cursor: clickable ? 'pointer' : '',
+                            height: rowHeight
+                          }
+                        }
+                        onClick={
+                          () => clickRow && clickRow(row)
+                        }
+                        themeMode={themeMode || 'light'}
+                      >
+                        {
+                          row.columns.map((cell: TableCellData, index: number) => {
+                            return (
+                              <TableCell
+                                key={`table-data-cell-${row.id}-${index}`}
+                                align={cell.align}
+                                sx={
+                                  {
+                                    height: rowHeight
+                                  }
+                                }
+                              >
+                                <Fade in={true} timeout={FADE_TIMEOUT_DUR}>
+                                  <span>
+                                  {
+                                    cell.componentType === 'text' && cell.data as string
+                                  }
+                                  {
+                                    cell.componentType === 'icon' && !!cell.icon && renderIcon(cell.icon, cell.color)
+                                  }
+                                  </span>
+                                </Fade>
+                              </TableCell>
+                            );
+                          })
+                        }
+                      </StyledTableRow>
+                    );
+                  })
+                }
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Table>
+            <TableFooter
+              sx={
+                {
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  marginTop: '12px'
+                }
+              }
+            >
+              <TableRow>
+                <TablePagination
+                  rowsPerPageOptions={count > 10 ? rowsPerPageOptions : undefined}
+                  colSpan={header.length + 1}
+                  count={count}
+                  rowsPerPage={limit}
+                  page={offset}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                  ActionsComponent={TablePaginationActions}
+                  sx={
+                    {
+                      borderBottom: 'none',
+                      borderTop: 'none',
+                      // borderTop: `1px solid ${theme.palette.grey[400]}`,
+                      color: themeColors.primary
+                    }
+                  }
+                />
+              </TableRow>
+            </TableFooter>
+          </Table>
+        </Box>
+      </Collapse>
+      {
+        !isInitialized
+        && (
+          <Box
+            display={'flex'}
+            flexDirection={'row'}
+            width={'100%'}
+            padding={6}
+            alignContent={'center'}
+            justifyContent={'center'}
+          >
+            <BeatLoader
+              color={themeColors.secondary}
+              size={24}
+              margin="2px"
+            />
+          </Box>
+        )
+      }
+    </Paper>
   );
 });

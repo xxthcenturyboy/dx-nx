@@ -2,9 +2,10 @@ import { createSelector } from 'reselect';
 import parsePhoneNumber from 'libphonenumber-js';
 
 import { RootState } from '@dx/store-web';
-import { UserAdminStateType } from './user-admin-web.types';
 import { PhoneType } from '@dx/phone-shared';
 import { UserType } from '@dx/user-shared';
+import { UserAdminStateType } from './user-admin-web.types';
+import { UserAdminWebListService } from './user-admin-web-list.service';
 
 const getUser = (state: RootState): UserAdminStateType['user'] => state.userAdmin.user;
 const getUsers = (state: RootState): UserAdminStateType['users'] => state.userAdmin.users;
@@ -51,5 +52,13 @@ export const selectUsersFormatted = createSelector(
     }
 
     return nextUsers;
+  }
+);
+
+export const selectUsersListData = createSelector(
+  [selectUsersFormatted],
+  (users) => {
+    const service = new UserAdminWebListService();
+    return service.getRows(users);
   }
 );

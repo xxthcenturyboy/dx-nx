@@ -15,6 +15,7 @@ export type TableComponentProps = {
   clickRow?: (rowData: TableRowType) => void;
   count: number;
   header: TableHeaderItem[];
+  isInitialized: boolean;
   loading?: boolean;
   limit: number;
   maxHeight?: string;

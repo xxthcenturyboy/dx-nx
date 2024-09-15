@@ -38,6 +38,9 @@ export const StyledTableRow = styled(TableRow)<{
   //   border: 0,
   // },
   '&:hover': {
-    backgroundColor: themeMode === 'dark' ? theme.palette.primary.light : theme.palette.secondary.light,
+    backgroundColor: loading !== 'true'
+      ? (themeMode === 'dark' ? theme.palette.primary.light : theme.palette.secondary.light)
+      : 'initial',
+
   }
 }));

@@ -34,8 +34,7 @@ import {
 import {
   CollapsiblePanel,
   ContentWrapper,
-  selectCurrentThemeMode,
-  uiActions
+  selectCurrentThemeMode
 } from '@dx/ui-web';
 import { setDocumentTitle } from '@dx/utils-misc-web';
 import {
@@ -70,7 +69,6 @@ export const StatsWebApiHealthComponent: React.FC = () => {
 
   useEffect(() => {
     if (!isLoadingApiStats) {
-      dispatch(uiActions.awaitDialogOpenSet(false));
       if (!apiStatsError) {
         dispatch(statsActions.setApiStats(apiStatsResponse));
       }
@@ -79,9 +77,6 @@ export const StatsWebApiHealthComponent: React.FC = () => {
       }
     }
 
-    if (isLoadingApiStats) {
-      dispatch(uiActions.awaitDialogOpenSet(true));
-    }
   }, [isLoadingApiStats]);
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
