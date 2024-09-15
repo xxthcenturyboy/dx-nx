@@ -101,7 +101,8 @@ export const UserAdminList: React.FC = () => {
       users
       && users.length
     ) {
-      setTimeout(() => setIsInitialized(true), 1000);
+      // setTimeout(() => setIsInitialized(true), 1000);
+      setIsInitialized(true);
     }
   }, []);
 
