@@ -94,3 +94,9 @@ export {
 export { ContentWrapper } from './components/content/content-wrapper.component';
 export { StyledContentWrapper } from './components/content/content-wrapper.styled';
 export { CollapsiblePanel } from './components/content/content-collapsible-panel';
+
+export {
+  boxSkeleton,
+  listSkeleton,
+  waveItem
+} from './components/skeletons.ui';

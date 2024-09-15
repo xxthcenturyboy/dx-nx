@@ -16,11 +16,13 @@ import {
   FormGroup,
   Grid,
   Paper,
+  Skeleton,
   Typography,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
 import { lightBlue, grey } from '@mui/material/colors';
+import { toast } from 'react-toastify';
 
 import {
   RootState,
@@ -30,6 +32,7 @@ import {
 import {
   ContentWrapper,
   DialogAlert,
+  listSkeleton,
   uiActions
 } from '@dx/ui-web';
 import { setDocumentTitle } from '@dx/utils-misc-web';
@@ -37,15 +40,14 @@ import { UserRoleUi } from '@dx/user-shared';
 import { ACCOUNT_RESTRICTIONS } from '@dx/auth-shared';
 import { WebConfigService } from '@dx/config-web';
 import { prepareRoleCheckboxes } from '@dx/user-privilege-web';
+import { privilegeSetActions } from '@dx/user-privilege-web';
+import { useLazyGetPrivilegeSetsQuery } from '@dx/user-privilege-web';
 import { userAdminActions } from './user-admin-web.reducer';
 import { selectUserFormatted } from './user-admin-web.selectors';
 import {
   useLazyGetUserAdminQuery,
   useUpdateUserRolesRestrictionsMutation
 } from './user-admin-web.api';
-import { privilegeSetActions } from '@dx/user-privilege-web';
-import { useLazyGetPrivilegeSetsQuery } from '@dx/user-privilege-web';
-import { toast } from 'react-toastify';
 
 type UserRestriction = {
   restriction: keyof typeof ACCOUNT_RESTRICTIONS;
@@ -293,99 +295,131 @@ export const UserAdminEdit: React.FC = () => {
         direction="column"
       >
         <Grid container  margin="0 0 20px">
-          <Grid item>
-            <Typography>
-              <span style={{ fontWeight: 700, marginRight: 12 }}>Name:</span>
-              { user?.fullName }
-            </Typography>
+          <Grid item width={'100%'}>
+            {
+              isLoadingUser && (
+                <Skeleton
+                  animation="wave"
+                  variant='text'
+                  style={
+                    {
+                      height: '56px',
+                      width: '100%'
+                    }
+                  }
+                />
+              )
+            }
+            {
+              !isLoadingUser && (
+                <Typography>
+                  <span style={{ fontWeight: 700, marginRight: 12 }}>Name:</span>
+                  { user?.fullName }
+                </Typography>
+              )
+            }
           </Grid>
         </Grid>
         <Grid container  margin="0 0 20px">
           <Typography style={{ fontWeight: 700 }}>Emails:</Typography>
           {/* {renderDivider('0 0 10')} */}
-          <Grid container justifyContent="space-between">
-            {
-              user?.emails.map((email, index) => {
-                return (
-                  <React.Fragment key={`email-${index}`}>
-                    <Grid
-                      container
-                      direction="row"
-                      width="100%"
-                      justifyContent="space-between"
-                      borderTop="1px solid lightgray"
-                      padding="10 0 3"
-                      display="flex"
-                      height="44px"
-                      alignItems="center"
-                    >
-                      <Grid
-                        item
-                        sx={{
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        <Typography>
-                          { email.email }
-                        </Typography>
-                      </Grid>
-                      <Grid item>
-                        { email.isVerified && renderVerifiedChip() }
-                        { email.default && renderDefaultChip() }
-                        { email.label }
-                      </Grid>
-                    </Grid>
-                  </React.Fragment>
-                );
-              })
-            }
-          </Grid>
+          {
+            isLoadingUser && listSkeleton(2, '48px')
+          }
+          {
+            !isLoadingUser && (
+              <Grid container justifyContent="space-between">
+                {
+                  user?.emails.map((email, index) => {
+                    return (
+                      <React.Fragment key={`email-${index}`}>
+                        <Grid
+                          container
+                          direction="row"
+                          width="100%"
+                          justifyContent="space-between"
+                          borderTop="1px solid lightgray"
+                          padding="10 0 3"
+                          display="flex"
+                          height="44px"
+                          alignItems="center"
+                        >
+                          <Grid
+                            item
+                            sx={{
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            <Typography>
+                              { email.email }
+                            </Typography>
+                          </Grid>
+                          <Grid item>
+                            { email.isVerified && renderVerifiedChip() }
+                            { email.default && renderDefaultChip() }
+                            { email.label }
+                          </Grid>
+                        </Grid>
+                      </React.Fragment>
+                    );
+                  })
+                }
+              </Grid>
+            )
+          }
         </Grid>
         <Grid container  margin="0 0 20px">
           <Typography style={{ fontWeight: 700 }}>Phones:</Typography>
           {/* {renderDivider('0 0 10')} */}
-          <Grid container justifyContent="space-between" direction="column">
-            {
-              user?.phones.map((phone, index) => {
-                return (
-                  <React.Fragment key={`phone-${index}`}>
-                    <Grid
-                      container
-                      direction="row"
-                      width="100%"
-                      justifyContent="space-between"
-                      borderTop="1px solid lightgray"
-                      padding="10 0 3"
-                      display="flex"
-                      height="44px"
-                      alignItems="center"
-                    >
+          {
+            isLoadingUser && listSkeleton(2, '48px')
+          }
+          {
+            !isLoadingUser && (
+            <Grid container justifyContent="space-between" direction="column">
+              {
+                user?.phones.map((phone, index) => {
+                  return (
+                    <React.Fragment key={`phone-${index}`}>
                       <Grid
-                        item
-                        sx={{
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
-                        }}
+                        container
+                        direction="row"
+                        width="100%"
+                        justifyContent="space-between"
+                        borderTop="1px solid lightgray"
+                        padding="10 0 3"
+                        display="flex"
+                        height="44px"
+                        alignItems="center"
                       >
-                        <Typography>
-                          {phone.uiFormatted || phone.phoneFormatted}
-                        </Typography>
+                        <Grid
+                          item
+                          sx={{
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          <Typography>
+                            {phone.uiFormatted || phone.phoneFormatted}
+                          </Typography>
+                        </Grid>
+                        <Grid item>
+                          {phone.isVerified && renderVerifiedChip()}
+                          {phone.default && renderDefaultChip()}
+                          {phone.label}
+                        </Grid>
                       </Grid>
-                      <Grid item>
-                        {phone.isVerified && renderVerifiedChip()}
-                        {phone.default && renderDefaultChip()}
-                        {phone.label}
-                      </Grid>
-                    </Grid>
 
-                  </React.Fragment>
-                );
-              })
-            }
-          </Grid>
+                    </React.Fragment>
+                  );
+                })
+              }
+            </Grid>
+            )
+          }
         </Grid>
       </Grid>
     );
@@ -401,60 +435,74 @@ export const UserAdminEdit: React.FC = () => {
       >
         <Grid container margin="0 0 20px" direction="column">
           <Typography style={{ fontWeight: 700 }}>Roles:</Typography>
-          {renderDivider('0 0 10')}
-          <Grid container justifyContent="space-between">
-            {
-              roles.map((role, index) => {
-                return (
-                  <Grid container key={`role-${index}`}>
-                    <Grid item>
-                      <FormGroup>
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              size='large'
-                              checked={role.hasRole}
-                              onClick={
-                                () => void handleRoleClick(role.role)
+          { renderDivider('0 0 10') }
+          {
+            isLoadingUser && listSkeleton(2, '48px')
+          }
+          {
+            !isLoadingUser && (
+              <Grid container justifyContent="space-between">
+                {
+                  roles.map((role, index) => {
+                    return (
+                      <Grid container key={`role-${index}`}>
+                        <Grid item>
+                          <FormGroup>
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  size='large'
+                                  checked={role.hasRole}
+                                  onClick={
+                                    () => void handleRoleClick(role.role)
+                                  }
+                                />
                               }
+                              label={role.role}
                             />
-                          }
-                          label={role.role}
-                        />
-                      </FormGroup>
-                    </Grid>
-                  </Grid>
-                );
-              })
-            }
-          </Grid>
+                          </FormGroup>
+                        </Grid>
+                      </Grid>
+                    );
+                  })
+                }
+              </Grid>
+            )
+          }
         </Grid>
         <Grid container direction="column">
           <Typography style={{ fontWeight: 700 }}>Restrictions:</Typography>
-          {renderDivider('0 0 10')}
-          <Grid container justifyContent="space-between">
-            {
-              restrictions.map((restriction, index) => {
-                return (
-                  <Grid container key={`restriction-${index}`}>
-                    <FormGroup>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            className='Mui-checked-error'
-                            size='large'
-                            checked={restriction.isRestricted}
-                            onClick={() => console.log('clicked', restriction.restriction)}
+          { renderDivider('0 0 10') }
+          {
+            isLoadingUser && listSkeleton(2, '48px')
+          }
+          {
+            !isLoadingUser && (
+              <Grid container justifyContent="space-between">
+                {
+                  restrictions.map((restriction, index) => {
+                    return (
+                      <Grid container key={`restriction-${index}`}>
+                        <FormGroup>
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                className='Mui-checked-error'
+                                size='large'
+                                checked={restriction.isRestricted}
+                                onClick={() => console.log('clicked', restriction.restriction)}
+                              />
+                            }
+                            label={restriction.restriction}
                           />
-                        }
-                        label={restriction.restriction}
-                      />
-                    </FormGroup>
-                  </Grid>
-                );
-              })
-            }
-          </Grid>
+                        </FormGroup>
+                      </Grid>
+                    );
+                  })
+                }
+              </Grid>
+            )
+          }
         </Grid>
       </Grid>
     );

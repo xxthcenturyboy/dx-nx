@@ -128,7 +128,12 @@ import { FADE_TIMEOUT_DUR } from '../../ui.consts';
               {
                 navigation && renderHeaderNavigation()
               }
-              { headerTitle }
+              <Fade
+                in={true}
+                timeout={FADE_TIMEOUT_DUR}
+              >
+                <span>{ headerTitle }</span>
+              </Fade>
             </Typography>
             {
               headerSubTitle && (
