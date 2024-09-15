@@ -440,14 +440,12 @@ export const UserAdminList: React.FC = () => {
               changeSort={handleSortChange}
               clickRow={clickRow}
               count={usersCount || 0}
-              collapsible
               header={headerData}
               loading={isLoadingUserList}
               limit={limit}
               // maxHeight="272px"
               offset={offset}
               orderBy={orderBy}
-              // refreshData={refreshTableData}
               rows={rowData}
               sortDir={sortDir}
               tableName="Users"

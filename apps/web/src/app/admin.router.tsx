@@ -10,11 +10,20 @@ import { WebConfigService } from '@dx/config-web';
 import { store } from '@dx/store-web';
 
 export const AdminRouter = () => {
-  const hasAdminRole = store.getState().userProfile.a || false;
+  const hasAdminRole = () => {
+    if (
+      store.getState().userProfile.sa
+      || store.getState().userProfile.a
+    ) {
+      return true;
+    }
+
+    return false;
+  }
   return (
     <>
       {
-        hasAdminRole
+        hasAdminRole()
           ? <Outlet />
           : <UnauthorizedComponent />
       }

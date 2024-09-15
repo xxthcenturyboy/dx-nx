@@ -1,4 +1,4 @@
-export { TableComponent } from './TableComponent';
+export { TableComponent } from './table.component';
 export {
   CellAlignment,
   ComponentType,

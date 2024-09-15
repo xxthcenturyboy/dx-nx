@@ -5,12 +5,10 @@ import React,
 import {
   Chip,
   Grid,
-  Paper,
   Table,
   TableBody,
   TableCell,
   tableCellClasses,
-  TableHead,
   TableRow,
   Tooltip,
   useMediaQuery,
@@ -33,6 +31,7 @@ import {
   useAppSelector
 } from '@dx/store-web';
 import {
+  CollapsiblePanel,
   ContentWrapper,
   selectCurrentThemeMode,
   uiActions
@@ -128,31 +127,25 @@ export const StatsWebApiHealthComponent: React.FC = () => {
         </Tooltip>
       )}
     >
-      <Paper
-        elevation={2}
+      <Grid
+        container
+        display={'block'}
+        width={'100%'}
       >
+        {/* HTTP */}
         <Grid
-          container
-          direction="column"
-          padding="20px"
+          item
+          mb={'24px'}
+          xs={12}
         >
-          {/* HTTP */}
-          <Grid
-            item
+          <CollapsiblePanel
+            headerTitle='HTTP'
+            panelId='panel-api-health-http'
           >
             <Table
               size="medium"
               id="http"
             >
-              <TableHead>
-                <TableRow>
-                  <StyledTableCell
-                    colSpan={2}
-                  >
-                    HTTP
-                  </StyledTableCell>
-                </TableRow>
-              </TableHead>
               <TableBody>
                 <TableRow>
                   <StyledTableCell
@@ -176,25 +169,23 @@ export const StatsWebApiHealthComponent: React.FC = () => {
                 </TableRow>
               </TableBody>
             </Table>
-          </Grid>
+          </CollapsiblePanel>
+        </Grid>
 
-          {/* MEMORY */}
-          <Grid
-            item
+        {/* MEMORY */}
+        <Grid
+          item
+          mb={'24px'}
+          xs={12}
+        >
+          <CollapsiblePanel
+            headerTitle='MEMORY'
+            panelId='panel-api-health-memory'
           >
             <Table
               size="medium"
               id="memory"
             >
-              <TableHead>
-                <TableRow>
-                  <StyledTableCell
-                    colSpan={2}
-                  >
-                    MEMORY
-                  </StyledTableCell>
-                </TableRow>
-              </TableHead>
               <TableBody>
                 <TableRow>
                   <StyledTableCell
@@ -268,25 +259,23 @@ export const StatsWebApiHealthComponent: React.FC = () => {
                 </TableRow>
               </TableBody>
             </Table>
-          </Grid>
+          </CollapsiblePanel>
+        </Grid>
 
-          {/* POSTGRES */}
-          <Grid
-            item
+        {/* POSTGRES */}
+        <Grid
+          item
+          mb={'24px'}
+          xs={12}
+        >
+          <CollapsiblePanel
+            headerTitle='POSTGRES'
+            panelId='panel-api-health-postgres'
           >
             <Table
               size="medium"
               id="postgres"
             >
-              <TableHead>
-                <TableRow>
-                  <StyledTableCell
-                    colSpan={2}
-                  >
-                    POSTGRES
-                  </StyledTableCell>
-                </TableRow>
-              </TableHead>
               <TableBody>
                 <TableRow>
                   <StyledTableCell
@@ -320,25 +309,23 @@ export const StatsWebApiHealthComponent: React.FC = () => {
                 </TableRow>
               </TableBody>
             </Table>
-          </Grid>
+          </CollapsiblePanel>
+        </Grid>
 
-          {/* REDIS */}
-          <Grid
-            item
+        {/* REDIS */}
+        <Grid
+          item
+          mb={'24px'}
+          xs={12}
+        >
+          <CollapsiblePanel
+            headerTitle='REDIS'
+            panelId='panel-api-health-redis'
           >
             <Table
               size="medium"
               id="redis"
             >
-              <TableHead>
-                <TableRow>
-                  <StyledTableCell
-                    colSpan={2}
-                  >
-                    REDIS
-                  </StyledTableCell>
-                </TableRow>
-              </TableHead>
               <TableBody>
                 <TableRow>
                   <StyledTableCell
@@ -416,10 +403,9 @@ export const StatsWebApiHealthComponent: React.FC = () => {
                 </TableRow>
               </TableBody>
             </Table>
-          </Grid>
-
+          </CollapsiblePanel>
         </Grid>
-      </Paper>
+      </Grid>
     </ContentWrapper>
   );
 };

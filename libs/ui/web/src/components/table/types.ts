@@ -13,7 +13,6 @@ export type TableComponentProps = {
   changeOffset?: (offset: number) => void;
   changeSort?: (fieldName: string) => void;
   clickRow?: (rowData: TableRowType) => void;
-  collapsible?: boolean;
   count: number;
   header: TableHeaderItem[];
   loading?: boolean;
@@ -21,7 +20,6 @@ export type TableComponentProps = {
   maxHeight?: string;
   offset: number;
   orderBy?: string;
-  refreshData?: () => Promise<void>;
   rows: TableRowType[];
   sortDir: SortDirType;
   tableName: string;
