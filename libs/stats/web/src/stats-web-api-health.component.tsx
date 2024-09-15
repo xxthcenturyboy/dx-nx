@@ -137,6 +137,7 @@ export const StatsWebApiHealthComponent: React.FC = () => {
         >
           <CollapsiblePanel
             headerTitle='HTTP'
+            isLoading={isLoadingApiStats}
             panelId='panel-api-health-http'
           >
             <Table
@@ -177,6 +178,7 @@ export const StatsWebApiHealthComponent: React.FC = () => {
         >
           <CollapsiblePanel
             headerTitle='MEMORY'
+            isLoading={isLoadingApiStats}
             panelId='panel-api-health-memory'
           >
             <Table
@@ -267,6 +269,7 @@ export const StatsWebApiHealthComponent: React.FC = () => {
         >
           <CollapsiblePanel
             headerTitle='POSTGRES'
+            isLoading={isLoadingApiStats}
             panelId='panel-api-health-postgres'
           >
             <Table
@@ -317,6 +320,7 @@ export const StatsWebApiHealthComponent: React.FC = () => {
         >
           <CollapsiblePanel
             headerTitle='REDIS'
+            isLoading={isLoadingApiStats}
             panelId='panel-api-health-redis'
           >
             <Table

@@ -8,6 +8,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
+  Fade,
   IconButton,
   Typography,
   useTheme,
@@ -16,14 +17,19 @@ import {
 import {
   ExpandMore,
 } from '@mui/icons-material';
+import { BeatLoader } from 'react-spinners';
+
 import {
   APP_COLOR_PALETTE,
   BORDER_RADIUS
 } from '../../mui-overrides/styles';
+import { FADE_TIMEOUT_DUR } from '../../ui.consts';
+
 
 export type CollapsiblePanelPropsType = {
   children: React.ReactNode;
   headerTitle: string;
+  isLoading?: boolean;
   panelId: string
  };
 
@@ -31,6 +37,7 @@ export const CollapsiblePanel: React.FC<CollapsiblePanelPropsType> = React.forwa
   const {
     children,
     headerTitle,
+    isLoading,
     panelId
   } = props;
   const [expanded, setExpanded] = useState<string | false>(panelId);
@@ -100,6 +107,31 @@ export const CollapsiblePanel: React.FC<CollapsiblePanelPropsType> = React.forwa
         </AccordionSummary>
         <AccordionDetails>
           { children }
+          {
+            <Fade in={isLoading} timeout={FADE_TIMEOUT_DUR}>
+              <Box
+                display={'flex'}
+                flexDirection={'row'}
+                alignItems={'center'}
+                justifyContent={'center'}
+                sx={
+                  {
+                    backgroundColor: '#00000057',
+                    position: 'absolute',
+                    top: '68px',
+                    zIndex: 100,
+                    height: 'fill-available',
+                    width: '100%'
+                  }
+                }
+              >
+                <BeatLoader
+                  size={24}
+                  color={APP_COLOR_PALETTE.SECONDARY[700]}
+                />
+              </Box>
+            </Fade>
+          }
         </AccordionDetails>
       </Accordion>
     </Box>
