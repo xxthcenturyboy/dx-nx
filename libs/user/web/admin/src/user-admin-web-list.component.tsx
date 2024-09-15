@@ -12,8 +12,7 @@ import {
   FormControl,
   Grid,
   FilledInput,
-  Input,
-  InputLabel,
+  IconButton,
   Tooltip,
   useMediaQuery,
   useTheme,
@@ -360,7 +359,7 @@ export const UserAdminList: React.FC = () => {
             }
           >
             <FormControl
-              margin="normal"
+              margin="none"
               style={
                 {
                   marginRight: SM_BREAK ? '24px' : '24px',
@@ -384,24 +383,25 @@ export const UserAdminList: React.FC = () => {
               />
             </FormControl>
             <span>
-              <Tooltip title="Refresh List">
-                <Cached
-                  onClick={
-                    (event: React.SyntheticEvent) => {
-                      event.stopPropagation();
-                      void refreshTableData();
-                    }
+              <IconButton
+                color="primary"
+                onClick={
+                  (event: React.SyntheticEvent) => {
+                    event.stopPropagation();
+                    void refreshTableData();
                   }
-                  style={
-                    {
-                      cursor: 'pointer',
-                      width: '0.75em',
-                      margin: '0 10 0 0',
-                      color: 'inherit'
-                    }
+                }
+                sx={
+                  {
+                    boxShadow: 1
                   }
-                />
-              </Tooltip>
+                }
+              >
+                <Tooltip title="Refresh List">
+                  <Cached />
+                </Tooltip>
+              </IconButton>
+
             </span>
           </Grid>
           {/* New User */}

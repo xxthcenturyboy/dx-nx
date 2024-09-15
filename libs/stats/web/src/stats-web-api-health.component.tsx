@@ -5,6 +5,7 @@ import React,
 import {
   Chip,
   Grid,
+  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -108,22 +109,23 @@ export const StatsWebApiHealthComponent: React.FC = () => {
       }
       headerContent={(
         <Tooltip title="Refresh Data">
-          <Cached
+          <IconButton
+            color='primary'
             onClick={
               (event: React.SyntheticEvent) => {
                 event.stopPropagation();
                 void fetchApiStats();
               }
             }
-            style={
+            sx={
               {
-                cursor: 'pointer',
-                width: '0.75em',
-                margin: '0 10 0 0',
-                color: 'inherit'
+                boxShadow: 1
               }
             }
-          />
+          >
+            <Cached />
+          </IconButton>
+
         </Tooltip>
       )}
     >
