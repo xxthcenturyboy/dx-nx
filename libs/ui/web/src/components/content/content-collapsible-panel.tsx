@@ -119,9 +119,10 @@ export const CollapsiblePanel: React.FC<CollapsiblePanelPropsType> = React.forwa
                     backgroundColor: '#00000057',
                     position: 'absolute',
                     top: '68px',
+                    left: 0,
                     zIndex: 100,
                     height: 'fill-available',
-                    width: '100%'
+                    width: 'fill-available'
                   }
                 }
               >
