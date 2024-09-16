@@ -34,8 +34,11 @@ function setUpMenus(
 async function getNotifications(userId: string) {
   try {
     const fetchResult = (await store.dispatch(fetchNotifications.initiate({ userId }))).data;
-    if (Array.isArray(fetchResult)) {
-      store.dispatch(notificationActions.setNotifications(fetchResult));
+    if (Array.isArray(fetchResult.system)) {
+      store.dispatch(notificationActions.setSystemNotifications(fetchResult.system));
+    }
+    if (Array.isArray(fetchResult.user)) {
+      store.dispatch(notificationActions.setUserNotifications(fetchResult.user));
     }
   } catch (err) {
     logger.error(`Error fetching notifications: ${err.message}`);

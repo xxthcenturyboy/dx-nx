@@ -1,6 +1,10 @@
 import { Router } from 'express';
 
-import { ensureLoggedIn } from '@dx/auth-api';
+import {
+  ensureLoggedIn,
+  hasAdminRole,
+  hasSuperAdminRole
+} from '@dx/auth-api';
 import { NotificationController } from './notification.controller';
 
 export class NotificationRoutes {
@@ -19,8 +23,19 @@ export class NotificationRoutes {
     );
 
     router.post(
-      '/',
+      '/user',
+      hasAdminRole,
       NotificationController.createNotification
+    );
+    router.post(
+      '/all-users',
+      hasAdminRole,
+      NotificationController.createNotificationToAll
+    );
+    router.post(
+      '/app-update',
+      hasSuperAdminRole,
+      NotificationController.createAppNotification
     );
     router.post(
       '/:userId',
@@ -36,7 +51,7 @@ export class NotificationRoutes {
       NotificationController.markAllAsViewed
     );
     router.put(
-      '/dismiss/:id',
+      '/dismiss/:id/:userId',
       NotificationController.markAsDismissed
     );
     router.put(

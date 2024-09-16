@@ -22,6 +22,13 @@ export const selectHasAdminRole = createSelector(
   }
 );
 
+export const selectHasSuperAdminRole = createSelector(
+  [getUserProfile],
+  (profile) => {
+    return profile.sa;
+  }
+);
+
 export const selectUserEmails = createSelector(
   [getUserProfile],
   (profile) => {

@@ -3,9 +3,23 @@ import { createSelector } from 'reselect';
 import { RootState } from '@dx/store-web';
 import { NotificationType } from '@dx/notifications-shared';
 
-const getNotifications = (state: RootState): NotificationType[] => state.notification.notifications;
+const getSystemNotifications = (state: RootState): NotificationType[] => state.notification.system;
+const getUserNotifications = (state: RootState): NotificationType[] => state.notification.user;
+
+export const selectSystemNotificationCount = createSelector(
+  [getSystemNotifications],
+  notifications => notifications.length
+);
+
+export const selectUserNotificationCount = createSelector(
+  [getUserNotifications],
+  notifications => notifications.length
+);
 
 export const selectNotificationCount = createSelector(
-  [getNotifications],
-  notifications => notifications.length
+  [
+    selectSystemNotificationCount,
+    selectUserNotificationCount
+  ],
+  (systemCount, userCount) => systemCount + userCount
 );

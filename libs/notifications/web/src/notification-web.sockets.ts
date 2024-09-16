@@ -40,7 +40,11 @@ export class NotificationWebSockets {
     });
 
     this.socket.on('sendNotification', (notification) => {
-      store.dispatch(notificationActions.addNotification(notification));
+      store.dispatch(notificationActions.addUserNotification(notification));
+    });
+
+    this.socket.on('sendSystemNotification', (notification) => {
+      store.dispatch(notificationActions.addSystemNotification(notification));
     });
   }
 

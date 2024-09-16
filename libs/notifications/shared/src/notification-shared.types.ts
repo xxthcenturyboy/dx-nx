@@ -26,6 +26,7 @@ export type NotificationType = {
 export type NotificationSocketServerToClientEvents = {
   sendAppUpdateNotification: (message: string) => void;
   sendNotification: (notification: NotificationType) => void;
+  sendSystemNotification: (notification: NotificationType) => void;
   sendBasic: (message: string) => void;
 }
 

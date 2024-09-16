@@ -14,6 +14,8 @@ export {
 } from './user-profile-web.reducer';
 export {
   selectIsUserProfileValid,
+  selectHasAdminRole,
+  selectHasSuperAdminRole,
   selectUserEmails,
   selectUserPhones
 } from './user-profile-web.selectors';

@@ -17,6 +17,8 @@ import {
   DeletedAt,
   Index,
 } from 'sequelize-typescript';
+import { NIL as NIL_UUID } from 'uuid';
+
 import {
   UserModel,
   UserModelType
@@ -114,6 +116,19 @@ export class NotificationModel extends Model<NotificationModel> {
     return NotificationModel.findAll({
       where: {
         userId,
+        dismissedAt: null
+      },
+      limit: 1000,
+      order: [
+        ['createdAt', 'DESC']
+      ]
+    });
+  }
+
+  static async getSystemNotifications(): Promise<NotificationModel[]> {
+    return NotificationModel.findAll({
+      where: {
+        userId: NIL_UUID,
         dismissedAt: null
       },
       limit: 1000,

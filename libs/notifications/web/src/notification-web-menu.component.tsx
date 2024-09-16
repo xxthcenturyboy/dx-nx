@@ -27,6 +27,7 @@ import {
 } from './notification-web-menu.ui';
 import { NotificationComponent } from './notification-web.component';
 import { notificationActions } from './notification-web.reducer';
+import { selectNotificationCount } from './notification-web.selectors';
 import { useMarkAllAsDismissedMutation } from './notification-web.api';
 
 type NotificationMenuPropsType = {
@@ -37,7 +38,9 @@ type NotificationMenuPropsType = {
 export const NotificationMenu: React.FC<NotificationMenuPropsType> = (props) => {
   const [mobileBreak, setMobileBreak] = React.useState(false);
   const windowWidth = useAppSelector((state: RootState) => state.ui.windowWidth) || 0;
-  const notifications = useAppSelector((state: RootState) => state.notification.notifications);
+  const systemNotifications = useAppSelector((state: RootState) => state.notification.system);
+  const userNotifications = useAppSelector((state: RootState) => state.notification.user);
+  const notificationCount = useAppSelector((state: RootState) => selectNotificationCount(state));
   const userId = useAppSelector((state: RootState) => state.userProfile.id);
   const dispatch = useAppDispatch();
   const [
@@ -61,7 +64,7 @@ export const NotificationMenu: React.FC<NotificationMenuPropsType> = (props) => 
       && !dismissAllUninitialized
     ) {
       if (!dismissAllError) {
-        dispatch(notificationActions.setNotifications([]));
+        dispatch(notificationActions.setUserNotifications([]));
       } else {
         'error' in dismissAllError && toast.error(dismissAllError['error']);
       }
@@ -106,17 +109,16 @@ export const NotificationMenu: React.FC<NotificationMenuPropsType> = (props) => 
             Notifications
             {
               <Fade
-                in={notifications.length > 0}
+                in={notificationCount > 0}
               >
-                <span>{ `: ${notifications.length ? notifications.length : ''}` }</span>
+                <span>{ `: ${notificationCount || ''}` }</span>
               </Fade>
-
             }
           </Typography>
         </Grid>
       </StyledNotificationActionArea>
       <Collapse
-        in={notifications.length === 0}
+        in={notificationCount === 0}
       >
         <Grid
           container
@@ -146,7 +148,22 @@ export const NotificationMenu: React.FC<NotificationMenuPropsType> = (props) => 
       <StyledNotificationsList>
         <TransitionGroup>
           {
-            notifications.map((notification) => {
+            systemNotifications.map((notification) => {
+              return (
+                <Collapse
+                  key={notification.title}
+                >
+                  <NotificationComponent
+                    notification={notification}
+                  />
+                </Collapse>
+              );
+            })
+          }
+        </TransitionGroup>
+        <TransitionGroup>
+          {
+            userNotifications.map((notification) => {
               return (
                 <Collapse
                   key={notification.title}
@@ -161,7 +178,7 @@ export const NotificationMenu: React.FC<NotificationMenuPropsType> = (props) => 
         </TransitionGroup>
       </StyledNotificationsList>
       <Collapse
-        in={notifications.length > 0}
+        in={notificationCount > 0}
       >
         <StyledNotificationActionArea>
           <Grid

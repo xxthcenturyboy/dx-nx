@@ -76,7 +76,7 @@ export class NotificationSocketApiService {
 
   public sendNotificationToAll(notification: NotificationType) {
     try {
-      this.ns.emit('sendNotification', notification);
+      this.ns.emit('sendSystemNotification', notification);
     } catch (err) {
       this.logger.logError(`Error sending notification socket: ${err.message}`);
     }

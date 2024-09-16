@@ -21,7 +21,7 @@ import { SocketWebConnection } from '@dx/data-access-socket-io-web';
 
 export const apiWebNotifications = apiWebMain.injectEndpoints({
   endpoints: (build) => ({
-    getNotifications: build.query<NotificationType[], { userId: string }>({
+    getNotifications: build.query<{ system: NotificationType[], user: NotificationType[] }, { userId: string }>({
       query: (payload) => (
         {
           url: `v1/notification/user/${payload.userId}`,
@@ -61,10 +61,10 @@ export const apiWebNotifications = apiWebMain.injectEndpoints({
         }
       )
     }),
-    markAsDismissed: build.mutation<{ success: boolean }, { id: string }>({
+    markAsDismissed: build.mutation<{ success: boolean }, { id: string, userId: string }>({
       query: (paylaod) => (
         {
-          url: `v1/notification/dismiss/${paylaod.id}`,
+          url: `v1/notification/dismiss/${paylaod.id}/${paylaod.userId}`,
           method: 'PUT'
         }
       )

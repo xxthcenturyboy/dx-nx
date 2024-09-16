@@ -2,13 +2,51 @@ import {
   Request,
   Response
 } from 'express';
+import { NIL as NIL_UUID } from 'uuid';
 
-import { sendBadRequest, sendOK } from '@dx/utils-api-http-response';
-import { NotificationService } from './notification.service';
+import {
+  sendBadRequest,
+  sendOK
+} from '@dx/utils-api-http-response';
 import { NOTIFICATION_LEVELS } from '@dx/notifications-shared';
+import { userHasRole } from '@dx/auth-api';
+import { NotificationService } from './notification.service';
+import { USER_ROLE } from '@dx/user-privilege-shared';
 
 export const NotificationController = {
   createNotification: async function (req: Request, res: Response) {
+    try {
+      const service = new NotificationService();
+      const {
+        level,
+        message,
+        route,
+        suppressPush,
+        title,
+        userId
+      } = req.body as {
+        level: keyof typeof NOTIFICATION_LEVELS;
+        message: string;
+        route?: string;
+        suppressPush?: boolean;
+        title?: string;
+        userId: string;
+      }
+      const result = await service.createAndSend(
+        userId,
+        message,
+        level,
+        title,
+        route,
+        suppressPush || false
+      );
+      sendOK(req, res, result);
+    } catch (err) {
+      sendBadRequest(req, res, err.message);
+    }
+  },
+
+  createNotificationToAll: async function (req: Request, res: Response) {
     try {
       const service = new NotificationService();
       const {
@@ -24,8 +62,7 @@ export const NotificationController = {
         suppressPush?: boolean;
         title?: string;
       }
-      const result = await service.createAndSend(
-        req.user.id,
+      const result = await service.createAndSendToAll(
         message,
         level,
         title,
@@ -37,6 +74,17 @@ export const NotificationController = {
       sendBadRequest(req, res, err.message);
     }
   },
+
+  createAppNotification: async function (req: Request, res: Response) {
+    try {
+      const service = new NotificationService();
+      const result = await service.createAndSendAppUpdate();
+      sendOK(req, res, result);
+    } catch (err) {
+      sendBadRequest(req, res, err.message);
+    }
+  },
+
   getAppBadgeCount: async function (req: Request, res: Response) {
     try {
       const service = new NotificationService();
@@ -47,6 +95,7 @@ export const NotificationController = {
       sendBadRequest(req, res, err.message);
     }
   },
+
   getByUserId: async function (req: Request, res: Response) {
     try {
       const service = new NotificationService();
@@ -57,6 +106,7 @@ export const NotificationController = {
       sendBadRequest(req, res, err.message);
     }
   },
+
   markAllAsRead: async function (req: Request, res: Response) {
     try {
       const service = new NotificationService();
@@ -67,6 +117,7 @@ export const NotificationController = {
       sendBadRequest(req, res, err.message);
     }
   },
+
   markAllAsViewed: async function (req: Request, res: Response) {
     try {
       const service = new NotificationService();
@@ -77,26 +128,43 @@ export const NotificationController = {
       sendBadRequest(req, res, err.message);
     }
   },
+
   markAllDismissed: async function (req: Request, res: Response) {
     try {
       const service = new NotificationService();
       const { userId } = req.params as { userId: string };
-      const result = await service.markAllDismissed(userId);
+      if (
+        userId === NIL_UUID
+        && req.user.id
+      ) {
+        if (userHasRole(req.user.id, USER_ROLE.SUPER_ADMIN)) {
+          await service.markAllDismissed(userId);
+        }
+      }
       sendOK(req, res, { success: true });
     } catch (err) {
       sendBadRequest(req, res, err.message);
     }
   },
+
   markAsDismissed: async function (req: Request, res: Response) {
     try {
       const service = new NotificationService();
-      const { id } = req.params as { id: string };
-      const result = await service.markAsDismissed(id);
+      const { id, userId } = req.params as { id: string, userId: string };
+      if (
+        userId === NIL_UUID
+        && req.user.id
+      ) {
+        if (userHasRole(req.user.id, USER_ROLE.SUPER_ADMIN)) {
+          await service.markAsDismissed(id);
+        }
+      }
       sendOK(req, res, { success: true });
     } catch (err) {
       sendBadRequest(req, res, err.message);
     }
   },
+
   markAsRead: async function (req: Request, res: Response) {
     try {
       const service = new NotificationService();
@@ -107,6 +175,7 @@ export const NotificationController = {
       sendBadRequest(req, res, err.message);
     }
   },
+
   testSocket: async function (req: Request, res: Response) {
     try {
       const service = new NotificationService();

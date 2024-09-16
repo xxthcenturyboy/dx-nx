@@ -11,15 +11,19 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import WarningIcon from '@mui/icons-material/Warning';
 import WavingHandIcon from '@mui/icons-material/WavingHand';
 import { toast } from 'react-toastify';
+import { NIL as NIL_UUID } from 'uuid';
 
 import {
-  useAppDispatch
+  RootState,
+  useAppDispatch,
+  useAppSelector
 } from '@dx/store-web';
 import { themeColors } from '@dx/ui-web';
 import {
   NotificationType,
   NOTIFICATION_LEVELS
 } from '@dx/notifications-shared';
+import { selectHasSuperAdminRole } from '@dx/user-profile-web';
 import { StyledNotification } from './notification-web-menu.ui';
 import { notificationActions } from './notification-web.reducer';
 import { useMarkAsDismissedMutation } from './notification-web.api';
@@ -33,6 +37,7 @@ export const NotificationComponent: React.FC<NotificationMenuPropsType> = (props
     notification
   } = props;
   const MAX_LEN = 100;
+  const isSuperAdmin = useAppSelector((state: RootState) => selectHasSuperAdminRole(state));
   const dispatch = useAppDispatch();
   const [
     requestDismiss,
@@ -157,19 +162,31 @@ export const NotificationComponent: React.FC<NotificationMenuPropsType> = (props
         </Grid>
 
         {/** Dismiss Button */}
-        <Grid
-          item
-          width="10%"
-          alignItems="center"
-          display="flex"
-          justifyContent="flex-end"
-        >
-          <IconButton
-            onClick={() => requestDismiss({ id: notification.id })}
-          >
-            <ClearIcon />
-          </IconButton>
-        </Grid>
+        {
+          (
+            notification.userId === NIL_UUID
+            && isSuperAdmin
+          )
+          || notification.userId !== NIL_UUID
+          && (
+            <Grid
+              item
+              width="10%"
+              alignItems="center"
+              display="flex"
+              justifyContent="flex-end"
+            >
+              <IconButton
+                onClick={() => requestDismiss({
+                  id: notification.id,
+                  userId: notification.userId
+                })}
+              >
+                <ClearIcon />
+              </IconButton>
+            </Grid>
+          )
+        }
       </Grid>
     </StyledNotification>
   );

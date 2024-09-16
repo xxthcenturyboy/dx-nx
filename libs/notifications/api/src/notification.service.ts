@@ -1,3 +1,5 @@
+import { NIL as NIL_UUID } from 'uuid';
+
 import {
   NOTIFICATION_ERRORS,
   NOTIFICATION_LEVELS
@@ -14,12 +16,14 @@ import { sleep } from '@dx/utils-shared-misc';
 
 export class NotificationService {
   logger: ApiLoggingClassType;
+  systemId: string;
 
   constructor() {
     this.logger = ApiLoggingClass.instance;
+    this.systemId = NIL_UUID;
   }
 
-  public async getNotificationsByUserId(userId: string): Promise<NotificationModel[]> {
+  public async getNotificationsByUserId(userId: string): Promise<{ system: NotificationModel[], user: NotificationModel[] }> {
     if (
       !userId
       && typeof userId !== 'string'
@@ -28,7 +32,12 @@ export class NotificationService {
     }
 
     try {
-      return await NotificationModel.getByUserId(userId);
+      const userNotifications = await NotificationModel.getByUserId(userId);
+      const systemNotifications = await NotificationModel.getSystemNotifications();
+      return {
+        system: systemNotifications,
+        user: userNotifications
+      };
     } catch (err) {
       this.logger.logError(err);
       throw new Error(NOTIFICATION_ERRORS.SERVER_ERROR);
@@ -42,7 +51,7 @@ export class NotificationService {
       if (!user) return 0;
 
       const notifications = await this.getNotificationsByUserId(userId);
-      const notificationsCount = notifications.length;
+      const notificationsCount = notifications.system.length + notifications.user.length;
 
       return notificationsCount;
     } catch (err) {
@@ -129,6 +138,47 @@ export class NotificationService {
         this.sendDeviceNotification(userId, message, title, route);
       }
       return notification;
+    } catch (err) {
+      this.logger.logError(err);
+      throw new Error(NOTIFICATION_ERRORS.SERVER_ERROR);
+    }
+  }
+
+  public async createAndSendToAll(
+    message: string,
+    level: string,
+    title?: string,
+    route?: string,
+    suppressPush?: boolean
+  ): Promise<NotificationModel> {
+    try {
+      if (!message) {
+        throw new Error(NOTIFICATION_ERRORS.MISSING_PARAMS);
+      }
+
+      const notification = await NotificationModel.createNew({
+        userId: this.systemId,
+        route,
+        title,
+        message,
+        level
+      });
+
+      NotificationSocketApiService.instance.sendNotificationToAll(notification);
+
+      if (!suppressPush) {
+        this.sendDeviceNotification(this.systemId, message, title, route);
+      }
+      return notification;
+    } catch (err) {
+      this.logger.logError(err);
+      throw new Error(NOTIFICATION_ERRORS.SERVER_ERROR);
+    }
+  }
+
+  public async createAndSendAppUpdate(): Promise<void> {
+    try {
+      NotificationSocketApiService.instance.sendAppUpdateNotification('The applicaiton has been updated. Refresh your browser to get the latest update.');
     } catch (err) {
       this.logger.logError(err);
       throw new Error(NOTIFICATION_ERRORS.SERVER_ERROR);
