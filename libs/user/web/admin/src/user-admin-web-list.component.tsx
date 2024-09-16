@@ -107,8 +107,15 @@ export const UserAdminList: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    !isLoadingUserList
-    && void fetchUsers();
+    if (
+      isInitialized
+      && !isLoadingUserList
+    ) {
+      void fetchUsers();
+      return;
+    }
+
+    setIsFetching(false);
   }, [limit, offset, orderBy, sortDir]);
 
   useEffect(() => {
