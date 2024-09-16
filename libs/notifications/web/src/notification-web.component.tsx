@@ -164,10 +164,12 @@ export const NotificationComponent: React.FC<NotificationMenuPropsType> = (props
         {/** Dismiss Button */}
         {
           (
-            notification.userId === NIL_UUID
-            && isSuperAdmin
+            (
+              notification.userId === NIL_UUID
+              && isSuperAdmin
+            )
+            || notification.userId !== NIL_UUID
           )
-          || notification.userId !== NIL_UUID
           && (
             <Grid
               item
