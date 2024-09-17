@@ -7,10 +7,10 @@ import {
 import { styled } from '@mui/material/styles';
 
 export const StyledTableCell = styled(TableCell)<{
-  themeMode: string
-}>(({ theme, themeMode }) => ({
+  thememode: string
+}>(({ theme, thememode }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: themeMode === 'dark' ? theme.palette.common.black : theme.palette.primary.light,
+    backgroundColor: thememode === 'dark' ? theme.palette.common.black : theme.palette.primary.light,
     color: theme.palette.common.white,
     padding: '16px',
   },
@@ -28,8 +28,8 @@ export const StyledTableSortLabel = styled(TableSortLabel)(({ theme }) => ({
 
 export const StyledTableRow = styled(TableRow)<{
   loading: string,
-  themeMode: string
-}>(({ loading, theme, themeMode }) => ({
+  thememode: string
+}>(({ loading, theme, thememode }) => ({
   '&:nth-of-type(odd)': {
     backgroundColor: loading === 'true' ? 'transparent' : theme.palette.action.hover,
   },
@@ -39,7 +39,7 @@ export const StyledTableRow = styled(TableRow)<{
   // },
   '&:hover': {
     backgroundColor: loading !== 'true'
-      ? (themeMode === 'dark' ? theme.palette.primary.light : theme.palette.secondary.light)
+      ? (thememode === 'dark' ? theme.palette.primary.light : theme.palette.secondary.light)
       : 'initial',
 
   }

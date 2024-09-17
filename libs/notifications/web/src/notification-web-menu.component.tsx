@@ -151,7 +151,7 @@ export const NotificationMenu: React.FC<NotificationMenuPropsType> = (props) => 
             systemNotifications.map((notification) => {
               return (
                 <Collapse
-                  key={notification.title}
+                  key={notification.id}
                 >
                   <NotificationComponent
                     notification={notification}
@@ -166,7 +166,7 @@ export const NotificationMenu: React.FC<NotificationMenuPropsType> = (props) => 
             userNotifications.map((notification) => {
               return (
                 <Collapse
-                  key={notification.title}
+                  key={notification.id}
                 >
                   <NotificationComponent
                     notification={notification}

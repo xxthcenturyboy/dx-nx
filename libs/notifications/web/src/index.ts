@@ -11,6 +11,9 @@ export {
   useLazyGetNotificationsQuery,
   useMarkAllAsDismissedMutation,
   useMarkAsDismissedMutation,
+  useSendNotificationAppUpdateMutation,
+  useSendNotificationToAllMutation,
+  useSendNotificationToUserMutation,
   useTestSocketsMutation
 } from './notification-web.api';
 
@@ -22,3 +25,7 @@ export {
   NotificationWebSockets,
   NotificationWebSocketsType
 } from './notification-web.sockets';
+
+export {
+  NotificationSendDialog
+} from './notification-send.dialog';

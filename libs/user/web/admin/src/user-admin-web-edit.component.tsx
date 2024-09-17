@@ -9,6 +9,7 @@ import {
   useParams
 } from 'react-router-dom';
 import {
+  Button,
   Checkbox,
   Chip,
   Divider,
@@ -42,6 +43,7 @@ import { WebConfigService } from '@dx/config-web';
 import { prepareRoleCheckboxes } from '@dx/user-privilege-web';
 import { privilegeSetActions } from '@dx/user-privilege-web';
 import { useLazyGetPrivilegeSetsQuery } from '@dx/user-privilege-web';
+import { NotificationSendDialog } from '@dx/notifications-web';
 import { userAdminActions } from './user-admin-web.reducer';
 import { selectUserFormatted } from './user-admin-web.selectors';
 import {
@@ -559,6 +561,30 @@ export const UserAdminEdit: React.FC = () => {
         >
           { renderColumnLeft() }
           { renderColumnRight() }
+        </Grid>
+
+        <Grid
+          container
+          justifyContent="flex-start"
+          padding="20px"
+          direction={MD_BREAK ? 'column' : 'row'}
+        >
+          { renderDivider('12px 0 12px') }
+          <Grid item>
+            <Button
+              variant="contained"
+              onClick={
+                () => dispatch(uiActions.appDialogSet(
+                  <NotificationSendDialog
+                    user={user}
+                  />
+                ))
+              }
+              color={'primary'}
+            >
+              Send Notification
+            </Button>
+          </Grid>
         </Grid>
       </Paper>
     </ContentWrapper>

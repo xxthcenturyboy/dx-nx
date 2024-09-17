@@ -201,6 +201,14 @@ export const UserProfile: React.FC = () => {
             </Grid>
           </Grid>
 
+          <Divider
+            sx={
+              {
+                width: '100%',
+                margin: '12px 0 12px 0'
+              }
+            }
+          />
           <Grid
             container
             direction={MD_BREAK ? 'column' : 'row'}

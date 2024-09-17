@@ -38,7 +38,7 @@ export class NotificationRoutes {
       NotificationController.createAppNotification
     );
     router.post(
-      '/:userId',
+      '/test/:userId',
       NotificationController.testSocket
     );
 

@@ -38,10 +38,10 @@ export const CustomDialog: React.FC<Partial<DialogProps>> = (props) => {
       }
     >
       <Box
-        style={{
-          overflow: 'hidden',
-          padding: '10px 24px'
-        }}
+        display={'flex'}
+        justifyContent={'center'}
+        padding={'10px 24px'}
+        overflow={'hidden'}
       >
         { body }
       </Box>

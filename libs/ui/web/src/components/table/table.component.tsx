@@ -190,7 +190,7 @@ export const TableComponent: React.FC<TableComponentProps> = React.forwardRef((p
                             }
                           }
                           sortDirection={orderBy === data.fieldName ? order : false}
-                          themeMode={themeMode || 'light'}
+                          thememode={themeMode || 'light'}
                         >
                           {
                             data.sortable ? (
@@ -270,7 +270,7 @@ export const TableComponent: React.FC<TableComponentProps> = React.forwardRef((p
                             height: rowHeight
                           }
                         }
-                        themeMode={themeMode || 'light'}
+                        thememode={themeMode || 'light'}
                       >
                         <TableCell
                           key={`dummy-cell-${index}`}
@@ -323,7 +323,7 @@ export const TableComponent: React.FC<TableComponentProps> = React.forwardRef((p
                         onClick={
                           () => clickRow && clickRow(row)
                         }
-                        themeMode={themeMode || 'light'}
+                        thememode={themeMode || 'light'}
                       >
                         {
                           row.columns.map((cell: TableCellData, index: number) => {

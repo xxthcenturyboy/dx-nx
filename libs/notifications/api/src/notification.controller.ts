@@ -8,7 +8,10 @@ import {
   sendBadRequest,
   sendOK
 } from '@dx/utils-api-http-response';
-import { NOTIFICATION_LEVELS } from '@dx/notifications-shared';
+import {
+  NOTIFICATION_LEVELS,
+  NotificationCreationParamTypes
+} from '@dx/notifications-shared';
 import { userHasRole } from '@dx/auth-api';
 import { NotificationService } from './notification.service';
 import { USER_ROLE } from '@dx/user-privilege-shared';
@@ -24,14 +27,7 @@ export const NotificationController = {
         suppressPush,
         title,
         userId
-      } = req.body as {
-        level: keyof typeof NOTIFICATION_LEVELS;
-        message: string;
-        route?: string;
-        suppressPush?: boolean;
-        title?: string;
-        userId: string;
-      }
+      } = req.body as NotificationCreationParamTypes;
       const result = await service.createAndSend(
         userId,
         message,
@@ -55,13 +51,7 @@ export const NotificationController = {
         route,
         suppressPush,
         title
-      } = req.body as {
-        level: keyof typeof NOTIFICATION_LEVELS;
-        message: string;
-        route?: string;
-        suppressPush?: boolean;
-        title?: string;
-      }
+      } = req.body as Partial<NotificationCreationParamTypes>
       const result = await service.createAndSendToAll(
         message,
         level,
@@ -134,7 +124,7 @@ export const NotificationController = {
       const service = new NotificationService();
       const { userId } = req.params as { userId: string };
       if (
-        userId === NIL_UUID
+        userId !== NIL_UUID
         && req.user.id
       ) {
         if (userHasRole(req.user.id, USER_ROLE.SUPER_ADMIN)) {
@@ -152,7 +142,7 @@ export const NotificationController = {
       const service = new NotificationService();
       const { id, userId } = req.params as { id: string, userId: string };
       if (
-        userId === NIL_UUID
+        userId !== NIL_UUID
         && req.user.id
       ) {
         if (userHasRole(req.user.id, USER_ROLE.SUPER_ADMIN)) {

@@ -3,10 +3,11 @@ import { apiWebMain } from '@dx/rtk-query-web';
 import {
   // NotificationSocketClientToServerEvents,
   // NotificationSocketServerToClientEvents,
+  NotificationCreationParamTypes,
   NotificationType,
   // NOTIFICATION_WEB_SOCKET_NS
 } from '@dx/notifications-shared';
-import { SocketWebConnection } from '@dx/data-access-socket-io-web';
+// import { SocketWebConnection } from '@dx/data-access-socket-io-web';
 
 // export class NotificationSockets {
 //   public static getSocket (userId: string) {
@@ -53,6 +54,7 @@ export const apiWebNotifications = apiWebMain.injectEndpoints({
       //   socket.removeListener('sendNotification', listener);
       // }
     }),
+
     markAllAsDismissed: build.mutation<{ success: boolean }, { userId: string }>({
       query: (paylaod) => (
         {
@@ -61,6 +63,7 @@ export const apiWebNotifications = apiWebMain.injectEndpoints({
         }
       )
     }),
+
     markAsDismissed: build.mutation<{ success: boolean }, { id: string, userId: string }>({
       query: (paylaod) => (
         {
@@ -69,15 +72,46 @@ export const apiWebNotifications = apiWebMain.injectEndpoints({
         }
       )
     }),
+
+    sendNotificationAppUpdate: build.mutation<{ success: boolean }, void>({
+      query: () => (
+        {
+          url: `v1/notification/app-update`,
+          method: 'POST'
+        }
+      )
+    }),
+
+    sendNotificationToAll: build.mutation<{ success: boolean }, Partial<NotificationCreationParamTypes>>({
+      query: (paylaod) => (
+        {
+          url: `v1/notification/all-users`,
+          method: 'POST',
+          data: paylaod
+        }
+      )
+    }),
+
+    sendNotificationToUser: build.mutation<{ success: boolean }, NotificationCreationParamTypes>({
+      query: (paylaod) => (
+        {
+          url: `v1/notification/user`,
+          method: 'POST',
+          data: paylaod
+        }
+      )
+    }),
+
     testSockets: build.mutation<{ success: boolean }, { userId: string }>({
       query: (paylaod) => (
         {
-          url: `v1/notification/${paylaod.userId}`,
+          url: `v1/notification/test/${paylaod.userId}`,
           method: 'POST'
         }
       )
     }),
   }),
+
   overrideExisting: true
 });
 
@@ -87,5 +121,8 @@ export const {
   useLazyGetNotificationsQuery,
   useMarkAllAsDismissedMutation,
   useMarkAsDismissedMutation,
+  useSendNotificationAppUpdateMutation,
+  useSendNotificationToAllMutation,
+  useSendNotificationToUserMutation,
   useTestSocketsMutation
 } = apiWebNotifications;
