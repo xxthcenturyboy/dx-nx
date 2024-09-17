@@ -1,23 +1,21 @@
 import React from 'react';
 import {
   Box,
+  Button,
   Chip,
   Divider,
   Grid,
-  IconButton,
   Paper,
   styled,
   TableBody,
   Table,
   TableCell,
   TableContainer,
-  TableHead,
   TableRow,
   Tooltip,
   Typography
 } from '@mui/material';
 import {
-  Add,
   Delete
 } from '@mui/icons-material';
 
@@ -75,11 +73,12 @@ export const EmailList: React.FC<EmailListPropsType> = (props) => {
           container
           justifyContent="space-between"
           alignItems="center"
+          marginBottom={'8px'}
         >
           {/* Title */}
           <Grid item>
             <Typography
-              variant="body1"
+              variant="h6"
               color="primary"
             >
               Emails
@@ -87,9 +86,10 @@ export const EmailList: React.FC<EmailListPropsType> = (props) => {
           </Grid>
           {/* New Email */}
           <Grid item>
-            <IconButton
+            <Button
               color="primary"
-              component="span"
+              variant='contained'
+              size={'small'}
               onClick={
                 () => dispatch(uiActions.appDialogSet(
                   <AddEmailDialog
@@ -99,8 +99,8 @@ export const EmailList: React.FC<EmailListPropsType> = (props) => {
                 ))
               }
             >
-              <Add />
-            </IconButton>
+              New Email
+            </Button>
           </Grid>
         </Grid>
         <Divider />

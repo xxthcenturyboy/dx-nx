@@ -1,23 +1,21 @@
 import React from 'react';
 import {
   Box,
+  Button,
   Chip,
   Divider,
   Grid,
-  IconButton,
   Paper,
   styled,
   TableBody,
   Table,
   TableCell,
   TableContainer,
-  TableHead,
   TableRow,
   Tooltip,
   Typography
 } from '@mui/material';
 import {
-  Add,
   Delete
 } from '@mui/icons-material';
 
@@ -75,11 +73,12 @@ export const Phonelist: React.FC<UserPhonesProps> = (props) => {
           container
           justifyContent="space-between"
           alignItems="center"
+          marginBottom={'8px'}
         >
           {/* Title */}
           <Grid item>
             <Typography
-              variant="body1"
+              variant="h6"
               color="primary"
             >
               Phones
@@ -87,9 +86,10 @@ export const Phonelist: React.FC<UserPhonesProps> = (props) => {
           </Grid>
           {/* New Phone */}
           <Grid item>
-            <IconButton
+            <Button
               color="primary"
-              component="span"
+              variant="contained"
+              size={'small'}
               onClick={
                 () => dispatch(uiActions.appDialogSet(
                   <AddPhoneDialog
@@ -99,8 +99,8 @@ export const Phonelist: React.FC<UserPhonesProps> = (props) => {
                 ))
               }
             >
-              <Add />
-            </IconButton>
+              New Phone
+            </Button>
           </Grid>
         </Grid>
         <Divider />
