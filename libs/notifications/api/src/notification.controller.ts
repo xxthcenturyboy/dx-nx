@@ -9,7 +9,7 @@ import {
   sendOK
 } from '@dx/utils-api-http-response';
 import {
-  NOTIFICATION_LEVELS,
+  // NOTIFICATION_LEVELS,
   NotificationCreationParamTypes
 } from '@dx/notifications-shared';
 import { userHasRole } from '@dx/auth-api';
@@ -124,12 +124,15 @@ export const NotificationController = {
       const service = new NotificationService();
       const { userId } = req.params as { userId: string };
       if (
-        userId !== NIL_UUID
-        && req.user.id
+        userId === NIL_UUID
+        && userHasRole(req.user.id, USER_ROLE.SUPER_ADMIN)
       ) {
-        if (userHasRole(req.user.id, USER_ROLE.SUPER_ADMIN)) {
-          await service.markAllDismissed(userId);
-        }
+        await service.markAllDismissed(NIL_UUID);
+      }
+      if (
+        userId !== NIL_UUID
+      ) {
+        await service.markAllDismissed(userId);
       }
       sendOK(req, res, { success: true });
     } catch (err) {
@@ -142,12 +145,15 @@ export const NotificationController = {
       const service = new NotificationService();
       const { id, userId } = req.params as { id: string, userId: string };
       if (
-        userId !== NIL_UUID
-        && req.user.id
+        (
+          userId === NIL_UUID
+          && userHasRole(req.user.id, USER_ROLE.SUPER_ADMIN)
+        )
+        || (
+          userId !== NIL_UUID
+        )
       ) {
-        if (userHasRole(req.user.id, USER_ROLE.SUPER_ADMIN)) {
-          await service.markAsDismissed(id);
-        }
+        await service.markAsDismissed(id);
       }
       sendOK(req, res, { success: true });
     } catch (err) {

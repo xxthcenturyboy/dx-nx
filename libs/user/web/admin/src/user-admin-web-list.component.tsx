@@ -9,6 +9,7 @@ import {
   useNavigate
 } from 'react-router-dom';
 import {
+  Button,
   FormControl,
   FilledInput,
   Grid,
@@ -20,6 +21,7 @@ import {
 import {
   Cached
 } from '@mui/icons-material';
+import { toast } from 'react-toastify';
 
 import {
   RootState,
@@ -27,6 +29,8 @@ import {
   useAppSelector
 } from '@dx/store-web';
 import {
+  CollapsiblePanel,
+  ConfirmationDialog,
   ContentWrapper,
   DEBOUNCE,
   DialogAlert,
@@ -35,6 +39,7 @@ import {
   uiActions,
   useFocus
 } from '@dx/ui-web';
+import { logger } from '@dx/logger-web';
 import {
   debounce,
   setDocumentTitle
@@ -43,6 +48,10 @@ import {
   GetUsersListQueryType
 } from '@dx/user-shared';
 import { WebConfigService } from '@dx/config-web';
+import {
+  NotificationSendDialog,
+  useSendNotificationAppUpdateMutation
+} from '@dx/notifications-web';
 import { userAdminActions } from './user-admin-web.reducer';
 import {
   selectUsersFormatted,
@@ -82,6 +91,16 @@ export const UserAdminList: React.FC = () => {
       isUninitialized: fetchUserListUninitialized
     }
   ] = useLazyGetUserAdminListQuery();
+  const [
+    requestSendAppUpdate,
+    {
+      data: sendAppUpdateResponse,
+      error: sendAppUpdateError,
+      isLoading: isLoadingSendAppUpdate,
+      isSuccess: sendAppUpdateSuccess,
+      isUninitialized: sendAppUpdateUninitialized
+    }
+  ] = useSendNotificationAppUpdateMutation();
 
   useEffect(() => {
     setDocumentTitle('Admin Users');
@@ -204,6 +223,43 @@ export const UserAdminList: React.FC = () => {
     // setSearchInputRef(); // may not be necessary
   };
 
+  const handleSendAppUpdateClick = async (): Promise<void> => {
+    try {
+      dispatch(uiActions.appDialogSet(
+        <ConfirmationDialog
+          okText="Send"
+          cancelText="Cancel"
+          bodyMessage="Send App Update to All Users?"
+          noAwait={true}
+          onComplete={
+            async (isConfirmed: boolean) => {
+              if (isConfirmed) {
+                try {
+                  const appUpdateResponse = await requestSendAppUpdate().unwrap();
+                  if (appUpdateResponse.success) {
+                    setTimeout(() => dispatch(uiActions.appDialogSet(null)), 1000);
+                    return;
+                  }
+                  setTimeout(() => dispatch(uiActions.appDialogSet(null)), 1000);
+                } catch (err) {
+                  logger.error(err);
+                  toast.error('Could not send the app update notification. Check logs for more info.');
+                }
+              }
+
+              if (!isConfirmed) {
+                dispatch(uiActions.appDialogSet(null));
+              }
+            }
+          }
+        />
+      ));
+
+    } catch (err) {
+      logger.error(err);
+    }
+  };
+
   return (
     <ContentWrapper
       headerTitle={'User List'}
@@ -313,6 +369,73 @@ export const UserAdminList: React.FC = () => {
         </Grid>
       )}
     >
+      <Grid
+        container
+        spacing={0}
+        direction={'row'}
+        alignItems={'center'}
+        justifyContent={'center'}
+      >
+        {/* Actions */}
+        <Grid
+          item
+          mb={'24px'}
+          xs={12}
+        >
+          <CollapsiblePanel
+            headerTitle='Actions'
+            panelId='panel-user-admin-actions'
+          >
+            <Grid
+              container
+              direction={SM_BREAK ? 'column' : 'row'}
+              alignItems={'center'}
+              justifyContent={SM_BREAK ? 'center' : 'flex-start'}
+            >
+              <Button
+                variant="contained"
+                onClick={
+                  () => dispatch(uiActions.appDialogSet(
+                    <NotificationSendDialog />
+                  ))
+                }
+                color={'primary'}
+                sx={{
+                  margin: SM_BREAK
+                    ? '0 0 12px'
+                    : '0 12px 0',
+                  minWidth: '262px'
+                }}
+              >
+                Send Notification To All Users
+              </Button>
+
+              {
+                (
+                  currentUser.a
+                  || currentUser.sa
+                ) && (
+                  <Button
+                    variant="contained"
+                    color="info"
+                    onClick={handleSendAppUpdateClick}
+                    sx={{
+                      margin: SM_BREAK
+                        ? '0'
+                        : '0',
+                      minWidth: '262px'
+                    }}
+                  >
+                    Send App Update
+                  </Button>
+                )
+              }
+            </Grid>
+          </CollapsiblePanel>
+        </Grid>
+      </Grid>
+
+      {/** TABLE */}
       <Grid
         container
         spacing={0}

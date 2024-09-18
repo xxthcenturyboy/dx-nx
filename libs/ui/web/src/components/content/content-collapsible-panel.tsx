@@ -20,15 +20,21 @@ import {
 import { BeatLoader } from 'react-spinners';
 
 import {
+  RootState,
+  useAppSelector
+} from '@dx/store-web';
+import {
   APP_COLOR_PALETTE,
   BORDER_RADIUS
 } from '../../mui-overrides/styles';
 import { FADE_TIMEOUT_DUR } from '../../ui.consts';
+import { selectCurrentThemeMode } from '../../store/ui-web.selector';
 
 
 export type CollapsiblePanelPropsType = {
   children: React.ReactNode;
   headerTitle: string;
+  initialOpen?: boolean;
   isLoading?: boolean;
   panelId: string
  };
@@ -37,12 +43,14 @@ export const CollapsiblePanel: React.FC<CollapsiblePanelPropsType> = React.forwa
   const {
     children,
     headerTitle,
+    initialOpen,
     isLoading,
     panelId
   } = props;
-  const [expanded, setExpanded] = useState<string | false>(panelId);
+  const [expanded, setExpanded] = useState<string | false>(initialOpen ? panelId : false);
   const theme = useTheme();
   const SM_BREAK = useMediaQuery(theme.breakpoints.down('sm'));
+  const themeMode = useAppSelector((state: RootState) => selectCurrentThemeMode(state));
 
   // const handleClickExpansion = (panelId: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
   //   setExpanded(isExpanded ? panelId : false);
@@ -81,17 +89,27 @@ export const CollapsiblePanel: React.FC<CollapsiblePanelPropsType> = React.forwa
               }
             >
               <ExpandMore
-                color='secondary'
+                sx={
+                  (theme) => {
+                    return {
+                      color: theme.palette.common.white
+                    };
+                  }
+                }
               />
             </IconButton>
           }
           sx={
-            {
-              background: APP_COLOR_PALETTE.PRIMARY[900],
-              borderRadius: expanded === panelId
-                ? `${BORDER_RADIUS} ${BORDER_RADIUS} 0px 0px`
-                : BORDER_RADIUS,
-              cursor: SM_BREAK ? 'pointer' : 'default !important'
+            (theme) => {
+              return {
+                background: themeMode === 'dark'
+                  ? theme.palette.common.black
+                  : theme.palette.primary.light,
+                borderRadius: expanded === panelId
+                  ? `${BORDER_RADIUS} ${BORDER_RADIUS} 0px 0px`
+                  : BORDER_RADIUS,
+                cursor: SM_BREAK ? 'pointer' : 'default !important'
+              };
             }
           }
           onClick={
@@ -100,7 +118,13 @@ export const CollapsiblePanel: React.FC<CollapsiblePanelPropsType> = React.forwa
         >
           <Typography
             variant={'subtitle1'}
-            color="secondary"
+            sx={
+              (theme) => {
+                return {
+                  color: theme.palette.common.white
+                };
+              }
+            }
           >
             { headerTitle }
           </Typography>

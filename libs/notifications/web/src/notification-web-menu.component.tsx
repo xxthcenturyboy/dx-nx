@@ -9,6 +9,7 @@ import GradingIcon from '@mui/icons-material/Grading';
 import Collapse from '@mui/material/Collapse';
 import { TransitionGroup } from 'react-transition-group';
 import { toast } from 'react-toastify';
+import { NIL as NIL_UUID } from 'uuid';
 
 import {
   RootState,
@@ -20,6 +21,7 @@ import {
   NoDataLottie,
   themeColors
 } from '@dx/ui-web';
+import { selectHasSuperAdminRole } from '@dx/user-profile-web';
 import {
   StyledNotificationActionArea,
   StyledNotificationsList,
@@ -42,6 +44,7 @@ export const NotificationMenu: React.FC<NotificationMenuPropsType> = (props) => 
   const userNotifications = useAppSelector((state: RootState) => state.notification.user);
   const notificationCount = useAppSelector((state: RootState) => selectNotificationCount(state));
   const userId = useAppSelector((state: RootState) => state.userProfile.id);
+  const isSuperAdmin = useAppSelector((state: RootState) => selectHasSuperAdminRole(state));
   const dispatch = useAppDispatch();
   const [
     requestDismissAll,
@@ -64,7 +67,15 @@ export const NotificationMenu: React.FC<NotificationMenuPropsType> = (props) => 
       && !dismissAllUninitialized
     ) {
       if (!dismissAllError) {
-        dispatch(notificationActions.setUserNotifications([]));
+        if (userNotifications.length) {
+          dispatch(notificationActions.setUserNotifications([]));
+        }
+        if (
+          systemNotifications.length
+          && isSuperAdmin
+        ) {
+          dispatch(notificationActions.setSystemNotifications([]));
+        }
       } else {
         'error' in dismissAllError && toast.error(dismissAllError['error']);
       }
@@ -194,7 +205,15 @@ export const NotificationMenu: React.FC<NotificationMenuPropsType> = (props) => 
                 color="info"
                 onClick={
                   async () => {
-                    requestDismissAll({ userId });
+                    if (
+                      systemNotifications.length
+                      && isSuperAdmin
+                    ) {
+                      requestDismissAll({ userId: NIL_UUID })
+                    }
+                    if (userNotifications.length) {
+                      requestDismissAll({ userId });
+                    }
                   }
                 }
               >

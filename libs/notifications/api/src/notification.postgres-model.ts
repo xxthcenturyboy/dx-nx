@@ -9,13 +9,13 @@ import {
   DataType,
   CreatedAt,
   Default,
-  ForeignKey,
+  // ForeignKey,
   PrimaryKey,
   AllowNull,
-  Unique,
-  BelongsTo,
+  // Unique,
+  // BelongsTo,
   DeletedAt,
-  Index,
+  // Index,
 } from 'sequelize-typescript';
 import { NIL as NIL_UUID } from 'uuid';
 
@@ -31,6 +31,13 @@ import { NOTIFICATION_POSTGRES_DB_NAME } from './notification.consts';
 
 @Table({
   modelName: NOTIFICATION_POSTGRES_DB_NAME,
+  indexes: [
+    {
+      unique: false,
+      name: 'notification_user_id_index',
+      fields: ['user_id'],
+    }
+  ],
   underscored: true,
   timestamps: true,
 })
@@ -41,13 +48,13 @@ export class NotificationModel extends Model<NotificationModel> {
   @Column(DataType.UUID)
   id: string;
 
-  @ForeignKey(() => UserModel)
+  // @ForeignKey(() => UserModel)
   @AllowNull(false)
   @Column({ field: 'user_id', type: DataType.UUID })
   userId: string;
 
-  @BelongsTo(() => UserModel, 'userId')
-  declare user?: NonAttribute<UserModelType>;
+  // @BelongsTo(() => UserModel, 'userId')
+  // declare user?: NonAttribute<UserModelType>;
 
   @CreatedAt
   @Default(fn('now'))
