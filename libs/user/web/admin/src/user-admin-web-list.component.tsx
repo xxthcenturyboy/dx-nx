@@ -426,7 +426,7 @@ export const UserAdminList: React.FC = () => {
                       minWidth: '262px'
                     }}
                   >
-                    Send App Update
+                    Send Web App Update
                   </Button>
                 )
               }
