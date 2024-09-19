@@ -1,20 +1,17 @@
-import { store } from "@dx/store-web";
-import { uiActions } from "@dx/ui-web";
-import { UserProfileStateType } from "@dx/user-shared";
+import { store } from '@dx/store-web';
+import { uiActions } from '@dx/ui-web-system';
+import { UserProfileStateType } from '@dx/user-shared';
 import {
   fetchNotifications,
   notificationActions,
-  NotificationWebSockets
-} from "@dx/notifications-web";
-import { AppMenuType } from "@dx/ui-web";
-import { logger } from "@dx/logger-web";
+  NotificationWebSockets,
+} from '@dx/notifications-web';
+import { AppMenuType } from '@dx/ui-web-system';
+import { logger } from '@dx/logger-web';
 
-import { MenuConfigService } from "./menu-config.service";
+import { MenuConfigService } from './menu-config.service';
 
-function setUpMenus(
-  userProfile: UserProfileStateType,
-  mobileBreak: boolean
-) {
+function setUpMenus(userProfile: UserProfileStateType, mobileBreak: boolean) {
   const menuService = new MenuConfigService();
   let menus: AppMenuType[] = [];
   if (userProfile.role.includes('SUPER_ADMIN')) {
@@ -33,12 +30,18 @@ function setUpMenus(
 
 async function getNotifications(userId: string) {
   try {
-    const fetchResult = (await store.dispatch(fetchNotifications.initiate({ userId }))).data;
+    const fetchResult = (
+      await store.dispatch(fetchNotifications.initiate({ userId }))
+    ).data;
     if (Array.isArray(fetchResult.system)) {
-      store.dispatch(notificationActions.setSystemNotifications(fetchResult.system));
+      store.dispatch(
+        notificationActions.setSystemNotifications(fetchResult.system)
+      );
     }
     if (Array.isArray(fetchResult.user)) {
-      store.dispatch(notificationActions.setUserNotifications(fetchResult.user));
+      store.dispatch(
+        notificationActions.setUserNotifications(fetchResult.user)
+      );
     }
   } catch (err) {
     logger.error(`Error fetching notifications: ${err.message}`);

@@ -3,8 +3,8 @@ import { createBrowserRouter } from 'react-router-dom';
 import {
   GlobalErrorComponent,
   NotFoundComponent,
-  RateLimitComponent
-} from '@dx/ui-web';
+  RateLimitComponent,
+} from '@dx/ui-web-system';
 import { AuthWebRouterConfig } from '@dx/auth-web';
 import { WebConfigService } from '@dx/config-web';
 import { Root } from './root.component';
@@ -16,36 +16,38 @@ export class AppRouter {
 
     return createBrowserRouter([
       {
-        element: (<Root />),
-        errorElement: (<GlobalErrorComponent />),
+        element: <Root />,
+        errorElement: <GlobalErrorComponent />,
         children: [
           {
             path: ROUTES.MAIN,
-            lazy: async () => { let { HomeComponent } = await import('@dx/home')
-              return { Component: HomeComponent }
-            }
+            lazy: async () => {
+              let { HomeComponent } = await import('@dx/home');
+              return { Component: HomeComponent };
+            },
           },
           ...AuthWebRouterConfig.getRouter(),
           {
             path: `${ROUTES.SHORTLINK.MAIN}/:token`,
-            lazy: async () => { let { ShortlinkComponent } = await import('@dx/shortlink-web')
-              return { Component: ShortlinkComponent }
-            }
+            lazy: async () => {
+              let { ShortlinkComponent } = await import('@dx/shortlink-web');
+              return { Component: ShortlinkComponent };
+            },
           },
           ...PrivateWebRouterConfig.getRouter(),
           {
             path: ROUTES.NOT_FOUND,
-            element: (<NotFoundComponent />)
+            element: <NotFoundComponent />,
           },
           {
             path: ROUTES.LIMITED,
-            element: (<RateLimitComponent />)
+            element: <RateLimitComponent />,
           },
           {
             path: '*',
-            element: (<NotFoundComponent />)
-          }
-        ]
+            element: <NotFoundComponent />,
+          },
+        ],
       },
     ]);
   }

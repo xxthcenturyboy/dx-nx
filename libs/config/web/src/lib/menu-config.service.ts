@@ -1,8 +1,8 @@
 import {
   AppMenuType,
   AppMenuItemType,
-  MenuRestrictionType
-} from '@dx/ui-web';
+  MenuRestrictionType,
+} from '@dx/ui-web-system';
 import { DASHBOARD_MENU } from '@dx/dashboard-web';
 import { STATS_SUDO_WEB_MENU } from '@dx/stats-web';
 import { USER_ADMIN_MENU } from '@dx/user-admin-web';
@@ -13,13 +13,10 @@ export class MenuConfigService {
     DASHBOARD_MENU,
     USER_PROFILE_MENU,
     USER_ADMIN_MENU,
-    STATS_SUDO_WEB_MENU
+    STATS_SUDO_WEB_MENU,
   ];
 
-  private restrictSuperAdmin(
-    menu: AppMenuType,
-    includeBeta: boolean
-  ) {
+  private restrictSuperAdmin(menu: AppMenuType, includeBeta: boolean) {
     const items: AppMenuItemType[] = [];
 
     for (const item of menu.items) {
@@ -30,11 +27,8 @@ export class MenuConfigService {
         }
 
         if (
-          item.restriction
-          && (
-            item.restriction === 'ADMIN'
-            || item.restriction === 'SUPER_ADMIN'
-          )
+          item.restriction &&
+          (item.restriction === 'ADMIN' || item.restriction === 'SUPER_ADMIN')
         ) {
           items.push(item);
           continue;
@@ -42,21 +36,16 @@ export class MenuConfigService {
       }
 
       if (!includeBeta) {
-        if (
-          !item.restriction
-          && !item.beta
-        ) {
+        if (!item.restriction && !item.beta) {
           items.push(item);
           continue;
         }
 
         if (
-          item.restriction
-          && (
-            item.restriction === 'ADMIN'
-            || item.restriction === 'SUPER_ADMIN'
-          )
-          && !item.beta
+          item.restriction &&
+          (item.restriction === 'ADMIN' ||
+            item.restriction === 'SUPER_ADMIN') &&
+          !item.beta
         ) {
           items.push(item);
           continue;
@@ -67,17 +56,53 @@ export class MenuConfigService {
     if (items.length) {
       return {
         ...menu,
-        items: items
+        items: items,
       };
     }
 
     return null;
   }
 
-  private restrictAdmin(
-    menu: AppMenuType,
-    includeBeta: boolean
-  ) {
+  private restrictAdmin(menu: AppMenuType, includeBeta: boolean) {
+    const items: AppMenuItemType[] = [];
+
+    for (const item of menu.items) {
+      if (includeBeta) {
+        if (!item.restriction) {
+          items.push(item);
+          continue;
+        }
+
+        if (item.restriction && item.restriction === 'ADMIN') {
+          items.push(item);
+          continue;
+        }
+      }
+
+      if (!includeBeta) {
+        if (!item.restriction && !item.beta) {
+          items.push(item);
+          continue;
+        }
+
+        if (item.restriction && item.restriction === 'ADMIN' && !item.beta) {
+          items.push(item);
+          continue;
+        }
+      }
+    }
+
+    if (items.length) {
+      return {
+        ...menu,
+        items: items,
+      };
+    }
+
+    return null;
+  }
+
+  private restrictStandard(menu: AppMenuType, includeBeta: boolean) {
     const items: AppMenuItemType[] = [];
 
     for (const item of menu.items) {
@@ -88,8 +113,9 @@ export class MenuConfigService {
         }
 
         if (
-          item.restriction
-          && item.restriction === 'ADMIN'
+          item.restriction &&
+          item.restriction !== 'ADMIN' &&
+          item.restriction !== 'SUPER_ADMIN'
         ) {
           items.push(item);
           continue;
@@ -97,18 +123,16 @@ export class MenuConfigService {
       }
 
       if (!includeBeta) {
-        if (
-          !item.restriction
-          && !item.beta
-        ) {
+        if (!item.restriction && !item.beta) {
           items.push(item);
           continue;
         }
 
         if (
-          item.restriction
-          && item.restriction === 'ADMIN'
-          && !item.beta
+          item.restriction &&
+          item.restriction !== 'ADMIN' &&
+          item.restriction !== 'SUPER_ADMIN' &&
+          !item.beta
         ) {
           items.push(item);
           continue;
@@ -119,71 +143,14 @@ export class MenuConfigService {
     if (items.length) {
       return {
         ...menu,
-        items: items
+        items: items,
       };
     }
 
     return null;
   }
 
-  private restrictStandard(
-    menu: AppMenuType,
-    includeBeta: boolean
-  ) {
-    const items: AppMenuItemType[] = [];
-
-    for (const item of menu.items) {
-      if (includeBeta) {
-        if (!item.restriction) {
-          items.push(item);
-          continue;
-        }
-
-        if (
-          item.restriction
-          && item.restriction !== 'ADMIN'
-          && item.restriction !== 'SUPER_ADMIN'
-        ) {
-          items.push(item);
-          continue;
-        }
-      }
-
-      if (!includeBeta) {
-        if (
-          !item.restriction
-          && !item.beta
-        ) {
-          items.push(item);
-          continue;
-        }
-
-        if (
-          item.restriction
-          && item.restriction !== 'ADMIN'
-          && item.restriction !== 'SUPER_ADMIN'
-          && !item.beta
-        ) {
-          items.push(item);
-          continue;
-        }
-      }
-    }
-
-    if (items.length) {
-      return {
-        ...menu,
-        items: items
-      };
-    }
-
-    return null;
-  }
-
-  public getMenus(
-    restriction?: MenuRestrictionType,
-    includeBeta?: boolean
-  ) {
+  public getMenus(restriction?: MenuRestrictionType, includeBeta?: boolean) {
     const menus: AppMenuType[] = [];
 
     if (restriction === 'SUPER_ADMIN') {

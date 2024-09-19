@@ -1,35 +1,31 @@
 import React from 'react';
-import {
-    useTheme,
-} from '@mui/material';
-import PhoneInput,
-{
-  CountryData
-} from 'react-phone-input-2';
+import { useTheme } from '@mui/material';
+import PhoneInput, { CountryData } from 'react-phone-input-2';
 // import 'react-phone-input-2/lib/style.css';
 // import 'react-phone-input-2/lib/high-res.css';
 import 'react-phone-input-2/lib/material.css';
 
-import { APP_COLOR_PALETTE } from '@dx/ui-web';
+import { APP_COLOR_PALETTE } from '@dx/ui-web-system';
 import { PhoneInputProps } from './phone-web-input.types';
 import { getDefaultStyles } from './phone-web-input.config';
 
-
-export const PhoneNumberInput: React.FC<PhoneInputProps> = (props): JSX.Element => {
+export const PhoneNumberInput: React.FC<PhoneInputProps> = (
+  props
+): JSX.Element => {
   const {
-      defaultCountry,
-      defaultValue,
-      disabled,
-      inputId,
-      preferredCountries,
-      required,
-      value,
-      label,
-      onChange,
-      onFocus,
-      onBlur,
-      onClick,
-      onKeyDown,
+    defaultCountry,
+    defaultValue,
+    disabled,
+    inputId,
+    preferredCountries,
+    required,
+    value,
+    label,
+    onChange,
+    onFocus,
+    onBlur,
+    onClick,
+    onKeyDown,
   } = props;
   const [focused, setFocused] = React.useState<boolean>(false);
   const theme = useTheme();
@@ -42,14 +38,14 @@ export const PhoneNumberInput: React.FC<PhoneInputProps> = (props): JSX.Element 
     searchStyleDefaults,
   } = getDefaultStyles(theme);
 
-  const getBorderColor = ():string => {
+  const getBorderColor = (): string => {
     if (focused) {
       return APP_COLOR_PALETTE.SECONDARY[700];
     }
 
     return theme.palette.mode === 'light'
-      // ? 'rgba(0, 0, 0, 0.23)'
-      ? theme.palette.grey[400]
+      ? // ? 'rgba(0, 0, 0, 0.23)'
+        theme.palette.grey[400]
       : theme.palette.grey[400];
   };
 
@@ -61,27 +57,25 @@ export const PhoneNumberInput: React.FC<PhoneInputProps> = (props): JSX.Element 
     ...buttonStyleDefaults,
     borderColor: getBorderColor(),
     borderWidth: getBorderWidth(),
-    ...props.buttonStyle
+    ...props.buttonStyle,
   };
 
   const containerStyle = {
     ...containerStyleDefaults,
-    ...props.containerStyle
+    ...props.containerStyle,
   };
 
   const inputStyle = {
     ...inputStyleDefaults,
-    backgroundColor: focused
-      ? APP_COLOR_PALETTE.SECONDARY[50]
-      : 'transparent',
+    backgroundColor: focused ? APP_COLOR_PALETTE.SECONDARY[50] : 'transparent',
     borderColor: getBorderColor(),
     borderWidth: getBorderWidth(),
-    ...props.inputStyle
+    ...props.inputStyle,
   };
 
   const searchStyle = {
     ...searchStyleDefaults,
-    ...props.searchStyle
+    ...props.searchStyle,
   };
 
   return (
@@ -96,35 +90,35 @@ export const PhoneNumberInput: React.FC<PhoneInputProps> = (props): JSX.Element 
       dropdownStyle={dropdownStyleDefaults}
       inputStyle={inputStyle}
       searchStyle={searchStyle}
-      inputProps={
-        {
-          required,
-          id: inputId,
-          name: inputId,
-          type: 'tel'
-        }
-      }
+      inputProps={{
+        required,
+        id: inputId,
+        name: inputId,
+        type: 'tel',
+      }}
       disabled={disabled}
       // disableCountryCode={true}
       // disableCountryGuess={true}
       specialLabel={label || 'Phone'}
       onChange={onChange}
-      onFocus={
-        (event: React.FocusEvent<HTMLInputElement>, data: {} | CountryData) => {
-          setFocused(true);
-          if (typeof onFocus === 'function') {
-            onFocus(event, data);
-          }
+      onFocus={(
+        event: React.FocusEvent<HTMLInputElement>,
+        data: {} | CountryData
+      ) => {
+        setFocused(true);
+        if (typeof onFocus === 'function') {
+          onFocus(event, data);
         }
-      }
-      onBlur={
-        (event: React.FocusEvent<HTMLInputElement>, data: {} | CountryData) => {
-          setFocused(false);
-          if (typeof onBlur === 'function') {
-            onBlur(event, data);
-          }
+      }}
+      onBlur={(
+        event: React.FocusEvent<HTMLInputElement>,
+        data: {} | CountryData
+      ) => {
+        setFocused(false);
+        if (typeof onBlur === 'function') {
+          onBlur(event, data);
         }
-      }
+      }}
       onClick={onClick}
       onKeyDown={onKeyDown}
     />

@@ -1,30 +1,12 @@
 import * as React from 'react';
-import {
-  Outlet,
-  useLocation,
-  useNavigate
-} from 'react-router-dom';
-import {
-  createTheme,
-  Theme,
-  ThemeProvider
-} from '@mui/material/styles';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { createTheme, Theme, ThemeProvider } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import { Fade } from '@mui/material';
-import {
-  Slide,
-  ToastContainer,
-  Theme as ToastifyTheme
-} from 'react-toastify';
-import {
-  injectStyle as injectToastifyStyle
-} from 'react-toastify/dist/inject-style';
+import { Slide, ToastContainer, Theme as ToastifyTheme } from 'react-toastify';
+import { injectStyle as injectToastifyStyle } from 'react-toastify/dist/inject-style';
 
-import {
-  RootState,
-  useAppDispatch,
-  useAppSelector
-} from '@dx/store-web';
+import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
 import {
   AppNavBar,
   appTheme,
@@ -40,12 +22,12 @@ import {
   TOAST_TIMEOUT,
   uiActions,
   // UiLoadingComponent
-} from '@dx/ui-web';
+} from '@dx/ui-web-system';
 import { WebConfigService } from '@dx/config-web';
 import { selectIsAuthenticated } from '@dx/auth-web';
 import {
   userProfileActions,
-  useLazyGetProfileQuery
+  useLazyGetProfileQuery,
 } from '@dx/user-profile-web';
 import { appBootstrap } from '@dx/config-web';
 
@@ -55,30 +37,37 @@ export const Root: React.FC = () => {
   const [menuBreak, setMenuBreak] = React.useState(false);
   const [mobileBreak, setMobileBreak] = React.useState(false);
   const [topPixel, setTopPixel] = React.useState(64);
-  const [appFrameStyle, setAppFrameStyle] = React.useState<React.CSSProperties>({
-    zIndex: 1,
-    height: '100vh'
-  });
-  const [contentWrapperStyle, setContentWrapperStyle] = React.useState<React.CSSProperties>({});
+  const [appFrameStyle, setAppFrameStyle] = React.useState<React.CSSProperties>(
+    {
+      zIndex: 1,
+      height: '100vh',
+    }
+  );
+  const [contentWrapperStyle, setContentWrapperStyle] =
+    React.useState<React.CSSProperties>({});
   const dispatch = useAppDispatch();
   const userProfile = useAppSelector((state: RootState) => state.userProfile);
   const menuOpen = useAppSelector((state: RootState) => state.ui.menuOpen);
   const themeOptions = useAppSelector((state: RootState) => state.ui.theme);
-  const isAuthenticated = useAppSelector((state: RootState) => selectIsAuthenticated(state));
-  const logoutResponse = useAppSelector((state: RootState) => state.auth.logoutResponse);
-  const windowWidth = useAppSelector((state: RootState) => state.ui.windowWidth) || 0;
+  const isAuthenticated = useAppSelector((state: RootState) =>
+    selectIsAuthenticated(state)
+  );
+  const logoutResponse = useAppSelector(
+    (state: RootState) => state.auth.logoutResponse
+  );
+  const windowWidth =
+    useAppSelector((state: RootState) => state.ui.windowWidth) || 0;
   // const toastTheme: ToastifyTheme = useAppSelector((state: RootState) => state.ui.theme.palette?.mode || 'color');
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const ROUTES = WebConfigService.getWebRoutes();
-  const NO_REDICRET_ROUTES = WebConfigService.getNoRedirectRoutes()
-  const canRedirect = !NO_REDICRET_ROUTES.some(route => pathname.startsWith(route));
+  const NO_REDICRET_ROUTES = WebConfigService.getNoRedirectRoutes();
+  const canRedirect = !NO_REDICRET_ROUTES.some((route) =>
+    pathname.startsWith(route)
+  );
   const [
     fetchProfile,
-    {
-      data: profileResponse,
-      isSuccess: fetchProfileSuccess
-    }
+    { data: profileResponse, isSuccess: fetchProfileSuccess },
   ] = useLazyGetProfileQuery();
 
   React.useEffect(() => {
@@ -90,10 +79,7 @@ export const Root: React.FC = () => {
     });
     injectToastifyStyle();
 
-    if (
-      !userProfile
-      && canRedirect
-    ) {
+    if (!userProfile && canRedirect) {
       void fetchProfile();
     }
 
@@ -117,9 +103,9 @@ export const Root: React.FC = () => {
 
   React.useEffect(() => {
     if (
-      fetchProfileSuccess
-      && profileResponse.profile
-      && typeof profileResponse.profile !== 'string'
+      fetchProfileSuccess &&
+      profileResponse.profile &&
+      typeof profileResponse.profile !== 'string'
     ) {
       dispatch(userProfileActions.profileUpdated(profileResponse.profile));
     }
@@ -128,7 +114,10 @@ export const Root: React.FC = () => {
   React.useEffect(() => {
     if (bootstrapped) {
       setTheme(createTheme(themeOptions));
-      localStorage.setItem(STORAGE_KEYS.THEME_MODE, themeOptions.palette?.mode || 'light');
+      localStorage.setItem(
+        STORAGE_KEYS.THEME_MODE,
+        themeOptions.palette?.mode || 'light'
+      );
     }
   }, [themeOptions]);
 
@@ -141,7 +130,10 @@ export const Root: React.FC = () => {
     if (bootstrapped) {
       updateContentWrapperStyles();
       if (isAuthenticated) {
-        localStorage.setItem(STORAGE_KEYS.MENU_STATE, menuOpen ? 'OPEN' : 'CLOSED');
+        localStorage.setItem(
+          STORAGE_KEYS.MENU_STATE,
+          menuOpen ? 'OPEN' : 'CLOSED'
+        );
       }
     }
   }, [menuOpen]);
@@ -164,7 +156,10 @@ export const Root: React.FC = () => {
   const updateAppThemeStyle = (): void => {
     setAppFrameStyle({
       ...appFrameStyle,
-      backgroundColor: theme.palette.mode === 'dark' ? theme.palette.background.default : '#fbfbfb',
+      backgroundColor:
+        theme.palette.mode === 'dark'
+          ? theme.palette.background.default
+          : '#fbfbfb',
     });
   };
 
@@ -178,8 +173,8 @@ export const Root: React.FC = () => {
       height: `calc(100vh - ${topPixel}px)`, // Subtract width of header
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen
-      })
+        duration: theme.transitions.duration.leavingScreen,
+      }),
     };
 
     let openStyles: React.CSSProperties = {};
@@ -188,7 +183,7 @@ export const Root: React.FC = () => {
       openStyles = {
         transition: theme.transitions.create('margin', {
           easing: theme.transitions.easing.easeOut,
-          duration: theme.transitions.duration.enteringScreen
+          duration: theme.transitions.duration.enteringScreen,
         }),
         marginLeft: `${DRAWER_WIDTH}px`,
       };
@@ -196,7 +191,7 @@ export const Root: React.FC = () => {
 
     return {
       ...baseStyle,
-      ...openStyles
+      ...openStyles,
     };
   };
 
@@ -209,11 +204,7 @@ export const Root: React.FC = () => {
     <ThemeProvider theme={theme}>
       <Fade in={true} timeout={2000}>
         <Box flexGrow={1} style={appFrameStyle}>
-          {
-            isAuthenticated && (
-              <MenuNav />
-            )
-          }
+          {isAuthenticated && <MenuNav />}
           <AppNavBar />
           <Box style={contentWrapperStyle}>
             <Outlet />

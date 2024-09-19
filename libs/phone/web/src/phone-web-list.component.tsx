@@ -13,18 +13,12 @@ import {
   TableContainer,
   TableRow,
   Tooltip,
-  Typography
+  Typography,
 } from '@mui/material';
-import {
-  Delete
-} from '@mui/icons-material';
+import { Delete } from '@mui/icons-material';
 
-import {
-  useAppDispatch
-} from '@dx/store-web';
-import {
-  uiActions
-} from '@dx/ui-web';
+import { useAppDispatch } from '@dx/store-web';
+import { uiActions } from '@dx/ui-web-system';
 import { PhoneType } from '@dx/phone-shared';
 import { AddPhoneDialog } from './phone-web-create.dialog';
 import { DeletePhoneDialog } from './phone-web-delete.dialog';
@@ -37,12 +31,7 @@ export type UserPhonesProps = {
 };
 
 export const Phonelist: React.FC<UserPhonesProps> = (props) => {
-  const {
-    phones,
-    userId,
-    phoneDataCallback,
-    phoneDeleteCallback
-  } = props;
+  const { phones, userId, phoneDataCallback, phoneDeleteCallback } = props;
   const dispatch = useAppDispatch();
   const rowHeight = '32px';
 
@@ -56,19 +45,13 @@ export const Phonelist: React.FC<UserPhonesProps> = (props) => {
     },
     minHeight: '100px',
     // '&:hover': {
-      // backgroundColor: themeMode && themeMode === 'dark' ? theme.palette.primary.light : theme.palette.secondary.main,
+    // backgroundColor: themeMode && themeMode === 'dark' ? theme.palette.primary.light : theme.palette.secondary.main,
     // }
   }));
 
   return (
-    <Box
-      margin="20px 0"
-      width="100%"
-    >
-      <Paper
-        elevation={0}
-        sx={{ backgroundColor: 'transparent' }}
-      >
+    <Box margin="20px 0" width="100%">
+      <Paper elevation={0} sx={{ backgroundColor: 'transparent' }}>
         <Grid
           container
           justifyContent="space-between"
@@ -77,10 +60,7 @@ export const Phonelist: React.FC<UserPhonesProps> = (props) => {
         >
           {/* Title */}
           <Grid item>
-            <Typography
-              variant="h6"
-              color="primary"
-            >
+            <Typography variant="h6" color="primary">
               Phones
             </Typography>
           </Grid>
@@ -90,13 +70,15 @@ export const Phonelist: React.FC<UserPhonesProps> = (props) => {
               color="primary"
               variant="contained"
               size={'small'}
-              onClick={
-                () => dispatch(uiActions.appDialogSet(
-                  <AddPhoneDialog
-                    userId={userId}
-                    phoneDataCallback={phoneDataCallback}
-                  />
-                ))
+              onClick={() =>
+                dispatch(
+                  uiActions.appDialogSet(
+                    <AddPhoneDialog
+                      userId={userId}
+                      phoneDataCallback={phoneDataCallback}
+                    />
+                  )
+                )
               }
             >
               New Phone
@@ -104,20 +86,11 @@ export const Phonelist: React.FC<UserPhonesProps> = (props) => {
           </Grid>
         </Grid>
         <Divider />
-        <TableContainer
-          component={Box}
-        >
-          <Table
-            stickyHeader
-            size="small"
-            aria-label=""
-            id="table-user-phones"
-          >
+        <TableContainer component={Box}>
+          <Table stickyHeader size="small" aria-label="" id="table-user-phones">
             <TableBody>
-              {
-                !phones
-                || (phones && !phones.length)
-                && (
+              {!phones ||
+                (phones && !phones.length && (
                   <StyledTableRow>
                     <TableCell
                       colSpan={3}
@@ -125,48 +98,42 @@ export const Phonelist: React.FC<UserPhonesProps> = (props) => {
                         height: '200px',
                         textAlign: 'center',
                         fontSize: '42px',
-                        color: 'primary'
+                        color: 'primary',
                       }}
                     >
                       No Data
                     </TableCell>
                   </StyledTableRow>
-                )
-              }
-              {
-                !!phones
-                && !!phones.length
-                && phones.map((phone: PhoneType) => {
+                ))}
+              {!!phones &&
+                !!phones.length &&
+                phones.map((phone: PhoneType) => {
                   return (
                     <StyledTableRow
                       key={phone.id}
                       sx={{
                         // cursor: 'pointer',
-                        height: rowHeight
+                        height: rowHeight,
                       }}
                       // onClick={() => editPhone(phone)}
                     >
                       <TableCell
                         align="left"
-                        sx={
-                          {
-                            height: '20px',
-                            textWrap: 'nowrap'
-                          }
-                        }
+                        sx={{
+                          height: '20px',
+                          textWrap: 'nowrap',
+                        }}
                       >
-                        { phone.uiFormatted || phone.phone }
+                        {phone.uiFormatted || phone.phone}
                       </TableCell>
                       <TableCell
                         align="left"
-                        sx={
-                          {
-                            height: '20px',
-                            textWrap: 'nowrap'
-                          }
-                        }
+                        sx={{
+                          height: '20px',
+                          textWrap: 'nowrap',
+                        }}
                       >
-                        { phone.label }
+                        {phone.label}
                       </TableCell>
                       <TableCell
                         align="right"
@@ -175,51 +142,50 @@ export const Phonelist: React.FC<UserPhonesProps> = (props) => {
                           display: 'flex',
                           flexDirection: 'row',
                           alignItems: 'center',
-                          justifyContent: 'flex-end'
+                          justifyContent: 'flex-end',
                         }}
                       >
-                        {
-                          phone.isVerified && (
-                            <Chip
-                              label="Verified"
-                              color="success"
-                              sx={{ height: '20px', marginRight: '10px' }}
-                            />
-                          )
-                        }
-                        {
-                          phone.default && (
-                            <Chip
-                              label="Default"
-                              color="info"
-                              sx={{ height: '20px', marginRight: '10px' }}
-                            />
-                          )
-                        }
-                        {
-                          !phone.default && (
-                            <Tooltip title="Delete Phone">
-                              <Delete
-                                onClick={(event: React.SyntheticEvent) => {
-                                  event.stopPropagation();
-                                  dispatch(uiActions.appDialogSet(
+                        {phone.isVerified && (
+                          <Chip
+                            label="Verified"
+                            color="success"
+                            sx={{ height: '20px', marginRight: '10px' }}
+                          />
+                        )}
+                        {phone.default && (
+                          <Chip
+                            label="Default"
+                            color="info"
+                            sx={{ height: '20px', marginRight: '10px' }}
+                          />
+                        )}
+                        {!phone.default && (
+                          <Tooltip title="Delete Phone">
+                            <Delete
+                              onClick={(event: React.SyntheticEvent) => {
+                                event.stopPropagation();
+                                dispatch(
+                                  uiActions.appDialogSet(
                                     <DeletePhoneDialog
                                       phoneItem={phone}
                                       phoneDataCallback={phoneDeleteCallback}
                                     />
-                                  ));
-                                }}
-                                color="primary"
-                                style={{ cursor: 'pointer', width: '0.75em', margin: '0 10 0 0' }}
-                              />
-                            </Tooltip>
-                          )
-                        }
+                                  )
+                                );
+                              }}
+                              color="primary"
+                              style={{
+                                cursor: 'pointer',
+                                width: '0.75em',
+                                margin: '0 10 0 0',
+                              }}
+                            />
+                          </Tooltip>
+                        )}
                       </TableCell>
                     </StyledTableRow>
                   );
-                })
-              }
+                })}
             </TableBody>
           </Table>
         </TableContainer>

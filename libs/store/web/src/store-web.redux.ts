@@ -1,12 +1,5 @@
-import {
-  configureStore,
-  combineReducers
-} from '@reduxjs/toolkit';
-import {
-  useDispatch,
-  useSelector,
-  useStore
-} from 'react-redux';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import { useDispatch, useSelector, useStore } from 'react-redux';
 import {
   persistReducer,
   persistStore,
@@ -18,58 +11,71 @@ import {
   REGISTER,
 } from 'reduxjs-toolkit-persist';
 
-import {
-  AuthStateType,
-  authReducer,
-  authPersistConfig
-} from '@dx/auth-web';
+import { AuthStateType, authReducer, authPersistConfig } from '@dx/auth-web';
 import { dashboardReducer } from '@dx/dashboard-web';
 import { homeReducer } from '@dx/home';
 import {
   mediaReducer,
   mediaPersistConfig,
-  MediaStateType
+  MediaStateType,
 } from '@dx/media-web';
 import { notificationReducer } from '@dx/notifications-web';
 import {
   privilegeSetReducer,
   privilegeSetPersistConfig,
-  PrivilegeSetStateType
+  PrivilegeSetStateType,
 } from '@dx/user-privilege-web';
 import {
   statsPersistConfig,
   statsReducer,
-  StatsStateType
+  StatsStateType,
 } from '@dx/stats-web';
 import {
   userAdminReducer,
   userAdminPersistConfig,
-  UserAdminStateType
+  UserAdminStateType,
 } from '@dx/user-admin-web';
 import {
   userProfileReducer,
-  userProfilePersistConfig
+  userProfilePersistConfig,
 } from '@dx/user-profile-web';
 import { UserProfileStateType } from '@dx/user-shared';
-import {
-  uiPersistConfig,
-  uiReducer,
-  UiStateType
-} from '@dx/ui-web';
+import { uiPersistConfig, uiReducer, UiStateType } from '@dx/ui-web-system';
 import { apiWebMain } from '@dx/rtk-query-web';
 
 const combinedPersistReducers = combineReducers({
   [apiWebMain.reducerPath]: apiWebMain.reducer,
-  auth: persistReducer<AuthStateType, any>(authPersistConfig, authReducer) as typeof authReducer,
+  auth: persistReducer<AuthStateType, any>(
+    authPersistConfig,
+    authReducer
+  ) as typeof authReducer,
   dashboard: dashboardReducer,
   home: homeReducer,
-  media: persistReducer<MediaStateType, any>(mediaPersistConfig, mediaReducer) as typeof mediaReducer,
+  media: persistReducer<MediaStateType, any>(
+    mediaPersistConfig,
+    mediaReducer
+  ) as typeof mediaReducer,
   notification: notificationReducer,
-  privileges: persistReducer<PrivilegeSetStateType, any>(privilegeSetPersistConfig, privilegeSetReducer) as typeof privilegeSetReducer,
-  stats: persistReducer<StatsStateType, any>(statsPersistConfig, statsReducer) as typeof statsReducer,
-  ui: persistReducer<UiStateType, any>(uiPersistConfig, uiReducer) as typeof uiReducer,
-  userAdmin: persistReducer<UserAdminStateType, any>(userAdminPersistConfig, userAdminReducer) as typeof userAdminReducer,
-  userProfile: persistReducer<UserProfileStateType, any>(userProfilePersistConfig, userProfileReducer) as typeof userProfileReducer
+  privileges: persistReducer<PrivilegeSetStateType, any>(
+    privilegeSetPersistConfig,
+    privilegeSetReducer
+  ) as typeof privilegeSetReducer,
+  stats: persistReducer<StatsStateType, any>(
+    statsPersistConfig,
+    statsReducer
+  ) as typeof statsReducer,
+  ui: persistReducer<UiStateType, any>(
+    uiPersistConfig,
+    uiReducer
+  ) as typeof uiReducer,
+  userAdmin: persistReducer<UserAdminStateType, any>(
+    userAdminPersistConfig,
+    userAdminReducer
+  ) as typeof userAdminReducer,
+  userProfile: persistReducer<UserProfileStateType, any>(
+    userProfilePersistConfig,
+    userProfileReducer
+  ) as typeof userProfileReducer,
 });
 
 const store = configureStore({
@@ -84,11 +90,9 @@ const store = configureStore({
           PERSIST,
           PURGE,
           REGISTER,
-          'ui/appDialogSet'
+          'ui/appDialogSet',
         ],
-        ignoredPaths: [
-          'ui.dialogComponent'
-        ]
+        ignoredPaths: ['ui.dialogComponent'],
       },
     }).concat(apiWebMain.middleware),
 });
@@ -110,5 +114,5 @@ export {
   store,
   useAppDispatch,
   useAppSelector,
-  useAppStore
+  useAppStore,
 };

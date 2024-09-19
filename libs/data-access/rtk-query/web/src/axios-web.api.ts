@@ -1,24 +1,18 @@
 import { BaseQueryFn } from '@reduxjs/toolkit/query/react';
-import axios,
-{
-  AxiosError,
-  AxiosResponse
-} from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
 // import { Navigate } from 'react-router-dom';
 
 import { store } from '@dx/store-web';
 import { authActions } from '@dx/auth-web';
-import {
-  uiActions
-} from '@dx/ui-web';
+import { uiActions } from '@dx/ui-web-system';
 import { WebConfigService } from '@dx/config-web';
 import { logger } from '@dx/logger-web';
 import {
   AxiosInstanceHeadersParamType,
   AxiosBaseQueryParamsType,
   RequestResponseType,
-  CustomResponseErrorType
+  CustomResponseErrorType,
 } from './axios-web.types';
 import { regexMatchNumberGroups } from '@dx/util-regex';
 
@@ -31,8 +25,8 @@ export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
   const instance = axios.create({
     baseURL: API_URI,
     headers: {
-      ...headers
-    }
+      ...headers,
+    },
   });
 
   instance.interceptors.request.use(
@@ -55,7 +49,14 @@ export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
     (response: AxiosResponse) => {
       return response;
     },
-    async (error: AxiosError<{ description: string, message: string, status: number, url: string }>) => {
+    async (
+      error: AxiosError<{
+        description: string;
+        message: string;
+        status: number;
+        url: string;
+      }>
+    ) => {
       if (
         error.response.status === 403 &&
         error.response.data.message === 'Token invalid or expired.'
@@ -63,9 +64,10 @@ export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
         const accessToken = store.getState().auth.token;
         if (accessToken) {
           try {
-            const response: AxiosResponse<{ accessToken: string }> = await axios.get(`${API_URI}/v1/auth/refresh-token`, {
-              withCredentials: true,
-            });
+            const response: AxiosResponse<{ accessToken: string }> =
+              await axios.get(`${API_URI}/v1/auth/refresh-token`, {
+                withCredentials: true,
+              });
 
             if (response.data.accessToken) {
               // Update the access token in the store
@@ -78,10 +80,10 @@ export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
             return Promise.reject({
               response: {
                 data: {
-                  message: 'Access token failed to refresh.'
+                  message: 'Access token failed to refresh.',
                 },
-                status: 403
-              }
+                status: 403,
+              },
             });
           } catch (refreshError) {
             // TODO: Find a better way - Lgout too?
@@ -96,10 +98,10 @@ export const AxiosInstance = ({ headers }: AxiosInstanceHeadersParamType) => {
           return Promise.reject({
             response: {
               data: {
-                message: 'No access token.'
+                message: 'No access token.',
               },
-              status: 403
-            }
+              status: 403,
+            },
           });
         }
       } else if (error.response.status === 429) {
@@ -123,27 +125,30 @@ function handleNotification(message?: string): void {
   // const location = useLocation();
   // const dispatch = useAppDispatch();
   // if (location.pathname !== ROUTES.MAIN) {
-    if (!store.getState().ui.isShowingUnauthorizedAlert) {
-      const msg = message
-        ? message
-        : `Something went wrong. It's probably our fault. Please try again later.`;
-      store.dispatch(uiActions.setIsShowingUnauthorizedAlert(true));
-      toast.warn(msg, {
-        onClose: () =>
-          store.dispatch(uiActions.setIsShowingUnauthorizedAlert(false)),
-      });
-    }
+  if (!store.getState().ui.isShowingUnauthorizedAlert) {
+    const msg = message
+      ? message
+      : `Something went wrong. It's probably our fault. Please try again later.`;
+    store.dispatch(uiActions.setIsShowingUnauthorizedAlert(true));
+    toast.warn(msg, {
+      onClose: () =>
+        store.dispatch(uiActions.setIsShowingUnauthorizedAlert(false)),
+    });
+  }
   // }
 }
 
-function parseErrorCodeFromResponse  (message: string): { errorCode: string, messageReduced: string } {
+function parseErrorCodeFromResponse(message: string): {
+  errorCode: string;
+  messageReduced: string;
+} {
   const numberGroups = message.match(regexMatchNumberGroups);
   let errorCode: string | undefined;
   let messageReduced: string | undefined;
   if (
-    numberGroups
-    && numberGroups.length
-    && numberGroups[0].charAt(0) === message.charAt(0)
+    numberGroups &&
+    numberGroups.length &&
+    numberGroups[0].charAt(0) === message.charAt(0)
   ) {
     errorCode = numberGroups[0];
     messageReduced = message.substring(errorCode.length + 1);
@@ -151,25 +156,28 @@ function parseErrorCodeFromResponse  (message: string): { errorCode: string, mes
 
   return {
     errorCode,
-    messageReduced
+    messageReduced,
   };
 }
 
-export const axiosBaseQuery = ({ baseUrl } = { baseUrl: '' }): BaseQueryFn<AxiosBaseQueryParamsType, unknown, CustomResponseErrorType> =>
+export const axiosBaseQuery =
+  (
+    { baseUrl } = { baseUrl: '' }
+  ): BaseQueryFn<AxiosBaseQueryParamsType, unknown, CustomResponseErrorType> =>
   async <TReturnData>({
     url,
     method,
     data,
     params,
     headers,
-    uploadProgressHandler
+    uploadProgressHandler,
   }: AxiosBaseQueryParamsType): Promise<RequestResponseType<TReturnData>> => {
     try {
       const axiosInstance = AxiosInstance({
         headers: {
           'Content-Type': 'application/json',
-          ...headers
-        }
+          ...headers,
+        },
       });
       const result = await axiosInstance<TReturnData>({
         url: baseUrl + url,
@@ -177,7 +185,7 @@ export const axiosBaseQuery = ({ baseUrl } = { baseUrl: '' }): BaseQueryFn<Axios
         data,
         params,
         headers,
-        onUploadProgress: uploadProgressHandler
+        onUploadProgress: uploadProgressHandler,
       });
       return {
         data: result.data,
@@ -186,29 +194,37 @@ export const axiosBaseQuery = ({ baseUrl } = { baseUrl: '' }): BaseQueryFn<Axios
           url,
           method,
           data,
-          params
-        }
+          params,
+        },
       };
     } catch (axiosError) {
-      const err = axiosError as AxiosError<{ description: string, message: string, status: number, url: string }>;
-      const message = err.response.data.message || 'Oops! Something went wrong. It\'s probably our fault. Please try again later.';
+      const err = axiosError as AxiosError<{
+        description: string;
+        message: string;
+        status: number;
+        url: string;
+      }>;
+      const message =
+        err.response.data.message ||
+        "Oops! Something went wrong. It's probably our fault. Please try again later.";
       logger.error('Error in axiosBaseQuery', err);
       if (err.status === 500) {
-        store.dispatch(uiActions.apiDialogSet('Oops! Something went wrong. It\'s probably our fault. Please try again later.'));
+        store.dispatch(
+          uiActions.apiDialogSet(
+            "Oops! Something went wrong. It's probably our fault. Please try again later."
+          )
+        );
       }
 
-      const {
-        errorCode,
-        messageReduced
-      } = parseErrorCodeFromResponse(message);
+      const { errorCode, messageReduced } = parseErrorCodeFromResponse(message);
 
       return {
         error: {
           status: err.response.status,
           code: errorCode,
           data: err.stack,
-          error: messageReduced || message
+          error: messageReduced || message,
         },
-      }
+      };
     }
-};
+  };

@@ -1,14 +1,11 @@
-import {
-  AppMenuType,
-  IconNames
-} from '@dx/ui-web';
+import { AppMenuType, IconNames } from '@dx/ui-web-system';
 
 export const USER_ADMIN_ENTITY_NAME = 'userAdmin';
 
 export const USER_ADMIN_ROUTES = {
   MAIN: `/admin/user`,
   LIST: `/admin/user/list`,
-  DETAIL: `/admin/user/detail`
+  DETAIL: `/admin/user/detail`,
 };
 
 export const USER_ADMIN_MENU: AppMenuType = {
@@ -24,6 +21,6 @@ export const USER_ADMIN_MENU: AppMenuType = {
       restriction: 'ADMIN',
       routeKey: USER_ADMIN_ROUTES.MAIN,
       type: 'ROUTE',
-    }
+    },
   ],
 };

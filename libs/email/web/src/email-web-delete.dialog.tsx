@@ -1,19 +1,11 @@
-import React,
-{
-  ReactElement
-} from 'react';
+import React, { ReactElement } from 'react';
 import { BeatLoader } from 'react-spinners';
 import DialogActions from '@mui/material/DialogActions';
 // import DialogTitle from '@mui/material/DialogTitle';
-import {
-  Button
-} from '@mui/material';
+import { Button } from '@mui/material';
 import DialogContentText from '@mui/material/DialogContentText';
 
-import {
-  store,
-  useAppDispatch
-} from '@dx/store-web';
+import { store, useAppDispatch } from '@dx/store-web';
 import {
   CustomDialogContent,
   DialogError,
@@ -23,12 +15,10 @@ import {
   SuccessLottie,
   selectIsMobileWidth,
   themeColors,
-  uiActions
-} from '@dx/ui-web';
+  uiActions,
+} from '@dx/ui-web-system';
 import { logger } from '@dx/logger-web';
-import {
-  EmailType
-} from '@dx/email-shared';
+import { EmailType } from '@dx/email-shared';
 import { useDeleteEmailProfileMutation } from './email-web-api';
 
 type DeleteEmailDialogProps = {
@@ -36,7 +26,9 @@ type DeleteEmailDialogProps = {
   emailDataCallback: (email: EmailType) => void;
 };
 
-export const DeleteEmailDialog: React.FC<DeleteEmailDialogProps> = (props): ReactElement => {
+export const DeleteEmailDialog: React.FC<DeleteEmailDialogProps> = (
+  props
+): ReactElement => {
   const { emailItem } = props;
   const [showLottieInitial] = React.useState(true);
   const [showLottieCancel, setShowLottieCancel] = React.useState(false);
@@ -56,15 +48,12 @@ export const DeleteEmailDialog: React.FC<DeleteEmailDialogProps> = (props): Reac
       error: deleteEmailError,
       isLoading: isLoadingDeleteEmail,
       isSuccess: deleteEmailSuccess,
-      isUninitialized: deleteEmailUninitialized
-    }
+      isUninitialized: deleteEmailUninitialized,
+    },
   ] = useDeleteEmailProfileMutation();
 
   React.useEffect(() => {
-    if (
-      !isLoadingDeleteEmail
-      && !deleteEmailUninitialized
-    ) {
+    if (!isLoadingDeleteEmail && !deleteEmailUninitialized) {
       if (!deleteEmailError) {
         setShowLottieError(false);
         setShowLottieSuccess(true);
@@ -80,9 +69,9 @@ export const DeleteEmailDialog: React.FC<DeleteEmailDialogProps> = (props): Reac
 
   React.useEffect(() => {
     if (
-      deleteEmailSuccess
-      && props.emailDataCallback
-      && typeof props.emailDataCallback === 'function'
+      deleteEmailSuccess &&
+      props.emailDataCallback &&
+      typeof props.emailDataCallback === 'function'
     ) {
       props.emailDataCallback(emailItem);
     }
@@ -105,19 +94,23 @@ export const DeleteEmailDialog: React.FC<DeleteEmailDialogProps> = (props): Reac
   const renderLottie = (): JSX.Element => {
     if (showLottieInitial) {
       if (!(showLottieCancel || showLottieError || showLottieSuccess)) {
-        return (<QuestionMarkLottie />);
+        return <QuestionMarkLottie />;
       }
     }
 
     if (showLottieCancel) {
-      return (<CancelLottie complete={() => setTimeout(() => handleClose(), 200)} />);
+      return (
+        <CancelLottie complete={() => setTimeout(() => handleClose(), 200)} />
+      );
     }
 
     if (showLottieSuccess) {
-      return (<SuccessLottie complete={() => setTimeout(() => handleClose(), 500)} />);
+      return (
+        <SuccessLottie complete={() => setTimeout(() => handleClose(), 500)} />
+      );
     }
 
-    return (<QuestionMarkLottie />);
+    return <QuestionMarkLottie />;
   };
 
   const showActions = (): boolean => {
@@ -126,83 +119,60 @@ export const DeleteEmailDialog: React.FC<DeleteEmailDialogProps> = (props): Reac
 
   return (
     <>
-      <DialogWrapper
-        maxWidth={400}
-      >
+      <DialogWrapper maxWidth={400}>
         {/* <DialogTitle style={{ textAlign: 'center' }} >Confirm Deletion</DialogTitle> */}
-        {
-          showLottieError ?
-          (
-            <CustomDialogContent>
-              <DialogError
-                message={bodyMessage}
-              />
-            </CustomDialogContent>
-          )
-          :
-          (
-            <CustomDialogContent>
-              {
-                renderLottie()
-              }
-              <DialogContentText
-                id="confirm-dialog-description"
-                variant="h6"
-                align="center"
-                margin="20px 0 0"
-              >
-                { bodyMessage }
-              </DialogContentText>
-            </CustomDialogContent>
-          )
-        }
-        {
-          showActions() && (
-            <DialogActions
-              style={
-                {
-                  justifyContent: isMobileWidth ? 'center' : 'flex-end'
-                }
-              }
+        {showLottieError ? (
+          <CustomDialogContent>
+            <DialogError message={bodyMessage} />
+          </CustomDialogContent>
+        ) : (
+          <CustomDialogContent>
+            {renderLottie()}
+            <DialogContentText
+              id="confirm-dialog-description"
+              variant="h6"
+              align="center"
+              margin="20px 0 0"
             >
-              <Button
-                variant="outlined"
-                onClick={() => {
-                  if (showLottieError) {
-                    handleClose();
-                    return;
-                  }
+              {bodyMessage}
+            </DialogContentText>
+          </CustomDialogContent>
+        )}
+        {showActions() && (
+          <DialogActions
+            style={{
+              justifyContent: isMobileWidth ? 'center' : 'flex-end',
+            }}
+          >
+            <Button
+              variant="outlined"
+              onClick={() => {
+                if (showLottieError) {
+                  handleClose();
+                  return;
+                }
 
-                  setBodyMessage('Canceling');
-                  setShowLottieCancel(true);
-                }}
-              >
-                { showLottieError ? 'Close' : 'Cancel' }
+                setBodyMessage('Canceling');
+                setShowLottieCancel(true);
+              }}
+            >
+              {showLottieError ? 'Close' : 'Cancel'}
+            </Button>
+            {!showLottieError && (
+              <Button onClick={handleDelete} variant="contained">
+                {isLoadingDeleteEmail ? (
+                  <BeatLoader
+                    color={themeColors.secondary}
+                    size={16}
+                    margin="2px"
+                  />
+                ) : (
+                  'Delete'
+                )}
               </Button>
-              {
-                !showLottieError && (
-                  <Button
-                    onClick={handleDelete}
-                    variant="contained"
-                  >
-                    {
-                      isLoadingDeleteEmail ? (
-                        <BeatLoader
-                          color={themeColors.secondary}
-                          size={16}
-                          margin="2px"
-                        />
-                      )
-                      :
-                      'Delete'
-                    }
-                  </Button>
-                )
-              }
-
-            </DialogActions>
-          )
-        }
+            )}
+          </DialogActions>
+        )}
       </DialogWrapper>
     </>
   );

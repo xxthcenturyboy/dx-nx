@@ -1,16 +1,12 @@
-import {
-  blue,
-  green,
-  red
-} from '@mui/material/colors';
+import { blue, green, red } from '@mui/material/colors';
 
 import { UserType } from '@dx/user-shared';
 import {
   IconNames,
   TableHeaderItem,
   TableMeta,
-  TableRowType
-} from '@dx/ui-web';
+  TableRowType,
+} from '@dx/ui-web-system';
 
 export class UserAdminWebListService {
   public static USER_ADMIN_LIST_META: TableMeta[] = [
@@ -103,7 +99,7 @@ export class UserAdminWebListService {
       title: '',
       sortable: false,
       width: '5%',
-    }
+    },
   ];
 
   public static getListHeaders(): TableHeaderItem[] {
@@ -115,7 +111,7 @@ export class UserAdminWebListService {
         fieldName: meta.fieldName,
         title: meta.title,
         sortable: meta.sortable,
-        width: meta.width
+        width: meta.width,
       });
     }
 
@@ -134,7 +130,7 @@ export class UserAdminWebListService {
       let color: string | undefined = undefined;
 
       if (meta.fieldName === 'emails') {
-        const e = user.emails?.find(email => email.default);
+        const e = user.emails?.find((email) => email.default);
         if (e) {
           cellData = e.email;
         }
@@ -143,7 +139,7 @@ export class UserAdminWebListService {
         }
       }
       if (meta.fieldName === 'phones') {
-        const p = user.phones?.find(phone => phone.default);
+        const p = user.phones?.find((phone) => phone.default);
         if (p) {
           cellData = p.uiFormatted || p.phone;
         }
@@ -152,7 +148,8 @@ export class UserAdminWebListService {
         }
       }
       if (meta.fieldName === 'restrictions') {
-        cellData = Array.isArray(user.restrictions) && user.restrictions.length > 0;
+        cellData =
+          Array.isArray(user.restrictions) && user.restrictions.length > 0;
         if (cellData) {
           icon = IconNames.CHECK;
           color = red[300];
@@ -191,12 +188,13 @@ export class UserAdminWebListService {
         data: cellData,
         dataType: meta.fieldType,
         icon,
-        onClick: (id: string, actionType: string) => console.log(id, actionType)
+        onClick: (id: string, actionType: string) =>
+          console.log(id, actionType),
       });
     }
 
     return row;
-  };
+  }
 
   public getRows(userData: UserType[]): TableRowType[] {
     const rows: TableRowType[] = [];

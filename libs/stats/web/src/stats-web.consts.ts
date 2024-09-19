@@ -1,13 +1,10 @@
-import {
-  AppMenuType,
-  IconNames
-} from '@dx/ui-web';
+import { AppMenuType, IconNames } from '@dx/ui-web-system';
 
 export const STATS_SUDO_WEB_ENTITY_NAME = 'stats';
 
 export const STATS_SUDO_ROUTES = {
   HEALTH: `/sudo/stats/api-health`,
-  USERS: '/sudo/stats/users'
+  USERS: '/sudo/stats/users',
 };
 
 export const STATS_SUDO_WEB_MENU: AppMenuType = {

@@ -1,22 +1,10 @@
 import React from 'react';
-import {
-  Avatar,
-  Badge,
-  IconButton,
-  Grid
-} from '@mui/material';
+import { Avatar, Badge, IconButton, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import {
-  PhotoCamera
-} from '@mui/icons-material';
+import { PhotoCamera } from '@mui/icons-material';
 
-import {
-  RootState,
-  useAppSelector
-} from '@dx/store-web';
-import {
-  APP_COLOR_PALETTE
-} from '@dx/ui-web';
+import { RootState, useAppSelector } from '@dx/store-web';
+import { APP_COLOR_PALETTE } from '@dx/ui-web-system';
 import { setDocumentTitle } from '@dx/utils-misc-web';
 import { selectProfileFormatted } from './user-profile-web.selectors';
 
@@ -29,7 +17,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
     cursor: 'pointer',
     height: '25%',
     width: '25%',
-    padding: '15%'
+    padding: '15%',
     // '&::after': {
     //   position: 'absolute',
     //   top: 0,
@@ -57,18 +45,17 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 type UserProfileAvatarPropTypes = {
   fontSize?: string;
   justifyContent?: string;
-  size?: { height?: number, width?: number };
+  size?: { height?: number; width?: number };
   handleChangeImage?: () => void;
-}
+};
 
-export const UserProfileAvatar: React.FC<UserProfileAvatarPropTypes> = (props) => {
-  const {
-    fontSize,
-    handleChangeImage,
-    justifyContent,
-    size
-  } = props;
-  const profile = useAppSelector((state: RootState) => selectProfileFormatted(state));
+export const UserProfileAvatar: React.FC<UserProfileAvatarPropTypes> = (
+  props
+) => {
+  const { fontSize, handleChangeImage, justifyContent, size } = props;
+  const profile = useAppSelector((state: RootState) =>
+    selectProfileFormatted(state)
+  );
 
   React.useEffect(() => {
     setDocumentTitle('Profile');
@@ -81,61 +68,51 @@ export const UserProfileAvatar: React.FC<UserProfileAvatarPropTypes> = (props) =
       direction={'row'}
       justifyContent={justifyContent || 'flex-start'}
     >
-      {
-        !!handleChangeImage && (
-          <StyledBadge
-            overlap="circular"
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-            variant="standard"
-            onClick={handleChangeImage}
-            badgeContent={
-              <IconButton
-                component="span"
-                sx={
-                  {
-                    color: APP_COLOR_PALETTE.SECONDARY[600]
-                  }
-                }
-              >
-                <PhotoCamera style={{ padding: '5px' }} />
-              </IconButton>
-            }
-          >
-            <Avatar
-              alt={profile.fullName}
-              src={profile.profileImageUrl}
-              sx={
-                {
-                  color: APP_COLOR_PALETTE.PRIMARY[700],
-                  bgcolor: APP_COLOR_PALETTE.SECONDARY[600],
-                  fontSize: fontSize || '1rem',
-                  height: size?.height || 64,
-                  width: size?.width || 64
-                }
-              }
-              variant="circular"
-            />
-          </StyledBadge>
-        )
-      }
-      {
-        !handleChangeImage && (
+      {!!handleChangeImage && (
+        <StyledBadge
+          overlap="circular"
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          variant="standard"
+          onClick={handleChangeImage}
+          badgeContent={
+            <IconButton
+              component="span"
+              sx={{
+                color: APP_COLOR_PALETTE.SECONDARY[600],
+              }}
+            >
+              <PhotoCamera style={{ padding: '5px' }} />
+            </IconButton>
+          }
+        >
           <Avatar
             alt={profile.fullName}
             src={profile.profileImageUrl}
-            sx={
-              {
-                color: APP_COLOR_PALETTE.PRIMARY[700],
-                bgcolor: APP_COLOR_PALETTE.SECONDARY[600],
-                fontSize: fontSize || '1rem',
-                height: size?.height || 64,
-                width: size?.width || 64
-              }
-            }
+            sx={{
+              color: APP_COLOR_PALETTE.PRIMARY[700],
+              bgcolor: APP_COLOR_PALETTE.SECONDARY[600],
+              fontSize: fontSize || '1rem',
+              height: size?.height || 64,
+              width: size?.width || 64,
+            }}
             variant="circular"
           />
-        )
-      }
+        </StyledBadge>
+      )}
+      {!handleChangeImage && (
+        <Avatar
+          alt={profile.fullName}
+          src={profile.profileImageUrl}
+          sx={{
+            color: APP_COLOR_PALETTE.PRIMARY[700],
+            bgcolor: APP_COLOR_PALETTE.SECONDARY[600],
+            fontSize: fontSize || '1rem',
+            height: size?.height || 64,
+            width: size?.width || 64,
+          }}
+          variant="circular"
+        />
+      )}
     </Grid>
   );
 };

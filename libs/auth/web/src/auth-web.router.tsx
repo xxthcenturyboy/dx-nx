@@ -1,13 +1,13 @@
 import {
   // createBrowserRouter,
   Outlet,
-  RouteObject
+  RouteObject,
 } from 'react-router-dom';
 
 import {
   NotFoundComponent,
   // UnauthorizedComponent
-} from '@dx/ui-web';
+} from '@dx/ui-web-system';
 import { WebConfigService } from '@dx/config-web';
 // import { WebLogin } from './auth-web-login.component';
 
@@ -26,24 +26,25 @@ export class AuthWebRouterConfig {
     const config: RouteObject[] = [
       {
         path: ROUTES.AUTH.LOGIN,
-        lazy: async () => { let { WebLogin } = await import('@dx/auth-web')
-          return { Component: WebLogin }
+        lazy: async () => {
+          let { WebLogin } = await import('@dx/auth-web');
+          return { Component: WebLogin };
         },
         // element: (<WebLogin />),
-        errorElement: (<NotFoundComponent />)
+        errorElement: <NotFoundComponent />,
       },
       {
         path: ROUTES.AUTH.MAIN,
-        element: (<AuthWebRouter />),
-        errorElement: (<NotFoundComponent />),
+        element: <AuthWebRouter />,
+        errorElement: <NotFoundComponent />,
         children: [
           // {
           //   path: ROUTES.AUTH.LOGIN,
           //   element: (<WebLogin />),
           //   errorElement: (<NotFoundComponent />)
           // }
-        ]
-      }
+        ],
+      },
     ];
 
     return config;

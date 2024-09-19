@@ -1,12 +1,9 @@
-import {
-  AppMenuType,
-  IconNames
-} from '@dx/ui-web';
+import { AppMenuType, IconNames } from '@dx/ui-web-system';
 
 export const DASHBOARD_ENTITY_NAME = 'dashboard';
 
 export const DASHBOARD_ROUTES = {
-  MAIN: `/${DASHBOARD_ENTITY_NAME}`
+  MAIN: `/${DASHBOARD_ENTITY_NAME}`,
 };
 
 export const DASHBOARD_MENU: AppMenuType = {
@@ -20,7 +17,7 @@ export const DASHBOARD_MENU: AppMenuType = {
       icon: IconNames.DASHBOARD,
       routeKey: DASHBOARD_ROUTES.MAIN,
       title: 'Dashboard',
-      type: 'ROUTE'
-    }
-  ]
+      type: 'ROUTE',
+    },
+  ],
 };

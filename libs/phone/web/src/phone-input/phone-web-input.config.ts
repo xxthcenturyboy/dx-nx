@@ -1,11 +1,11 @@
 import React from 'react';
 import { Theme } from '@mui/material';
 
-import {
-  BORDER_RADIUS
-} from '@dx/ui-web';
+import { BORDER_RADIUS } from '@dx/ui-web-system';
 
-export const getDefaultStyles = (theme: Theme): { [key: string]: React.CSSProperties} => {
+export const getDefaultStyles = (
+  theme: Theme
+): { [key: string]: React.CSSProperties } => {
   const buttonStyleDefaults: React.CSSProperties = {
     borderRadius: 0,
     background: 'transparent',
@@ -18,7 +18,7 @@ export const getDefaultStyles = (theme: Theme): { [key: string]: React.CSSProper
 
   const dropdownStyleDefaults: React.CSSProperties = {
     color: `${theme.palette.primary.main}`,
-    position: 'fixed'
+    position: 'fixed',
   };
 
   const inputStyleDefaults: React.CSSProperties = {
@@ -31,7 +31,7 @@ export const getDefaultStyles = (theme: Theme): { [key: string]: React.CSSProper
     background: 'transparent',
     color: 'inherit',
     fontSize: '16px',
-    padding: '18.5px 14px 18.5px 50px'
+    padding: '18.5px 14px 18.5px 50px',
   };
 
   const searchStyleDefaults: React.CSSProperties = {

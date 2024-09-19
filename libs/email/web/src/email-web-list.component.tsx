@@ -13,18 +13,12 @@ import {
   TableContainer,
   TableRow,
   Tooltip,
-  Typography
+  Typography,
 } from '@mui/material';
-import {
-  Delete
-} from '@mui/icons-material';
+import { Delete } from '@mui/icons-material';
 
-import {
-  useAppDispatch
-} from '@dx/store-web';
-import {
-  uiActions
-} from '@dx/ui-web';
+import { useAppDispatch } from '@dx/store-web';
+import { uiActions } from '@dx/ui-web-system';
 import { EmailType } from '@dx/email-shared';
 import { AddEmailDialog } from './email-web-create.dialog';
 import { DeleteEmailDialog } from './email-web-delete.dialog';
@@ -37,12 +31,7 @@ type EmailListPropsType = {
 };
 
 export const EmailList: React.FC<EmailListPropsType> = (props) => {
-  const {
-    emails,
-    userId,
-    emailDataCallback,
-    emailDeleteCallback
-  } = props;
+  const { emails, userId, emailDataCallback, emailDeleteCallback } = props;
   const dispatch = useAppDispatch();
   const rowHeight = '32px';
 
@@ -61,14 +50,8 @@ export const EmailList: React.FC<EmailListPropsType> = (props) => {
   }));
 
   return (
-    <Box
-      margin="20px 0"
-      width="100%"
-    >
-      <Paper
-        elevation={0}
-        sx={{ backgroundColor: 'transparent' }}
-      >
+    <Box margin="20px 0" width="100%">
+      <Paper elevation={0} sx={{ backgroundColor: 'transparent' }}>
         <Grid
           container
           justifyContent="space-between"
@@ -77,10 +60,7 @@ export const EmailList: React.FC<EmailListPropsType> = (props) => {
         >
           {/* Title */}
           <Grid item>
-            <Typography
-              variant="h6"
-              color="primary"
-            >
+            <Typography variant="h6" color="primary">
               Emails
             </Typography>
           </Grid>
@@ -88,15 +68,17 @@ export const EmailList: React.FC<EmailListPropsType> = (props) => {
           <Grid item>
             <Button
               color="primary"
-              variant='contained'
+              variant="contained"
               size={'small'}
-              onClick={
-                () => dispatch(uiActions.appDialogSet(
-                  <AddEmailDialog
-                    userId={userId}
-                    emailDataCallback={emailDataCallback}
-                  />
-                ))
+              onClick={() =>
+                dispatch(
+                  uiActions.appDialogSet(
+                    <AddEmailDialog
+                      userId={userId}
+                      emailDataCallback={emailDataCallback}
+                    />
+                  )
+                )
               }
             >
               New Email
@@ -104,20 +86,11 @@ export const EmailList: React.FC<EmailListPropsType> = (props) => {
           </Grid>
         </Grid>
         <Divider />
-        <TableContainer
-          component={Box}
-        >
-          <Table
-            stickyHeader
-            size="small"
-            aria-label=""
-            id="table-user-emails"
-          >
+        <TableContainer component={Box}>
+          <Table stickyHeader size="small" aria-label="" id="table-user-emails">
             <TableBody>
-              {
-                !emails
-                || (emails && !emails.length)
-                && (
+              {!emails ||
+                (emails && !emails.length && (
                   <StyledTableRow>
                     <TableCell
                       colSpan={3}
@@ -125,48 +98,42 @@ export const EmailList: React.FC<EmailListPropsType> = (props) => {
                         height: '200px',
                         textAlign: 'center',
                         fontSize: '42px',
-                        color: 'primary'
+                        color: 'primary',
                       }}
                     >
                       No Data
                     </TableCell>
                   </StyledTableRow>
-                )
-              }
-              {
-                !!emails
-                && !!emails.length
-                && emails.map((email: EmailType) => {
+                ))}
+              {!!emails &&
+                !!emails.length &&
+                emails.map((email: EmailType) => {
                   return (
                     <StyledTableRow
                       key={email.id}
                       sx={{
                         // cursor: 'pointer',
-                        height: rowHeight
+                        height: rowHeight,
                       }}
                       // onClick={() => editEmail(email)}
                     >
                       <TableCell
                         align="left"
-                        sx={
-                          {
-                            height: '20px',
-                            textWrap: 'nowrap'
-                          }
-                        }
+                        sx={{
+                          height: '20px',
+                          textWrap: 'nowrap',
+                        }}
                       >
-                        { email.email }
+                        {email.email}
                       </TableCell>
                       <TableCell
                         align="left"
-                        sx={
-                          {
-                            height: '20px',
-                            textWrap: 'nowrap'
-                          }
-                        }
+                        sx={{
+                          height: '20px',
+                          textWrap: 'nowrap',
+                        }}
                       >
-                        { email.label }
+                        {email.label}
                       </TableCell>
                       <TableCell
                         align="right"
@@ -175,51 +142,50 @@ export const EmailList: React.FC<EmailListPropsType> = (props) => {
                           display: 'flex',
                           flexDirection: 'row',
                           alignItems: 'center',
-                          justifyContent: 'flex-end'
+                          justifyContent: 'flex-end',
                         }}
                       >
-                        {
-                          email.isVerified && (
-                            <Chip
-                              label="Verified"
-                              color="success"
-                              sx={{ height: '20px', marginRight: '10px' }}
-                            />
-                          )
-                        }
-                        {
-                          email.default && (
-                            <Chip
-                              label="Default"
-                              color="info"
-                              sx={{ height: '20px', marginRight: '10px' }}
-                            />
-                          )
-                        }
-                        {
-                          !email.default && (
-                            <Tooltip title="Delete Email">
-                              <Delete
-                                onClick={(event: React.SyntheticEvent) => {
-                                  event.stopPropagation();
-                                  dispatch(uiActions.appDialogSet(
+                        {email.isVerified && (
+                          <Chip
+                            label="Verified"
+                            color="success"
+                            sx={{ height: '20px', marginRight: '10px' }}
+                          />
+                        )}
+                        {email.default && (
+                          <Chip
+                            label="Default"
+                            color="info"
+                            sx={{ height: '20px', marginRight: '10px' }}
+                          />
+                        )}
+                        {!email.default && (
+                          <Tooltip title="Delete Email">
+                            <Delete
+                              onClick={(event: React.SyntheticEvent) => {
+                                event.stopPropagation();
+                                dispatch(
+                                  uiActions.appDialogSet(
                                     <DeleteEmailDialog
                                       emailItem={email}
                                       emailDataCallback={emailDeleteCallback}
                                     />
-                                  ));
-                                }}
-                                color="primary"
-                                style={{ cursor: 'pointer', width: '0.75em', margin: '0 10 0 0' }}
-                              />
-                            </Tooltip>
-                          )
-                        }
+                                  )
+                                );
+                              }}
+                              color="primary"
+                              style={{
+                                cursor: 'pointer',
+                                width: '0.75em',
+                                margin: '0 10 0 0',
+                              }}
+                            />
+                          </Tooltip>
+                        )}
                       </TableCell>
                     </StyledTableRow>
                   );
-                })
-              }
+                })}
             </TableBody>
           </Table>
         </TableContainer>

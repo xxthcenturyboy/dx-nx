@@ -1,7 +1,4 @@
-import React,
-{
-  ReactElement
-} from 'react';
+import React, { ReactElement } from 'react';
 import { BeatLoader } from 'react-spinners';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -14,14 +11,10 @@ import {
   MenuItem,
   OutlinedInput,
   Select,
-  SelectChangeEvent
+  SelectChangeEvent,
 } from '@mui/material';
 
-import {
-  RootState,
-  useAppDispatch,
-  useAppSelector
-} from '@dx/store-web';
+import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
 import { logger } from '@dx/logger-web';
 import {
   CustomDialogContent,
@@ -30,16 +23,16 @@ import {
   SuccessLottie,
   selectIsMobileWidth,
   themeColors,
-  uiActions
-} from '@dx/ui-web';
+  uiActions,
+} from '@dx/ui-web-system';
 import { UserType } from '@dx/user-shared';
 import {
   NotificationCreationParamTypes,
-  NOTIFICATION_LEVELS
+  NOTIFICATION_LEVELS,
 } from '@dx/notifications-shared';
 import {
   useSendNotificationToAllMutation,
-  useSendNotificationToUserMutation
+  useSendNotificationToUserMutation,
 } from './notification-web.api';
 import { SendNotificationForm } from './notification-web-dialog.ui';
 
@@ -47,15 +40,21 @@ type NotificationSendPropsType = {
   user?: UserType;
 };
 
-export const NotificationSendDialog: React.FC<NotificationSendPropsType> = (props): ReactElement => {
+export const NotificationSendDialog: React.FC<NotificationSendPropsType> = (
+  props
+): ReactElement => {
   const [allSucceeded, setAllSucceeded] = React.useState(false);
   const [showLottieError, setShowLottieError] = React.useState(false);
   const [title, setTitle] = React.useState('');
   const [message, setMessage] = React.useState('');
   const [level, setLevel] = React.useState(NOTIFICATION_LEVELS.INFO);
   const [errorMessage, setErrorMessage] = React.useState('');
-  const [sendToMobile, setSendToMobile] = React.useState(!!props.user?.phones.find(phone => phone.default && phone.isVerified));
-  const isMobileWidth = useAppSelector((state: RootState) => selectIsMobileWidth(state));
+  const [sendToMobile, setSendToMobile] = React.useState(
+    !!props.user?.phones.find((phone) => phone.default && phone.isVerified)
+  );
+  const isMobileWidth = useAppSelector((state: RootState) =>
+    selectIsMobileWidth(state)
+  );
   const dispatch = useAppDispatch();
   const [
     requestSendNotificationToAll,
@@ -64,8 +63,8 @@ export const NotificationSendDialog: React.FC<NotificationSendPropsType> = (prop
       error: sendToAllError,
       isLoading: isLoadingSendToAll,
       isSuccess: sendToAllSuccess,
-      isUninitialized: sendToAllUninitialized
-    }
+      isUninitialized: sendToAllUninitialized,
+    },
   ] = useSendNotificationToAllMutation();
   const [
     requestSendNotificationToUser,
@@ -74,18 +73,14 @@ export const NotificationSendDialog: React.FC<NotificationSendPropsType> = (prop
       error: sendToUserError,
       isLoading: isLoadingSendToUser,
       isSuccess: sendToUserSuccess,
-      isUninitialized: sendToUserUninitialized
-    }
+      isUninitialized: sendToUserUninitialized,
+    },
   ] = useSendNotificationToUserMutation();
 
-  React.useEffect(() => {
-  }, []);
+  React.useEffect(() => {}, []);
 
   React.useEffect(() => {
-    if (
-      !isLoadingSendToUser
-      && !sendToUserUninitialized
-    ) {
+    if (!isLoadingSendToUser && !sendToUserUninitialized) {
       if (!sendToUserError) {
         setShowLottieError(false);
         setAllSucceeded(true);
@@ -99,10 +94,7 @@ export const NotificationSendDialog: React.FC<NotificationSendPropsType> = (prop
   }, [isLoadingSendToUser]);
 
   React.useEffect(() => {
-    if (
-      !isLoadingSendToAll
-      && !sendToAllUninitialized
-    ) {
+    if (!isLoadingSendToAll && !sendToAllUninitialized) {
       if (!sendToAllError) {
         setShowLottieError(false);
         setAllSucceeded(true);
@@ -120,11 +112,7 @@ export const NotificationSendDialog: React.FC<NotificationSendPropsType> = (prop
   };
 
   const submitDisabled = (): boolean => {
-    if (
-      !(message)
-      || isLoadingSendToAll
-      || isLoadingSendToUser
-    ) {
+    if (!message || isLoadingSendToAll || isLoadingSendToUser) {
       return true;
     }
 
@@ -132,17 +120,14 @@ export const NotificationSendDialog: React.FC<NotificationSendPropsType> = (prop
   };
 
   const handleSend = async (): Promise<void> => {
-    if (
-      !submitDisabled()
-      && props.user?.id
-    ) {
+    if (!submitDisabled() && props.user?.id) {
       try {
         const payload: NotificationCreationParamTypes = {
           level,
           title,
           message,
           suppressPush: !sendToMobile,
-          userId: props.user.id
+          userId: props.user.id,
         };
 
         await requestSendNotificationToUser(payload);
@@ -150,10 +135,7 @@ export const NotificationSendDialog: React.FC<NotificationSendPropsType> = (prop
         logger.error((err as Error).message, err);
       }
     }
-    if (
-      !submitDisabled()
-      && !props.user?.id
-    ) {
+    if (!submitDisabled() && !props.user?.id) {
       try {
         const payload: Partial<NotificationCreationParamTypes> = {
           level,
@@ -173,7 +155,9 @@ export const NotificationSendDialog: React.FC<NotificationSendPropsType> = (prop
     setTitle(event.target.value);
   };
 
-  const handleSetMessage = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleSetMessage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
     setMessage(event.target.value);
   };
 
@@ -194,11 +178,9 @@ export const NotificationSendDialog: React.FC<NotificationSendPropsType> = (prop
           <FormControl
             disabled={isLoadingSendToAll || isLoadingSendToUser}
             margin="normal"
-            sx={
-              {
-                minWidth: 300,
-              }
-            }
+            sx={{
+              minWidth: 300,
+            }}
           >
             <InputLabel htmlFor="input-title">Title</InputLabel>
             <OutlinedInput
@@ -218,14 +200,10 @@ export const NotificationSendDialog: React.FC<NotificationSendPropsType> = (prop
               style={{
                 height: '2px',
                 margin: '6px 6px 0',
-                fontSize: '0.75em'
+                fontSize: '0.75em',
               }}
             >
-              {
-                title.length
-                  ? `${30 - title.length} characters remaining.`
-                  : ''
-              }
+              {title.length ? `${30 - title.length} characters remaining.` : ''}
             </span>
           </FormControl>
 
@@ -234,13 +212,10 @@ export const NotificationSendDialog: React.FC<NotificationSendPropsType> = (prop
             disabled={isLoadingSendToAll || isLoadingSendToUser}
             margin="normal"
             sx={{
-                minWidth: 300,
+              minWidth: 300,
             }}
           >
-            <InputLabel
-              htmlFor="input-title"
-              required
-            >
+            <InputLabel htmlFor="input-title" required>
               Message
             </InputLabel>
             <OutlinedInput
@@ -255,7 +230,6 @@ export const NotificationSendDialog: React.FC<NotificationSendPropsType> = (prop
               fullWidth
               multiline
               rows={4}
-
               // maxRows={4}
               inputProps={{ maxLength: 255 }}
               label={'Message'}
@@ -263,10 +237,10 @@ export const NotificationSendDialog: React.FC<NotificationSendPropsType> = (prop
             <span
               style={{
                 margin: '6px',
-                fontSize: '0.75em'
+                fontSize: '0.75em',
               }}
             >
-              { `${255 - message.length} characters remaining.` }
+              {`${255 - message.length} characters remaining.`}
             </span>
           </FormControl>
 
@@ -285,18 +259,13 @@ export const NotificationSendDialog: React.FC<NotificationSendPropsType> = (prop
               notched
               label="Type"
             >
-              {
-                Object.values(NOTIFICATION_LEVELS).map((labelValue) => {
-                  return (
-                    <MenuItem
-                      key={labelValue}
-                      value={labelValue}
-                    >
-                      { labelValue }
-                    </MenuItem>
-                  );
-                })
-              }
+              {Object.values(NOTIFICATION_LEVELS).map((labelValue) => {
+                return (
+                  <MenuItem key={labelValue} value={labelValue}>
+                    {labelValue}
+                  </MenuItem>
+                );
+              })}
             </Select>
           </FormControl>
 
@@ -305,7 +274,7 @@ export const NotificationSendDialog: React.FC<NotificationSendPropsType> = (prop
             label="Send Push Notification To Phone"
             control={
               <Checkbox
-                size='large'
+                size="large"
                 checked={sendToMobile}
                 onChange={() => setSendToMobile(!sendToMobile)}
               />
@@ -317,90 +286,59 @@ export const NotificationSendDialog: React.FC<NotificationSendPropsType> = (prop
   };
 
   return (
-    <DialogWrapper
-      maxWidth={400}
-    >
+    <DialogWrapper maxWidth={400}>
       <DialogTitle
-        style={
-          {
-            textAlign: 'center'
-          }
-        }
+        style={{
+          textAlign: 'center',
+        }}
       >
-        {
-          props.user
-            ? `Send to: ${props.user.username}`
-            : 'Send to all users'
-        }
+        {props.user ? `Send to: ${props.user.username}` : 'Send to all users'}
       </DialogTitle>
-      {
-        !allSucceeded
-        && !showLottieError
-        && renderFormContent()
-      }
-      {
-        showLottieError && (
-          <CustomDialogContent>
-            <DialogError
-              message={errorMessage}
-            />
-          </CustomDialogContent>
-        )
-      }
-      {
-        allSucceeded && (
-          <CustomDialogContent>
-            <SuccessLottie
-              complete={
-                () => setTimeout(() => handleClose(), 500)
-              }
-            />
-          </CustomDialogContent>
-        )
-      }
-      {
-        !allSucceeded && (
-          <DialogActions
-            style={
-              {
-                justifyContent: isMobileWidth ? 'center' : 'flex-end'
-              }
-            }
+      {!allSucceeded && !showLottieError && renderFormContent()}
+      {showLottieError && (
+        <CustomDialogContent>
+          <DialogError message={errorMessage} />
+        </CustomDialogContent>
+      )}
+      {allSucceeded && (
+        <CustomDialogContent>
+          <SuccessLottie
+            complete={() => setTimeout(() => handleClose(), 500)}
+          />
+        </CustomDialogContent>
+      )}
+      {!allSucceeded && (
+        <DialogActions
+          style={{
+            justifyContent: isMobileWidth ? 'center' : 'flex-end',
+          }}
+        >
+          <Button
+            variant="outlined"
+            onClick={handleClose}
+            disabled={isLoadingSendToAll || isLoadingSendToUser}
           >
+            {showLottieError ? 'Close' : 'Cancel'}
+          </Button>
+          {!showLottieError && (
             <Button
-              variant="outlined"
-              onClick={handleClose}
-              disabled={isLoadingSendToAll || isLoadingSendToUser}
+              onClick={handleSend}
+              variant="contained"
+              disabled={submitDisabled()}
             >
-              { showLottieError ? 'Close' : 'Cancel' }
+              {isLoadingSendToAll || isLoadingSendToUser ? (
+                <BeatLoader
+                  color={themeColors.secondary}
+                  size={16}
+                  margin="2px"
+                />
+              ) : (
+                'Send'
+              )}
             </Button>
-            {
-              !showLottieError && (
-                <Button
-                  onClick={handleSend}
-                  variant="contained"
-                  disabled={submitDisabled()}
-                >
-                  {
-                    (
-                      isLoadingSendToAll
-                      || isLoadingSendToUser
-                    ) ? (
-                      <BeatLoader
-                        color={themeColors.secondary}
-                        size={16}
-                        margin="2px"
-                      />
-                    )
-                    :
-                    'Send'
-                  }
-                </Button>
-              )
-            }
-          </DialogActions>
-        )
-      }
+          )}
+        </DialogActions>
+      )}
     </DialogWrapper>
   );
 };

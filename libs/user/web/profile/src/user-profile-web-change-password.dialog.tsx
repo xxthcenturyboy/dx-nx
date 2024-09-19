@@ -1,7 +1,4 @@
-import React,
-{
-  ReactElement
-} from 'react';
+import React, { ReactElement } from 'react';
 import { BeatLoader } from 'react-spinners';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -11,21 +8,13 @@ import {
   Input,
   InputLabel,
   OutlinedInput,
-  Typography
+  Typography,
 } from '@mui/material';
-import {
-  Visibility,
-  VisibilityOff,
-} from '@mui/icons-material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
-import {
-  store,
-  useAppDispatch
-} from '@dx/store-web';
+import { store, useAppDispatch } from '@dx/store-web';
 import { logger } from '@dx/logger-web';
-import {
-  UpdatePasswordPayloadType
-} from '@dx/user-shared';
+import { UpdatePasswordPayloadType } from '@dx/user-shared';
 import {
   CustomDialogContent,
   DialogError,
@@ -33,29 +22,26 @@ import {
   SuccessLottie,
   selectIsMobileWidth,
   themeColors,
-  uiActions
-} from '@dx/ui-web';
+  uiActions,
+} from '@dx/ui-web-system';
 import { ChangePasswordForm } from './user-profile-web-change-password.ui';
-import {
-  useUpdatePasswordMutation
-} from './user-profile-web.api';
-import {
-  useCheckPasswordStrengthMutation
-} from '@dx/auth-web';
-import {
-  AuthWebRequestOtpEntry
-} from '@dx/auth-web';
+import { useUpdatePasswordMutation } from './user-profile-web.api';
+import { useCheckPasswordStrengthMutation } from '@dx/auth-web';
+import { AuthWebRequestOtpEntry } from '@dx/auth-web';
 
 type UserProfileChangePasswordPropsType = {
   userId: string;
 };
 
-export const UserProfileChangePasswordDialog: React.FC<UserProfileChangePasswordPropsType> = (props): ReactElement => {
+export const UserProfileChangePasswordDialog: React.FC<
+  UserProfileChangePasswordPropsType
+> = (props): ReactElement => {
   const [allSucceeded, setAllSucceeded] = React.useState(false);
   const [showLottieError, setShowLottieError] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
   const [isPasswordStrong, setIsPasswordStrong] = React.useState(false);
-  const [passwordStrengthMessage, setPasswordStrengthMessage] = React.useState('');
+  const [passwordStrengthMessage, setPasswordStrengthMessage] =
+    React.useState('');
   const [password, setPassword] = React.useState('');
   const [passwordConfirm, setPasswordConfirm] = React.useState('');
   const [errorMessage, setErrorMessage] = React.useState('');
@@ -68,8 +54,8 @@ export const UserProfileChangePasswordDialog: React.FC<UserProfileChangePassword
       error: checkStrengthError,
       isLoading: isLoadingCheckStrength,
       isSuccess: checkStrengthSuccess,
-      isUninitialized: checkStrengthUninitialized
-    }
+      isUninitialized: checkStrengthUninitialized,
+    },
   ] = useCheckPasswordStrengthMutation();
   const [
     requestUpdatePassword,
@@ -78,8 +64,8 @@ export const UserProfileChangePasswordDialog: React.FC<UserProfileChangePassword
       error: updatePasswordlError,
       isLoading: isLoadingUpdatePassword,
       isSuccess: updatePasswordSuccess,
-      isUninitialized: updatePasswordUninitialized
-    }
+      isUninitialized: updatePasswordUninitialized,
+    },
   ] = useUpdatePasswordMutation();
 
   React.useEffect(() => {
@@ -89,10 +75,7 @@ export const UserProfileChangePasswordDialog: React.FC<UserProfileChangePassword
   }, []);
 
   React.useEffect(() => {
-    if (
-      !isLoadingUpdatePassword
-      && !updatePasswordUninitialized
-    ) {
+    if (!isLoadingUpdatePassword && !updatePasswordUninitialized) {
       if (!updatePasswordlError) {
         setShowLottieError(false);
         setAllSucceeded(true);
@@ -106,10 +89,7 @@ export const UserProfileChangePasswordDialog: React.FC<UserProfileChangePassword
   }, [isLoadingUpdatePassword]);
 
   React.useEffect(() => {
-    if (
-      !isLoadingCheckStrength
-      && !checkStrengthUninitialized
-    ) {
+    if (!isLoadingCheckStrength && !checkStrengthUninitialized) {
       if (!checkStrengthError) {
         setShowLottieError(false);
         if (checkStrengthResponse.score >= 3) {
@@ -121,7 +101,6 @@ export const UserProfileChangePasswordDialog: React.FC<UserProfileChangePassword
             `${checkStrengthResponse.feedback.warning} ${checkStrengthResponse.feedback.suggestions}`
           );
         }
-
       } else {
         if ('error' in checkStrengthError) {
           setErrorMessage(checkStrengthError['error']);
@@ -138,9 +117,9 @@ export const UserProfileChangePasswordDialog: React.FC<UserProfileChangePassword
 
   const submitDisabled = (): boolean => {
     if (
-      !(password && passwordConfirm)
-      || password !== passwordConfirm
-      || isLoadingCheckStrength
+      !(password && passwordConfirm) ||
+      password !== passwordConfirm ||
+      isLoadingCheckStrength
     ) {
       return true;
     }
@@ -149,20 +128,20 @@ export const UserProfileChangePasswordDialog: React.FC<UserProfileChangePassword
   };
 
   const handleUpdatePassword = async (data: {
-    code: string,
-    value: string,
-    region?: string
+    code: string;
+    value: string;
+    region?: string;
   }): Promise<void> => {
     try {
       const payload: UpdatePasswordPayloadType = {
-        id:  props.userId,
+        id: props.userId,
         otp: {
           code: data.code,
           id: data.value,
-          method: data.region ? 'PHONE' : 'EMAIL'
+          method: data.region ? 'PHONE' : 'EMAIL',
         },
         password,
-        passwordConfirm
+        passwordConfirm,
       };
 
       await requestUpdatePassword(payload);
@@ -172,13 +151,8 @@ export const UserProfileChangePasswordDialog: React.FC<UserProfileChangePassword
   };
 
   const handleSubmitPassword = async (): Promise<void> => {
-    if (
-      !submitDisabled()
-      && props.userId
-    ) {
-      if (
-        !isPasswordStrong
-      ) {
+    if (!submitDisabled() && props.userId) {
+      if (!isPasswordStrong) {
         try {
           await requestPasswordStrength({ password });
         } catch (err) {
@@ -188,11 +162,15 @@ export const UserProfileChangePasswordDialog: React.FC<UserProfileChangePassword
     }
   };
 
-  const handleChangePassword = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleChangePassword = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
     setPassword(event.target.value);
   };
 
-  const handleChangePasswordConfirm = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleChangePasswordConfirm = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
     setPasswordConfirm(event.target.value);
   };
 
@@ -206,17 +184,11 @@ export const UserProfileChangePasswordDialog: React.FC<UserProfileChangePassword
           <FormControl
             disabled={isLoadingCheckStrength}
             margin="normal"
-            style={
-              {
-                minWidth: 300
-              }
-            }
+            style={{
+              minWidth: 300,
+            }}
           >
-            <InputLabel
-              htmlFor="input-password"
-            >
-              Password
-            </InputLabel>
+            <InputLabel htmlFor="input-password">Password</InputLabel>
             <OutlinedInput
               id="input-password"
               name="input-password"
@@ -227,37 +199,35 @@ export const UserProfileChangePasswordDialog: React.FC<UserProfileChangePassword
               value={password || ''}
               fullWidth
               label={'Password'}
-              endAdornment={showPassword ?
-                <Visibility
-                  sx={{
-                    cursor: 'pointer'
-                  }}
-                  color="primary"
-                  onClick={() => setShowPassword(false)}
-                />
-                :
-                <VisibilityOff
-                  sx={{
-                    cursor: 'pointer'
-                  }}
-                  color="primary"
-                  onClick={() => setShowPassword(true)}
-                />
+              endAdornment={
+                showPassword ? (
+                  <Visibility
+                    sx={{
+                      cursor: 'pointer',
+                    }}
+                    color="primary"
+                    onClick={() => setShowPassword(false)}
+                  />
+                ) : (
+                  <VisibilityOff
+                    sx={{
+                      cursor: 'pointer',
+                    }}
+                    color="primary"
+                    onClick={() => setShowPassword(true)}
+                  />
+                )
               }
             />
           </FormControl>
           <FormControl
             disabled={isLoadingCheckStrength}
             margin="normal"
-            style={
-              {
-                minWidth: 300
-              }
-            }
+            style={{
+              minWidth: 300,
+            }}
           >
-            <InputLabel
-              htmlFor="input-password-confirm"
-            >
+            <InputLabel htmlFor="input-password-confirm">
               Confirm Password
             </InputLabel>
             <OutlinedInput
@@ -270,147 +240,110 @@ export const UserProfileChangePasswordDialog: React.FC<UserProfileChangePassword
               value={passwordConfirm || ''}
               fullWidth
               label={'Confirm Password'}
-              endAdornment={showPassword ?
-                <Visibility
-                  sx={{
-                    cursor: 'pointer'
-                  }}
-                  color="primary"
-                  onClick={() => setShowPassword(false)}
-                />
-                :
-                <VisibilityOff
-                  sx={{
-                    cursor: 'pointer'
-                  }}
-                  color="primary"
-                  onClick={() => setShowPassword(true)}
-                />
+              endAdornment={
+                showPassword ? (
+                  <Visibility
+                    sx={{
+                      cursor: 'pointer',
+                    }}
+                    color="primary"
+                    onClick={() => setShowPassword(false)}
+                  />
+                ) : (
+                  <VisibilityOff
+                    sx={{
+                      cursor: 'pointer',
+                    }}
+                    color="primary"
+                    onClick={() => setShowPassword(true)}
+                  />
+                )
               }
             />
           </FormControl>
         </ChangePasswordForm>
-        {
-          !isPasswordStrong
-          && passwordStrengthMessage
-          && (
-            <Typography
-              variant="h6"
-            >
-              { passwordStrengthMessage }
-            </Typography>
-          )
-        }
+        {!isPasswordStrong && passwordStrengthMessage && (
+          <Typography variant="h6">{passwordStrengthMessage}</Typography>
+        )}
       </CustomDialogContent>
     );
   };
 
   return (
-    <DialogWrapper
-      maxWidth={400}
-    >
+    <DialogWrapper maxWidth={400}>
       <DialogTitle
-        style={
-          {
-            textAlign: 'center'
-          }
-        }
+        style={{
+          textAlign: 'center',
+        }}
       >
         Change Password
       </DialogTitle>
-      {
-        !allSucceeded
-        && !showLottieError
-        && !isPasswordStrong
-        && renderFormContent()
-      }
-      {
-        !allSucceeded
-        && !showLottieError
-        && isPasswordStrong
-        && (
-          <CustomDialogContent>
-            <AuthWebRequestOtpEntry
-              hasCallbackError={!!updatePasswordlError}
-              onCompleteCallback={
-                (value: string, code: string, region?: string) => {
-                  void handleUpdatePassword({
-                    code,
-                    value,
-                    region
-                  });
-                }
-              }
-            />
-          </CustomDialogContent>
-        )
-      }
-      {
-        showLottieError && (
-          <CustomDialogContent>
-            <DialogError
-              message={errorMessage}
-            />
-          </CustomDialogContent>
-
-        )
-      }
-      {
-        allSucceeded && (
-          <CustomDialogContent>
-            <SuccessLottie
-              complete={
-                () => setTimeout(() => handleClose(), 500)
-              }
-            />
-          </CustomDialogContent>
-
-        )
-      }
-      {
-        !allSucceeded && (
-          <DialogActions
-            style={
-              {
-                justifyContent: isMobileWidth ? 'center' : 'flex-end'
-              }
-            }
+      {!allSucceeded &&
+        !showLottieError &&
+        !isPasswordStrong &&
+        renderFormContent()}
+      {!allSucceeded && !showLottieError && isPasswordStrong && (
+        <CustomDialogContent>
+          <AuthWebRequestOtpEntry
+            hasCallbackError={!!updatePasswordlError}
+            onCompleteCallback={(
+              value: string,
+              code: string,
+              region?: string
+            ) => {
+              void handleUpdatePassword({
+                code,
+                value,
+                region,
+              });
+            }}
+          />
+        </CustomDialogContent>
+      )}
+      {showLottieError && (
+        <CustomDialogContent>
+          <DialogError message={errorMessage} />
+        </CustomDialogContent>
+      )}
+      {allSucceeded && (
+        <CustomDialogContent>
+          <SuccessLottie
+            complete={() => setTimeout(() => handleClose(), 500)}
+          />
+        </CustomDialogContent>
+      )}
+      {!allSucceeded && (
+        <DialogActions
+          style={{
+            justifyContent: isMobileWidth ? 'center' : 'flex-end',
+          }}
+        >
+          <Button
+            variant="outlined"
+            onClick={handleClose}
+            disabled={isLoadingCheckStrength || isLoadingUpdatePassword}
           >
+            {showLottieError ? 'Close' : 'Cancel'}
+          </Button>
+          {!showLottieError && !isPasswordStrong && (
             <Button
-              variant="outlined"
-              onClick={handleClose}
-              disabled={isLoadingCheckStrength || isLoadingUpdatePassword}
+              onClick={handleSubmitPassword}
+              variant="contained"
+              disabled={submitDisabled()}
             >
-              { showLottieError ? 'Close' : 'Cancel' }
+              {isLoadingCheckStrength ? (
+                <BeatLoader
+                  color={themeColors.secondary}
+                  size={16}
+                  margin="2px"
+                />
+              ) : (
+                'Update'
+              )}
             </Button>
-            {
-              !showLottieError
-              && !isPasswordStrong
-              && (
-                <Button
-                  onClick={handleSubmitPassword}
-                  variant="contained"
-                  disabled={submitDisabled()}
-                >
-                  {
-                    (
-                      isLoadingCheckStrength
-                    ) ? (
-                      <BeatLoader
-                        color={themeColors.secondary}
-                        size={16}
-                        margin="2px"
-                      />
-                    )
-                    :
-                    'Update'
-                  }
-                </Button>
-              )
-            }
-          </DialogActions>
-        )
-      }
+          )}
+        </DialogActions>
+      )}
     </DialogWrapper>
   );
 };

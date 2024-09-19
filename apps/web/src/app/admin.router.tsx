@@ -1,34 +1,18 @@
-import {
-  Outlet,
-  RouteObject
-} from 'react-router-dom';
+import { Outlet, RouteObject } from 'react-router-dom';
 
-import {
-  UnauthorizedComponent
-} from '@dx/ui-web';
+import { UnauthorizedComponent } from '@dx/ui-web-system';
 import { WebConfigService } from '@dx/config-web';
 import { store } from '@dx/store-web';
 
 export const AdminRouter = () => {
   const hasAdminRole = () => {
-    if (
-      store.getState().userProfile.sa
-      || store.getState().userProfile.a
-    ) {
+    if (store.getState().userProfile.sa || store.getState().userProfile.a) {
       return true;
     }
 
     return false;
-  }
-  return (
-    <>
-      {
-        hasAdminRole()
-          ? <Outlet />
-          : <UnauthorizedComponent />
-      }
-    </>
-  );
+  };
+  return <>{hasAdminRole() ? <Outlet /> : <UnauthorizedComponent />}</>;
 };
 
 export class AdminWebRouterConfig {
@@ -37,29 +21,32 @@ export class AdminWebRouterConfig {
 
     const config: RouteObject[] = [
       {
-        element: (<AdminRouter />),
-        errorElement: (<UnauthorizedComponent />),
+        element: <AdminRouter />,
+        errorElement: <UnauthorizedComponent />,
         children: [
           {
             path: ROUTES.ADMIN.USER.MAIN,
-            lazy: async () => { let { UserAdminMain } = await import('@dx/user-admin-web')
-              return { Component: UserAdminMain }
-            }
+            lazy: async () => {
+              let { UserAdminMain } = await import('@dx/user-admin-web');
+              return { Component: UserAdminMain };
+            },
           },
           {
             path: ROUTES.ADMIN.USER.LIST,
-            lazy: async () => { let { UserAdminList } = await import('@dx/user-admin-web')
-              return { Component: UserAdminList }
-            }
+            lazy: async () => {
+              let { UserAdminList } = await import('@dx/user-admin-web');
+              return { Component: UserAdminList };
+            },
           },
           {
             path: `${ROUTES.ADMIN.USER.DETAIL}/:id`,
-            lazy: async () => { let { UserAdminEdit } = await import('@dx/user-admin-web')
-              return { Component: UserAdminEdit }
-            }
-          }
-        ]
-      }
+            lazy: async () => {
+              let { UserAdminEdit } = await import('@dx/user-admin-web');
+              return { Component: UserAdminEdit };
+            },
+          },
+        ],
+      },
     ];
 
     return config;

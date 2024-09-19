@@ -9,15 +9,9 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  APP_NAME,
-  APP_DESCRIPTION
-} from '@dx/config-shared';
+import { APP_NAME, APP_DESCRIPTION } from '@dx/config-shared';
 import { WebConfigService } from '@dx/config-web';
-import {
-  FADE_TIMEOUT_DUR,
-  WelcomeRobotLottie
-} from '@dx/ui-web';
+import { FADE_TIMEOUT_DUR, WelcomeRobotLottie } from '@dx/ui-web-system';
 import { setDocumentTitle } from '@dx/utils-misc-web';
 
 export const HomeComponent: React.FC = () => {
@@ -31,32 +25,23 @@ export const HomeComponent: React.FC = () => {
 
   const goToLogin = () => {
     const ROUTES = WebConfigService.getWebRoutes();
-    if (
-      ROUTES
-      && ROUTES.AUTH
-      && ROUTES.AUTH.LOGIN
-    ) {
+    if (ROUTES && ROUTES.AUTH && ROUTES.AUTH.LOGIN) {
       navigate(ROUTES.AUTH.LOGIN);
     }
   };
 
   return (
-    <Fade
-      in={true}
-      timeout={FADE_TIMEOUT_DUR}
-    >
+    <Fade in={true} timeout={FADE_TIMEOUT_DUR}>
       <Grid
         container
         spacing={0}
         direction="column"
         alignItems="center"
         justifyContent="center"
-        sx={
-          {
-            padding: '24px',
-            minHeight: '80vh'
-          }
-        }
+        sx={{
+          padding: '24px',
+          minHeight: '80vh',
+        }}
         wrap="nowrap"
       >
         <WelcomeRobotLottie />
@@ -65,15 +50,10 @@ export const HomeComponent: React.FC = () => {
           color="primary"
           align="center"
         >
-          { APP_NAME }
+          {APP_NAME}
         </Typography>
-        <Typography
-          variant="h5"
-          color="secondary"
-          margin="15px"
-          align="center"
-        >
-          { APP_DESCRIPTION }
+        <Typography variant="h5" color="secondary" margin="15px" align="center">
+          {APP_DESCRIPTION}
         </Typography>
         <Grid
           item
@@ -88,7 +68,7 @@ export const HomeComponent: React.FC = () => {
             fullWidth={smBreak}
             size="large"
             style={{
-              minWidth: '200px'
+              minWidth: '200px',
             }}
           >
             Login

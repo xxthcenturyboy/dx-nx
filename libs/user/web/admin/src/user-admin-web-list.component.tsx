@@ -1,13 +1,5 @@
-import React,
-{
-  useEffect,
-  useRef,
-  useState
-} from 'react';
-import {
-  useLocation,
-  useNavigate
-} from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Button,
   FormControl,
@@ -18,16 +10,10 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import {
-  Cached
-} from '@mui/icons-material';
+import { Cached } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 
-import {
-  RootState,
-  useAppDispatch,
-  useAppSelector
-} from '@dx/store-web';
+import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
 import {
   CollapsiblePanel,
   ConfirmationDialog,
@@ -37,38 +23,43 @@ import {
   TableComponent,
   TableRowType,
   uiActions,
-  useFocus
-} from '@dx/ui-web';
+  useFocus,
+} from '@dx/ui-web-system';
 import { logger } from '@dx/logger-web';
-import {
-  debounce,
-  setDocumentTitle
-} from '@dx/utils-misc-web';
-import {
-  GetUsersListQueryType
-} from '@dx/user-shared';
+import { debounce, setDocumentTitle } from '@dx/utils-misc-web';
+import { GetUsersListQueryType } from '@dx/user-shared';
 import { WebConfigService } from '@dx/config-web';
 import {
   NotificationSendDialog,
-  useSendNotificationAppUpdateMutation
+  useSendNotificationAppUpdateMutation,
 } from '@dx/notifications-web';
 import { userAdminActions } from './user-admin-web.reducer';
 import {
   selectUsersFormatted,
-  selectUsersListData
+  selectUsersListData,
 } from './user-admin-web.selectors';
 import { useLazyGetUserAdminListQuery } from './user-admin-web.api';
 import { UserAdminWebListService } from './user-admin-web-list.service';
 
 export const UserAdminList: React.FC = () => {
-  const filterValue = useAppSelector((state: RootState) => state.userAdmin.filterValue);
-  const limit = useAppSelector((state: RootState) => state.userAdmin.limit || 10);
+  const filterValue = useAppSelector(
+    (state: RootState) => state.userAdmin.filterValue
+  );
+  const limit = useAppSelector(
+    (state: RootState) => state.userAdmin.limit || 10
+  );
   const offset = useAppSelector((state: RootState) => state.userAdmin.offset);
   const orderBy = useAppSelector((state: RootState) => state.userAdmin.orderBy);
   const sortDir = useAppSelector((state: RootState) => state.userAdmin.sortDir);
-  const users = useAppSelector((state: RootState) => selectUsersFormatted(state));
-  const userRowData = useAppSelector((state: RootState) => selectUsersListData(state));
-  const usersCount = useAppSelector((state: RootState) => state.userAdmin.usersCount);
+  const users = useAppSelector((state: RootState) =>
+    selectUsersFormatted(state)
+  );
+  const userRowData = useAppSelector((state: RootState) =>
+    selectUsersListData(state)
+  );
+  const usersCount = useAppSelector(
+    (state: RootState) => state.userAdmin.usersCount
+  );
   const currentUser = useAppSelector((state: RootState) => state.userProfile);
   const usersListHeaders = UserAdminWebListService.getListHeaders();
   const [isInitialized, setIsInitialized] = useState(false);
@@ -88,8 +79,8 @@ export const UserAdminList: React.FC = () => {
       error: userListError,
       isFetching: isLoadingUserList,
       isSuccess: fetchUserListSuccess,
-      isUninitialized: fetchUserListUninitialized
-    }
+      isUninitialized: fetchUserListUninitialized,
+    },
   ] = useLazyGetUserAdminListQuery();
   const [
     requestSendAppUpdate,
@@ -98,38 +89,26 @@ export const UserAdminList: React.FC = () => {
       error: sendAppUpdateError,
       isLoading: isLoadingSendAppUpdate,
       isSuccess: sendAppUpdateSuccess,
-      isUninitialized: sendAppUpdateUninitialized
-    }
+      isUninitialized: sendAppUpdateUninitialized,
+    },
   ] = useSendNotificationAppUpdateMutation();
 
   useEffect(() => {
     setDocumentTitle('Admin Users');
-    if (
-      !users
-      || users.length === 0
-    ) {
+    if (!users || users.length === 0) {
       void fetchUsers();
     }
-    if (
-      location
-      && location.pathname
-    ) {
+    if (location && location.pathname) {
       dispatch(userAdminActions.lastRouteSet(location.pathname));
     }
-    if (
-      users
-      && users.length
-    ) {
+    if (users && users.length) {
       // setTimeout(() => setIsInitialized(true), 1000);
       setIsInitialized(true);
     }
   }, []);
 
   useEffect(() => {
-    if (
-      isInitialized
-      && !isLoadingUserList
-    ) {
+    if (isInitialized && !isLoadingUserList) {
       void fetchUsers();
       return;
     }
@@ -138,29 +117,25 @@ export const UserAdminList: React.FC = () => {
   }, [limit, offset, orderBy, sortDir]);
 
   useEffect(() => {
-    if (
-      !isLoadingUserList
-    ) {
-      if (
-        !userListError
-        && userListResponse?.rows
-      ) {
+    if (!isLoadingUserList) {
+      if (!userListError && userListResponse?.rows) {
         dispatch(userAdminActions.listSet(userListResponse?.rows || []));
         dispatch(userAdminActions.userCountSet(userListResponse?.count));
         setIsFetching(false);
       }
-      if (
-        userListError
-      ) {
-        'error' in userListError && dispatch(uiActions.apiDialogSet(userListError['error']));
+      if (userListError) {
+        'error' in userListError &&
+          dispatch(uiActions.apiDialogSet(userListError['error']));
         setIsFetching(false);
       }
     }
   }, [isLoadingUserList]);
 
-  const debounceFetch = useRef(debounce((value: string) => {
-    void fetchUsers(value);
-  }, DEBOUNCE)).current;
+  const debounceFetch = useRef(
+    debounce((value: string) => {
+      void fetchUsers(value);
+    }, DEBOUNCE)
+  ).current;
 
   const fetchUsers = async (searchValue?: string): Promise<void> => {
     setIsFetching(true);
@@ -178,18 +153,17 @@ export const UserAdminList: React.FC = () => {
     await fetchUsers();
   };
 
-  const clickRow = (data: TableRowType ): void => {
-    const user = users.find(user => user.id === data.id);
-    if (
-      user?.username === 'admin'
-      && currentUser?.id !== user.id
-    ) {
-      dispatch(uiActions.appDialogSet(
-        <DialogAlert
-          buttonText="Got it."
-          message="You cannot edit the admin account."
-        />
-      ));
+  const clickRow = (data: TableRowType): void => {
+    const user = users.find((user) => user.id === data.id);
+    if (user?.username === 'admin' && currentUser?.id !== user.id) {
+      dispatch(
+        uiActions.appDialogSet(
+          <DialogAlert
+            buttonText="Got it."
+            message="You cannot edit the admin account."
+          />
+        )
+      );
       return;
     }
 
@@ -214,7 +188,9 @@ export const UserAdminList: React.FC = () => {
     dispatch(userAdminActions.sortDirSet('ASC'));
   };
 
-  const handleFilterValueChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleFilterValueChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ): void => {
     const value = e.target.value;
     if (value !== filterValue) {
       debounceFetch(value);
@@ -225,36 +201,44 @@ export const UserAdminList: React.FC = () => {
 
   const handleSendAppUpdateClick = async (): Promise<void> => {
     try {
-      dispatch(uiActions.appDialogSet(
-        <ConfirmationDialog
-          okText="Send"
-          cancelText="Cancel"
-          bodyMessage="Send App Update to All Users?"
-          noAwait={true}
-          onComplete={
-            async (isConfirmed: boolean) => {
+      dispatch(
+        uiActions.appDialogSet(
+          <ConfirmationDialog
+            okText="Send"
+            cancelText="Cancel"
+            bodyMessage="Send App Update to All Users?"
+            noAwait={true}
+            onComplete={async (isConfirmed: boolean) => {
               if (isConfirmed) {
                 try {
-                  const appUpdateResponse = await requestSendAppUpdate().unwrap();
+                  const appUpdateResponse =
+                    await requestSendAppUpdate().unwrap();
                   if (appUpdateResponse.success) {
-                    setTimeout(() => dispatch(uiActions.appDialogSet(null)), 1000);
+                    setTimeout(
+                      () => dispatch(uiActions.appDialogSet(null)),
+                      1000
+                    );
                     return;
                   }
-                  setTimeout(() => dispatch(uiActions.appDialogSet(null)), 1000);
+                  setTimeout(
+                    () => dispatch(uiActions.appDialogSet(null)),
+                    1000
+                  );
                 } catch (err) {
                   logger.error(err);
-                  toast.error('Could not send the app update notification. Check logs for more info.');
+                  toast.error(
+                    'Could not send the app update notification. Check logs for more info.'
+                  );
                 }
               }
 
               if (!isConfirmed) {
                 dispatch(uiActions.appDialogSet(null));
               }
-            }
-          }
-        />
-      ));
-
+            }}
+          />
+        )
+      );
     } catch (err) {
       logger.error(err);
     }
@@ -265,29 +249,25 @@ export const UserAdminList: React.FC = () => {
       headerTitle={'User List'}
       contentMarginTop={SM_BREAK ? '124px' : '74px'}
       headerColumnRightJustification={SM_BREAK ? 'center' : 'flex-end'}
-      headerColumnsBreaks={
-        {
-          left: {
-            xs: 12,
-            sm: 6
-          },
-          right: {
-            xs: 12,
-            sm: 6
-          }
-        }
-      }
-      headerContent={(
+      headerColumnsBreaks={{
+        left: {
+          xs: 12,
+          sm: 6,
+        },
+        right: {
+          xs: 12,
+          sm: 6,
+        },
+      }}
+      headerContent={
         <Grid
           container
           direction={SM_BREAK ? 'column-reverse' : 'row'}
           justifyContent={SM_BREAK ? 'center' : 'flex-end'}
           alignItems="center"
-          style={
-            {
-              marginRight: MD_BREAK ? '0px' : '24px'
-            }
-          }
+          style={{
+            marginRight: MD_BREAK ? '0px' : '24px',
+          }}
         >
           {/* Filter */}
           <Grid
@@ -295,22 +275,18 @@ export const UserAdminList: React.FC = () => {
             display={'flex'}
             alignItems={'center'}
             justifyContent={'center'}
-            style={
-              {
-                minWidth: SM_BREAK ? '' : '360px',
-                width: SM_BREAK ? '100%' : '360px'
-              }
-            }
+            style={{
+              minWidth: SM_BREAK ? '' : '360px',
+              width: SM_BREAK ? '100%' : '360px',
+            }}
           >
             <FormControl
               margin="none"
-              style={
-                {
-                  marginRight: SM_BREAK ? '24px' : '24px',
-                  marginTop: 0,
-                  width: '100%'
-                }
-              }
+              style={{
+                marginRight: SM_BREAK ? '24px' : '24px',
+                marginTop: 0,
+                width: '100%',
+              }}
             >
               <FilledInput
                 id="input-filter"
@@ -329,23 +305,18 @@ export const UserAdminList: React.FC = () => {
             <span>
               <IconButton
                 color="primary"
-                onClick={
-                  (event: React.SyntheticEvent) => {
-                    event.stopPropagation();
-                    void refreshTableData();
-                  }
-                }
-                sx={
-                  {
-                    boxShadow: 1
-                  }
-                }
+                onClick={(event: React.SyntheticEvent) => {
+                  event.stopPropagation();
+                  void refreshTableData();
+                }}
+                sx={{
+                  boxShadow: 1,
+                }}
               >
                 <Tooltip title="Refresh List">
                   <Cached />
                 </Tooltip>
               </IconButton>
-
             </span>
           </Grid>
           {/* New User */}
@@ -367,7 +338,7 @@ export const UserAdminList: React.FC = () => {
             </Button>
           </Grid> */}
         </Grid>
-      )}
+      }
     >
       <Grid
         container
@@ -377,14 +348,10 @@ export const UserAdminList: React.FC = () => {
         justifyContent={'center'}
       >
         {/* Actions */}
-        <Grid
-          item
-          mb={'24px'}
-          xs={12}
-        >
+        <Grid item mb={'24px'} xs={12}>
           <CollapsiblePanel
-            headerTitle='Actions'
-            panelId='panel-user-admin-actions'
+            headerTitle="Actions"
+            panelId="panel-user-admin-actions"
           >
             <Grid
               container
@@ -394,42 +361,31 @@ export const UserAdminList: React.FC = () => {
             >
               <Button
                 variant="contained"
-                onClick={
-                  () => dispatch(uiActions.appDialogSet(
-                    <NotificationSendDialog />
-                  ))
+                onClick={() =>
+                  dispatch(uiActions.appDialogSet(<NotificationSendDialog />))
                 }
                 color={'primary'}
                 sx={{
-                  margin: SM_BREAK
-                    ? '0 0 12px'
-                    : '0 12px 0',
-                  minWidth: '262px'
+                  margin: SM_BREAK ? '0 0 12px' : '0 12px 0',
+                  minWidth: '262px',
                 }}
               >
                 Send Notification To All Users
               </Button>
 
-              {
-                (
-                  currentUser.a
-                  || currentUser.sa
-                ) && (
-                  <Button
-                    variant="contained"
-                    color="info"
-                    onClick={handleSendAppUpdateClick}
-                    sx={{
-                      margin: SM_BREAK
-                        ? '0'
-                        : '0',
-                      minWidth: '262px'
-                    }}
-                  >
-                    Send Web App Update
-                  </Button>
-                )
-              }
+              {(currentUser.a || currentUser.sa) && (
+                <Button
+                  variant="contained"
+                  color="info"
+                  onClick={handleSendAppUpdateClick}
+                  sx={{
+                    margin: SM_BREAK ? '0' : '0',
+                    minWidth: '262px',
+                  }}
+                >
+                  Send Web App Update
+                </Button>
+              )}
             </Grid>
           </CollapsiblePanel>
         </Grid>

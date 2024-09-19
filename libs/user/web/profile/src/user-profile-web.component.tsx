@@ -11,16 +11,9 @@ import {
   useTheme,
 } from '@mui/material';
 
-import {
-  RootState,
-  useAppDispatch,
-  useAppSelector
-} from '@dx/store-web';
+import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
 import { logger } from '@dx/logger-web';
-import {
-  ContentWrapper,
-  uiActions
-} from '@dx/ui-web';
+import { ContentWrapper, uiActions } from '@dx/ui-web-system';
 import { setDocumentTitle } from '@dx/utils-misc-web';
 import { EmailList } from '@dx/email-web';
 import { EmailType } from '@dx/email-shared';
@@ -34,8 +27,12 @@ import { UserProfileAvatar } from './user-profile-web-avatar.component';
 import { UserProfileWebAvatarDialog } from './user-profile-web-avatar.dialog';
 
 export const UserProfile: React.FC = () => {
-  const profile = useAppSelector((state: RootState) => selectProfileFormatted(state));
-  const appMode = useAppSelector((state: RootState) => state.ui.theme.palette?.mode);
+  const profile = useAppSelector((state: RootState) =>
+    selectProfileFormatted(state)
+  );
+  const appMode = useAppSelector(
+    (state: RootState) => state.ui.theme.palette?.mode
+  );
   const dispatch = useAppDispatch();
   const theme = useTheme();
   const MD_BREAK = useMediaQuery(theme.breakpoints.down('md'));
@@ -53,15 +50,14 @@ export const UserProfile: React.FC = () => {
   };
 
   const handlePasswordReset = async (): Promise<void> => {
-    const primaryEmail = profile?.emails.find(e => e.default);
+    const primaryEmail = profile?.emails.find((e) => e.default);
     if (primaryEmail) {
       try {
-        dispatch(uiActions.appDialogSet(
-          <UserProfileChangePasswordDialog
-            userId={profile.id}
-          />
-        ));
-
+        dispatch(
+          uiActions.appDialogSet(
+            <UserProfileChangePasswordDialog userId={profile.id} />
+          )
+        );
       } catch (err) {
         logger.error(err);
       }
@@ -93,19 +89,17 @@ export const UserProfile: React.FC = () => {
       headerTitle={`Profile: ${profile.username}`}
       contentMarginTop={SM_BREAK ? '98px' : '56px'}
       headerColumnRightJustification={SM_BREAK ? 'center' : 'flex-end'}
-      headerColumnsBreaks={
-        {
-          left: {
-            xs: 12,
-            sm: 6
-          },
-          right: {
-            xs: 12,
-            sm: 6
-          }
-        }
-      }
-      headerContent={(
+      headerColumnsBreaks={{
+        left: {
+          xs: 12,
+          sm: 6,
+        },
+        right: {
+          xs: 12,
+          sm: 6,
+        },
+      }}
+      headerContent={
         <Button
           variant="contained"
           size="small"
@@ -114,11 +108,9 @@ export const UserProfile: React.FC = () => {
         >
           Change Password
         </Button>
-      )}
+      }
     >
-      <Paper
-        elevation={2}
-      >
+      <Paper elevation={2}>
         <Grid
           container
           justifyContent="flex-start"
@@ -138,31 +130,29 @@ export const UserProfile: React.FC = () => {
               paddingTop={'12px'}
             >
               <UserProfileAvatar
-                fontSize='6rem'
+                fontSize="6rem"
                 justifyContent="center"
-                handleChangeImage={
-                  () => dispatch(uiActions.appDialogSet(
-                    <UserProfileWebAvatarDialog
-                      avatarDataCallback={avatarDataCallback}
-                    />
-                  ))
+                handleChangeImage={() =>
+                  dispatch(
+                    uiActions.appDialogSet(
+                      <UserProfileWebAvatarDialog
+                        avatarDataCallback={avatarDataCallback}
+                      />
+                    )
+                  )
                 }
-                size={
-                  {
-                    height: 142,
-                    width: 142
-                  }
-                }
+                size={{
+                  height: 142,
+                  width: 142,
+                }}
               />
             </Grid>
           </Grid>
           <Divider
-            sx={
-              {
-                width: '100%',
-                margin: '24px 0 0 0'
-              }
-            }
+            sx={{
+              width: '100%',
+              margin: '24px 0 0 0',
+            }}
           />
 
           <Grid
@@ -171,13 +161,7 @@ export const UserProfile: React.FC = () => {
             justifyContent={'center'}
             // width={'100%'}
           >
-            <Grid
-              item
-              md={12}
-              lg={6}
-              padding="10px"
-              width={'100%'}
-            >
+            <Grid item md={12} lg={6} padding="10px" width={'100%'}>
               <EmailList
                 emails={profile.emails}
                 userId={profile.id}
@@ -185,13 +169,7 @@ export const UserProfile: React.FC = () => {
                 emailDeleteCallback={removeEmailFromProfile}
               />
             </Grid>
-            <Grid
-              item
-              md={12}
-              lg={6}
-              padding="10px"
-              width={'100%'}
-            >
+            <Grid item md={12} lg={6} padding="10px" width={'100%'}>
               <Phonelist
                 phones={profile.phones}
                 userId={profile.id}
@@ -202,32 +180,22 @@ export const UserProfile: React.FC = () => {
           </Grid>
 
           <Divider
-            sx={
-              {
-                width: '100%',
-                margin: '12px 0 12px 0'
-              }
-            }
+            sx={{
+              width: '100%',
+              margin: '12px 0 12px 0',
+            }}
           />
           <Grid
             container
             direction={MD_BREAK ? 'column' : 'row'}
             justifyContent={'flex-start'}
           >
-            <Grid
-              item
-              width={MD_BREAK ? '100%' : '50%'}
-              padding="10px"
-            >
-              <Button
-                variant="outlined"
-                onClick={toggleDarkMode}
-              >
+            <Grid item width={MD_BREAK ? '100%' : '50%'} padding="10px">
+              <Button variant="outlined" onClick={toggleDarkMode}>
                 Toggle Dark Mode
               </Button>
             </Grid>
           </Grid>
-
         </Grid>
       </Paper>
     </ContentWrapper>

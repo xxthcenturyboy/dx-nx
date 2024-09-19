@@ -1,33 +1,15 @@
 import React from 'react';
-import {
-  useLocation,
-  useNavigate
-} from 'react-router-dom';
-import {
-  Box,
-  Fade,
-  Grid,
-  Paper,
-} from '@mui/material';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Box, Fade, Grid, Paper } from '@mui/material';
 import { toast } from 'react-toastify';
 
-import {
-  RootState,
-  useAppDispatch,
-  useAppSelector
-} from '@dx/store-web';
-import {
-  loginBootstrap,
-  WebConfigService
-} from '@dx/config-web';
-import {
-  FADE_TIMEOUT_DUR,
-  MEDIA_BREAK
-} from '@dx/ui-web';
+import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
+import { loginBootstrap, WebConfigService } from '@dx/config-web';
+import { FADE_TIMEOUT_DUR, MEDIA_BREAK } from '@dx/ui-web-system';
 import { setDocumentTitle } from '@dx/utils-misc-web';
 import {
   selectIsUserProfileValid,
-  userProfileActions
+  userProfileActions,
 } from '@dx/user-profile-web';
 import { LoginPayloadType } from '@dx/auth-shared';
 import * as UI from './auth-web-login.ui';
@@ -38,13 +20,20 @@ import { AuthWebRequestOtpEntry } from './auth-web-request-otp.component';
 
 export const WebLogin: React.FC = () => {
   const [mobileBreak, setMobileBreak] = React.useState(false);
-  const [loginType, setLoginType] = React.useState<'USER_PASS' | 'OTP'>('USER_PASS');
+  const [loginType, setLoginType] = React.useState<'USER_PASS' | 'OTP'>(
+    'USER_PASS'
+  );
   const user = useAppSelector((state: RootState) => state.userProfile);
-  const isProfileValid = useAppSelector((state: RootState) => selectIsUserProfileValid(state));
+  const isProfileValid = useAppSelector((state: RootState) =>
+    selectIsUserProfileValid(state)
+  );
   const logo = useAppSelector((state: RootState) => state.ui.logoUrl);
   // const windowHeight = useAppSelector((state: RootState) => state.ui.windowHeight) || 0;
-  const windowWidth = useAppSelector((state: RootState) => state.ui.windowWidth) || 0;
-  const stringLogin = useAppSelector((state: RootState) => state.ui.strings['LOGIN']);
+  const windowWidth =
+    useAppSelector((state: RootState) => state.ui.windowWidth) || 0;
+  const stringLogin = useAppSelector(
+    (state: RootState) => state.ui.strings['LOGIN']
+  );
   const location = useLocation();
   const navigate = useNavigate();
   const lastPath = location.pathname;
@@ -56,22 +45,16 @@ export const WebLogin: React.FC = () => {
       data: loginResponse,
       error: loginError,
       isLoading: isFetchingLogin,
-      isSuccess: loginIsSuccess
-    }
+      isSuccess: loginIsSuccess,
+    },
   ] = useLoginMutation();
 
   React.useEffect(() => {
     setDocumentTitle(stringLogin);
 
     // we're already logged in
-    if (
-      user
-      && isProfileValid
-    ) {
-      if (
-        lastPath !== ROUTES.MAIN
-        && lastPath !== ROUTES.AUTH.LOGIN
-      ) {
+    if (user && isProfileValid) {
+      if (lastPath !== ROUTES.MAIN && lastPath !== ROUTES.AUTH.LOGIN) {
         navigate(lastPath, { replace: true });
       }
       return;
@@ -84,10 +67,7 @@ export const WebLogin: React.FC = () => {
 
   React.useEffect(() => {
     if (loginError) {
-      if (
-        loginError.code
-        && loginError.code === '429'
-      ) {
+      if (loginError.code && loginError.code === '429') {
         navigate(ROUTES.LIMITED);
         'error' in loginError && toast.error(loginError.error);
         return;
@@ -102,10 +82,7 @@ export const WebLogin: React.FC = () => {
 
   React.useEffect(() => {
     if (loginResponse) {
-      const {
-        accessToken,
-        profile
-      } = loginResponse;
+      const { accessToken, profile } = loginResponse;
       dispatch(authActions.usernameUpdated(''));
       dispatch(authActions.passwordUpdated(''));
       dispatch(authActions.tokenAdded(accessToken));
@@ -121,10 +98,7 @@ export const WebLogin: React.FC = () => {
   };
 
   return (
-    <Fade
-      in={true}
-      timeout={FADE_TIMEOUT_DUR}
-    >
+    <Fade in={true} timeout={FADE_TIMEOUT_DUR}>
       <Box>
         <Grid
           container
@@ -136,52 +110,46 @@ export const WebLogin: React.FC = () => {
         >
           <Paper
             elevation={mobileBreak ? 0 : 2}
-            sx={
-              (theme) => {
-                return {
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'flex-start',
-                  padding: mobileBreak ? '20px' : '40px',
-                  minWidth: windowWidth < 375 ? `${windowWidth - 40}px` : '330px',
-                  minHeight: '500px',
-                  maxWidth: '420px',
-                  width: '100%',
-                  backgroundColor: mobileBreak ? 'transparent' : undefined
-                };
-              }
-            }
+            sx={(theme) => {
+              return {
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                padding: mobileBreak ? '20px' : '40px',
+                minWidth: windowWidth < 375 ? `${windowWidth - 40}px` : '330px',
+                minHeight: '500px',
+                maxWidth: '420px',
+                width: '100%',
+                backgroundColor: mobileBreak ? 'transparent' : undefined,
+              };
+            }}
           >
             <UI.Logo src={logo} />
-            {
-              loginType === 'USER_PASS' && (
-                <WebLoginUserPass
-                  changeLoginType={
-                    () => setLoginType('OTP')
-                  }
-                  isFetchingLogin={isFetchingLogin}
-                  login={handleLogin}
-                />
-              )
-            }
-            {
-              loginType === 'OTP' && (
-                <AuthWebRequestOtpEntry
-                  hasCallbackError={!!loginError}
-                  onCompleteCallback={
-                    (value: string, code: string, region?: string) => {
-                      const data: LoginPayloadType = {
-                        code,
-                        region,
-                        value,
-                      };
-                      void handleLogin(data);
-                    }
-                  }
-                />
-              )
-            }
+            {loginType === 'USER_PASS' && (
+              <WebLoginUserPass
+                changeLoginType={() => setLoginType('OTP')}
+                isFetchingLogin={isFetchingLogin}
+                login={handleLogin}
+              />
+            )}
+            {loginType === 'OTP' && (
+              <AuthWebRequestOtpEntry
+                hasCallbackError={!!loginError}
+                onCompleteCallback={(
+                  value: string,
+                  code: string,
+                  region?: string
+                ) => {
+                  const data: LoginPayloadType = {
+                    code,
+                    region,
+                    value,
+                  };
+                  void handleLogin(data);
+                }}
+              />
+            )}
           </Paper>
         </Grid>
       </Box>

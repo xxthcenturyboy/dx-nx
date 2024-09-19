@@ -1,26 +1,10 @@
-import React,
-{
-  useEffect,
-  useState
-} from 'react';
-import {
-  useParams,
-  useNavigate
-} from 'react-router-dom';
-import {
-  Fade,
-  Grid,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Fade, Grid, Typography, useMediaQuery, useTheme } from '@mui/material';
 
 import { APP_NAME } from '@dx/config-shared';
 import { WebConfigService } from '@dx/config-web';
-import {
-  FADE_TIMEOUT_DUR,
-  MEDIA_BREAK
-} from '@dx/ui-web';
+import { FADE_TIMEOUT_DUR, MEDIA_BREAK } from '@dx/ui-web-system';
 import { useLazyGetShortlinkTargetQuery } from './shortlink-web-api';
 
 export const ShortlinkComponent: React.FC = () => {
@@ -36,8 +20,8 @@ export const ShortlinkComponent: React.FC = () => {
       error: shortlinkError,
       isFetching: isLoadingShortlink,
       isSuccess: shortlinkSuccess,
-      isUninitialized: shortlinkUninitialized
-    }
+      isUninitialized: shortlinkUninitialized,
+    },
   ] = useLazyGetShortlinkTargetQuery();
 
   useEffect(() => {
@@ -46,13 +30,13 @@ export const ShortlinkComponent: React.FC = () => {
       return;
     }
 
-    void fetchShortlink({ id: token })
+    void fetchShortlink({ id: token });
   }, []);
 
   useEffect(() => {
     if (isLoadingShortlink) {
       setHasFetched(true);
-    };
+    }
   }, [isLoadingShortlink]);
 
   useEffect(() => {
@@ -62,11 +46,7 @@ export const ShortlinkComponent: React.FC = () => {
   }, [shortlinkError]);
 
   useEffect(() => {
-    if (
-      hasFetched
-      && !shortlinkError
-      && shortlinkResponse
-    ) {
+    if (hasFetched && !shortlinkError && shortlinkResponse) {
       navigate(shortlinkResponse, { replace: true });
     }
   }, [shortlinkResponse]);
@@ -79,10 +59,7 @@ export const ShortlinkComponent: React.FC = () => {
   };
 
   return (
-    <Fade
-      in={true}
-      timeout={FADE_TIMEOUT_DUR}
-    >
+    <Fade in={true} timeout={FADE_TIMEOUT_DUR}>
       <Grid
         container
         spacing={0}
@@ -97,7 +74,7 @@ export const ShortlinkComponent: React.FC = () => {
           color="primary"
           align="center"
         >
-          { APP_NAME }
+          {APP_NAME}
         </Typography>
       </Grid>
     </Fade>

@@ -1,9 +1,6 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
-import {
-  IconButton,
-  Grid
-} from '@mui/material';
+import { IconButton, Grid } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import InfoIcon from '@mui/icons-material/Info';
 import ReportIcon from '@mui/icons-material/Report';
@@ -13,15 +10,11 @@ import WavingHandIcon from '@mui/icons-material/WavingHand';
 import { toast } from 'react-toastify';
 import { NIL as NIL_UUID } from 'uuid';
 
-import {
-  RootState,
-  useAppDispatch,
-  useAppSelector
-} from '@dx/store-web';
-import { themeColors } from '@dx/ui-web';
+import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
+import { themeColors } from '@dx/ui-web-system';
 import {
   NotificationType,
-  NOTIFICATION_LEVELS
+  NOTIFICATION_LEVELS,
 } from '@dx/notifications-shared';
 import { selectHasSuperAdminRole } from '@dx/user-profile-web';
 import { StyledNotification } from './notification-web-menu.ui';
@@ -32,12 +25,14 @@ type NotificationMenuPropsType = {
   notification: NotificationType;
 };
 
-export const NotificationComponent: React.FC<NotificationMenuPropsType> = (props) => {
-  const {
-    notification
-  } = props;
+export const NotificationComponent: React.FC<NotificationMenuPropsType> = (
+  props
+) => {
+  const { notification } = props;
   const MAX_LEN = 100;
-  const isSuperAdmin = useAppSelector((state: RootState) => selectHasSuperAdminRole(state));
+  const isSuperAdmin = useAppSelector((state: RootState) =>
+    selectHasSuperAdminRole(state)
+  );
   const dispatch = useAppDispatch();
   const [
     requestDismiss,
@@ -46,15 +41,12 @@ export const NotificationComponent: React.FC<NotificationMenuPropsType> = (props
       error: dismissError,
       isLoading: isLoadingDismiss,
       isSuccess: dismissSuccess,
-      isUninitialized: dismissUninitialized
-    }
+      isUninitialized: dismissUninitialized,
+    },
   ] = useMarkAsDismissedMutation();
 
   React.useEffect(() => {
-    if (
-      !isLoadingDismiss
-      && !dismissUninitialized
-    ) {
+    if (!isLoadingDismiss && !dismissUninitialized) {
       if (!dismissError) {
         dispatch(notificationActions.removeNotification(notification.id));
       } else {
@@ -66,21 +58,21 @@ export const NotificationComponent: React.FC<NotificationMenuPropsType> = (props
   const renderIcon = (): JSX.Element => {
     return (
       <>
-        {
-          notification.level === NOTIFICATION_LEVELS.DANGER && <ReportIcon fontSize="large" color="error" />
-        }
-        {
-          notification.level === NOTIFICATION_LEVELS.INFO && <InfoIcon fontSize="large" color="info" />
-        }
-        {
-          notification.level === NOTIFICATION_LEVELS.PRIMARY && <WavingHandIcon fontSize="large" color="primary" />
-        }
-        {
-          notification.level === NOTIFICATION_LEVELS.SUCCESS && <ThumbUpIcon fontSize="large" color="success" />
-        }
-        {
-          notification.level === NOTIFICATION_LEVELS.WARNING && <WarningIcon fontSize="large" color="warning" />
-        }
+        {notification.level === NOTIFICATION_LEVELS.DANGER && (
+          <ReportIcon fontSize="large" color="error" />
+        )}
+        {notification.level === NOTIFICATION_LEVELS.INFO && (
+          <InfoIcon fontSize="large" color="info" />
+        )}
+        {notification.level === NOTIFICATION_LEVELS.PRIMARY && (
+          <WavingHandIcon fontSize="large" color="primary" />
+        )}
+        {notification.level === NOTIFICATION_LEVELS.SUCCESS && (
+          <ThumbUpIcon fontSize="large" color="success" />
+        )}
+        {notification.level === NOTIFICATION_LEVELS.WARNING && (
+          <WarningIcon fontSize="large" color="warning" />
+        )}
       </>
     );
   };
@@ -108,87 +100,50 @@ export const NotificationComponent: React.FC<NotificationMenuPropsType> = (props
     }
 
     return `${notification.message.substring(0, MAX_LEN)}...`;
-  }
+  };
 
   return (
-    <StyledNotification
-      isunread={notification.viewed ? 'false' : 'true'}
-    >
-      <Grid
-        container
-        direction="row"
-        height={'100%'}
-      >
-
+    <StyledNotification isunread={notification.viewed ? 'false' : 'true'}>
+      <Grid container direction="row" height={'100%'}>
         {/** Icon */}
-        <Grid
-          item
-          width="15%"
-          alignItems="center"
-          display="flex"
-        >
-          { renderIcon() }
+        <Grid item width="15%" alignItems="center" display="flex">
+          {renderIcon()}
         </Grid>
 
         {/** Title and Message */}
-        <Grid
-          item
-          width="75%"
-        >
-          <Grid
-            container
-            direction="column"
-          >
-            <Grid
-              item
-              color={getTitleColor()}
-            >
-              <Typography
-                variant="h6"
-              >
-                { notification.title }
-              </Typography>
+        <Grid item width="75%">
+          <Grid container direction="column">
+            <Grid item color={getTitleColor()}>
+              <Typography variant="h6">{notification.title}</Typography>
             </Grid>
-            <Grid
-              item
-            >
-              <Typography
-                variant="body2"
-              >
-                { getTrimmedMessage() }
-              </Typography>
+            <Grid item>
+              <Typography variant="body2">{getTrimmedMessage()}</Typography>
             </Grid>
           </Grid>
         </Grid>
 
         {/** Dismiss Button */}
-        {
-          (
-            (
-              notification.userId === NIL_UUID
-              && isSuperAdmin
-            )
-            || notification.userId !== NIL_UUID
-          )
-          && (
-            <Grid
-              item
-              width="10%"
-              alignItems="center"
-              display="flex"
-              justifyContent="flex-end"
-            >
-              <IconButton
-                onClick={() => requestDismiss({
+        {((notification.userId === NIL_UUID && isSuperAdmin) ||
+          notification.userId !== NIL_UUID) && (
+          <Grid
+            item
+            width="10%"
+            alignItems="center"
+            display="flex"
+            justifyContent="flex-end"
+          >
+            <IconButton
+              onClick={() =>
+                requestDismiss({
                   id: notification.id,
-                  userId: notification.userId
-                })}
-              >
-                <ClearIcon />
-              </IconButton>
-            </Grid>
-          )
-        }
+                  userId: notification.userId,
+                })
+              }
+            >
+              <ClearIcon />
+            </IconButton>
+          </Grid>
+        )}
       </Grid>
     </StyledNotification>
   );

@@ -1,31 +1,19 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
-import {
-  IconButton,
-  Fade,
-  Grid
-} from '@mui/material';
+import { IconButton, Fade, Grid } from '@mui/material';
 import GradingIcon from '@mui/icons-material/Grading';
 import Collapse from '@mui/material/Collapse';
 import { TransitionGroup } from 'react-transition-group';
 import { toast } from 'react-toastify';
 import { NIL as NIL_UUID } from 'uuid';
 
-import {
-  RootState,
-  useAppDispatch,
-  useAppSelector
-} from '@dx/store-web';
-import {
-  MEDIA_BREAK,
-  NoDataLottie,
-  themeColors
-} from '@dx/ui-web';
+import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
+import { MEDIA_BREAK, NoDataLottie, themeColors } from '@dx/ui-web-system';
 import { selectHasSuperAdminRole } from '@dx/user-profile-web';
 import {
   StyledNotificationActionArea,
   StyledNotificationsList,
-  StyledNotificationMenu
+  StyledNotificationMenu,
 } from './notification-web-menu.ui';
 import { NotificationComponent } from './notification-web.component';
 import { notificationActions } from './notification-web.reducer';
@@ -37,14 +25,25 @@ type NotificationMenuPropsType = {
   clickCloseMenu: () => void;
 };
 
-export const NotificationMenu: React.FC<NotificationMenuPropsType> = (props) => {
+export const NotificationMenu: React.FC<NotificationMenuPropsType> = (
+  props
+) => {
   const [mobileBreak, setMobileBreak] = React.useState(false);
-  const windowWidth = useAppSelector((state: RootState) => state.ui.windowWidth) || 0;
-  const systemNotifications = useAppSelector((state: RootState) => state.notification.system);
-  const userNotifications = useAppSelector((state: RootState) => state.notification.user);
-  const notificationCount = useAppSelector((state: RootState) => selectNotificationCount(state));
+  const windowWidth =
+    useAppSelector((state: RootState) => state.ui.windowWidth) || 0;
+  const systemNotifications = useAppSelector(
+    (state: RootState) => state.notification.system
+  );
+  const userNotifications = useAppSelector(
+    (state: RootState) => state.notification.user
+  );
+  const notificationCount = useAppSelector((state: RootState) =>
+    selectNotificationCount(state)
+  );
   const userId = useAppSelector((state: RootState) => state.userProfile.id);
-  const isSuperAdmin = useAppSelector((state: RootState) => selectHasSuperAdminRole(state));
+  const isSuperAdmin = useAppSelector((state: RootState) =>
+    selectHasSuperAdminRole(state)
+  );
   const dispatch = useAppDispatch();
   const [
     requestDismissAll,
@@ -53,8 +52,8 @@ export const NotificationMenu: React.FC<NotificationMenuPropsType> = (props) => 
       error: dismissAllError,
       isLoading: isLoadingDismissAll,
       isSuccess: dismissAllSuccess,
-      isUninitialized: dismissAllUninitialized
-    }
+      isUninitialized: dismissAllUninitialized,
+    },
   ] = useMarkAllAsDismissedMutation();
 
   React.useEffect(() => {
@@ -62,18 +61,12 @@ export const NotificationMenu: React.FC<NotificationMenuPropsType> = (props) => 
   }, [windowWidth]);
 
   React.useEffect(() => {
-    if (
-      !isLoadingDismissAll
-      && !dismissAllUninitialized
-    ) {
+    if (!isLoadingDismissAll && !dismissAllUninitialized) {
       if (!dismissAllError) {
         if (userNotifications.length) {
           dispatch(notificationActions.setUserNotifications([]));
         }
-        if (
-          systemNotifications.length
-          && isSuperAdmin
-        ) {
+        if (systemNotifications.length && isSuperAdmin) {
           dispatch(notificationActions.setSystemNotifications([]));
         }
       } else {
@@ -85,23 +78,19 @@ export const NotificationMenu: React.FC<NotificationMenuPropsType> = (props) => 
   return (
     <StyledNotificationMenu
       anchorEl={props.anchorElement}
-      anchorOrigin={
-        {
-          vertical: 'top',
-          horizontal: 'right',
-        }
-      }
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
       id="notification-menu"
       keepMounted
       mobilebreak={mobileBreak.toString()}
       open={Boolean(props.anchorElement)}
       onClose={props.clickCloseMenu}
-      transformOrigin={
-        {
-          vertical: 'top',
-          horizontal: 'right',
-        }
-      }
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
     >
       <StyledNotificationActionArea>
         <Grid
@@ -119,18 +108,14 @@ export const NotificationMenu: React.FC<NotificationMenuPropsType> = (props) => 
           >
             Notifications
             {
-              <Fade
-                in={notificationCount > 0}
-              >
-                <span>{ `: ${notificationCount || ''}` }</span>
+              <Fade in={notificationCount > 0}>
+                <span>{`: ${notificationCount || ''}`}</span>
               </Fade>
             }
           </Typography>
         </Grid>
       </StyledNotificationActionArea>
-      <Collapse
-        in={notificationCount === 0}
-      >
+      <Collapse in={notificationCount === 0}>
         <Grid
           container
           minHeight="100px"
@@ -139,11 +124,7 @@ export const NotificationMenu: React.FC<NotificationMenuPropsType> = (props) => 
           alignItems="center"
           direction="column"
         >
-          {
-            props.anchorElement && (
-              <NoDataLottie />
-            )
-          }
+          {props.anchorElement && <NoDataLottie />}
           <Typography
             variant="h6"
             textAlign="center"
@@ -158,39 +139,25 @@ export const NotificationMenu: React.FC<NotificationMenuPropsType> = (props) => 
       </Collapse>
       <StyledNotificationsList>
         <TransitionGroup>
-          {
-            systemNotifications.map((notification) => {
-              return (
-                <Collapse
-                  key={notification.id}
-                >
-                  <NotificationComponent
-                    notification={notification}
-                  />
-                </Collapse>
-              );
-            })
-          }
+          {systemNotifications.map((notification) => {
+            return (
+              <Collapse key={notification.id}>
+                <NotificationComponent notification={notification} />
+              </Collapse>
+            );
+          })}
         </TransitionGroup>
         <TransitionGroup>
-          {
-            userNotifications.map((notification) => {
-              return (
-                <Collapse
-                  key={notification.id}
-                >
-                  <NotificationComponent
-                    notification={notification}
-                  />
-                </Collapse>
-              );
-            })
-          }
+          {userNotifications.map((notification) => {
+            return (
+              <Collapse key={notification.id}>
+                <NotificationComponent notification={notification} />
+              </Collapse>
+            );
+          })}
         </TransitionGroup>
       </StyledNotificationsList>
-      <Collapse
-        in={notificationCount > 0}
-      >
+      <Collapse in={notificationCount > 0}>
         <StyledNotificationActionArea>
           <Grid
             container
@@ -203,19 +170,14 @@ export const NotificationMenu: React.FC<NotificationMenuPropsType> = (props) => 
             <Grid item>
               <IconButton
                 color="info"
-                onClick={
-                  async () => {
-                    if (
-                      systemNotifications.length
-                      && isSuperAdmin
-                    ) {
-                      requestDismissAll({ userId: NIL_UUID })
-                    }
-                    if (userNotifications.length) {
-                      requestDismissAll({ userId });
-                    }
+                onClick={async () => {
+                  if (systemNotifications.length && isSuperAdmin) {
+                    requestDismissAll({ userId: NIL_UUID });
                   }
-                }
+                  if (userNotifications.length) {
+                    requestDismissAll({ userId });
+                  }
+                }}
               >
                 <GradingIcon />
               </IconButton>

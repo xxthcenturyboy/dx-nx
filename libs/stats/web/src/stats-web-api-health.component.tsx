@@ -1,7 +1,4 @@
-import React,
-{
-  useEffect
-} from 'react';
+import React, { useEffect } from 'react';
 import {
   Chip,
   Grid,
@@ -13,40 +10,28 @@ import {
   TableRow,
   Tooltip,
   useMediaQuery,
-  useTheme
+  useTheme,
 } from '@mui/material';
-import {
-  Cached
-} from '@mui/icons-material';
+import { Cached } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
-import {
-  red,
-  green,
-  grey
-} from '@mui/material/colors';
+import { red, green, grey } from '@mui/material/colors';
 import { toast } from 'react-toastify';
 
-import {
-  RootState,
-  useAppDispatch,
-  useAppSelector
-} from '@dx/store-web';
+import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
 import {
   CollapsiblePanel,
   ContentWrapper,
-  selectCurrentThemeMode
-} from '@dx/ui-web';
+  selectCurrentThemeMode,
+} from '@dx/ui-web-system';
 import { setDocumentTitle } from '@dx/utils-misc-web';
-import {
-  statsActions
-} from './stats-web.reducer';
-import {
-  useLazyGetApiHealthzQuery
-} from './stats-web-api';
+import { statsActions } from './stats-web.reducer';
+import { useLazyGetApiHealthzQuery } from './stats-web-api';
 
 export const StatsWebApiHealthComponent: React.FC = () => {
   const apiStats = useAppSelector((state: RootState) => state.stats.api);
-  const themeMode = useAppSelector((state: RootState) => selectCurrentThemeMode(state));
+  const themeMode = useAppSelector((state: RootState) =>
+    selectCurrentThemeMode(state)
+  );
   const theme = useTheme();
   const MD_BREAK = useMediaQuery(theme.breakpoints.down('md'));
   const SM_BREAK = useMediaQuery(theme.breakpoints.down('sm'));
@@ -58,8 +43,8 @@ export const StatsWebApiHealthComponent: React.FC = () => {
       error: apiStatsError,
       isFetching: isLoadingApiStats,
       isSuccess: apiStatsSuccess,
-      isUninitialized: apiStatsUninitialized
-    }
+      isUninitialized: apiStatsUninitialized,
+    },
   ] = useLazyGetApiHealthzQuery();
 
   useEffect(() => {
@@ -76,12 +61,14 @@ export const StatsWebApiHealthComponent: React.FC = () => {
         'error' in apiStatsError && toast.error(apiStatsError['error']);
       }
     }
-
   }, [isLoadingApiStats]);
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
-      backgroundColor: themeMode === 'dark' ? theme.palette.common.black : theme.palette.primary.light,
+      backgroundColor:
+        themeMode === 'dark'
+          ? theme.palette.common.black
+          : theme.palette.primary.light,
       color: theme.palette.common.white,
       padding: '16px',
     },
@@ -92,77 +79,56 @@ export const StatsWebApiHealthComponent: React.FC = () => {
       headerTitle={'API Health'}
       contentMarginTop={'56px'}
       headerColumnRightJustification={'flex-end'}
-      headerColumnsBreaks={
-        {
-          left: {
-            xs: 6
-          },
-          right: {
-            xs: 6
-          }
-        }
-      }
-      headerContent={(
+      headerColumnsBreaks={{
+        left: {
+          xs: 6,
+        },
+        right: {
+          xs: 6,
+        },
+      }}
+      headerContent={
         <Tooltip title="Refresh Data">
           <IconButton
-            color='primary'
-            onClick={
-              (event: React.SyntheticEvent) => {
-                event.stopPropagation();
-                void fetchApiStats();
-              }
-            }
-            sx={
-              {
-                boxShadow: 1
-              }
-            }
+            color="primary"
+            onClick={(event: React.SyntheticEvent) => {
+              event.stopPropagation();
+              void fetchApiStats();
+            }}
+            sx={{
+              boxShadow: 1,
+            }}
           >
             <Cached />
           </IconButton>
-
         </Tooltip>
-      )}
+      }
     >
-      <Grid
-        container
-        display={'block'}
-        width={'100%'}
-      >
+      <Grid container display={'block'} width={'100%'}>
         {/* HTTP */}
-        <Grid
-          item
-          mb={'24px'}
-          xs={12}
-        >
+        <Grid item mb={'24px'} xs={12}>
           <CollapsiblePanel
-            headerTitle='HTTP'
+            headerTitle="HTTP"
             initialOpen={true}
             isLoading={isLoadingApiStats}
-            panelId='panel-api-health-http'
+            panelId="panel-api-health-http"
           >
-            <Table
-              size="medium"
-              id="http"
-            >
+            <Table size="medium" id="http">
               <TableBody>
                 <TableRow>
-                  <StyledTableCell
-                    width={MD_BREAK ? '80%' : '20%'}
-                  >
+                  <StyledTableCell width={MD_BREAK ? '80%' : '20%'}>
                     Status
                   </StyledTableCell>
-                  <StyledTableCell
-                    align={MD_BREAK ? 'right' : 'left'}
-                  >
+                  <StyledTableCell align={MD_BREAK ? 'right' : 'left'}>
                     <Chip
                       label={apiStats?.http?.status || 'Down'}
-                      sx={
-                        {
-                          backgroundColor: apiStats?.http?.status === 'OK' ? green[500] : grey[600],
-                          color: grey[50]
-                        }
-                      }
+                      sx={{
+                        backgroundColor:
+                          apiStats?.http?.status === 'OK'
+                            ? green[500]
+                            : grey[600],
+                        color: grey[50],
+                      }}
                     />
                   </StyledTableCell>
                 </TableRow>
@@ -172,90 +138,60 @@ export const StatsWebApiHealthComponent: React.FC = () => {
         </Grid>
 
         {/* MEMORY */}
-        <Grid
-          item
-          mb={'24px'}
-          xs={12}
-        >
+        <Grid item mb={'24px'} xs={12}>
           <CollapsiblePanel
-            headerTitle='MEMORY'
+            headerTitle="MEMORY"
             initialOpen={true}
             isLoading={isLoadingApiStats}
-            panelId='panel-api-health-memory'
+            panelId="panel-api-health-memory"
           >
-            <Table
-              size="medium"
-              id="memory"
-            >
+            <Table size="medium" id="memory">
               <TableBody>
                 <TableRow>
-                  <StyledTableCell
-                    width={MD_BREAK ? '80%' : '20%'}
-                  >
+                  <StyledTableCell width={MD_BREAK ? '80%' : '20%'}>
                     Status
                   </StyledTableCell>
-                  <StyledTableCell
-                    align={MD_BREAK ? 'right' : 'left'}
-                  >
+                  <StyledTableCell align={MD_BREAK ? 'right' : 'left'}>
                     <Chip
                       label={apiStats?.memory?.status || 'Down'}
-                      sx={
-                        {
-                          backgroundColor: apiStats?.memory?.status === 'OK' ? green[500] : grey[600],
-                          color: grey[50]
-                        }
-                      }
+                      sx={{
+                        backgroundColor:
+                          apiStats?.memory?.status === 'OK'
+                            ? green[500]
+                            : grey[600],
+                        color: grey[50],
+                      }}
                     />
                   </StyledTableCell>
                 </TableRow>
                 <TableRow>
-                  <StyledTableCell>
-                    Array Buffers
-                  </StyledTableCell>
-                  <StyledTableCell
-                    align={MD_BREAK ? 'right' : 'left'}
-                  >
-                    { apiStats?.memory?.usage.arrayBuffers || 0 }
+                  <StyledTableCell>Array Buffers</StyledTableCell>
+                  <StyledTableCell align={MD_BREAK ? 'right' : 'left'}>
+                    {apiStats?.memory?.usage.arrayBuffers || 0}
                   </StyledTableCell>
                 </TableRow>
                 <TableRow>
-                  <StyledTableCell>
-                    External
-                  </StyledTableCell>
-                  <StyledTableCell
-                    align={MD_BREAK ? 'right' : 'left'}
-                  >
-                    { apiStats?.memory?.usage.external || 0 }
+                  <StyledTableCell>External</StyledTableCell>
+                  <StyledTableCell align={MD_BREAK ? 'right' : 'left'}>
+                    {apiStats?.memory?.usage.external || 0}
                   </StyledTableCell>
                 </TableRow>
                 <TableRow>
-                  <StyledTableCell>
-                    Heap Total
-                  </StyledTableCell>
-                  <StyledTableCell
-                    align={MD_BREAK ? 'right' : 'left'}
-                  >
-                    { apiStats?.memory?.usage.heapTotal || 0 }
+                  <StyledTableCell>Heap Total</StyledTableCell>
+                  <StyledTableCell align={MD_BREAK ? 'right' : 'left'}>
+                    {apiStats?.memory?.usage.heapTotal || 0}
                   </StyledTableCell>
                 </TableRow>
                 <TableRow>
-                  <StyledTableCell>
-                    Heap Used
-                  </StyledTableCell>
-                  <StyledTableCell
-                    align={MD_BREAK ? 'right' : 'left'}
-                  >
-                    { apiStats?.memory?.usage.heapUsed || 0 }
+                  <StyledTableCell>Heap Used</StyledTableCell>
+                  <StyledTableCell align={MD_BREAK ? 'right' : 'left'}>
+                    {apiStats?.memory?.usage.heapUsed || 0}
                   </StyledTableCell>
                 </TableRow>
                 <TableRow>
-                  <StyledTableCell>
-                    RSS
-                  </StyledTableCell>
-                  <StyledTableCell
-                    align={MD_BREAK ? 'right' : 'left'}
-                  >
-                    { apiStats?.memory?.usage.rss || 0 }
+                  <StyledTableCell>RSS</StyledTableCell>
+                  <StyledTableCell align={MD_BREAK ? 'right' : 'left'}>
+                    {apiStats?.memory?.usage.rss || 0}
                   </StyledTableCell>
                 </TableRow>
               </TableBody>
@@ -264,50 +200,36 @@ export const StatsWebApiHealthComponent: React.FC = () => {
         </Grid>
 
         {/* POSTGRES */}
-        <Grid
-          item
-          mb={'24px'}
-          xs={12}
-        >
+        <Grid item mb={'24px'} xs={12}>
           <CollapsiblePanel
-            headerTitle='POSTGRES'
+            headerTitle="POSTGRES"
             initialOpen={true}
             isLoading={isLoadingApiStats}
-            panelId='panel-api-health-postgres'
+            panelId="panel-api-health-postgres"
           >
-            <Table
-              size="medium"
-              id="postgres"
-            >
+            <Table size="medium" id="postgres">
               <TableBody>
                 <TableRow>
-                  <StyledTableCell
-                    width={MD_BREAK ? '80%' : '20%'}
-                  >
+                  <StyledTableCell width={MD_BREAK ? '80%' : '20%'}>
                     Status
                   </StyledTableCell>
-                  <StyledTableCell
-                    align={MD_BREAK ? 'right' : 'left'}
-                  >
+                  <StyledTableCell align={MD_BREAK ? 'right' : 'left'}>
                     <Chip
                       label={apiStats?.postgres?.status || 'No Data'}
-                      sx={
-                        {
-                          backgroundColor: apiStats?.postgres?.status === 'OK' ? green[500] : grey[600],
-                          color: grey[50]
-                        }
-                      }
+                      sx={{
+                        backgroundColor:
+                          apiStats?.postgres?.status === 'OK'
+                            ? green[500]
+                            : grey[600],
+                        color: grey[50],
+                      }}
                     />
                   </StyledTableCell>
                 </TableRow>
                 <TableRow>
-                  <StyledTableCell>
-                    Version
-                  </StyledTableCell>
-                  <StyledTableCell
-                    align={MD_BREAK ? 'right' : 'left'}
-                  >
-                    { apiStats?.postgres?.version || '-' }
+                  <StyledTableCell>Version</StyledTableCell>
+                  <StyledTableCell align={MD_BREAK ? 'right' : 'left'}>
+                    {apiStats?.postgres?.version || '-'}
                   </StyledTableCell>
                 </TableRow>
               </TableBody>
@@ -316,93 +238,71 @@ export const StatsWebApiHealthComponent: React.FC = () => {
         </Grid>
 
         {/* REDIS */}
-        <Grid
-          item
-          mb={'24px'}
-          xs={12}
-        >
+        <Grid item mb={'24px'} xs={12}>
           <CollapsiblePanel
-            headerTitle='REDIS'
+            headerTitle="REDIS"
             initialOpen={true}
             isLoading={isLoadingApiStats}
-            panelId='panel-api-health-redis'
+            panelId="panel-api-health-redis"
           >
-            <Table
-              size="medium"
-              id="redis"
-            >
+            <Table size="medium" id="redis">
               <TableBody>
                 <TableRow>
-                  <StyledTableCell
-                    width={MD_BREAK ? '80%' : '20%'}
-                  >
+                  <StyledTableCell width={MD_BREAK ? '80%' : '20%'}>
                     Status
                   </StyledTableCell>
-                  <StyledTableCell
-                    align={MD_BREAK ? 'right' : 'left'}
-                  >
+                  <StyledTableCell align={MD_BREAK ? 'right' : 'left'}>
                     <Chip
                       label={apiStats?.redis?.status || 'Down'}
-                      sx={
-                        {
-                          backgroundColor: apiStats?.redis?.status === 'OK' ? green[500] : grey[600],
-                          color: grey[50]
-                        }
-                      }
+                      sx={{
+                        backgroundColor:
+                          apiStats?.redis?.status === 'OK'
+                            ? green[500]
+                            : grey[600],
+                        color: grey[50],
+                      }}
                     />
                   </StyledTableCell>
                 </TableRow>
                 <TableRow>
-                  <StyledTableCell>
-                    Ping
-                  </StyledTableCell>
-                  <StyledTableCell
-                    align={MD_BREAK ? 'right' : 'left'}
-                  >
+                  <StyledTableCell>Ping</StyledTableCell>
+                  <StyledTableCell align={MD_BREAK ? 'right' : 'left'}>
                     <Chip
                       label={apiStats?.redis?.profile.ping ? 'OK' : 'FAIL'}
-                      sx={
-                        {
-                          backgroundColor: apiStats?.redis?.profile.ping ? green[500] : red[600],
-                          color: grey[50]
-                        }
-                      }
+                      sx={{
+                        backgroundColor: apiStats?.redis?.profile.ping
+                          ? green[500]
+                          : red[600],
+                        color: grey[50],
+                      }}
                     />
                   </StyledTableCell>
                 </TableRow>
                 <TableRow>
-                  <StyledTableCell>
-                    Read
-                  </StyledTableCell>
-                  <StyledTableCell
-                    align={MD_BREAK ? 'right' : 'left'}
-                  >
-                      <Chip
+                  <StyledTableCell>Read</StyledTableCell>
+                  <StyledTableCell align={MD_BREAK ? 'right' : 'left'}>
+                    <Chip
                       label={apiStats?.redis?.profile.read ? 'OK' : 'FAIL'}
-                      sx={
-                        {
-                          backgroundColor: apiStats?.redis?.profile.read ? green[500] : red[600],
-                          color: grey[50]
-                        }
-                      }
+                      sx={{
+                        backgroundColor: apiStats?.redis?.profile.read
+                          ? green[500]
+                          : red[600],
+                        color: grey[50],
+                      }}
                     />
                   </StyledTableCell>
                 </TableRow>
                 <TableRow>
-                  <StyledTableCell>
-                    Write
-                  </StyledTableCell>
-                  <StyledTableCell
-                    align={MD_BREAK ? 'right' : 'left'}
-                  >
-                      <Chip
+                  <StyledTableCell>Write</StyledTableCell>
+                  <StyledTableCell align={MD_BREAK ? 'right' : 'left'}>
+                    <Chip
                       label={apiStats?.redis?.profile.write ? 'OK' : 'FAIL'}
-                      sx={
-                        {
-                          backgroundColor: apiStats?.redis?.profile.write ? green[500] : red[600],
-                          color: grey[50]
-                        }
-                      }
+                      sx={{
+                        backgroundColor: apiStats?.redis?.profile.write
+                          ? green[500]
+                          : red[600],
+                        color: grey[50],
+                      }}
                     />
                   </StyledTableCell>
                 </TableRow>

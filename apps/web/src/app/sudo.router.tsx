@@ -1,28 +1,17 @@
-import {
-  Outlet,
-  RouteObject
-} from 'react-router-dom';
+import { Outlet, RouteObject } from 'react-router-dom';
 
 import {
   BetaFeatureComponent,
   GlobalErrorComponent,
   // NotFoundComponent,
-  UnauthorizedComponent
-} from '@dx/ui-web';
+  UnauthorizedComponent,
+} from '@dx/ui-web-system';
 import { WebConfigService } from '@dx/config-web';
 import { store } from '@dx/store-web';
 
 export const SudoRouter = () => {
   const hasSuperAdminRole = store.getState().userProfile.sa || false;
-  return (
-    <>
-      {
-        hasSuperAdminRole
-          ? <Outlet />
-          : <UnauthorizedComponent />
-      }
-    </>
-  );
+  return <>{hasSuperAdminRole ? <Outlet /> : <UnauthorizedComponent />}</>;
 };
 
 export class SudoWebRouterConfig {
@@ -31,13 +20,16 @@ export class SudoWebRouterConfig {
 
     const config: RouteObject[] = [
       {
-        element: (<SudoRouter />),
-        errorElement: (<UnauthorizedComponent />),
+        element: <SudoRouter />,
+        errorElement: <UnauthorizedComponent />,
         children: [
           {
             path: ROUTES.SUDO.STATS.HEALTH,
-            lazy: async () => { let { StatsWebApiHealthComponent } = await import('@dx/stats-web')
-              return { Component: StatsWebApiHealthComponent }
+            lazy: async () => {
+              let { StatsWebApiHealthComponent } = await import(
+                '@dx/stats-web'
+              );
+              return { Component: StatsWebApiHealthComponent };
             },
           },
           {
@@ -45,11 +37,11 @@ export class SudoWebRouterConfig {
             // lazy: async () => { let { Dashboard } = await import('@dx/dashboard-web')
             //   return { Component: Dashboard }
             // },
-            element: (<BetaFeatureComponent />),
-            errorElement: (<GlobalErrorComponent />)
-          }
-        ]
-      }
+            element: <BetaFeatureComponent />,
+            errorElement: <GlobalErrorComponent />,
+          },
+        ],
+      },
     ];
 
     return config;
