@@ -7,9 +7,6 @@ import DialogContentText from '@mui/material/DialogContentText';
 
 import { store, useAppDispatch } from '@dx/store-web';
 import {
-  CustomDialogContent,
-  DialogError,
-  DialogWrapper,
   CancelLottie,
   QuestionMarkLottie,
   SuccessLottie,
@@ -17,6 +14,11 @@ import {
   themeColors,
   uiActions,
 } from '@dx/ui-web-system';
+import {
+  CustomDialogContent,
+  DialogError,
+  DialogWrapper
+} from '@dx/ui-web-dialogs';
 import { logger } from '@dx/logger-web';
 import { PhoneType } from '@dx/phone-shared';
 import { useDeletePhoneProfileMutation } from './phone-web-api';

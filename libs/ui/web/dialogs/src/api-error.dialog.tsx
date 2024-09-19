@@ -13,10 +13,12 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '@dx/store-web';
-import { uiActions } from '../../store/ui-web.reducer';
-import { ErrorLottie } from '../../lottie/error.lottie';
+import {
+  ErrorLottie,
+  selectIsMobileWidth,
+  uiActions
+} from '@dx/ui-web-system';
 import { DialogWrapper } from './ui-wrapper.dialog';
-import { selectIsMobileWidth } from '../../store/ui-web.selector';
 
 export const DialogApiError: React.FC<Partial<DialogProps>> = (props) => {
   const open = useAppSelector((state: RootState) => state.ui.apiDialogOpen);

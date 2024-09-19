@@ -23,14 +23,16 @@ import {
   PhoneType,
 } from '@dx/phone-shared';
 import {
-  CustomDialogContent,
-  DialogError,
-  DialogWrapper,
   SuccessLottie,
   selectIsMobileWidth,
   themeColors,
   uiActions,
 } from '@dx/ui-web-system';
+import {
+  CustomDialogContent,
+  DialogError,
+  DialogWrapper
+} from '@dx/ui-web-dialogs';
 import { PhoneNumberInput } from './phone-input/phone-web-input.component';
 import { AddPhoneForm } from './phone-web.ui';
 import {

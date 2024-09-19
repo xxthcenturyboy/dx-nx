@@ -47,15 +47,6 @@ export { UnauthorizedComponent } from './components/unauthorized.component';
 export { UiLoadingComponent } from './components/loading.component';
 export { RateLimitComponent } from './components/rate-limit.component';
 
-export { ConfirmationDialog } from './components/dialog/confirmation.dialog';
-export { CustomDialog } from './components/dialog/dialog.component';
-export { CustomDialogContent } from './components/dialog/custom-content.dialog';
-export { DialogAlert } from './components/dialog/alert.dialog';
-export { DialogApiError } from './components/dialog/api-error.dialog';
-export { DialogAwaiter } from './components/dialog/awaiter.dialog';
-export { DialogError } from './components/dialog/error.dialog';
-export { DialogWrapper } from './components/dialog/ui-wrapper.dialog';
-
 export {
   TableComponent,
   CellAlignment,

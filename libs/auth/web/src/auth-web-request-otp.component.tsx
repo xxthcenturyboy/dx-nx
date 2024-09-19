@@ -16,7 +16,11 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import { CountryData } from 'react-phone-input-2';
 import { CountryCode, isValidPhoneNumber } from 'libphonenumber-js';
 
-import { DialogError, FADE_TIMEOUT_DUR, themeColors } from '@dx/ui-web-system';
+import {
+  FADE_TIMEOUT_DUR,
+  themeColors
+} from '@dx/ui-web-system';
+import { DialogError } from '@dx/ui-web-dialogs';
 import { RootState, useAppSelector } from '@dx/store-web';
 import { logger } from '@dx/logger-web';
 import {

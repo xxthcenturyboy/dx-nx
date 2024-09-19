@@ -17,14 +17,16 @@ import {
 import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
 import { logger } from '@dx/logger-web';
 import {
-  CustomDialogContent,
-  DialogError,
-  DialogWrapper,
   SuccessLottie,
   selectIsMobileWidth,
   themeColors,
   uiActions,
 } from '@dx/ui-web-system';
+import {
+  CustomDialogContent,
+  DialogError,
+  DialogWrapper
+} from '@dx/ui-web-dialogs';
 import { UserType } from '@dx/user-shared';
 import {
   NotificationCreationParamTypes,

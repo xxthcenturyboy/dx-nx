@@ -16,15 +16,17 @@ import { toast } from 'react-toastify';
 import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
 import {
   CollapsiblePanel,
-  ConfirmationDialog,
   ContentWrapper,
   DEBOUNCE,
-  DialogAlert,
   TableComponent,
   TableRowType,
   uiActions,
   useFocus,
 } from '@dx/ui-web-system';
+import {
+  ConfirmationDialog,
+  DialogAlert
+} from '@dx/ui-web-dialogs';
 import { logger } from '@dx/logger-web';
 import { debounce, setDocumentTitle } from '@dx/utils-misc-web';
 import { GetUsersListQueryType } from '@dx/user-shared';

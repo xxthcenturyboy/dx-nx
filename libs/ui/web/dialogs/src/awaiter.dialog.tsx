@@ -1,13 +1,25 @@
 import React from 'react';
-import { Box, DialogContent } from '@mui/material';
-import Dialog, { DialogProps } from '@mui/material/Dialog';
+import {
+  Box,
+  DialogContent
+} from '@mui/material';
+import Dialog,
+{
+  DialogProps
+} from '@mui/material/Dialog';
 import DialogContentText from '@mui/material/DialogContentText';
 // import DialogTitle from '@mui/material/DialogTitle';
 
-import { RootState, store, useAppSelector } from '@dx/store-web';
-import { AwaiterLottie } from '../../lottie/awaiter.lottie';
+import {
+  RootState,
+  store,
+  useAppSelector
+} from '@dx/store-web';
+import {
+  AwaiterLottie,
+  selectIsMobileWidth
+} from '@dx/ui-web-system';
 import { DialogWrapper } from './ui-wrapper.dialog';
-import { selectIsMobileWidth } from '../../store/ui-web.selector';
 
 export const DialogAwaiter: React.FC<Partial<DialogProps>> = (props) => {
   const open = useAppSelector((state: RootState) => state.ui.awaitDialogOpen);

@@ -4,9 +4,11 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContentText from '@mui/material/DialogContentText';
 
 import { useAppDispatch } from '@dx/store-web';
-import { uiActions } from '../../store/ui-web.reducer';
+import {
+  AlertLottie,
+  uiActions
+} from '@dx/ui-web-system';
 import { CustomDialogContent } from './custom-content.dialog';
-import { AlertLottie } from '../../lottie/alert.lottie';
 
 type DialogAlertType = {
   buttonText?: string;

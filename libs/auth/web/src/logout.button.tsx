@@ -7,10 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '@dx/store-web';
 import { logger } from '@dx/logger-web';
 import { uiActions } from '@dx/ui-web-system';
-import {
-  ConfirmationDialog,
-  StyledAccountMenuListItem,
-} from '@dx/ui-web-system';
+import { StyledAccountMenuListItem } from '@dx/ui-web-system';
+import { ConfirmationDialog } from '@dx/ui-web-dialogs';
 import { WebConfigService } from '@dx/config-web';
 import { useLogoutMutation } from './auth-web.api';
 import { authActions } from './auth-web.reducer';

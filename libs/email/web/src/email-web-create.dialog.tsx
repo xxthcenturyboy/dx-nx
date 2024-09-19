@@ -18,14 +18,16 @@ import { store, useAppDispatch } from '@dx/store-web';
 import { logger } from '@dx/logger-web';
 import { CreateEmailPayloadType, EMAIL_LABEL } from '@dx/email-shared';
 import {
-  CustomDialogContent,
-  DialogError,
-  DialogWrapper,
   SuccessLottie,
   selectIsMobileWidth,
   themeColors,
   uiActions,
 } from '@dx/ui-web-system';
+import {
+  CustomDialogContent,
+  DialogError,
+  DialogWrapper
+} from '@dx/ui-web-dialogs';
 import { EmailType } from '@dx/email-shared';
 import { regexEmail } from '@dx/util-regex';
 import { AddEmailForm } from './email-web.ui';

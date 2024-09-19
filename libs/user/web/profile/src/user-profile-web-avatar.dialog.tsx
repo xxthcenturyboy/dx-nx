@@ -18,14 +18,16 @@ import { store, useAppDispatch } from '@dx/store-web';
 import { logger } from '@dx/logger-web';
 import {
   APP_COLOR_PALETTE,
-  CustomDialogContent,
-  DialogError,
-  DialogWrapper,
   SuccessLottie,
   selectIsMobileWidth,
   themeColors,
   uiActions,
 } from '@dx/ui-web-system';
+import {
+  CustomDialogContent,
+  DialogError,
+  DialogWrapper
+} from '@dx/ui-web-dialogs';
 import {
   useUploadAvatarMutation,
   MediaWebAvatarUploadParamsType,

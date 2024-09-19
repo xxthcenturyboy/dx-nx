@@ -20,10 +20,10 @@ import { toast } from 'react-toastify';
 import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
 import {
   ContentWrapper,
-  DialogAlert,
   listSkeleton,
   uiActions,
 } from '@dx/ui-web-system';
+import { DialogAlert } from '@dx/ui-web-dialogs';
 import { setDocumentTitle } from '@dx/utils-misc-web';
 import { UserRoleUi } from '@dx/user-shared';
 import { ACCOUNT_RESTRICTIONS } from '@dx/auth-shared';

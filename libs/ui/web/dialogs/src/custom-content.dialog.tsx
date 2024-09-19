@@ -1,8 +1,16 @@
 import React from 'react';
-import { DialogContent, useMediaQuery, useTheme } from '@mui/material';
+import {
+  DialogContent,
+  useMediaQuery,
+  useTheme
+} from '@mui/material';
 
-import { RootState, store, useAppSelector } from '@dx/store-web';
-import { selectIsMobileWidth } from '../../store/ui-web.selector';
+import {
+  RootState,
+  store,
+  useAppSelector
+} from '@dx/store-web';
+import { selectIsMobileWidth } from '@dx/ui-web-system';
 
 type CustomDialogContentType = {
   justifyContent?: string;

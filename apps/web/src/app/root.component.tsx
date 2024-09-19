@@ -10,9 +10,6 @@ import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
 import {
   AppNavBar,
   appTheme,
-  CustomDialog,
-  DialogApiError,
-  // DialogAwaiter,
   DRAWER_WIDTH,
   GlobalAwaiter,
   MenuNav,
@@ -23,6 +20,11 @@ import {
   uiActions,
   // UiLoadingComponent
 } from '@dx/ui-web-system';
+import {
+  CustomDialog,
+  DialogApiError
+  // DialogAwaiter
+} from '@dx/ui-web-dialogs';
 import { WebConfigService } from '@dx/config-web';
 import { selectIsAuthenticated } from '@dx/auth-web';
 import {

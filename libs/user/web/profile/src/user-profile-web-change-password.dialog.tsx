@@ -16,14 +16,16 @@ import { store, useAppDispatch } from '@dx/store-web';
 import { logger } from '@dx/logger-web';
 import { UpdatePasswordPayloadType } from '@dx/user-shared';
 import {
-  CustomDialogContent,
-  DialogError,
-  DialogWrapper,
   SuccessLottie,
   selectIsMobileWidth,
   themeColors,
   uiActions,
 } from '@dx/ui-web-system';
+import {
+  CustomDialogContent,
+  DialogError,
+  DialogWrapper
+} from '@dx/ui-web-dialogs';
 import { ChangePasswordForm } from './user-profile-web-change-password.ui';
 import { useUpdatePasswordMutation } from './user-profile-web.api';
 import { useCheckPasswordStrengthMutation } from '@dx/auth-web';
