@@ -2,9 +2,9 @@ import { Navigate, Outlet, RouteObject } from 'react-router-dom';
 
 import {
   GlobalErrorComponent,
-  NotFoundComponent,
+  // NotFoundComponent,
   UnauthorizedComponent,
-} from '@dx/ui-web-system';
+} from '@dx/ui-web-global-components';
 import { WebConfigService } from '@dx/config-web';
 import { store } from '@dx/store-web';
 import { selectIsAuthenticated } from '@dx/auth-web';

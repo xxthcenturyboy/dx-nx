@@ -4,7 +4,7 @@ import {
   GlobalErrorComponent,
   NotFoundComponent,
   RateLimitComponent,
-} from '@dx/ui-web-system';
+} from '@dx/ui-web-global-components';
 import { AuthWebRouterConfig } from '@dx/auth-web';
 import { WebConfigService } from '@dx/config-web';
 import { Root } from './root.component';

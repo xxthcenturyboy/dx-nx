@@ -18,11 +18,11 @@ import { red, green, grey } from '@mui/material/colors';
 import { toast } from 'react-toastify';
 
 import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
+import { selectCurrentThemeMode } from '@dx/ui-web-system';
 import {
   CollapsiblePanel,
-  ContentWrapper,
-  selectCurrentThemeMode,
-} from '@dx/ui-web-system';
+  ContentWrapper
+} from '@dx/ui-web-global-components';
 import { setDocumentTitle } from '@dx/utils-misc-web';
 import { statsActions } from './stats-web.reducer';
 import { useLazyGetApiHealthzQuery } from './stats-web-api';

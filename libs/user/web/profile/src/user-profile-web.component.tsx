@@ -11,9 +11,14 @@ import {
   useTheme,
 } from '@mui/material';
 
-import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
+import {
+  RootState,
+  useAppDispatch,
+  useAppSelector
+} from '@dx/store-web';
 import { logger } from '@dx/logger-web';
-import { ContentWrapper, uiActions } from '@dx/ui-web-system';
+import { ContentWrapper } from '@dx/ui-web-global-components';
+import { uiActions } from '@dx/ui-web-system';
 import { setDocumentTitle } from '@dx/utils-misc-web';
 import { EmailList } from '@dx/email-web';
 import { EmailType } from '@dx/email-shared';

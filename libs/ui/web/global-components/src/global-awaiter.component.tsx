@@ -1,9 +1,16 @@
 import React from 'react';
-import { Backdrop, Box, Typography } from '@mui/material';
+import {
+  Backdrop,
+  Box,
+  Typography
+} from '@mui/material';
 import { BeatLoader } from 'react-spinners';
 
-import { RootState, useAppSelector } from '@dx/store-web';
-import { themeColors } from '../mui-overrides/styles';
+import {
+  RootState,
+  useAppSelector
+} from '@dx/store-web';
+import { themeColors } from '@dx/ui-web-system';
 
 export const GlobalAwaiter: React.FC = () => {
   const open = useAppSelector((state: RootState) => state.ui.awaitDialogOpen);

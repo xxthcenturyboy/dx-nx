@@ -1,15 +1,20 @@
 import * as React from 'react';
-import { Box, Button, Grid, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Grid,
+  Typography
+} from '@mui/material';
 
-import { ErrorLottie } from '@dx/ui-web-lottie';
+import { NotFoundLottie } from '@dx/ui-web-lottie';
 import { StyledContentWrapper } from './content/content-wrapper.styled';
 
-type GlobalErrorComponentPropsType = {
+type NotFoundComponentPropsType = {
   routingFn?: () => void;
   buttonText?: string;
 };
 
-export const GlobalErrorComponent: React.FC<GlobalErrorComponentPropsType> = ({
+export const NotFoundComponent: React.FC<NotFoundComponentPropsType> = ({
   routingFn,
   buttonText,
 }) => {
@@ -23,12 +28,12 @@ export const GlobalErrorComponent: React.FC<GlobalErrorComponentPropsType> = ({
         justifyContent="center"
         style={{ minHeight: '80vh' }}
       >
-        <ErrorLottie />
+        <NotFoundLottie />
         <Typography variant="h1" color="primary">
-          Ouch
+          Not Found
         </Typography>
         <Typography variant="h5" color="secondary" margin="15px">
-          We encountered a fatal system fault.
+          We couldn't find what you were looking for.
         </Typography>
         <Box margin="20px">
           <Button

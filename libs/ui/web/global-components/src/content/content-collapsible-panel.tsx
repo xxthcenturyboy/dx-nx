@@ -14,10 +14,16 @@ import {
 import { ExpandMore } from '@mui/icons-material';
 import { BeatLoader } from 'react-spinners';
 
-import { RootState, useAppSelector } from '@dx/store-web';
-import { APP_COLOR_PALETTE, BORDER_RADIUS } from '../../mui-overrides/styles';
-import { FADE_TIMEOUT_DUR } from '../../ui.consts';
-import { selectCurrentThemeMode } from '../../store/ui-web.selector';
+import {
+  RootState,
+  useAppSelector
+} from '@dx/store-web';
+import {
+  APP_COLOR_PALETTE,
+  BORDER_RADIUS,
+  FADE_TIMEOUT_DUR,
+  selectCurrentThemeMode
+} from '@dx/ui-web-system';
 
 export type CollapsiblePanelPropsType = {
   children: React.ReactNode;

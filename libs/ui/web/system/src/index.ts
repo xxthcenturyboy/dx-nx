@@ -30,20 +30,3 @@ export {
 } from './ui.consts';
 export { UiStateType } from './ui-web.types';
 export { useFocus } from './hooks/use-focus.hook';
-
-
-export {
-  getIcon,
-  IconNames
-} from './Icons';
-export { GlobalAwaiter } from './components/global-awaiter.component';
-export { BetaFeatureComponent } from './components/beta-feature-placeholder.component';
-export { GlobalErrorComponent } from './components/global-error.component';
-export { NotFoundComponent } from './components/not-found.component';
-export { UnauthorizedComponent } from './components/unauthorized.component';
-export { UiLoadingComponent } from './components/loading.component';
-export { RateLimitComponent } from './components/rate-limit.component';
-export { ContentWrapper } from './components/content/content-wrapper.component';
-export { StyledContentWrapper } from './components/content/content-wrapper.styled';
-export { CollapsiblePanel } from './components/content/content-collapsible-panel';
-export { boxSkeleton, listSkeleton, waveItem } from './components/skeletons.ui';

@@ -40,11 +40,13 @@ import {
 } from './types';
 import {
   BORDER_RADIUS,
+  themeColors
+} from '@dx/ui-web-system';
+import {
   getIcon,
   IconNames,
-  themeColors,
   waveItem
-} from '@dx/ui-web-system';
+} from '@dx/ui-web-global-components';
 import { TablePaginationActions } from './pagination.component';
 import {
   StyledTableCell,

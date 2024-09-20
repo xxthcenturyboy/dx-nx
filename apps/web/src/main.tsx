@@ -7,7 +7,10 @@ import { RouterProvider } from 'react-router-dom';
 import { AppRouter } from './app/app.router';
 import { ErrorBoundary } from '@dx/utils-web-error-boundary';
 import { persistor, store } from '@dx/store-web';
-import { NotFoundComponent, UiLoadingComponent } from '@dx/ui-web-system';
+import {
+  NotFoundComponent,
+  UiLoadingComponent
+} from '@dx/ui-web-global-components';
 
 // @ts-expect-error - store won't exist until we create it here.
 window.store = store;

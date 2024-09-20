@@ -15,12 +15,14 @@ import { toast } from 'react-toastify';
 
 import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
 import {
-  CollapsiblePanel,
-  ContentWrapper,
   DEBOUNCE,
   uiActions,
   useFocus,
 } from '@dx/ui-web-system';
+import {
+  CollapsiblePanel,
+  ContentWrapper,
+} from '@dx/ui-web-global-components';
 import {
   TableComponent,
   TableRowType

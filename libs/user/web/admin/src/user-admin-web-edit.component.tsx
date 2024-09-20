@@ -1,5 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import React,
+{
+  useEffect,
+  useState
+} from 'react';
+import {
+  useLocation,
+  useNavigate,
+  useParams
+} from 'react-router-dom';
 import {
   Button,
   Checkbox,
@@ -14,15 +22,20 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { lightBlue, grey } from '@mui/material/colors';
+import {
+  lightBlue,
+  grey
+} from '@mui/material/colors';
 import { toast } from 'react-toastify';
 
-import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
 import {
-  ContentWrapper,
-  listSkeleton,
-  uiActions,
-} from '@dx/ui-web-system';
+  RootState,
+  useAppDispatch,
+  useAppSelector
+} from '@dx/store-web';
+import { uiActions } from '@dx/ui-web-system';
+import { listSkeleton } from '@dx/ui-web-global-components';
+import { ContentWrapper } from '@dx/ui-web-global-components';
 import { DialogAlert } from '@dx/ui-web-dialogs';
 import { setDocumentTitle } from '@dx/utils-misc-web';
 import { UserRoleUi } from '@dx/user-shared';

@@ -11,9 +11,9 @@ import {
 } from '@mui/material';
 import { ChevronLeft } from '@mui/icons-material';
 
+import { FADE_TIMEOUT_DUR } from '@dx/ui-web-system';
 import { StyledContentFixedHeader } from './content-fixed-header.styled';
 import { StyledContentWrapper } from './content-wrapper.styled';
-import { FADE_TIMEOUT_DUR } from '../../ui.consts';
 
 export type ContentWrapperPropsType = {
   children: React.ReactNode;

@@ -19,11 +19,13 @@ import {
   useAppDispatch
 } from '@dx/store-web';
 import {
-  getIcon,
-  IconNames,
   MEDIA_BREAK,
   uiActions
 } from '@dx/ui-web-system';
+import {
+  getIcon,
+  IconNames
+} from '@dx/ui-web-global-components'
 import {
   AppMenuItemType
 } from './app-menu.types';

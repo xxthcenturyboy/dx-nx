@@ -1,23 +1,38 @@
 import * as React from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { createTheme, Theme, ThemeProvider } from '@mui/material/styles';
+import {
+  Outlet,
+  useLocation,
+  useNavigate
+} from 'react-router-dom';
+import {
+  createTheme,
+  Theme,
+  ThemeProvider
+} from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import { Fade } from '@mui/material';
-import { Slide, ToastContainer, Theme as ToastifyTheme } from 'react-toastify';
+import {
+  Slide,
+  ToastContainer,
+  Theme as ToastifyTheme
+} from 'react-toastify';
 import { injectStyle as injectToastifyStyle } from 'react-toastify/dist/inject-style';
 
-import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
+import {
+  RootState,
+  useAppDispatch,
+  useAppSelector
+} from '@dx/store-web';
 import {
   appTheme,
   DRAWER_WIDTH,
-  GlobalAwaiter,
   MEDIA_BREAK,
   STORAGE_KEYS,
   TOAST_LOCATION,
   TOAST_TIMEOUT,
-  uiActions,
-  // UiLoadingComponent
+  uiActions
 } from '@dx/ui-web-system';
+import { GlobalAwaiter } from '@dx/ui-web-global-components';
 import {
   AppNavBar,
   MenuNav

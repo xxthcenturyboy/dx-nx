@@ -1,11 +1,14 @@
-import { Outlet, RouteObject } from 'react-router-dom';
+import {
+  Outlet,
+  RouteObject
+} from 'react-router-dom';
 
 import {
   BetaFeatureComponent,
   GlobalErrorComponent,
   // NotFoundComponent,
   UnauthorizedComponent,
-} from '@dx/ui-web-system';
+} from '@dx/ui-web-global-components';
 import { WebConfigService } from '@dx/config-web';
 import { store } from '@dx/store-web';
 

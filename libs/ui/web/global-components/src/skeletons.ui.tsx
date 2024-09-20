@@ -1,5 +1,9 @@
 // import React from 'react';
-import { Box, ListItem, Skeleton } from '@mui/material';
+import {
+  Box,
+  ListItem,
+  Skeleton
+} from '@mui/material';
 
 const getArrayOfLength = (len: number): number[] => {
   const array: number[] = [];

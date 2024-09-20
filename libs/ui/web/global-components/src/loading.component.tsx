@@ -1,7 +1,11 @@
 import { BeatLoader } from 'react-spinners';
-import { Button, Grid, Typography } from '@mui/material';
+import {
+  Button,
+  Grid,
+  Typography
+} from '@mui/material';
 
-import { themeColors } from '../mui-overrides/styles';
+import { themeColors } from '@dx/ui-web-system';
 import { StyledContentWrapper } from './content/content-wrapper.styled';
 
 type LoadingProps = {

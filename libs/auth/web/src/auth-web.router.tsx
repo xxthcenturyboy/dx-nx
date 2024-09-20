@@ -7,7 +7,7 @@ import {
 import {
   NotFoundComponent,
   // UnauthorizedComponent
-} from '@dx/ui-web-system';
+} from '@dx/ui-web-global-components';
 import { WebConfigService } from '@dx/config-web';
 // import { WebLogin } from './auth-web-login.component';
 

@@ -1,4 +1,7 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+  createSlice,
+  PayloadAction
+} from '@reduxjs/toolkit';
 import storage from 'reduxjs-toolkit-persist/lib/storage';
 import autoMergeLevel1 from 'reduxjs-toolkit-persist/lib/stateReconciler/autoMergeLevel1';
 import { PersistConfig } from 'reduxjs-toolkit-persist/lib/types';

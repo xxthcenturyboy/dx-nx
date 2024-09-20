@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Grid, Typography } from '@mui/material';
 
-import { ContentWrapper } from '@dx/ui-web-system';
+import { ContentWrapper } from '@dx/ui-web-global-components';
 import { WelcomeRobotLottie } from '@dx/ui-web-lottie';
 import { setDocumentTitle } from '@dx/utils-misc-web';
 
