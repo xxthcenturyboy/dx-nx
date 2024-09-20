@@ -60,14 +60,6 @@ export {
   TableRowType,
 } from './components/table';
 
-export {
-  AppMenuType,
-  AppMenuItemType,
-  AppNavBar,
-  MenuNav,
-  MenuRestrictionType,
-  StyledAccountMenuListItem,
-} from './components/menu';
 export { useFocus } from './hooks/use-focus.hook';
 
 export { ContentWrapper } from './components/content/content-wrapper.component';

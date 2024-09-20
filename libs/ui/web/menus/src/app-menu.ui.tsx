@@ -1,7 +1,8 @@
 import { List, ListItem } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { grey } from '@mui/material/colors';
-import { DRAWER_WIDTH } from '../../mui-overrides/mui.theme';
+
+import { DRAWER_WIDTH } from '@dx/ui-web-system';
 
 export const ListNav = styled(List)<{ component?: React.ElementType }>({
   flexGrow: 1,

@@ -1,10 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import { Divider, IconButton, ListSubheader } from '@mui/material';
+import React,
+{
+  useEffect,
+  useState
+} from 'react';
+import {
+  Divider,
+  IconButton,
+  ListSubheader
+} from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 
-import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
+import {
+  RootState,
+  useAppDispatch,
+  useAppSelector
+} from '@dx/store-web';
 import { LogoutButton } from '@dx/auth-web';
-import { AppMenuType, AppMenuItemType } from './app-menu.types';
+import { uiActions } from '@dx/ui-web-system';
+import {
+  AppMenuType,
+  AppMenuItemType
+} from './app-menu.types';
 import { AppMenuGroup } from './app-menu-group.component';
 import { AppMenuItem } from './app-menu-item.component';
 import {
@@ -13,7 +29,6 @@ import {
   LogoutItem,
   ListNav,
 } from './app-menu.ui';
-import { uiActions } from '../../store/ui-web.reducer';
 
 type AppMenuItemsProps = {
   mobileBreak?: boolean;

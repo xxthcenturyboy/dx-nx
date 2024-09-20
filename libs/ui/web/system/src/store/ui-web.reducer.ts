@@ -4,11 +4,11 @@ import autoMergeLevel1 from 'reduxjs-toolkit-persist/lib/stateReconciler/autoMer
 import { PersistConfig } from 'reduxjs-toolkit-persist/lib/types';
 import { PaletteMode } from '@mui/material';
 
+import { APP_NAME } from '@dx/config-shared';
+import { AppMenuType } from '@dx/ui-web-menus';
 import { UiStateType } from '../ui-web.types';
 import { UI_WEB_ENTITY_NAME } from '../ui.consts';
-import { APP_NAME } from '@dx/config-shared';
 import { appTheme } from '../mui-overrides/mui.theme';
-import { AppMenuType } from '../components/menu';
 
 export const uiInitialState: UiStateType = {
   apiDialogError: null,

@@ -69,6 +69,7 @@
       "@dx/stats-web": ["libs/stats/web/src/index.ts"],
       "@dx/store-web": ["libs/store/web/src/index.ts"],
       "@dx/ui-web-dialogs": ["libs/ui/web/dialogs/src/index.ts"],
+      "@dx/ui-web-menus": ["libs/ui/web/menus/src/index.ts"],
       "@dx/ui-web-system": ["libs/ui/web/system/src/index.ts"],
       "@dx/user-admin-web": ["libs/user/web/admin/src/index.ts"],
       "@dx/user-api": ["libs/user/api/src/index.ts"],

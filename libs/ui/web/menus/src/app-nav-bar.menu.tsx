@@ -16,22 +16,33 @@ import {
   MenuOpen,
   Notifications,
 } from '@mui/icons-material';
-import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  useLocation,
+  useNavigate
+} from 'react-router-dom';
 import styled from 'styled-components';
 
-import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
+import {
+  RootState,
+  useAppDispatch,
+  useAppSelector
+} from '@dx/store-web';
 import { selectIsAuthenticated } from '@dx/auth-web';
 import { APP_NAME } from '@dx/config-shared';
-import { loginBootstrap, WebConfigService } from '@dx/config-web';
+import {
+  loginBootstrap,
+  WebConfigService
+} from '@dx/config-web';
 import { NotificationMenu } from '@dx/notifications-web';
 import {
   selectNotificationCount,
   // useTestSocketsMutation
 } from '@dx/notifications-web';
-import { APP_COLOR_PALETTE } from '../../mui-overrides/styles';
 import { AccountMenu } from './app-menu-account.component';
-import { uiActions } from '../../store/ui-web.reducer';
-import { MEDIA_BREAK } from '../../ui.consts';
+import {
+  MEDIA_BREAK,
+  uiActions
+} from '@dx/ui-web-system';
 
 const Logo = styled.img`
   width: 36px;

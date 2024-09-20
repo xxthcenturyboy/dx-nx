@@ -3,8 +3,14 @@ import Typography from '@mui/material/Typography';
 import { Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-import { RootState, useAppSelector } from '@dx/store-web';
-import { MEDIA_BREAK, themeColors } from '@dx/ui-web-system';
+import {
+  RootState,
+  useAppSelector
+} from '@dx/store-web';
+import {
+  MEDIA_BREAK,
+  themeColors
+} from '@dx/ui-web-system';
 import { LogoutButton } from '@dx/auth-web';
 import { WebConfigService } from '@dx/config-web';
 import { UserProfileAvatar } from '@dx/user-profile-web';

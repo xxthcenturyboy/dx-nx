@@ -1,6 +1,9 @@
 import React from 'react';
 
-import { RootState, useAppSelector } from '@dx/store-web';
+import {
+  RootState,
+  useAppSelector
+} from '@dx/store-web';
 import { MEDIA_BREAK } from '@dx/ui-web-system';
 import { ResponsiveMenu } from './responsive-menu.component';
 import { OverlayMenu } from './overlay-menu.component';

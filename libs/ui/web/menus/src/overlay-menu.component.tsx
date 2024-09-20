@@ -2,8 +2,16 @@ import React from 'react';
 import { Drawer } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
-import { DRAWER_WIDTH, MEDIA_BREAK, uiActions } from '@dx/ui-web-system';
+import {
+  RootState,
+  useAppDispatch,
+  useAppSelector
+} from '@dx/store-web';
+import {
+  DRAWER_WIDTH,
+  MEDIA_BREAK,
+  uiActions
+} from '@dx/ui-web-system';
 import { AppMenu } from './app-menu.component';
 
 const DrawerContent = styled('div')<{ component?: React.ElementType }>({

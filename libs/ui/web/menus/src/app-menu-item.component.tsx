@@ -1,11 +1,32 @@
-import React, { useState } from 'react';
-import { ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import React,
+{
+  useState
+} from 'react';
+import {
+  ListItemButton,
+  ListItemIcon,
+  ListItemText
+} from '@mui/material';
 import Badge from '@mui/material/Badge';
-import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  useLocation,
+  useNavigate
+} from 'react-router-dom';
 
-import { RootState, useAppSelector, useAppDispatch } from '@dx/store-web';
-import { AppMenuItemType } from './app-menu.types';
-import { getIcon, IconNames, MEDIA_BREAK, uiActions } from '@dx/ui-web-system';
+import {
+  RootState,
+  useAppSelector,
+  useAppDispatch
+} from '@dx/store-web';
+import {
+  getIcon,
+  IconNames,
+  MEDIA_BREAK,
+  uiActions
+} from '@dx/ui-web-system';
+import {
+  AppMenuItemType
+} from './app-menu.types';
 
 type AppMenuItemItemProps = {
   menuItem: AppMenuItemType;

@@ -8,11 +8,9 @@ import { injectStyle as injectToastifyStyle } from 'react-toastify/dist/inject-s
 
 import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
 import {
-  AppNavBar,
   appTheme,
   DRAWER_WIDTH,
   GlobalAwaiter,
-  MenuNav,
   MEDIA_BREAK,
   STORAGE_KEYS,
   TOAST_LOCATION,
@@ -20,6 +18,10 @@ import {
   uiActions,
   // UiLoadingComponent
 } from '@dx/ui-web-system';
+import {
+  AppNavBar,
+  MenuNav
+} from '@dx/ui-web-menus';
 import {
   CustomDialog,
   DialogApiError

@@ -2,7 +2,7 @@ import {
   AppMenuType,
   AppMenuItemType,
   MenuRestrictionType,
-} from '@dx/ui-web-system';
+} from '@dx/ui-web-menus';
 import { DASHBOARD_MENU } from '@dx/dashboard-web';
 import { STATS_SUDO_WEB_MENU } from '@dx/stats-web';
 import { USER_ADMIN_MENU } from '@dx/user-admin-web';

@@ -1,4 +1,5 @@
-import { AppMenuType, IconNames } from '@dx/ui-web-system';
+import { IconNames } from '@dx/ui-web-system';
+import { AppMenuType } from '@dx/ui-web-menus';
 
 export const USER_PROFILE_ENTITY_NAME = 'userProfile';
 

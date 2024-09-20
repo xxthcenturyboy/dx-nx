@@ -6,7 +6,7 @@ import {
   notificationActions,
   NotificationWebSockets,
 } from '@dx/notifications-web';
-import { AppMenuType } from '@dx/ui-web-system';
+import { AppMenuType } from '@dx/ui-web-menus';
 import { logger } from '@dx/logger-web';
 
 import { MenuConfigService } from './menu-config.service';
