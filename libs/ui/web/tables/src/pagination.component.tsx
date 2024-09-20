@@ -1,12 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { Box, IconButton, useTheme } from '@mui/material';
+import React,
+{
+  useEffect,
+  useState
+} from 'react';
+import {
+  Box,
+  IconButton,
+  useTheme
+} from '@mui/material';
 import {
   FirstPage as FirstPageIcon,
   KeyboardArrowLeft,
   KeyboardArrowRight,
   LastPage as LastPageIcon,
 } from '@mui/icons-material';
-import { themeColors } from '../../mui-overrides/styles';
+import { themeColors } from '@dx/ui-web-system';
 
 interface TablePaginationActionsProps {
   count: number;

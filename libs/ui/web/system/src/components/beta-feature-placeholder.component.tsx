@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Box, Button, Grid, Typography } from '@mui/material';
 
 import { setDocumentTitle } from '@dx/utils-misc-web';
-import { BetaBadgeLottie } from '../lottie/beta-badge.lottie';
+import { BetaBadgeLottie } from '@dx/ui-web-lottie';
 import { StyledContentWrapper } from './content/content-wrapper.styled';
 
 export const BetaFeatureComponent: React.FC = () => {

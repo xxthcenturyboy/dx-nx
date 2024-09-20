@@ -1,14 +1,26 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
-import { IconButton, Fade, Grid } from '@mui/material';
+import {
+  IconButton,
+  Fade,
+  Grid
+} from '@mui/material';
 import GradingIcon from '@mui/icons-material/Grading';
 import Collapse from '@mui/material/Collapse';
 import { TransitionGroup } from 'react-transition-group';
 import { toast } from 'react-toastify';
 import { NIL as NIL_UUID } from 'uuid';
 
-import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
-import { MEDIA_BREAK, NoDataLottie, themeColors } from '@dx/ui-web-system';
+import {
+  RootState,
+  useAppDispatch,
+  useAppSelector
+} from '@dx/store-web';
+import {
+  MEDIA_BREAK,
+  themeColors
+} from '@dx/ui-web-system';
+import { NoDataLottie } from '@dx/ui-web-lottie';
 import { selectHasSuperAdminRole } from '@dx/user-profile-web';
 import {
   StyledNotificationActionArea,

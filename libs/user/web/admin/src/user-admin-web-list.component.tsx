@@ -18,11 +18,13 @@ import {
   CollapsiblePanel,
   ContentWrapper,
   DEBOUNCE,
-  TableComponent,
-  TableRowType,
   uiActions,
   useFocus,
 } from '@dx/ui-web-system';
+import {
+  TableComponent,
+  TableRowType
+} from '@dx/ui-web-tables';
 import {
   ConfirmationDialog,
   DialogAlert

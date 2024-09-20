@@ -18,11 +18,11 @@ import { store, useAppDispatch } from '@dx/store-web';
 import { logger } from '@dx/logger-web';
 import {
   APP_COLOR_PALETTE,
-  SuccessLottie,
   selectIsMobileWidth,
   themeColors,
   uiActions,
 } from '@dx/ui-web-system';
+import { SuccessLottie } from '@dx/ui-web-lottie';
 import {
   CustomDialogContent,
   DialogError,

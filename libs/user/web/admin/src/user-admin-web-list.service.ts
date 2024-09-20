@@ -2,11 +2,11 @@ import { blue, green, red } from '@mui/material/colors';
 
 import { UserType } from '@dx/user-shared';
 import {
-  IconNames,
   TableHeaderItem,
   TableMeta,
   TableRowType,
-} from '@dx/ui-web-system';
+} from '@dx/ui-web-tables';
+import { IconNames } from '@dx/ui-web-system';
 
 export class UserAdminWebListService {
   public static USER_ADMIN_LIST_META: TableMeta[] = [

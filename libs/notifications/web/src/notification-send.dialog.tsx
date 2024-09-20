@@ -17,11 +17,11 @@ import {
 import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
 import { logger } from '@dx/logger-web';
 import {
-  SuccessLottie,
   selectIsMobileWidth,
   themeColors,
   uiActions,
 } from '@dx/ui-web-system';
+import { SuccessLottie } from '@dx/ui-web-lottie';
 import {
   CustomDialogContent,
   DialogError,

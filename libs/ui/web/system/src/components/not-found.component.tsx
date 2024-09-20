@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Box, Button, Grid, Typography } from '@mui/material';
 
-import { NotFoundLottie } from '../lottie/not-found.lottie';
+import { NotFoundLottie } from '@dx/ui-web-lottie';
 import { StyledContentWrapper } from './content/content-wrapper.styled';
 
 type NotFoundComponentPropsType = {

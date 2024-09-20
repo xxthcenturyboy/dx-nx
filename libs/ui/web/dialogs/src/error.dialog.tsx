@@ -1,7 +1,7 @@
 import React from 'react';
 import { DialogContentText } from '@mui/material';
 
-import { AlertLottie } from '@dx/ui-web-system';
+import { AlertLottie } from '@dx/ui-web-lottie';
 import { CustomDialogContent } from './custom-content.dialog';
 
 // import { ERROR_MSG } from '@dx/config-shared';

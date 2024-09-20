@@ -1,5 +1,8 @@
-import { IconNames } from '../../Icons';
-import { PrimitiveTypes, SortDirType } from '@dx/config-shared';
+import { IconNames } from '@dx/ui-web-system';
+import {
+  PrimitiveTypes,
+  SortDirType
+} from '@dx/config-shared';
 
 export type CellAlignment = 'left' | 'center' | 'right' | 'justify' | 'inherit';
 export type ComponentType = 'text' | 'icon' | 'checkbox' | 'none';

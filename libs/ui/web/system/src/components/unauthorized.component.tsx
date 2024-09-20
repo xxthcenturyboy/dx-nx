@@ -1,7 +1,7 @@
 // import React from 'react';
 import { Grid, Typography } from '@mui/material';
 // import { themeColors } from '../mui-overrides/styles';
-import { AccessDeniedLottie } from '../lottie/access-denied.lottie';
+import { AccessDeniedLottie } from '@dx/ui-web-lottie';
 import { StyledContentWrapper } from './content/content-wrapper.styled';
 
 type LoadingProps = {

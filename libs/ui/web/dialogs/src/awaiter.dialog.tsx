@@ -15,10 +15,8 @@ import {
   store,
   useAppSelector
 } from '@dx/store-web';
-import {
-  AwaiterLottie,
-  selectIsMobileWidth
-} from '@dx/ui-web-system';
+import { selectIsMobileWidth } from '@dx/ui-web-system';
+import { AwaiterLottie } from '@dx/ui-web-lottie';
 import { DialogWrapper } from './ui-wrapper.dialog';
 
 export const DialogAwaiter: React.FC<Partial<DialogProps>> = (props) => {

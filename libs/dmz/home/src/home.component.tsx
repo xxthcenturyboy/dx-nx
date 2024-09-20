@@ -11,7 +11,8 @@ import { useNavigate } from 'react-router-dom';
 
 import { APP_NAME, APP_DESCRIPTION } from '@dx/config-shared';
 import { WebConfigService } from '@dx/config-web';
-import { FADE_TIMEOUT_DUR, WelcomeRobotLottie } from '@dx/ui-web-system';
+import { FADE_TIMEOUT_DUR } from '@dx/ui-web-system';
+import { WelcomeRobotLottie } from '@dx/ui-web-lottie';
 import { setDocumentTitle } from '@dx/utils-misc-web';
 
 export const HomeComponent: React.FC = () => {

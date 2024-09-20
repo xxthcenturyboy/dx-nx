@@ -7,13 +7,15 @@ import DialogContentText from '@mui/material/DialogContentText';
 
 import { store, useAppDispatch } from '@dx/store-web';
 import {
-  CancelLottie,
-  QuestionMarkLottie,
-  SuccessLottie,
   selectIsMobileWidth,
   themeColors,
   uiActions,
 } from '@dx/ui-web-system';
+import {
+  CancelLottie,
+  QuestionMarkLottie,
+  SuccessLottie,
+} from '@dx/ui-web-lottie'
 import {
   CustomDialogContent,
   DialogError,

@@ -1,7 +1,10 @@
 import * as React from 'react';
-import { Box, Button, Grid, Typography } from '@mui/material';
+import {
+  Grid,
+  Typography
+} from '@mui/material';
 
-import { StopwatchLottie } from '../lottie/stopwatch.lottie';
+import { StopwatchLottie } from '@dx/ui-web-lottie';
 import { StyledContentWrapper } from './content/content-wrapper.styled';
 
 export const RateLimitComponent: React.FC = () => {

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Box, Button, Grid, Typography } from '@mui/material';
 
-import { ErrorLottie } from '../lottie/error.lottie';
+import { ErrorLottie } from '@dx/ui-web-lottie';
 import { StyledContentWrapper } from './content/content-wrapper.styled';
 
 type GlobalErrorComponentPropsType = {

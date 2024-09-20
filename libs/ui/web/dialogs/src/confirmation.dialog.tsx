@@ -12,7 +12,7 @@ import {
   CancelLottie,
   QuestionMarkLottie,
   SuccessLottie,
-} from '@dx/ui-web-system';
+} from '@dx/ui-web-lottie';
 import { DialogWrapper } from './ui-wrapper.dialog';
 import { CustomDialogContent } from './custom-content.dialog';
 

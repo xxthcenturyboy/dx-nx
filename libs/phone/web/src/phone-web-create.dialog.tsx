@@ -23,11 +23,11 @@ import {
   PhoneType,
 } from '@dx/phone-shared';
 import {
-  SuccessLottie,
   selectIsMobileWidth,
   themeColors,
   uiActions,
 } from '@dx/ui-web-system';
+import { SuccessLottie } from '@dx/ui-web-lottie';
 import {
   CustomDialogContent,
   DialogError,

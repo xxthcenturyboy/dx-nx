@@ -1,4 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React,
+{
+  useEffect,
+  useState
+} from 'react';
 import {
   Box,
   Collapse,
@@ -18,8 +22,14 @@ import {
 } from '@mui/material';
 import { BeatLoader } from 'react-spinners';
 
-import { RootState, useAppSelector } from '@dx/store-web';
-import { FADE_TIMEOUT_DUR, selectCurrentThemeMode } from '@dx/ui-web-system';
+import {
+  RootState,
+  useAppSelector
+} from '@dx/store-web';
+import {
+  FADE_TIMEOUT_DUR,
+  selectCurrentThemeMode
+} from '@dx/ui-web-system';
 import {
   TableCellData,
   TableComponentProps,
@@ -28,10 +38,14 @@ import {
   TableHeaderItem,
   TableRowType,
 } from './types';
-import { getIcon, IconNames } from '../../Icons';
-import { waveItem } from '../skeletons.ui';
+import {
+  BORDER_RADIUS,
+  getIcon,
+  IconNames,
+  themeColors,
+  waveItem
+} from '@dx/ui-web-system';
 import { TablePaginationActions } from './pagination.component';
-import { BORDER_RADIUS, themeColors } from '../../mui-overrides/styles';
 import {
   StyledTableCell,
   StyledTableRow,

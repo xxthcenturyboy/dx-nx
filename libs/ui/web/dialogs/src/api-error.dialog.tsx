@@ -14,10 +14,10 @@ import {
   useAppSelector,
 } from '@dx/store-web';
 import {
-  ErrorLottie,
   selectIsMobileWidth,
   uiActions
 } from '@dx/ui-web-system';
+import { ErrorLottie } from '@dx/ui-web-lottie';
 import { DialogWrapper } from './ui-wrapper.dialog';
 
 export const DialogApiError: React.FC<Partial<DialogProps>> = (props) => {
