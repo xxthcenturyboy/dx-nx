@@ -106,7 +106,7 @@ export const ContentWrapper: React.FC<ContentWrapperPropsType> = (props) => {
               sm: headerColumnsBreaks?.left?.sm || 6,
               md: headerColumnsBreaks?.left?.md || 6
             }}
-            width="100%"
+            // width="100%"
             mb={
               SM_BREAK && (headerColumnsBreaks?.left?.xs || 12) === 12
                 ? '12px'
@@ -139,6 +139,7 @@ export const ContentWrapper: React.FC<ContentWrapperPropsType> = (props) => {
               </span>
             )}
           </Grid2>
+
           <Grid2
             display="flex"
             size={{
@@ -147,9 +148,9 @@ export const ContentWrapper: React.FC<ContentWrapperPropsType> = (props) => {
               md: headerColumnsBreaks?.right?.md || 6
             }}
             justifyContent={headerColumnRightJustification}
-            width="100%"
+            // width="100%"
           >
-            {headerContent}
+            { headerContent }
           </Grid2>
         </Grid2>
         <Divider />
@@ -169,13 +170,13 @@ export const ContentWrapper: React.FC<ContentWrapperPropsType> = (props) => {
           height: MD_BREAK ? undefined : '100%',
         }}
       >
-        {renderHeader()}
+        { renderHeader() }
         <StyledContentWrapper
           sx={{
             marginTop: contentMarginTop,
           }}
         >
-          {children}
+          { children }
         </StyledContentWrapper>
       </Grid2>
     </Fade>

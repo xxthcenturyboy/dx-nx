@@ -280,7 +280,7 @@ export const UserAdminList: React.FC = () => {
             display={'flex'}
             alignItems={'center'}
             justifyContent={'center'}
-            style={{
+            sx={{
               minWidth: SM_BREAK ? '' : '360px',
               width: SM_BREAK ? '100%' : '360px',
             }}
@@ -290,7 +290,7 @@ export const UserAdminList: React.FC = () => {
               style={{
                 marginRight: SM_BREAK ? '24px' : '24px',
                 marginTop: 0,
-                width: '100%',
+                width: SM_BREAK ? '300px' : '100%',
               }}
             >
               <FilledInput
@@ -352,7 +352,10 @@ export const UserAdminList: React.FC = () => {
         justifyContent={'center'}
       >
         {/* Actions */}
-        <Grid2 mb={'24px'} size={12}>
+        <Grid2
+          mb={'24px'}
+          size={12}
+        >
           <CollapsiblePanel
             headerTitle="Actions"
             panelId="panel-user-admin-actions"

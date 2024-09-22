@@ -5,14 +5,18 @@ import DialogTitle from '@mui/material/DialogTitle';
 import {
   Button,
   FormControl,
-  Input,
   InputLabel,
   OutlinedInput,
   Typography,
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
-import { store, useAppDispatch } from '@dx/store-web';
+import {
+  store,
+  useAppDispatch
+} from '@dx/store-web';
 import { logger } from '@dx/logger-web';
 import { UpdatePasswordPayloadType } from '@dx/user-shared';
 import {
@@ -48,6 +52,8 @@ export const UserProfileChangePasswordDialog: React.FC<
   const [passwordConfirm, setPasswordConfirm] = React.useState('');
   const [errorMessage, setErrorMessage] = React.useState('');
   const isMobileWidth = selectIsMobileWidth(store.getState());
+  const theme = useTheme();
+  const SM_BREAK = useMediaQuery(theme.breakpoints.down('sm'));
   const dispatch = useAppDispatch();
   const [
     requestPasswordStrength,
@@ -178,7 +184,9 @@ export const UserProfileChangePasswordDialog: React.FC<
 
   const renderFormContent = (): JSX.Element => {
     return (
-      <CustomDialogContent>
+      <CustomDialogContent
+        justifyContent={SM_BREAK ? 'flex-start' : 'space-around'}
+      >
         <ChangePasswordForm
           name="form-change-password"
           onSubmit={handleSubmitPassword}

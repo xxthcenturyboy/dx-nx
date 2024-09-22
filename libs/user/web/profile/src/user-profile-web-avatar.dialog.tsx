@@ -57,7 +57,7 @@ export const UserProfileWebAvatarDialog: React.FC<
   const avatarEditorRef = React.useRef<null | AvatarEditor>(null);
   const dispatch = useAppDispatch();
   const theme = useTheme();
-  const smBreak = useMediaQuery(theme.breakpoints.down('sm'));
+  const SM_BREAK = useMediaQuery(theme.breakpoints.down('sm'));
   const [
     uplodAvatar,
     {
@@ -141,8 +141,8 @@ export const UserProfileWebAvatarDialog: React.FC<
   const renderFormContent = (): JSX.Element => {
     return (
       <CustomDialogContent
-        justifyContent={smBreak ? 'flex-start' : 'space-around'}
-        maxWidth={smBreak ? undefined : '100%'}
+        justifyContent={SM_BREAK ? 'flex-start' : 'space-around'}
+        maxWidth={SM_BREAK ? undefined : '100%'}
       >
         <Grid2
           container
@@ -156,10 +156,10 @@ export const UserProfileWebAvatarDialog: React.FC<
               ref={(ref) => {
                 avatarEditorRef.current = ref;
               }}
-              border={smBreak ? 30 : 50}
+              border={SM_BREAK ? 30 : 50}
               borderRadius={200}
-              width={smBreak ? 290 : 390}
-              height={smBreak ? 290 : 390}
+              width={SM_BREAK ? 290 : 390}
+              height={SM_BREAK ? 290 : 390}
               scale={scale}
               style={{
                 background: APP_COLOR_PALETTE.PRIMARY[900],
@@ -173,7 +173,7 @@ export const UserProfileWebAvatarDialog: React.FC<
             size={12}
             display={'flex'}
             justifyContent={'center'}
-            width={smBreak ? '100%' : '400px'}
+            width={SM_BREAK ? '100%' : '400px'}
             mt={2}
           >
             <Slider
@@ -198,7 +198,7 @@ export const UserProfileWebAvatarDialog: React.FC<
             <Button
               variant="contained"
               component="label"
-              fullWidth={smBreak}
+              fullWidth={SM_BREAK}
               disabled={isUploadingdAvatar || processStarted}
             >
               Choose Image

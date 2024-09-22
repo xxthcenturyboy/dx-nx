@@ -12,6 +12,8 @@ import {
   OutlinedInput,
   Select,
   SelectChangeEvent,
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
 
 import { store, useAppDispatch } from '@dx/store-web';
@@ -56,6 +58,8 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (
   const [otp, setOtp] = React.useState('');
   const [isDefault, setIsDefault] = React.useState(false);
   const isMobileWidth = selectIsMobileWidth(store.getState());
+  const theme = useTheme();
+  const SM_BREAK = useMediaQuery(theme.breakpoints.down('sm'));
   const dispatch = useAppDispatch();
   const [
     requestCheckAvailability,
@@ -234,7 +238,9 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (
 
   const renderFormContent = (): JSX.Element => {
     return (
-      <CustomDialogContent>
+      <CustomDialogContent
+        justifyContent={SM_BREAK ? 'flex-start' : 'space-around'}
+      >
         <AddEmailForm name="form-add-email" onSubmit={handleCreate}>
           <FormControl
             margin="normal"

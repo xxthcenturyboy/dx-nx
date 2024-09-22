@@ -265,7 +265,7 @@ export const UserAdminEdit: React.FC = () => {
     );
   };
 
-  const renderColumnLeft = (): JSX.Element => {
+  const renderEmailsPhones = (): JSX.Element => {
     return (
       <Grid2
         container
@@ -273,115 +273,248 @@ export const UserAdminEdit: React.FC = () => {
         padding={MD_BREAK ? '10px' : '10px 24px'}
         direction="column"
       >
-        <Grid2 container margin="0 0 20px">
-          <Grid2 width={'100%'}>
-            {isLoadingUser && (
-              <Skeleton
-                animation="wave"
-                variant="text"
-                style={{
-                  height: '56px',
-                  width: '100%',
-                }}
-              />
-            )}
-            {!isLoadingUser && (
-              <Typography>
-                <span style={{ fontWeight: 700, marginRight: 12 }}>Name:</span>
-                {user?.fullName}
-              </Typography>
-            )}
+        {/** NAME */}
+        <Grid2
+          container
+          margin="0 0 20px"
+        >
+          <Grid2
+            width={'100%'}
+          >
+            {
+              isLoadingUser && (
+                <Skeleton
+                  animation="wave"
+                  variant="text"
+                  style={{
+                    height: '56px',
+                    width: '100%',
+                  }}
+                />
+              )
+            }
+            {
+              !isLoadingUser && (
+                <>
+                  <Grid2
+                    sx={(theme) => {
+                      return {
+                        backgroundColor: theme.palette.primary.light,
+                        color: theme.palette.common.white,
+                        padding: MD_BREAK ? '4px 0' : '4px 4px 4px 8px',
+                        textAlign: MD_BREAK ? 'center' : 'left'
+                      }
+                    }}
+                  >
+                    <Typography fontWeight={700}>Name</Typography>
+                  </Grid2>
+                  <Grid2>
+                    <Typography
+                        variant="body1"
+                      >
+                        { user?.fullName }
+                      </Typography>
+                  </Grid2>
+                </>
+              )
+            }
           </Grid2>
         </Grid2>
-        <Grid2 container margin="0 0 20px">
-          <Typography style={{ fontWeight: 700 }}>Emails:</Typography>
+
+        {/** EMAILS */}
+        <Grid2
+          container
+          margin="0 0 20px"
+          direction={'column'}
+        >
+          <Grid2
+            sx={(theme) => {
+              return {
+                backgroundColor: theme.palette.primary.light,
+                color: theme.palette.common.white,
+                padding: MD_BREAK ? '4px 0' : '4px 4px 4px 8px',
+                textAlign: MD_BREAK ? 'center' : 'left'
+              }
+            }}
+          >
+            <Typography fontWeight={700}>Emails</Typography>
+          </Grid2>
+
           {/* {renderDivider('0 0 10')} */}
-          {isLoadingUser && listSkeleton(2, '48px')}
-          {!isLoadingUser && (
-            <Grid2 container justifyContent="space-between">
-              {user?.emails.map((email, index) => {
-                return (
-                  <React.Fragment key={`email-${index}`}>
-                    <Grid2
-                      container
-                      direction="row"
-                      width="100%"
-                      justifyContent="space-between"
-                      borderTop="1px solid lightgray"
-                      padding="10 0 3"
-                      display="flex"
-                      height="44px"
-                      alignItems="center"
-                    >
-                      <Grid2
-                        sx={{
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        <Typography>{email.email}</Typography>
-                      </Grid2>
-                      <Grid2>
-                        {email.isVerified && renderVerifiedChip()}
-                        {email.default && renderDefaultChip()}
-                        {email.label}
-                      </Grid2>
-                    </Grid2>
-                  </React.Fragment>
-                );
-              })}
-            </Grid2>
-          )}
+          {
+            isLoadingUser && listSkeleton(2, '48px')
+          }
+          {
+            !isLoadingUser && (
+              <Grid2
+                container
+                justifyContent="space-between"
+                direction="column"
+              >
+                {
+                  user?.emails.map((email, index) => {
+                    return (
+                      <React.Fragment key={`email-${index}`}>
+                        <Grid2
+                          container
+                          direction={MD_BREAK ? 'column' : 'row'}
+                          width="100%"
+                          justifyContent={MD_BREAK ? 'flex-start' : 'space-between'}
+                          borderTop="1px solid lightgray"
+                          padding="10px 0px 3px"
+                          display="flex"
+                          alignItems={MD_BREAK ? 'flex-start' : 'center'}
+                        >
+                          <Grid2
+                            sx={{
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            <Typography
+                              variant="body1"
+                            >
+                              { email.email }
+                            </Typography>
+                          </Grid2>
+                          {
+                            MD_BREAK && (
+                              <>
+                                <Grid2 padding={'4px 0 0'}>
+                                  <Typography
+                                    variant="body1"
+                                  >
+                                    { email.label }
+                                  </Typography>
+                                </Grid2>
+                                <Grid2 padding={'4px 0'}>
+                                  { email.isVerified && renderVerifiedChip() }
+                                  { email.default && renderDefaultChip() }
+                                </Grid2>
+                              </>
+                            )
+                          }
+                          {
+                            !MD_BREAK && (
+                              <Grid2>
+                                { email.isVerified && renderVerifiedChip() }
+                                { email.default && renderDefaultChip() }
+                                { email.label }
+                              </Grid2>
+                            )
+                          }
+                        </Grid2>
+                      </React.Fragment>
+                    );
+                  })
+                }
+              </Grid2>
+            )
+          }
         </Grid2>
-        <Grid2 container margin="0 0 20px">
-          <Typography style={{ fontWeight: 700 }}>Phones:</Typography>
+
+        {/** PHONES */}
+        <Grid2
+          container
+          margin="0 0 20px"
+          direction={'column'}
+        >
+          <Grid2
+            sx={(theme) => {
+              return {
+                backgroundColor: theme.palette.primary.light,
+                color: theme.palette.common.white,
+                padding: MD_BREAK ? '4px 0' : '4px 4px 4px 8px',
+                textAlign: MD_BREAK ? 'center' : 'left'
+              }
+            }}
+          >
+            <Typography fontWeight={700}>Phones</Typography>
+          </Grid2>
           {/* {renderDivider('0 0 10')} */}
-          {isLoadingUser && listSkeleton(2, '48px')}
-          {!isLoadingUser && (
-            <Grid2 container justifyContent="space-between" direction="column">
-              {user?.phones.map((phone, index) => {
-                return (
-                  <React.Fragment key={`phone-${index}`}>
-                    <Grid2
-                      container
-                      direction="row"
-                      width="100%"
-                      justifyContent="space-between"
-                      borderTop="1px solid lightgray"
-                      padding="10 0 3"
-                      display="flex"
-                      height="44px"
-                      alignItems="center"
-                    >
-                      <Grid2
-                        sx={{
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        <Typography>
-                          {phone.uiFormatted || phone.phoneFormatted}
-                        </Typography>
-                      </Grid2>
-                      <Grid2>
-                        {phone.isVerified && renderVerifiedChip()}
-                        {phone.default && renderDefaultChip()}
-                        {phone.label}
-                      </Grid2>
-                    </Grid2>
-                  </React.Fragment>
-                );
-              })}
-            </Grid2>
-          )}
+          {
+            isLoadingUser && listSkeleton(2, '48px')
+          }
+          {
+            !isLoadingUser && (
+              <Grid2
+                container
+                justifyContent="space-between"
+                direction="column"
+              >
+                {
+                  user?.phones.map((phone, index) => {
+                    return (
+                      <React.Fragment key={`phone-${index}`}>
+                        <Grid2
+                          container
+                          direction={MD_BREAK ? 'column' : 'row'}
+                          width="100%"
+                          justifyContent={MD_BREAK ? 'flex-start' : 'space-between'}
+                          borderTop="1px solid lightgray"
+                          padding="10px 0px 3px"
+                          display="flex"
+                          alignItems={MD_BREAK ? 'flex-start' : 'center'}
+                        >
+                          <Grid2
+                            sx={{
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            <Typography
+                              variant="body1"
+                            >
+                              { phone.uiFormatted || phone.phoneFormatted }
+                            </Typography>
+                          </Grid2>
+                          {
+                            MD_BREAK && (
+                              <>
+                                <Grid2 padding={'4px 0 0'}>
+                                  <Typography
+                                    variant="body1"
+                                  >
+                                    { phone.label }
+                                  </Typography>
+                                </Grid2>
+                                <Grid2 padding={'4px 0'}>
+                                  { phone.isVerified && renderVerifiedChip() }
+                                  { phone.default && renderDefaultChip() }
+                                </Grid2>
+                              </>
+                            )
+                          }
+                          {
+                            !MD_BREAK && (
+                              <Grid2>
+                                { phone.isVerified && renderVerifiedChip() }
+                                { phone.default && renderDefaultChip() }
+                                <Typography
+                                  variant="body1"
+                                  display={'inline-flex'}
+                                >
+                                  { phone.label }
+                                </Typography>
+                              </Grid2>
+                            )
+                          }
+                        </Grid2>
+                      </React.Fragment>
+                    );
+                  })
+                }
+              </Grid2>
+            )
+          }
         </Grid2>
       </Grid2>
     );
   };
 
-  const renderColumnRight = (): JSX.Element => {
+  const renderRolesRestrictions = (): JSX.Element => {
     return (
       <Grid2
         container
@@ -389,65 +522,137 @@ export const UserAdminEdit: React.FC = () => {
         padding={MD_BREAK ? '10px' : '10px 24px'}
         direction="column"
       >
-        <Grid2 container margin="0 0 20px" direction="column">
-          <Typography style={{ fontWeight: 700 }}>Roles:</Typography>
-          {renderDivider('0 0 10')}
-          {isLoadingUser && listSkeleton(2, '48px')}
-          {!isLoadingUser && (
-            <Grid2 container justifyContent="space-between">
-              {roles.map((role, index) => {
-                return (
-                  <Grid2 container key={`role-${index}`}>
-                    <Grid2>
-                      <FormGroup>
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              size="large"
-                              checked={role.hasRole}
-                              onClick={() => void handleRoleClick(role.role)}
+        {/** ROLES */}
+        <Grid2
+          container
+          margin="0 0 20px"
+          direction="column"
+        >
+          <Grid2
+            sx={(theme) => {
+              return {
+                backgroundColor: theme.palette.primary.light,
+                color: theme.palette.common.white,
+                padding: MD_BREAK ? '4px 0' : '4px 4px 4px 8px',
+                textAlign: MD_BREAK ? 'center' : 'left'
+              }
+            }}
+          >
+            <Typography fontWeight={700}>Roles</Typography>
+          </Grid2>
+          {
+            renderDivider('0 0 10')
+          }
+          {
+            isLoadingUser && listSkeleton(2, '48px')
+          }
+          {
+            !isLoadingUser && (
+              <Grid2
+                container
+                justifyContent="space-between"
+                direction={'column'}
+              >
+                {
+                  roles.map((role, index) => {
+                    return (
+                      <Grid2 container key={`role-${index}`}>
+                        <Grid2>
+                          <FormGroup>
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  size="large"
+                                  checked={role.hasRole}
+                                  onClick={() => void handleRoleClick(role.role)}
+                                />
+                              }
+                              label={role.role}
                             />
-                          }
-                          label={role.role}
-                        />
-                      </FormGroup>
-                    </Grid2>
-                  </Grid2>
-                );
-              })}
-            </Grid2>
-          )}
+                          </FormGroup>
+                        </Grid2>
+                      </Grid2>
+                    );
+                  })
+                }
+              </Grid2>
+            )
+          }
         </Grid2>
-        <Grid2 container direction="column">
-          <Typography style={{ fontWeight: 700 }}>Restrictions:</Typography>
-          {renderDivider('0 0 10')}
-          {isLoadingUser && listSkeleton(2, '48px')}
-          {!isLoadingUser && (
-            <Grid2 container justifyContent="space-between">
-              {restrictions.map((restriction, index) => {
-                return (
-                  <Grid2 container key={`restriction-${index}`}>
-                    <FormGroup>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            className="Mui-checked-error"
-                            size="large"
-                            checked={restriction.isRestricted}
-                            onClick={() =>
-                              console.log('clicked', restriction.restriction)
+
+        {/** RESTRICTIONS */}
+        <Grid2
+          container
+          direction="column"
+        >
+          <Grid2
+            sx={(theme) => {
+              return {
+                backgroundColor: theme.palette.primary.light,
+                color: theme.palette.common.white,
+                padding: MD_BREAK ? '4px 0' : '4px 4px 4px 8px',
+                textAlign: MD_BREAK ? 'center' : 'left'
+              }
+            }}
+          >
+            <Typography fontWeight={700}>Restrictions</Typography>
+          </Grid2>
+          { renderDivider('0 0 10') }
+          {
+            isLoadingUser && listSkeleton(2, '48px')
+          }
+          {
+            !isLoadingUser && (
+              <Grid2
+                container
+                justifyContent="space-between"
+                direction={'column'}
+              >
+                {
+                  restrictions.map((restriction, index) => {
+                    return (
+                      <Grid2 container key={`restriction-${index}`}>
+                        <FormGroup>
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                className="Mui-checked-error"
+                                size="large"
+                                checked={restriction.isRestricted}
+                                onClick={() =>
+                                  console.log('clicked', restriction.restriction)
+                                }
+                              />
                             }
+                            label={restriction.restriction}
                           />
-                        }
-                        label={restriction.restriction}
-                      />
-                    </FormGroup>
-                  </Grid2>
-                );
-              })}
-            </Grid2>
-          )}
+                        </FormGroup>
+                      </Grid2>
+                    );
+                  })
+                }
+              </Grid2>
+            )
+          }
         </Grid2>
+      </Grid2>
+    );
+  };
+
+  const renderActionArea = (): JSX.Element => {
+    return (
+      <Grid2>
+        <Button
+          variant="contained"
+          onClick={() =>
+            dispatch(
+              uiActions.appDialogSet(<NotificationSendDialog user={user} />)
+            )
+          }
+          color={'primary'}
+        >
+          Send Notification
+        </Button>
       </Grid2>
     );
   };
@@ -487,36 +692,28 @@ export const UserAdminEdit: React.FC = () => {
       }
     >
       <Paper elevation={2}>
+        {/** Phones Emails Roles Restrictions */}
         <Grid2
           container
           justifyContent="flex-start"
           padding="20px"
           direction={MD_BREAK ? 'column' : 'row'}
+          size={12}
         >
-          {renderColumnLeft()}
-          {renderColumnRight()}
+          { renderEmailsPhones() }
+          { renderRolesRestrictions() }
         </Grid2>
 
+        {/** Action Area */}
         <Grid2
           container
           justifyContent="flex-start"
           padding="20px"
           direction={MD_BREAK ? 'column' : 'row'}
+          size={12}
         >
-          {renderDivider('12px 0 12px')}
-          <Grid2>
-            <Button
-              variant="contained"
-              onClick={() =>
-                dispatch(
-                  uiActions.appDialogSet(<NotificationSendDialog user={user} />)
-                )
-              }
-              color={'primary'}
-            >
-              Send Notification
-            </Button>
-          </Grid2>
+          { renderDivider('12px 0 12px') }
+          { renderActionArea() }
         </Grid2>
       </Paper>
     </ContentWrapper>

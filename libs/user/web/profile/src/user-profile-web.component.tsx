@@ -125,6 +125,7 @@ export const UserProfile: React.FC = () => {
             container
             direction={MD_BREAK ? 'column' : 'row'}
             justifyContent={'center'}
+            size={12}
           >
             <Grid2
               size={12}
@@ -163,7 +164,7 @@ export const UserProfile: React.FC = () => {
             container
             direction={MD_BREAK ? 'column' : 'row'}
             justifyContent={'center'}
-            // width={'100%'}
+            size={12}
           >
             <Grid2
               size={{
@@ -207,9 +208,16 @@ export const UserProfile: React.FC = () => {
             container
             direction={MD_BREAK ? 'column' : 'row'}
             justifyContent={'flex-start'}
+            size={12}
           >
-            <Grid2 width={MD_BREAK ? '100%' : '50%'} padding="10px">
-              <Button variant="outlined" onClick={toggleDarkMode}>
+            <Grid2
+              width={MD_BREAK ? '100%' : '50%'}
+              padding="10px"
+            >
+              <Button
+                variant="outlined"
+                onClick={toggleDarkMode}
+              >
                 Toggle Dark Mode
               </Button>
             </Grid2>

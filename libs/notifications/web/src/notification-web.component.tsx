@@ -103,8 +103,15 @@ export const NotificationComponent: React.FC<NotificationMenuPropsType> = (
   };
 
   return (
-    <StyledNotification isunread={notification.viewed ? 'false' : 'true'}>
-      <Grid2 container direction="row" height={'100%'}>
+    <StyledNotification
+      isunread={notification.viewed ? 'false' : 'true'}
+    >
+      <Grid2
+        container
+        direction="row"
+        height={'100%'}
+        width={'100%'}
+      >
         {/** Icon */}
         <Grid2 width="15%" alignItems="center" display="flex">
           {renderIcon()}

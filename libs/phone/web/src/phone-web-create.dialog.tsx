@@ -11,6 +11,8 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
 import { CountryData } from 'react-phone-input-2';
 import { CountryCode, isValidPhoneNumber } from 'libphonenumber-js';
@@ -63,6 +65,8 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (
   const [otp, setOtp] = React.useState('');
   const [isDefault, setIsDefault] = React.useState(false);
   const isMobileWidth = selectIsMobileWidth(store.getState());
+  const theme = useTheme();
+  const SM_BREAK = useMediaQuery(theme.breakpoints.down('sm'));
   const dispatch = useAppDispatch();
   const [
     requestCheckAvailability,
@@ -246,7 +250,9 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (
 
   const renderFormContent = (): JSX.Element => {
     return (
-      <CustomDialogContent>
+      <CustomDialogContent
+        justifyContent={SM_BREAK ? 'flex-start' : 'space-around'}
+      >
         <AddPhoneForm name="form-add-phone" onSubmit={handleCreate}>
           <FormControl
             disabled={isLoadingAddPhone}
