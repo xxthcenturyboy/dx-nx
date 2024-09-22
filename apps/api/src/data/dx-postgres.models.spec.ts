@@ -19,7 +19,7 @@ describe('getPostgresModels', () => {
     const models = getPostgresModels();
     // assert
     expect(models).toBeDefined();
-    expect(models).toHaveLength(6);
+    expect(models).toHaveLength(8);
   });
 });
 
