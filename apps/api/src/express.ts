@@ -53,7 +53,7 @@ export async function configureExpress(
     expressWinston({
       winstonInstance: ApiLoggingClass.instance.logger,
       meta: true,
-      msg: 'HTTP {{req.method}} {{req.url}} - userId: {{req.user?.id || "NONE"}}'
+      msg: 'HTTP {{res.statusCode}} {{req.method}} {{req.url}} {{req.ip}} - userId: {{req.user?.id || "NONE"}} {{res.responseTime}}ms'
     })
   );
 
