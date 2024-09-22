@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Fade, Grid, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Fade, Grid2, Typography, useMediaQuery, useTheme } from '@mui/material';
 
 import { APP_NAME } from '@dx/config-shared';
 import { WebConfigService } from '@dx/config-web';
@@ -60,7 +60,7 @@ export const ShortlinkComponent: React.FC = () => {
 
   return (
     <Fade in={true} timeout={FADE_TIMEOUT_DUR}>
-      <Grid
+      <Grid2
         container
         spacing={0}
         direction="column"
@@ -76,7 +76,7 @@ export const ShortlinkComponent: React.FC = () => {
         >
           {APP_NAME}
         </Typography>
-      </Grid>
+      </Grid2>
     </Fade>
   );
 };

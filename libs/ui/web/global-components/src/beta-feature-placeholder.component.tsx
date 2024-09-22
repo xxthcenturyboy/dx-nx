@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Box, Button, Grid, Typography } from '@mui/material';
+import { Box, Button, Grid2, Typography } from '@mui/material';
 
 import { setDocumentTitle } from '@dx/utils-misc-web';
 import { BetaBadgeLottie } from '@dx/ui-web-lottie';
@@ -12,7 +12,7 @@ export const BetaFeatureComponent: React.FC = () => {
 
   return (
     <StyledContentWrapper>
-      <Grid
+      <Grid2
         container
         spacing={0}
         direction="column"
@@ -27,7 +27,7 @@ export const BetaFeatureComponent: React.FC = () => {
         <Typography variant="h5" color="secondary" margin="15px">
           This feature is not ready yet. Check back for updates.
         </Typography>
-      </Grid>
+      </Grid2>
     </StyledContentWrapper>
   );
 };

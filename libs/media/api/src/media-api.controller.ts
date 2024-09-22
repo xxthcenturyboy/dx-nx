@@ -20,12 +20,17 @@ export const MediaApiController = {
   getMedia: async function (req: Request, res: Response, next: NextFunction) {
     const { id, size } = req.params as { id: string, size: string };
 
-    const service = new MediaApiService();
-    const key = await service.getContentKey(id, size);
-    if (!key) {
-      return sendOK(req, res, null);
+    try {
+      const service = new MediaApiService();
+      const key = await service.getContentKey(id, size);
+      if (!key) {
+        return sendOK(req, res, null);
+      }
+      await service.getUserContent(key, res)
+    } catch (err) {
+      sendBadRequest(req, res, (err as Error).message);
     }
-    await service.getUserContent(key, res)
+
   },
 
   uploadUserContent: async function (req: Request, res: Response, next: NextFunction) {

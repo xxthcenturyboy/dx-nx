@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Divider,
   Fade,
-  Grid,
+  Grid2,
   IconButton,
   Tooltip,
   Typography,
@@ -93,18 +93,19 @@ export const ContentWrapper: React.FC<ContentWrapperPropsType> = (props) => {
   const renderHeader = (): JSX.Element => {
     return (
       <StyledContentFixedHeader>
-        <Grid
+        <Grid2
           container
           justifyContent="space-between"
           alignItems={'center'}
           padding="14px 16px 14px"
           direction={'row'}
         >
-          <Grid
-            item
-            xs={headerColumnsBreaks?.left?.xs || 12}
-            sm={headerColumnsBreaks?.left?.sm || 6}
-            md={headerColumnsBreaks?.left?.md || 6}
+          <Grid2
+            size={{
+              xs: headerColumnsBreaks?.left?.xs || 12,
+              sm: headerColumnsBreaks?.left?.sm || 6,
+              md: headerColumnsBreaks?.left?.md || 6
+            }}
             width="100%"
             mb={
               SM_BREAK && (headerColumnsBreaks?.left?.xs || 12) === 12
@@ -137,19 +138,20 @@ export const ContentWrapper: React.FC<ContentWrapperPropsType> = (props) => {
                 </Typography>
               </span>
             )}
-          </Grid>
-          <Grid
-            item
+          </Grid2>
+          <Grid2
             display="flex"
-            xs={headerColumnsBreaks?.right?.xs || 12}
-            sm={headerColumnsBreaks?.right?.sm || 6}
-            md={headerColumnsBreaks?.right?.md || 6}
+            size={{
+              xs: headerColumnsBreaks?.right?.xs || 12,
+              sm: headerColumnsBreaks?.right?.sm || 6,
+              md: headerColumnsBreaks?.right?.md || 6
+            }}
             justifyContent={headerColumnRightJustification}
             width="100%"
           >
             {headerContent}
-          </Grid>
-        </Grid>
+          </Grid2>
+        </Grid2>
         <Divider />
       </StyledContentFixedHeader>
     );
@@ -157,7 +159,7 @@ export const ContentWrapper: React.FC<ContentWrapperPropsType> = (props) => {
 
   return (
     <Fade in={true} timeout={FADE_TIMEOUT_DUR}>
-      <Grid
+      <Grid2
         container
         spacing={0}
         direction="column"
@@ -175,7 +177,7 @@ export const ContentWrapper: React.FC<ContentWrapperPropsType> = (props) => {
         >
           {children}
         </StyledContentWrapper>
-      </Grid>
+      </Grid2>
     </Fade>
   );
 };

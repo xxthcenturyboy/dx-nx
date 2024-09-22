@@ -6,7 +6,7 @@ import {
   TableMeta,
   TableRowType,
 } from '@dx/ui-web-tables';
-import { IconNames } from '@dx/ui-web-system';
+import { IconNames } from '@dx/ui-web-global-components';
 
 export class UserAdminWebListService {
   public static USER_ADMIN_LIST_META: TableMeta[] = [

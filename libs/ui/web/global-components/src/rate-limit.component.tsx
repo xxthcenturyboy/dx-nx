@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
-  Grid,
+  Grid2,
   Typography
 } from '@mui/material';
 
@@ -10,7 +10,7 @@ import { StyledContentWrapper } from './content/content-wrapper.styled';
 export const RateLimitComponent: React.FC = () => {
   return (
     <StyledContentWrapper>
-      <Grid
+      <Grid2
         container
         spacing={0}
         direction="column"
@@ -26,7 +26,7 @@ export const RateLimitComponent: React.FC = () => {
           You have made too many requests. Please wait several minutes before
           trying again.
         </Typography>
-      </Grid>
+      </Grid2>
     </StyledContentWrapper>
   );
 };

@@ -10,10 +10,6 @@ import express,
 // import RedisStore from 'connect-redis';
 import { logger as expressWinston } from 'express-winston';
 import cookieParser from 'cookie-parser';
-import morgan,
-{
-  TokenIndexer
-} from 'morgan';
 import cors from 'cors';
 
 // import { DxDateUtilClass } from '@dx/util-dates';

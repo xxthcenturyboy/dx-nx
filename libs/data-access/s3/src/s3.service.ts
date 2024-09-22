@@ -233,7 +233,7 @@ export class S3Service {
 
       return null;
     } catch (ex) {
-      this.logger.logError((ex as Error).message);
+      this.logger.logError(`${(ex as Error).message}: ${bucket}/${key}`);
       throw new Error((ex as Error).message);
     }
   }

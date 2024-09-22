@@ -92,7 +92,7 @@ export class ApiLoggingClass {
       format: winston.format.combine(
         winston.format.timestamp(),
         winston.format((info) => {
-          console.log(info);
+          // console.log(info);
           info.app = appName;
           return info;
         })(),

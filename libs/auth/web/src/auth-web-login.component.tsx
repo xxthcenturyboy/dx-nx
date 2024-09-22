@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Box, Fade, Grid, Paper } from '@mui/material';
+import { Box, Fade, Grid2, Paper } from '@mui/material';
 import { toast } from 'react-toastify';
 
 import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
@@ -100,7 +100,7 @@ export const WebLogin: React.FC = () => {
   return (
     <Fade in={true} timeout={FADE_TIMEOUT_DUR}>
       <Box>
-        <Grid
+        <Grid2
           container
           spacing={0}
           direction="column"
@@ -151,7 +151,7 @@ export const WebLogin: React.FC = () => {
               />
             )}
           </Paper>
-        </Grid>
+        </Grid2>
       </Box>
     </Fade>
   );

@@ -1,6 +1,6 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
-import { IconButton, Grid } from '@mui/material';
+import { IconButton, Grid2 } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import InfoIcon from '@mui/icons-material/Info';
 import ReportIcon from '@mui/icons-material/Report';
@@ -104,29 +104,28 @@ export const NotificationComponent: React.FC<NotificationMenuPropsType> = (
 
   return (
     <StyledNotification isunread={notification.viewed ? 'false' : 'true'}>
-      <Grid container direction="row" height={'100%'}>
+      <Grid2 container direction="row" height={'100%'}>
         {/** Icon */}
-        <Grid item width="15%" alignItems="center" display="flex">
+        <Grid2 width="15%" alignItems="center" display="flex">
           {renderIcon()}
-        </Grid>
+        </Grid2>
 
         {/** Title and Message */}
-        <Grid item width="75%">
-          <Grid container direction="column">
-            <Grid item color={getTitleColor()}>
+        <Grid2 width="75%">
+          <Grid2 container direction="column">
+            <Grid2 color={getTitleColor()}>
               <Typography variant="h6">{notification.title}</Typography>
-            </Grid>
-            <Grid item>
+            </Grid2>
+            <Grid2>
               <Typography variant="body2">{getTrimmedMessage()}</Typography>
-            </Grid>
-          </Grid>
-        </Grid>
+            </Grid2>
+          </Grid2>
+        </Grid2>
 
         {/** Dismiss Button */}
         {((notification.userId === NIL_UUID && isSuperAdmin) ||
           notification.userId !== NIL_UUID) && (
-          <Grid
-            item
+          <Grid2
             width="10%"
             alignItems="center"
             display="flex"
@@ -142,9 +141,9 @@ export const NotificationComponent: React.FC<NotificationMenuPropsType> = (
             >
               <ClearIcon />
             </IconButton>
-          </Grid>
+          </Grid2>
         )}
-      </Grid>
+      </Grid2>
     </StyledNotification>
   );
 };

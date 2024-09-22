@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Grid, Typography } from '@mui/material';
+import { Button, Grid2, Typography } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
@@ -80,19 +80,19 @@ export const LogoutButton: React.FC<LogoutButtonType> = ({
   if (context === 'APP_BAR') {
     return (
       <StyledAccountMenuListItem onClick={logout}>
-        <Grid
+        <Grid2
           container
           direction="row"
           alignItems="center"
           justifyContent="flex-start"
         >
-          <Grid item mr={2}>
+          <Grid2 mr={2}>
             <LogoutIcon />
-          </Grid>
-          <Grid item>
+          </Grid2>
+          <Grid2>
             <Typography variant="body2">Logout</Typography>
-          </Grid>
-        </Grid>
+          </Grid2>
+        </Grid2>
       </StyledAccountMenuListItem>
     );
   }

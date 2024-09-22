@@ -2,7 +2,7 @@ import * as React from 'react';
 import {
   Box,
   Button,
-  Grid,
+  Grid2,
   Typography
 } from '@mui/material';
 
@@ -20,7 +20,7 @@ export const NotFoundComponent: React.FC<NotFoundComponentPropsType> = ({
 }) => {
   return (
     <StyledContentWrapper>
-      <Grid
+      <Grid2
         container
         spacing={0}
         direction="column"
@@ -45,7 +45,7 @@ export const NotFoundComponent: React.FC<NotFoundComponentPropsType> = ({
             {buttonText || 'Go Back'}
           </Button>
         </Box>
-      </Grid>
+      </Grid2>
     </StyledContentWrapper>
   );
 };

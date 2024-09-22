@@ -14,7 +14,9 @@ function withCustomFactory(config, { options, context }) {
     ...config,
     devServer: {
       ...config.devServer,
-      historyApiFallback: true
+      historyApiFallback: true,
+      // allowedHosts: 'all'
+      // allowedHosts: [process.env.WEB_APP_URL]
     },
     module: {
       ...config.module,

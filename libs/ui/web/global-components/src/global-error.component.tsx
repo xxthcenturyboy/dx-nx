@@ -2,7 +2,7 @@ import * as React from 'react';
 import {
   Box,
   Button,
-  Grid,
+  Grid2,
   Typography
 } from '@mui/material';
 
@@ -20,7 +20,7 @@ export const GlobalErrorComponent: React.FC<GlobalErrorComponentPropsType> = ({
 }) => {
   return (
     <StyledContentWrapper>
-      <Grid
+      <Grid2
         container
         spacing={0}
         direction="column"
@@ -45,7 +45,7 @@ export const GlobalErrorComponent: React.FC<GlobalErrorComponentPropsType> = ({
             {buttonText || 'Go Back'}
           </Button>
         </Box>
-      </Grid>
+      </Grid2>
     </StyledContentWrapper>
   );
 };

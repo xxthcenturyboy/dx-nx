@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Grid, Typography } from '@mui/material';
+import { Grid2, Typography } from '@mui/material';
 
 import { ContentWrapper } from '@dx/ui-web-global-components';
 import { WelcomeRobotLottie } from '@dx/ui-web-lottie';
@@ -21,7 +21,7 @@ export const Dashboard: React.FC = () => {
         },
       }}
     >
-      <Grid
+      <Grid2
         container
         spacing={0}
         direction="column"
@@ -34,7 +34,7 @@ export const Dashboard: React.FC = () => {
         <Typography variant="h5" color="secondary" margin="15px" align="center">
           Have a look around.
         </Typography>
-      </Grid>
+      </Grid2>
     </ContentWrapper>
   );
 };

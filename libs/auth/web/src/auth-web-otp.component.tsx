@@ -3,7 +3,7 @@ import React,
   ReactElement
 } from 'react';
 import {
-  Grid,
+  Grid2,
   Typography
 } from '@mui/material';
 import { MuiOtpInput } from 'mui-one-time-password-input';
@@ -39,9 +39,7 @@ export const AuthWebOtpEntry: React.FC<AuthWebOtpPropsType> = (props): ReactElem
   };
 
   return (
-    <Grid
-      item
-    >
+    <Grid2>
       <Typography
         variant="h6"
         style={
@@ -60,6 +58,6 @@ export const AuthWebOtpEntry: React.FC<AuthWebOtpPropsType> = (props): ReactElem
         length={OTP_LENGTH}
         autoFocus={true}
       />
-    </Grid>
+    </Grid2>
   );
 };

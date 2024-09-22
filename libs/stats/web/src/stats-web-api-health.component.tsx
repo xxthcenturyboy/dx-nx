@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import {
   Chip,
-  Grid,
+  Grid2,
   IconButton,
   Table,
   TableBody,
@@ -104,9 +104,9 @@ export const StatsWebApiHealthComponent: React.FC = () => {
         </Tooltip>
       }
     >
-      <Grid container display={'block'} width={'100%'}>
+      <Grid2 container display={'block'} width={'100%'}>
         {/* HTTP */}
-        <Grid item mb={'24px'} xs={12}>
+        <Grid2 mb={'24px'} size={12}>
           <CollapsiblePanel
             headerTitle="HTTP"
             initialOpen={true}
@@ -135,10 +135,10 @@ export const StatsWebApiHealthComponent: React.FC = () => {
               </TableBody>
             </Table>
           </CollapsiblePanel>
-        </Grid>
+        </Grid2>
 
         {/* MEMORY */}
-        <Grid item mb={'24px'} xs={12}>
+        <Grid2 mb={'24px'} size={12}>
           <CollapsiblePanel
             headerTitle="MEMORY"
             initialOpen={true}
@@ -197,10 +197,10 @@ export const StatsWebApiHealthComponent: React.FC = () => {
               </TableBody>
             </Table>
           </CollapsiblePanel>
-        </Grid>
+        </Grid2>
 
         {/* POSTGRES */}
-        <Grid item mb={'24px'} xs={12}>
+        <Grid2 mb={'24px'} size={12}>
           <CollapsiblePanel
             headerTitle="POSTGRES"
             initialOpen={true}
@@ -235,10 +235,10 @@ export const StatsWebApiHealthComponent: React.FC = () => {
               </TableBody>
             </Table>
           </CollapsiblePanel>
-        </Grid>
+        </Grid2>
 
         {/* REDIS */}
-        <Grid item mb={'24px'} xs={12}>
+        <Grid2 mb={'24px'} size={12}>
           <CollapsiblePanel
             headerTitle="REDIS"
             initialOpen={true}
@@ -309,8 +309,8 @@ export const StatsWebApiHealthComponent: React.FC = () => {
               </TableBody>
             </Table>
           </CollapsiblePanel>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     </ContentWrapper>
   );
 };

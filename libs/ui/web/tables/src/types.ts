@@ -1,4 +1,4 @@
-import { IconNames } from '@dx/ui-web-system';
+import { IconNames } from '@dx/ui-web-global-components';
 import {
   PrimitiveTypes,
   SortDirType

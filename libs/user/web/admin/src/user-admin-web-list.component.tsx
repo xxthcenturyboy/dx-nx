@@ -4,7 +4,7 @@ import {
   Button,
   FormControl,
   FilledInput,
-  Grid,
+  Grid2,
   IconButton,
   Tooltip,
   useMediaQuery,
@@ -266,7 +266,7 @@ export const UserAdminList: React.FC = () => {
         },
       }}
       headerContent={
-        <Grid
+        <Grid2
           container
           direction={SM_BREAK ? 'column-reverse' : 'row'}
           justifyContent={SM_BREAK ? 'center' : 'flex-end'}
@@ -276,8 +276,7 @@ export const UserAdminList: React.FC = () => {
           }}
         >
           {/* Filter */}
-          <Grid
-            item
+          <Grid2
             display={'flex'}
             alignItems={'center'}
             justifyContent={'center'}
@@ -324,10 +323,9 @@ export const UserAdminList: React.FC = () => {
                 </Tooltip>
               </IconButton>
             </span>
-          </Grid>
+          </Grid2>
           {/* New User */}
-          {/* <Grid
-            item
+          {/* <Grid2
             style={{
               width: SM_BREAK ? '100%' : '',
               marginBottom: SM_BREAK ? '20px' : ''
@@ -342,11 +340,11 @@ export const UserAdminList: React.FC = () => {
             >
               Create User
             </Button>
-          </Grid> */}
-        </Grid>
+          </Grid2> */}
+        </Grid2>
       }
     >
-      <Grid
+      <Grid2
         container
         spacing={0}
         direction={'row'}
@@ -354,12 +352,12 @@ export const UserAdminList: React.FC = () => {
         justifyContent={'center'}
       >
         {/* Actions */}
-        <Grid item mb={'24px'} xs={12}>
+        <Grid2 mb={'24px'} size={12}>
           <CollapsiblePanel
             headerTitle="Actions"
             panelId="panel-user-admin-actions"
           >
-            <Grid
+            <Grid2
               container
               direction={SM_BREAK ? 'column' : 'row'}
               alignItems={'center'}
@@ -392,13 +390,13 @@ export const UserAdminList: React.FC = () => {
                   Send Web App Update
                 </Button>
               )}
-            </Grid>
+            </Grid2>
           </CollapsiblePanel>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
 
       {/** TABLE */}
-      <Grid
+      <Grid2
         container
         spacing={0}
         direction="column"
@@ -422,7 +420,7 @@ export const UserAdminList: React.FC = () => {
           sortDir={sortDir}
           tableName="Users"
         />
-      </Grid>
+      </Grid2>
     </ContentWrapper>
   );
 };

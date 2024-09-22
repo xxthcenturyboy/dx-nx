@@ -1,7 +1,7 @@
 import { BeatLoader } from 'react-spinners';
 import {
   Button,
-  Grid,
+  Grid2,
   Typography
 } from '@mui/material';
 
@@ -25,7 +25,7 @@ export const UiLoadingComponent = (props: LoadingProps): JSX.Element | null => {
   if (props.error) {
     return (
       <StyledContentWrapper>
-        <Grid
+        <Grid2
           container
           spacing={0}
           direction="column"
@@ -35,7 +35,7 @@ export const UiLoadingComponent = (props: LoadingProps): JSX.Element | null => {
         >
           <Button onClick={handleRetry}>retry</Button>
           <Typography>{props.error.message}</Typography>
-        </Grid>
+        </Grid2>
       </StyledContentWrapper>
     );
   }
@@ -43,7 +43,7 @@ export const UiLoadingComponent = (props: LoadingProps): JSX.Element | null => {
   if (props.timedOut) {
     return (
       <StyledContentWrapper>
-        <Grid
+        <Grid2
           container
           spacing={0}
           direction="column"
@@ -53,7 +53,7 @@ export const UiLoadingComponent = (props: LoadingProps): JSX.Element | null => {
         >
           <Button onClick={handleRetry}>retry</Button>
           <Typography>timed out</Typography>
-        </Grid>
+        </Grid2>
       </StyledContentWrapper>
     );
   }
@@ -61,7 +61,7 @@ export const UiLoadingComponent = (props: LoadingProps): JSX.Element | null => {
   if (props.pastDelay) {
     return (
       <StyledContentWrapper>
-        <Grid
+        <Grid2
           container
           spacing={0}
           direction="column"
@@ -72,7 +72,7 @@ export const UiLoadingComponent = (props: LoadingProps): JSX.Element | null => {
           }}
         >
           <BeatLoader color={themeColors.secondary} size={30} margin="2px" />
-        </Grid>
+        </Grid2>
       </StyledContentWrapper>
     );
   }

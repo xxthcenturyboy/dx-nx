@@ -228,14 +228,12 @@ export class MediaApiService {
   public async getUserContent(key: string, res: Response) {
     try {
 
-      const result = await this.s3Service.getObject(
+      await this.s3Service.getObject(
         `${S3_APP_BUCKET_NAME}-${S3_BUCKETS.USER_CONTENT}`,
         key,
         res
       );
-      return result;
     } catch (err) {
-      this.logger.logError(err);
       throw new Error('105 Could not retrieve file.');
     }
   }

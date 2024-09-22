@@ -15,7 +15,7 @@ import {
   Divider,
   FormControlLabel,
   FormGroup,
-  Grid,
+  Grid2,
   Paper,
   Skeleton,
   Typography,
@@ -267,14 +267,14 @@ export const UserAdminEdit: React.FC = () => {
 
   const renderColumnLeft = (): JSX.Element => {
     return (
-      <Grid
+      <Grid2
         container
         width={MD_BREAK ? '100%' : '50%'}
         padding={MD_BREAK ? '10px' : '10px 24px'}
         direction="column"
       >
-        <Grid container margin="0 0 20px">
-          <Grid item width={'100%'}>
+        <Grid2 container margin="0 0 20px">
+          <Grid2 width={'100%'}>
             {isLoadingUser && (
               <Skeleton
                 animation="wave"
@@ -291,18 +291,18 @@ export const UserAdminEdit: React.FC = () => {
                 {user?.fullName}
               </Typography>
             )}
-          </Grid>
-        </Grid>
-        <Grid container margin="0 0 20px">
+          </Grid2>
+        </Grid2>
+        <Grid2 container margin="0 0 20px">
           <Typography style={{ fontWeight: 700 }}>Emails:</Typography>
           {/* {renderDivider('0 0 10')} */}
           {isLoadingUser && listSkeleton(2, '48px')}
           {!isLoadingUser && (
-            <Grid container justifyContent="space-between">
+            <Grid2 container justifyContent="space-between">
               {user?.emails.map((email, index) => {
                 return (
                   <React.Fragment key={`email-${index}`}>
-                    <Grid
+                    <Grid2
                       container
                       direction="row"
                       width="100%"
@@ -313,8 +313,7 @@ export const UserAdminEdit: React.FC = () => {
                       height="44px"
                       alignItems="center"
                     >
-                      <Grid
-                        item
+                      <Grid2
                         sx={{
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
@@ -322,29 +321,29 @@ export const UserAdminEdit: React.FC = () => {
                         }}
                       >
                         <Typography>{email.email}</Typography>
-                      </Grid>
-                      <Grid item>
+                      </Grid2>
+                      <Grid2>
                         {email.isVerified && renderVerifiedChip()}
                         {email.default && renderDefaultChip()}
                         {email.label}
-                      </Grid>
-                    </Grid>
+                      </Grid2>
+                    </Grid2>
                   </React.Fragment>
                 );
               })}
-            </Grid>
+            </Grid2>
           )}
-        </Grid>
-        <Grid container margin="0 0 20px">
+        </Grid2>
+        <Grid2 container margin="0 0 20px">
           <Typography style={{ fontWeight: 700 }}>Phones:</Typography>
           {/* {renderDivider('0 0 10')} */}
           {isLoadingUser && listSkeleton(2, '48px')}
           {!isLoadingUser && (
-            <Grid container justifyContent="space-between" direction="column">
+            <Grid2 container justifyContent="space-between" direction="column">
               {user?.phones.map((phone, index) => {
                 return (
                   <React.Fragment key={`phone-${index}`}>
-                    <Grid
+                    <Grid2
                       container
                       direction="row"
                       width="100%"
@@ -355,8 +354,7 @@ export const UserAdminEdit: React.FC = () => {
                       height="44px"
                       alignItems="center"
                     >
-                      <Grid
-                        item
+                      <Grid2
                         sx={{
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
@@ -366,41 +364,41 @@ export const UserAdminEdit: React.FC = () => {
                         <Typography>
                           {phone.uiFormatted || phone.phoneFormatted}
                         </Typography>
-                      </Grid>
-                      <Grid item>
+                      </Grid2>
+                      <Grid2>
                         {phone.isVerified && renderVerifiedChip()}
                         {phone.default && renderDefaultChip()}
                         {phone.label}
-                      </Grid>
-                    </Grid>
+                      </Grid2>
+                    </Grid2>
                   </React.Fragment>
                 );
               })}
-            </Grid>
+            </Grid2>
           )}
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     );
   };
 
   const renderColumnRight = (): JSX.Element => {
     return (
-      <Grid
+      <Grid2
         container
         width={MD_BREAK ? '100%' : '50%'}
         padding={MD_BREAK ? '10px' : '10px 24px'}
         direction="column"
       >
-        <Grid container margin="0 0 20px" direction="column">
+        <Grid2 container margin="0 0 20px" direction="column">
           <Typography style={{ fontWeight: 700 }}>Roles:</Typography>
           {renderDivider('0 0 10')}
           {isLoadingUser && listSkeleton(2, '48px')}
           {!isLoadingUser && (
-            <Grid container justifyContent="space-between">
+            <Grid2 container justifyContent="space-between">
               {roles.map((role, index) => {
                 return (
-                  <Grid container key={`role-${index}`}>
-                    <Grid item>
+                  <Grid2 container key={`role-${index}`}>
+                    <Grid2>
                       <FormGroup>
                         <FormControlLabel
                           control={
@@ -413,22 +411,22 @@ export const UserAdminEdit: React.FC = () => {
                           label={role.role}
                         />
                       </FormGroup>
-                    </Grid>
-                  </Grid>
+                    </Grid2>
+                  </Grid2>
                 );
               })}
-            </Grid>
+            </Grid2>
           )}
-        </Grid>
-        <Grid container direction="column">
+        </Grid2>
+        <Grid2 container direction="column">
           <Typography style={{ fontWeight: 700 }}>Restrictions:</Typography>
           {renderDivider('0 0 10')}
           {isLoadingUser && listSkeleton(2, '48px')}
           {!isLoadingUser && (
-            <Grid container justifyContent="space-between">
+            <Grid2 container justifyContent="space-between">
               {restrictions.map((restriction, index) => {
                 return (
-                  <Grid container key={`restriction-${index}`}>
+                  <Grid2 container key={`restriction-${index}`}>
                     <FormGroup>
                       <FormControlLabel
                         control={
@@ -444,13 +442,13 @@ export const UserAdminEdit: React.FC = () => {
                         label={restriction.restriction}
                       />
                     </FormGroup>
-                  </Grid>
+                  </Grid2>
                 );
               })}
-            </Grid>
+            </Grid2>
           )}
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     );
   };
 
@@ -489,7 +487,7 @@ export const UserAdminEdit: React.FC = () => {
       }
     >
       <Paper elevation={2}>
-        <Grid
+        <Grid2
           container
           justifyContent="flex-start"
           padding="20px"
@@ -497,16 +495,16 @@ export const UserAdminEdit: React.FC = () => {
         >
           {renderColumnLeft()}
           {renderColumnRight()}
-        </Grid>
+        </Grid2>
 
-        <Grid
+        <Grid2
           container
           justifyContent="flex-start"
           padding="20px"
           direction={MD_BREAK ? 'column' : 'row'}
         >
           {renderDivider('12px 0 12px')}
-          <Grid item>
+          <Grid2>
             <Button
               variant="contained"
               onClick={() =>
@@ -518,8 +516,8 @@ export const UserAdminEdit: React.FC = () => {
             >
               Send Notification
             </Button>
-          </Grid>
-        </Grid>
+          </Grid2>
+        </Grid2>
       </Paper>
     </ContentWrapper>
   );

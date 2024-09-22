@@ -4,7 +4,7 @@ import {
   Button,
   Chip,
   Divider,
-  Grid,
+  Grid2,
   Paper,
   styled,
   TableBody,
@@ -52,20 +52,20 @@ export const Phonelist: React.FC<UserPhonesProps> = (props) => {
   return (
     <Box margin="20px 0" width="100%">
       <Paper elevation={0} sx={{ backgroundColor: 'transparent' }}>
-        <Grid
+        <Grid2
           container
           justifyContent="space-between"
           alignItems="center"
           marginBottom={'8px'}
         >
           {/* Title */}
-          <Grid item>
+          <Grid2>
             <Typography variant="h6" color="primary">
               Phones
             </Typography>
-          </Grid>
+          </Grid2>
           {/* New Phone */}
-          <Grid item>
+          <Grid2>
             <Button
               color="primary"
               variant="contained"
@@ -83,8 +83,8 @@ export const Phonelist: React.FC<UserPhonesProps> = (props) => {
             >
               New Phone
             </Button>
-          </Grid>
-        </Grid>
+          </Grid2>
+        </Grid2>
         <Divider />
         <TableContainer component={Box}>
           <Table stickyHeader size="small" aria-label="" id="table-user-phones">

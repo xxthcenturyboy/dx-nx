@@ -4,7 +4,7 @@ import {
   Button,
   Divider,
   Fade,
-  Grid,
+  Grid2,
   Paper,
   Typography,
   useMediaQuery,
@@ -116,19 +116,18 @@ export const UserProfile: React.FC = () => {
       }
     >
       <Paper elevation={2}>
-        <Grid
+        <Grid2
           container
           justifyContent="flex-start"
           padding={SM_BREAK ? '16px' : '24px'}
         >
-          <Grid
+          <Grid2
             container
             direction={MD_BREAK ? 'column' : 'row'}
             justifyContent={'center'}
           >
-            <Grid
-              item
-              xs={12}
+            <Grid2
+              size={12}
               justifyContent={'center'}
               alignItems={'center'}
               width={'100%'}
@@ -151,8 +150,8 @@ export const UserProfile: React.FC = () => {
                   width: 142,
                 }}
               />
-            </Grid>
-          </Grid>
+            </Grid2>
+          </Grid2>
           <Divider
             sx={{
               width: '100%',
@@ -160,29 +159,43 @@ export const UserProfile: React.FC = () => {
             }}
           />
 
-          <Grid
+          <Grid2
             container
             direction={MD_BREAK ? 'column' : 'row'}
             justifyContent={'center'}
             // width={'100%'}
           >
-            <Grid item md={12} lg={6} padding="10px" width={'100%'}>
+            <Grid2
+              size={{
+                sm: 12,
+                lg: 6
+              }}
+              padding="10px"
+              width={'100%'}
+            >
               <EmailList
                 emails={profile.emails}
                 userId={profile.id}
                 emailDataCallback={addEmailToProfile}
                 emailDeleteCallback={removeEmailFromProfile}
               />
-            </Grid>
-            <Grid item md={12} lg={6} padding="10px" width={'100%'}>
+            </Grid2>
+            <Grid2
+              size={{
+                sm: 12,
+                lg: 6
+              }}
+              padding="10px"
+              width={'100%'}
+            >
               <Phonelist
                 phones={profile.phones}
                 userId={profile.id}
                 phoneDataCallback={addPhoneToProfile}
                 phoneDeleteCallback={removePhoneFromProfile}
               />
-            </Grid>
-          </Grid>
+            </Grid2>
+          </Grid2>
 
           <Divider
             sx={{
@@ -190,18 +203,18 @@ export const UserProfile: React.FC = () => {
               margin: '12px 0 12px 0',
             }}
           />
-          <Grid
+          <Grid2
             container
             direction={MD_BREAK ? 'column' : 'row'}
             justifyContent={'flex-start'}
           >
-            <Grid item width={MD_BREAK ? '100%' : '50%'} padding="10px">
+            <Grid2 width={MD_BREAK ? '100%' : '50%'} padding="10px">
               <Button variant="outlined" onClick={toggleDarkMode}>
                 Toggle Dark Mode
               </Button>
-            </Grid>
-          </Grid>
-        </Grid>
+            </Grid2>
+          </Grid2>
+        </Grid2>
       </Paper>
     </ContentWrapper>
   );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, Badge, IconButton, Grid } from '@mui/material';
+import { Avatar, Badge, IconButton, Grid2 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { PhotoCamera } from '@mui/icons-material';
 
@@ -62,7 +62,7 @@ export const UserProfileAvatar: React.FC<UserProfileAvatarPropTypes> = (
   }, []);
 
   return (
-    <Grid
+    <Grid2
       container
       display={'flex'}
       direction={'row'}
@@ -113,6 +113,6 @@ export const UserProfileAvatar: React.FC<UserProfileAvatarPropTypes> = (
           variant="circular"
         />
       )}
-    </Grid>
+    </Grid2>
   );
 };

@@ -4,7 +4,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import {
   Button,
-  Grid,
+  Grid2,
   LinearProgress,
   Slider,
   Typography,
@@ -144,14 +144,14 @@ export const UserProfileWebAvatarDialog: React.FC<
         justifyContent={smBreak ? 'flex-start' : 'space-around'}
         maxWidth={smBreak ? undefined : '100%'}
       >
-        <Grid
+        <Grid2
           container
           display={'flex'}
           flexDirection={'column'}
           flexWrap={'nowrap'}
           alignItems={'center'}
         >
-          <Grid item xs={12} display={'flex'} justifyContent={'center'}>
+          <Grid2 size={12} display={'flex'} justifyContent={'center'}>
             <AvatarEditor
               ref={(ref) => {
                 avatarEditorRef.current = ref;
@@ -167,11 +167,10 @@ export const UserProfileWebAvatarDialog: React.FC<
               }}
               image={imageSource}
             />
-          </Grid>
+          </Grid2>
 
-          <Grid
-            item
-            xs={12}
+          <Grid2
+            size={12}
             display={'flex'}
             justifyContent={'center'}
             width={smBreak ? '100%' : '400px'}
@@ -186,11 +185,10 @@ export const UserProfileWebAvatarDialog: React.FC<
               max={2}
               onChange={(event, value) => setScale(value as number)}
             />
-          </Grid>
+          </Grid2>
 
-          <Grid
-            item
-            xs={12}
+          <Grid2
+            size={12}
             display={'flex'}
             justifyContent={'center'}
             mt={2}
@@ -222,25 +220,25 @@ export const UserProfileWebAvatarDialog: React.FC<
                 }}
               />
             </Button>
-          </Grid>
-        </Grid>
+          </Grid2>
+        </Grid2>
 
-        <Grid
+        <Grid2
           container
           display={'flex'}
           flexDirection={'column'}
           flexWrap={'nowrap'}
           alignItems={'center'}
         >
-          <Grid item xs={12} width={'100%'} minHeight={'24px'}>
+          <Grid2 size={12} width={'100%'} minHeight={'24px'}>
             {isUploadingdAvatar && (
               <UploadProgressComponent
                 value={uploadProgress}
                 color="secondary"
               />
             )}
-          </Grid>
-        </Grid>
+          </Grid2>
+        </Grid2>
       </CustomDialogContent>
     );
   };

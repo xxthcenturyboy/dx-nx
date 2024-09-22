@@ -1,6 +1,6 @@
 // import React from 'react';
 import {
-  Grid,
+  Grid2,
   Typography
 } from '@mui/material';
 // import { themeColors } from '../mui-overrides/styles';
@@ -19,7 +19,7 @@ export const UnauthorizedComponent = (
 ): JSX.Element | null => {
   return (
     <StyledContentWrapper>
-      <Grid
+      <Grid2
         container
         spacing={0}
         direction="column"
@@ -33,7 +33,7 @@ export const UnauthorizedComponent = (
           You are not authorized to access this feature.
         </Typography>
         <AccessDeniedLottie loop={false} />
-      </Grid>
+      </Grid2>
     </StyledContentWrapper>
   );
 };

@@ -2,7 +2,7 @@ import * as React from 'react';
 import {
   Button,
   Fade,
-  Grid,
+  Grid2,
   Typography,
   useMediaQuery,
   useTheme,
@@ -33,7 +33,7 @@ export const HomeComponent: React.FC = () => {
 
   return (
     <Fade in={true} timeout={FADE_TIMEOUT_DUR}>
-      <Grid
+      <Grid2
         container
         spacing={0}
         direction="column"
@@ -56,8 +56,7 @@ export const HomeComponent: React.FC = () => {
         <Typography variant="h5" color="secondary" margin="15px" align="center">
           {APP_DESCRIPTION}
         </Typography>
-        <Grid
-          item
+        <Grid2
           justifyContent="center"
           margin="20px"
           width={smBreak ? '100%' : 'auto'}
@@ -74,8 +73,8 @@ export const HomeComponent: React.FC = () => {
           >
             Login
           </Button>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     </Fade>
   );
 };

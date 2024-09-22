@@ -1,4 +1,4 @@
-import { IconNames } from '@dx/ui-web-system';
+import { IconNames } from '@dx/ui-web-global-components';
 import { AppMenuType } from '@dx/ui-web-menus';
 
 export const DASHBOARD_ENTITY_NAME = 'dashboard';

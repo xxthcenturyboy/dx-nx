@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography';
 import {
   IconButton,
   Fade,
-  Grid
+  Grid2
 } from '@mui/material';
 import GradingIcon from '@mui/icons-material/Grading';
 import Collapse from '@mui/material/Collapse';
@@ -105,7 +105,7 @@ export const NotificationMenu: React.FC<NotificationMenuPropsType> = (
       }}
     >
       <StyledNotificationActionArea>
-        <Grid
+        <Grid2
           container
           display="flex"
           direction="row"
@@ -125,10 +125,10 @@ export const NotificationMenu: React.FC<NotificationMenuPropsType> = (
               </Fade>
             }
           </Typography>
-        </Grid>
+        </Grid2>
       </StyledNotificationActionArea>
       <Collapse in={notificationCount === 0}>
-        <Grid
+        <Grid2
           container
           minHeight="100px"
           display="flex"
@@ -147,7 +147,7 @@ export const NotificationMenu: React.FC<NotificationMenuPropsType> = (
           >
             Notifications will appear here as you receive them.
           </Typography>
-        </Grid>
+        </Grid2>
       </Collapse>
       <StyledNotificationsList>
         <TransitionGroup>
@@ -171,7 +171,7 @@ export const NotificationMenu: React.FC<NotificationMenuPropsType> = (
       </StyledNotificationsList>
       <Collapse in={notificationCount > 0}>
         <StyledNotificationActionArea>
-          <Grid
+          <Grid2
             container
             display="flex"
             direction="row"
@@ -179,7 +179,7 @@ export const NotificationMenu: React.FC<NotificationMenuPropsType> = (
             margin="3px"
             width="auto"
           >
-            <Grid item>
+            <Grid2>
               <IconButton
                 color="info"
                 onClick={async () => {
@@ -193,8 +193,8 @@ export const NotificationMenu: React.FC<NotificationMenuPropsType> = (
               >
                 <GradingIcon />
               </IconButton>
-            </Grid>
-          </Grid>
+            </Grid2>
+          </Grid2>
         </StyledNotificationActionArea>
       </Collapse>
     </StyledNotificationMenu>
