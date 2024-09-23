@@ -1,7 +1,10 @@
 import { Sequelize } from 'sequelize-typescript';
 
 import { ApiLoggingClassType } from '@dx/logger-api';
-import { APP_PREFIX, LOCAL_ENV_NAME } from '@dx/config-shared';
+import {
+  APP_PREFIX,
+  LOCAL_ENV_NAME
+} from '@dx/config-shared';
 import {
   isDebug,
   isLocal,
@@ -53,6 +56,6 @@ export function getApiConfig(
       url: SENDGRID_URL,
     },
     sessionSecret: env.SESSION_SECRET || '',
-    webUrl: `${env.WEB_URL}:${env.WEB_PORT}`
+    webUrl: `${env.WEB_APP_URL}:${env.WEB_APP_PORT}`
   };
 }

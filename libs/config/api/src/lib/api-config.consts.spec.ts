@@ -6,8 +6,12 @@ import {
   JWT_SECRET,
   OTP_SALT,
   POSTGRES_URI,
+  S3_ACCESS_KEY_ID,
+  S3_APP_BUCKET_NAME,
+  S3_SECRET_ACCESS_KEY,
   SENDGRID_API_KEY,
   SENDGRID_URL,
+  UPLOAD_MAX_FILE_SIZE
 } from './api-config.consts';
 
 describe('API_APP_NAME', () => {
@@ -64,6 +68,33 @@ describe('POSTGRES_URI', () => {
   });
 });
 
+describe('S3_ACCESS_KEY_ID', () => {
+  // arrange
+  // act
+  // assert
+  it('should exist when imported', () => {
+    expect(S3_ACCESS_KEY_ID).toBeDefined();
+  });
+});
+
+describe('S3_APP_BUCKET_NAME', () => {
+  // arrange
+  // act
+  // assert
+  it('should exist when imported', () => {
+    expect(S3_APP_BUCKET_NAME).toBeDefined();
+  });
+});
+
+describe('S3_SECRET_ACCESS_KEY', () => {
+  // arrange
+  // act
+  // assert
+  it('should exist when imported', () => {
+    expect(S3_SECRET_ACCESS_KEY).toBeDefined();
+  });
+});
+
 describe('SENDGRID_API_KEY', () => {
   // arrange
   // act
@@ -79,5 +110,14 @@ describe('SENDGRID_URL', () => {
   // assert
   it('should exist when imported', () => {
     expect(SENDGRID_URL).toBeDefined();
+  });
+});
+
+describe('UPLOAD_MAX_FILE_SIZE', () => {
+  // arrange
+  // act
+  // assert
+  it('should exist when imported', () => {
+    expect(UPLOAD_MAX_FILE_SIZE).toBeDefined();
   });
 });

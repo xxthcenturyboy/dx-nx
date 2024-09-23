@@ -8,7 +8,7 @@ import { Response } from 'jest-express/lib/response';
 import { next } from 'jest-express/lib/next';
 
 import { ApiLoggingClass } from '@dx/logger-api';
-import { sendUnauthorized } from '@dx/utils-api-http-response';
+import { sendForbidden, sendUnauthorized } from '@dx/utils-api-http-response';
 import { CookeiService } from '@dx/utils-api-cookies';
 import { TEST_EXISTING_USER_ID, TEST_UUID } from '@dx/config-shared';
 import { UserModel } from '@dx/user-api';
@@ -31,6 +31,7 @@ jest.mock('@dx/utils-api-headers', () => ({
   },
 }));
 jest.mock('@dx/utils-api-http-response', () => ({
+  sendForbidden: jest.fn(),
   sendUnauthorized: jest.fn(),
 }));
 
@@ -84,7 +85,7 @@ describe('ensureLoggedIn', () => {
     await ensureLoggedIn(req, res, next);
     // assert
     expect(logErrorSpy).toHaveBeenCalled();
-    expect(sendUnauthorized).toHaveBeenCalled();
+    expect(sendForbidden).toHaveBeenCalled();
     // expect(logErrorSpy).toHaveBeenCalledWith('Failed to authenticate tokens: No Auth Headers Sent.');
   });
 
@@ -97,7 +98,7 @@ describe('ensureLoggedIn', () => {
     await ensureLoggedIn(req, res, next);
     // assert
     expect(logErrorSpy).toHaveBeenCalled();
-    expect(sendUnauthorized).toHaveBeenCalled();
+    expect(sendForbidden).toHaveBeenCalled();
     // expect(logErrorSpy).toHaveBeenCalledWith('Failed to authenticate tokens: Token invalid or expired.');
   });
 

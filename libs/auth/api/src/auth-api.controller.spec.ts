@@ -82,7 +82,7 @@ describe('AuthController', () => {
   });
 
   describe('logout', () => {
-    test('should sendNoContent when invoked', async () => {
+    test('should sendOK when invoked', async () => {
       // arrange
       // req.session = {
       //   destroy: jest.fn()
@@ -90,7 +90,7 @@ describe('AuthController', () => {
       // act
       await AuthController.logout(req, res);
       // assert
-      expect(sendNoContent).toHaveBeenCalled();
+      expect(sendOK).toHaveBeenCalled();
     });
   });
 
