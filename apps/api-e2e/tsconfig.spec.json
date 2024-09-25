@@ -9,5 +9,5 @@
     "jest.config.ts",
     "src/**/*.ts",
     "../../types/express.d.ts"
-  ]
+, "../../test-setup copy.ts"  ]
 }
