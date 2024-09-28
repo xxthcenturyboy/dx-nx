@@ -171,7 +171,7 @@ export class MediaApiService {
 
     const uploads = await Promise.all(s3Promises);
     for (let i = 0, max = uploads.length; i < max; i += 1) {
-      processedFiles[i].s3UploadedFile = uploads[i];
+      processedFiles[i].s3UploadedFile = await uploads[i];
     }
 
     const mediaRecord: MediaDataType = {

@@ -6,6 +6,10 @@ POSGRES_SEED_FILE := pg-seed.dump
 shell:
 	docker exec -it ${MONOREPO_CONTAINER_ID} /bin/bash
 
+## nx graph
+graph:
+	docker exec -it ${MONOREPO_CONTAINER_ID} nx graph --host 0.0.0.0
+
 ################### API ###################
 ## start api in nodemon
 api:

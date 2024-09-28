@@ -19,7 +19,11 @@ export class TokenService {
   }
 
   public static getUserIdFromToken(token: string): string {
-    return TEST_EXISTING_USER_ID;
+    if (token) {
+      return TEST_EXISTING_USER_ID;
+    }
+
+    return '';
   }
 
   public static isRefreshValid(token: string): string | boolean {
