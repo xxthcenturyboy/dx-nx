@@ -14,7 +14,8 @@ describe('EMAIL_LABEL ', () => {
     // arrange
     // act
     // assert
-    expect(EMAIL_LABEL.DEFAULT).toEqual('Default');
-    expect(EMAIL_LABEL.MAIN).toEqual('Main');
+    expect(EMAIL_LABEL.OTHER).toEqual('Other');
+    expect(EMAIL_LABEL.PERSONAL).toEqual('Personal');
+    expect(EMAIL_LABEL.WORK).toEqual('Work');
   });
 });

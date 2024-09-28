@@ -162,7 +162,7 @@ describe('EmailService', () => {
         // act
         // assert
         try {
-          expect(await emailService.updateEmail('', {})).toThrow();
+          expect(await emailService.updateEmail('', { id: '' })).toThrow();
         } catch (err) {
           expect(err.message).toEqual('No id for update email.');
         }
@@ -174,7 +174,7 @@ describe('EmailService', () => {
         // act
         // assert
         try {
-          expect(await emailService.updateEmail(id, {})).toThrow();
+          expect(await emailService.updateEmail(id, { id })).toThrow();
         } catch (err) {
           expect(err.message).toEqual(
             `Email could not be found with the id: ${id}`
@@ -185,6 +185,7 @@ describe('EmailService', () => {
       test('should update an email when all is good', async () => {
         // arrange
         const payload: UpdateEmailPayloadType = {
+          id: emailIdToDelete,
           label: 'Test Label',
         };
         // act
