@@ -1,17 +1,24 @@
-import { HealthzController } from './healthz.controller';
+import { MediaApiController } from './media-api.controller';
 
-describe('HealthzController', () => {
+describe('MediaApiController', () => {
   it('should exist when imported', () => {
     // arrange
     // act
     // assert
-    expect(HealthzController).toBeDefined();
+    expect(MediaApiController).toBeDefined();
   });
 
-  it('should have getHealth method when instantiated', () => {
+  it('should have getMedia method when instantiated', () => {
     // arrange
     // act
     // assert
-    expect(HealthzController.getHealth).toBeDefined();
+    expect(MediaApiController.getMedia).toBeDefined();
+  });
+
+  it('should have uploadUserContent method when instantiated', () => {
+    // arrange
+    // act
+    // assert
+    expect(MediaApiController.uploadUserContent).toBeDefined();
   });
 });

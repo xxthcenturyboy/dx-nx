@@ -19,6 +19,7 @@ import { S3Service } from '@dx/data-access-s3';
 import { ApiLoggingClass } from '@dx/logger-api';
 import {
   isDebug,
+  isTest,
   S3_APP_BUCKET_NAME,
   UPLOAD_MAX_FILE_SIZE
 } from '@dx/config-api';
@@ -71,20 +72,27 @@ export async function multiFileUploadMiddleware(req: Request, res: Response, nex
 
   const s3Uploads: Promise<void>[] = [];
 
-  const formData = formidable({
-    multiples: true,
-    maxFileSize: Number(UPLOAD_MAX_FILE_SIZE) * MB,
-    maxFiles: 10,
-    fileWriteStreamHandler: fileWriteStreamHandler
-  });
-
   try {
+    const formData = formidable({
+      multiples: true,
+      maxFileSize: Number(UPLOAD_MAX_FILE_SIZE) * MB,
+      maxFiles: 10,
+      fileWriteStreamHandler: fileWriteStreamHandler
+    });
+
     const uploadResult = await new Promise<{
       fields: Fields<string>,
       files: Files<string>
     }>((resolve, reject) => {
       let formidableError: unknown;
-
+      if (!formData) {
+        if (isTest()) {
+          req.body
+            ? resolve(req.body)
+            : reject('No data sent.')
+        }
+        reject('formData not defined in formidable.');
+      }
       formData.parse(req, (err, fields, files) => {
         if (err) {
           formidableError = err;
@@ -114,7 +122,7 @@ export async function multiFileUploadMiddleware(req: Request, res: Response, nex
 
     next();
   } catch (err) {
-    let message = (err as Error).message;
+    let message = (err as Error).message || err;
     if (message.includes('maxFiles')) {
       message = '100 File upload count exceeded.'
     }
@@ -179,20 +187,27 @@ export async function singleFileUploadMiddleware(req: Request, res: Response, ne
 
   const s3Uploads: Promise<void>[] = [];
 
-  const formData = formidable({
-    multiples: false,
-    maxFileSize: Number(UPLOAD_MAX_FILE_SIZE) * MB,
-    maxFiles: 1,
-    fileWriteStreamHandler: fileWriteStreamHandler
-  });
-
   try {
+    const formData = formidable({
+      multiples: false,
+      maxFileSize: Number(UPLOAD_MAX_FILE_SIZE) * MB,
+      maxFiles: 1,
+      fileWriteStreamHandler: fileWriteStreamHandler
+    });
+
     const uploadResult = await new Promise<{
       fields: Fields<string>,
       files: Files<string>
     }>((resolve, reject) => {
       let formidableError: unknown;
-
+      if (!formData) {
+        if (isTest()) {
+          req.body
+            ? resolve(req.body)
+            : reject('No data sent.')
+        }
+        reject('formData not defined in formidable.');
+      }
       formData.parse(req, (err, fields, files) => {
         if (err) {
           formidableError = err;
@@ -222,7 +237,7 @@ export async function singleFileUploadMiddleware(req: Request, res: Response, ne
 
     next();
   } catch (err) {
-    let message = (err as Error).message;
+    let message = (err as Error).message || err;
     if (message.includes('maxFiles')) {
       message = '100 File upload count exceeded.'
     }
