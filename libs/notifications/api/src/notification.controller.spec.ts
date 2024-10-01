@@ -50,6 +50,22 @@ describe('NotificationController', () => {
     });
   });
 
+  describe('createNotificationToAll', () => {
+    it('should exist', () => {
+      // arrange
+      // act
+      // assert
+      expect(NotificationController.createNotificationToAll).toBeDefined();
+    });
+    test('should sendOK when invoked', async () => {
+      // arrange
+      // act
+      await NotificationController.createNotificationToAll(req, res);
+      // assert
+      expect(sendOK).toHaveBeenCalled();
+    });
+  });
+
   describe('getAppBadgeCount', () => {
     it('should exist', () => {
       // arrange
@@ -109,6 +125,22 @@ describe('NotificationController', () => {
       // arrange
       // act
       await NotificationController.markAllAsViewed(req, res);
+      // assert
+      expect(sendOK).toHaveBeenCalled();
+    });
+  });
+
+  describe('markAllDismissed', () => {
+    it('should exist', () => {
+      // arrange
+      // act
+      // assert
+      expect(NotificationController.markAllDismissed).toBeDefined();
+    });
+    test('should sendOK when invoked', async () => {
+      // arrange
+      // act
+      await NotificationController.markAllDismissed(req, res);
       // assert
       expect(sendOK).toHaveBeenCalled();
     });

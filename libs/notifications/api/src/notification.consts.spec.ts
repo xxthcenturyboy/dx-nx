@@ -31,6 +31,6 @@ describe('NOTIFICATION_POSTGRES_DB_NAME ', () => {
     // arrange
     // act
     // assert
-    expect(NOTIFICATION_POSTGRES_DB_NAME).toEqual('notificaitons');
+    expect(NOTIFICATION_POSTGRES_DB_NAME).toEqual('notifications');
   });
 });

@@ -10,7 +10,7 @@ import {
   ApiLoggingClassType
 } from '@dx/logger-api';
 import { NotificationModel } from './notification.postgres-model';
-import { NotificationSocketApiService } from './notificaiton.socket';
+import { NotificationSocketApiService } from './notification.socket';
 import { sleep } from '@dx/utils-shared-misc';
 // import admin from 'firebase-admin';
 

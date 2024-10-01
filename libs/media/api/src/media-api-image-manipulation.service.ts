@@ -14,6 +14,7 @@ import {
   UPLOAD_FILE_SIZES
 } from '@dx/media-shared';
 import { formatBytes } from '@dx/util-numbers';
+
 export class MediaApiImageManipulationService {
   logger: ApiLoggingClassType;
 

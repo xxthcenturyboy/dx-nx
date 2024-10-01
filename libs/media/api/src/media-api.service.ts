@@ -66,6 +66,14 @@ export class MediaApiService {
     if (!Array.isArray(allowedTypes)) {
       return false;
     }
+
+    if (
+      allowedTypes.length === 1
+      && allowedTypes[0] === '*'
+    ) {
+      return true;
+    }
+
     for (const type of allowedTypes) {
       if (mimetype.search(type) > -1) {
         return true;
@@ -126,7 +134,7 @@ export class MediaApiService {
       || !data.ownerId
       || !data.uploadId
     ) {
-      await this.clearUpload(data.uploadId);
+      !!data.uploadId && await this.clearUpload(data.uploadId);
       throw new Error('102 Missing required data.');
     }
 
@@ -192,10 +200,10 @@ export class MediaApiService {
         width: processedFile.width,
         height: processedFile.height,
         format: processedFile.format,
-        bucket: processedFile.s3UploadedFile.Bucket,
-        key: processedFile.s3UploadedFile.Key,
-        location: processedFile.s3UploadedFile.Location,
-        eTag: processedFile.s3UploadedFile.ETag
+        bucket: processedFile.s3UploadedFile?.Bucket,
+        key: processedFile.s3UploadedFile?.Key,
+        location: processedFile.s3UploadedFile?.Location,
+        eTag: processedFile.s3UploadedFile?.ETag
       };
     }
 
@@ -227,7 +235,6 @@ export class MediaApiService {
 
   public async getUserContent(key: string, res: Response) {
     try {
-
       await this.s3Service.getObject(
         `${S3_APP_BUCKET_NAME}-${S3_BUCKETS.USER_CONTENT}`,
         key,
