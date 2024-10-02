@@ -7,7 +7,7 @@ describe('RATE_LIMIT_MESSAGE', () => {
 
   it('should have the correct value', () => {
     expect(RATE_LIMIT_MESSAGE).toEqual(
-      'Too many requests, please try again later.'
+      '429 Too many requests.'
     );
   });
 });

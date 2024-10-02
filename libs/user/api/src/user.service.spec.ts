@@ -151,7 +151,7 @@ describe('UserService', () => {
         // act
         // assert
         try {
-          expect(await service.updateRolesAndRestrictions('', {})).toThrow();
+          expect(await service.updateRolesAndRestrictions('', { id: TEST_UUID })).toThrow();
         } catch (err) {
           expect(err.message).toEqual('No id for update user.');
         }
@@ -160,6 +160,7 @@ describe('UserService', () => {
       test('should update the roles and restrictions when executed', async () => {
         // arrange
         const payload: UpdateUserPayloadType = {
+          id: idToUpdate,
           roles: ['USER'],
           restrictions: [],
         };
@@ -180,7 +181,7 @@ describe('UserService', () => {
         // act
         // assert
         try {
-          expect(await service.updateUser('', {})).toThrow();
+          expect(await service.updateUser('', { id: TEST_UUID })).toThrow();
         } catch (err) {
           expect(err.message).toEqual('No id for update user.');
         }
@@ -189,6 +190,7 @@ describe('UserService', () => {
       test('should update the user when executed', async () => {
         // arrange
         const payload: UpdateUserPayloadType = {
+          id: idToUpdate,
           firstName: 'Thomas',
           lastName: 'Jefferson',
         };
@@ -440,7 +442,11 @@ describe('UserService', () => {
           id: '',
           password: '',
           passwordConfirm: '',
-          otpCode: '',
+          otp: {
+            code: '',
+            id: '',
+            method: 'EMAIL'
+          }
         };
         // act
         // assert
@@ -457,7 +463,11 @@ describe('UserService', () => {
           id: idToUpdate,
           password: 'password',
           passwordConfirm: 'password',
-          otpCode: otpEmail,
+          otp: {
+            code: otpEmail,
+            id: idToUpdate,
+            method: 'EMAIL'
+          },
         };
         // act
         // assert
@@ -476,7 +486,11 @@ describe('UserService', () => {
           id: idToUpdate,
           password: 'JS(*#Jlal__lld9iqe',
           passwordConfirm: 'JS(*#Jlal__lld9iqe',
-          otpCode: otpEmail,
+          otp: {
+            code: otpEmail,
+            id: idToUpdate,
+            method: 'EMAIL'
+          },
         };
         // act
         const result = await service.updatePassword(payload);

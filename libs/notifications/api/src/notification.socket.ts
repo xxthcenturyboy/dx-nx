@@ -44,7 +44,7 @@ export class NotificationSocketApiService {
     return this.#instance;
   }
 
-  public configureNamespace () {
+  public configureNamespace() {
     // set up auth middleware
     this.ns.use((socket, next) => {
       const isLoggedIn = ensureLoggedInSocket(socket.handshake);

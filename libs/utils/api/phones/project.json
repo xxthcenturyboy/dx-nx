@@ -1,0 +1,9 @@
+{
+  "name": "utils-api-phones",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/utils/api/phones/src",
+  "projectType": "library",
+  "tags": ["scope:api"],
+  "// targets": "to see all targets run: nx show project utils-api-phones --web",
+  "targets": {}
+}

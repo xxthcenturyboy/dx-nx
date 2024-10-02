@@ -1,14 +1,8 @@
 import zxcvbn from 'zxcvbn-typescript';
 import { Op } from 'sequelize';
-import {
-  FindOptions,
-  WhereOptions
-} from 'sequelize/types';
+import { FindOptions, WhereOptions } from 'sequelize/types';
 
-import {
-  ApiLoggingClass,
-  ApiLoggingClassType
-} from '@dx/logger-api';
+import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger-api';
 import { EMAIL_MODEL_OPTIONS } from '@dx/email-api';
 import { PHONE_MODEL_OPTIONS, PhoneModel } from '@dx/phone-api';
 import {
@@ -22,7 +16,7 @@ import { ShortLinkModel } from '@dx/shortlink-api';
 import { MailSendgrid } from '@dx/mail-api';
 import { EmailModel } from '@dx/email-api';
 import { EmailUtil } from '@dx/utils/api/emails';
-import { PhoneUtil } from '@dx/util-phones';
+import { PhoneUtil } from '@dx/utils-api-phones';
 import { ProfanityFilter } from '@dx/utils/api/profanity';
 import { OtpResponseType } from '@dx/auth-shared';
 import { OtpService } from '@dx/auth-api';
@@ -41,7 +35,7 @@ import {
   UpdateUserResponseType,
   UpdatePasswordPayloadType,
   CreateUserPayloadType,
-  UserType
+  UserType,
 } from '@dx/user-shared';
 
 export class UserService {
@@ -401,20 +395,9 @@ export class UserService {
   }
 
   public async updatePassword(payload: UpdatePasswordPayloadType) {
-    const {
-      id,
-      password,
-      passwordConfirm,
-      otp,
-      signature
-    } = payload;
+    const { id, password, passwordConfirm, otp, signature } = payload;
 
-    if (
-      !id
-      || !password
-      || !passwordConfirm
-      || !(otp || signature)
-    ) {
+    if (!id || !password || !passwordConfirm || !(otp || signature)) {
       throw new Error('Request is invalid.');
     }
 

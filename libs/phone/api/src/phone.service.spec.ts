@@ -169,7 +169,7 @@ describe('PhoneService', () => {
         // act
         // assert
         try {
-          expect(await phoneService.updatePhone('', {})).toThrow();
+          expect(await phoneService.updatePhone('', { id: TEST_UUID })).toThrow();
         } catch (err) {
           expect(err.message).toEqual('No id for update phone.');
         }
@@ -180,7 +180,7 @@ describe('PhoneService', () => {
         // act
         // assert
         try {
-          expect(await phoneService.updatePhone(TEST_UUID, {})).toThrow();
+          expect(await phoneService.updatePhone(TEST_UUID, { id: TEST_UUID })).toThrow();
         } catch (err) {
           expect(err.message).toEqual(
             `Phone could not be found with the id: ${TEST_UUID}`
@@ -191,6 +191,7 @@ describe('PhoneService', () => {
       test('should update a phone when all is good', async () => {
         // arrange
         const payload: UpdatePhonePayloadType = {
+          id: idToDelete,
           label: 'Test Label',
         };
         // act

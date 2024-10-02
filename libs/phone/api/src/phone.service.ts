@@ -2,7 +2,7 @@ import parsePhoneNumber from 'libphonenumber-js';
 
 import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger-api';
 import { isLocal } from '@dx/config-api';
-import { PhoneUtil } from '@dx/util-phones';
+import { PhoneUtil } from '@dx/utils-api-phones';
 import { OtpService } from '@dx/auth-api';
 import { dxRsaValidateBiometricKey } from '@dx/util-encryption';
 import { UserModel } from '@dx/user-api';
@@ -10,7 +10,7 @@ import { PhoneModel } from './phone.postgres-model';
 import { PHONE_DEFAULT_REGION_CODE } from '@dx/config-shared';
 import {
   CreatePhonePayloadType,
-  UpdatePhonePayloadType
+  UpdatePhonePayloadType,
 } from '@dx/phone-shared';
 
 export class PhoneService {
@@ -22,14 +22,8 @@ export class PhoneService {
     this.logger = ApiLoggingClass.instance;
   }
 
-  public async isPhoneAvailableAndValid(
-    phone: string,
-    regionCode: string
-  ) {
-    if (
-      !phone
-      || !regionCode
-    ) {
+  public async isPhoneAvailableAndValid(phone: string, regionCode: string) {
+    if (!phone || !regionCode) {
       throw new Error('Missing phone or region code.');
     }
 
@@ -68,10 +62,7 @@ export class PhoneService {
       userId,
     } = payload;
 
-    if (
-      !userId
-      || !phone
-    ) {
+    if (!userId || !phone) {
       throw new Error('Not enough information to create a phone.');
     }
 
@@ -118,7 +109,9 @@ export class PhoneService {
 
     if (def === true) {
       if (!phoneUtil.isValidMobile) {
-        throw new Error('Cannot use this phone number as your default. It must be a valid mobile number.');
+        throw new Error(
+          'Cannot use this phone number as your default. It must be a valid mobile number.'
+        );
       }
       await PhoneModel.clearAllDefaultByUserId(userId);
     }
@@ -142,10 +135,7 @@ export class PhoneService {
     return { id: '' };
   }
 
-  public async deletePhone(
-    id: string,
-    userId?: string
-  ) {
+  public async deletePhone(id: string, userId?: string) {
     if (!id) {
       throw new Error('No id for delete phone.');
     }

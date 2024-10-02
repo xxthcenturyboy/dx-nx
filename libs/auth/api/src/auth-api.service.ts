@@ -1,11 +1,7 @@
 import { randomUUID } from 'crypto';
 import zxcvbn from 'zxcvbn-typescript';
 
-import {
-  getUserProfileState,
-  UserModel,
-  UserModelType,
-} from '@dx/user-api';
+import { getUserProfileState, UserModel, UserModelType } from '@dx/user-api';
 import { UserProfileStateType } from '@dx/user-shared';
 import { DeviceModel } from '@dx/devices-api';
 import { EmailModel } from '@dx/email-api';
@@ -14,7 +10,7 @@ import { ApiLoggingClass, ApiLoggingClassType } from '@dx/logger-api';
 import { MailSendgrid } from '@dx/mail-api';
 import { ShortLinkModel } from '@dx/shortlink-api';
 import { EmailUtil } from '@dx/utils/api/emails';
-import { PhoneUtil } from '@dx/util-phones';
+import { PhoneUtil } from '@dx/utils-api-phones';
 import { dxRsaValidateBiometricKey } from '@dx/util-encryption';
 import { isProd } from '@dx/config-api';
 import { PHONE_DEFAULT_REGION_CODE } from '@dx/config-shared';
@@ -48,7 +44,7 @@ export class AuthService {
       const result = zxcvbn(password);
       return {
         score: result.score,
-        feedback: result.feedback
+        feedback: result.feedback,
       };
     } catch (err) {
       const message = `Error in checkPasswordStrength: ${err.message}`;
@@ -57,9 +53,7 @@ export class AuthService {
     }
   }
 
-  public async createAccount(
-    payload: AccountCreationPayloadType
-  ) {
+  public async createAccount(payload: AccountCreationPayloadType) {
     const { code, device, region, value } = payload;
 
     if (!value || !code) {
@@ -205,13 +199,13 @@ export class AuthService {
       if (type === USER_LOOKUPS.EMAIL) {
         const emailService = new EmailService();
         await emailService.isEmailAvailableAndValid(value);
-        result.available = true
+        result.available = true;
       }
 
       if (type === USER_LOOKUPS.PHONE) {
         const phoneService = new PhoneService();
         await phoneService.isPhoneAvailableAndValid(value, region);
-        result.available = true
+        result.available = true;
       }
 
       return result;
@@ -278,11 +272,7 @@ export class AuthService {
     try {
       // Authentication in order of preference
       // Biometric Login
-      if (
-        biometric
-        && biometric.userId
-        && biometric.signature
-      ) {
+      if (biometric && biometric.userId && biometric.signature) {
         user = await this.biometricLogin({
           ...biometric,
           payload: value,
@@ -330,11 +320,7 @@ export class AuthService {
             );
           }
 
-          if (
-            !user
-            && !password
-            && code
-          ) {
+          if (!user && !password && code) {
             const otpCache = new OtpCodeCache();
             const isCodeValid = await otpCache.validateEmailOtp(
               code,
@@ -344,10 +330,7 @@ export class AuthService {
               const email = await EmailModel.findByEmail(
                 emailUtil.formattedEmail()
               );
-              if (
-                email
-                && email.userId
-              ) {
+              if (email && email.userId) {
                 user = await UserModel.findByPk(email.userId);
               }
             }
@@ -358,10 +341,7 @@ export class AuthService {
       // Username Login
       if (!user) {
         if (password) {
-          user = await UserModel.loginWithUsernamePassword(
-            value,
-            password
-          );
+          user = await UserModel.loginWithUsernamePassword(value, password);
         }
       }
 
@@ -514,7 +494,10 @@ export class AuthService {
           throw new Error('No phone with that id');
         }
 
-        return await this.sendOtpToPhone(phoneRecord.phoneFormatted, phoneRecord.countryCode);
+        return await this.sendOtpToPhone(
+          phoneRecord.phoneFormatted,
+          phoneRecord.countryCode
+        );
       } catch (err) {
         const message = err.message || 'Error sending Otp to phone';
         this.logger.logError(message);

@@ -86,7 +86,6 @@
       "@dx/util-dates": ["libs/utils/shared/util-dates/src/index.ts"],
       "@dx/util-encryption": ["libs/utils/shared/util-encryption/src/index.ts"],
       "@dx/util-numbers": ["libs/utils/shared/util-numbers/src/index.ts"],
-      "@dx/util-phones": ["libs/utils/api/util-phones/src/index.ts"],
       "@dx/util-regex": ["libs/utils/shared/util-regex/src/index.ts"],
       "@dx/util-strings": ["libs/utils/shared/util-strings/src/index.ts"],
       "@dx/utils-api-cookies": ["libs/utils/api/cookies/src/index.ts"],
@@ -97,6 +96,7 @@
       "@dx/utils-api-http-response": [
         "libs/utils/api/http-response/src/index.ts"
       ],
+      "@dx/utils-api-phones": ["libs/utils/api/phones/src/index.ts"],
       "@dx/utils-api-rate-limiters": [
         "libs/utils/api/rate-limiters/src/index.ts"
       ],
