@@ -1,25 +1,11 @@
-import { render } from '@testing-library/react';
-
+// import { render } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-
+import { renderWithProviders } from '@dx/utils-testing-web';
 import { Root } from './root.component';
-
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn().mockImplementation(() => {
-    return {
-      ...jest.requireActual('react-redux').useDispatch,
-      withTypes: jest.fn()
-    };
-  }),
-  useSelector: jest.fn()
-}));
-// jest.mock('@dx/store-web');
-// jest.mock('@dx/rtk-query-web');
 
 describe('App', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(
+    const { baseElement } = renderWithProviders(
       <BrowserRouter>
         <Root />
       </BrowserRouter>

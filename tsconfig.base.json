@@ -102,6 +102,7 @@
       ],
       "@dx/utils-misc-web": ["libs/utils/web/misc/src/index.ts"],
       "@dx/utils-shared-misc": ["libs/utils/shared/misc/src/index.ts"],
+      "@dx/utils-testing-web": ["libs/utils/web/testing/src/index.ts"],
       "@dx/utils-web-error-boundary": [
         "libs/utils/web/error-boundary/src/index.ts"
       ],

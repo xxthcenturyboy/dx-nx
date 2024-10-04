@@ -1,0 +1,9 @@
+{
+  "name": "utils-testing-web",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/utils/web/testing/src",
+  "projectType": "library",
+  "tags": ["scope:web"],
+  "// targets": "to see all targets run: nx show project utils-testing-web --web",
+  "targets": {}
+}

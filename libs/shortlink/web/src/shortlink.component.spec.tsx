@@ -1,5 +1,5 @@
-import { render } from '@testing-library/react';
-
+// import { render } from '@testing-library/react';
+import { renderWithProviders } from '@dx/utils-testing-web';
 import { ShortlinkComponent } from './shortlink.component';
 
 
@@ -8,20 +8,10 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockUseNavigate,
 }));
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn().mockImplementation(() => ({
-    withTypes: jest.fn()
-  })),
-  useSelector: jest.fn()
-}));
-
-// jest.mock('@dx/store-web');
-// jest.mock('@dx/rtk-query-web');
 
 describe('ShortlinkComponent', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<ShortlinkComponent />);
+    const { baseElement } = renderWithProviders(<ShortlinkComponent />);
     expect(baseElement).toBeTruthy();
   });
 });
