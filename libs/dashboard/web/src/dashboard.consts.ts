@@ -4,7 +4,7 @@ import { AppMenuType } from '@dx/ui-web-menus';
 export const DASHBOARD_ENTITY_NAME = 'dashboard';
 
 export const DASHBOARD_ROUTES = {
-  MAIN: `/${DASHBOARD_ENTITY_NAME}`,
+  MAIN: '/dashboard',
 };
 
 export const DASHBOARD_MENU: AppMenuType = {

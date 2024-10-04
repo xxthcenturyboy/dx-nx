@@ -1,10 +1,10 @@
 export const AUTH_ENTITY_NAME = 'auth';
 
 export const AUTH_ROUTES = {
-  MAIN: `/${AUTH_ENTITY_NAME}`,
-  CONFIRM: `/${AUTH_ENTITY_NAME}/confirm`,
-  LOGIN: `/login`,
-  SETUP: `/${AUTH_ENTITY_NAME}/setup`,
-  EMAIL_VALIDATED: `/${AUTH_ENTITY_NAME}/email-validated`,
-  Z: `/${AUTH_ENTITY_NAME}/z`,
+  MAIN: '/auth',
+  CONFIRM: '/auth/confirm',
+  LOGIN: '/login',
+  SETUP: '/auth/setup',
+  EMAIL_VALIDATED: '/auth/email-validated',
+  Z: '/auth/z',
 }

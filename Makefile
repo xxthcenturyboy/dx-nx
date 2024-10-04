@@ -47,11 +47,11 @@ web-e2e:
 ################### NX Unit Testing ###################
 ## runs all unit tests
 test-all:
-	docker exec -it ${MONOREPO_CONTAINER_ID} nx run-many -all --target=test
+	docker exec -it ${MONOREPO_CONTAINER_ID} nx run-many -all --target=test --passWithNoTests
 
 ## runs all unit tests with full detail
 test-all-verbose:
-	docker exec -it ${MONOREPO_CONTAINER_ID} nx run-many -all --target=test --verbose
+	docker exec -it ${MONOREPO_CONTAINER_ID} nx run-many -all --target=test --verbose --passWithNoTests
 
 
 

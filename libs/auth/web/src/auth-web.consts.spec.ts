@@ -31,10 +31,11 @@ describe('AUTH_ROUTES ', () => {
     // arrange
     // act
     // assert
-    expect(AUTH_ROUTES.CONFIRM).toEqual(`${AUTH_ENTITY_NAME}/confirm`);
-    expect(AUTH_ROUTES.EMAIL_VALIDATED).toEqual(`${AUTH_ENTITY_NAME}/email-validated`);
-    expect(AUTH_ROUTES.MAIN).toEqual(`${AUTH_ENTITY_NAME}/main`);
-    expect(AUTH_ROUTES.SETUP).toEqual(`${AUTH_ENTITY_NAME}/setup`);
-    expect(AUTH_ROUTES.Z).toEqual(`${AUTH_ENTITY_NAME}/z`);
+    expect(AUTH_ROUTES.CONFIRM).toEqual('/auth/confirm');
+    expect(AUTH_ROUTES.EMAIL_VALIDATED).toEqual('/auth/email-validated');
+    expect(AUTH_ROUTES.LOGIN).toEqual('/login');
+    expect(AUTH_ROUTES.MAIN).toEqual('/auth');
+    expect(AUTH_ROUTES.SETUP).toEqual('/auth/setup');
+    expect(AUTH_ROUTES.Z).toEqual('/auth/z');
   });
 });

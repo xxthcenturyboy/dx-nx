@@ -9,6 +9,7 @@ module.exports = {
       ].join('|') +
     ')'
   ],
+  setupFiles: ['jest-canvas-mock'],
   globals: {
     webAppEnvVars: {}
   }
