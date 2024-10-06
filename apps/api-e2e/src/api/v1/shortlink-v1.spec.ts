@@ -8,7 +8,7 @@ describe('v1 Shortlink Routes', () => {
   describe('GET /api/v1/shortlink', () => {
     test('should return error when queried with a non-existent link', async () => {
       // arrange
-      const url = `/api/v1/shortlink?id=test-id-not-valid`;
+      const url = `/api/v1/shortlink/test-id-not-valid`;
       // act
       // assert
       try {
