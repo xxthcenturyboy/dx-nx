@@ -473,9 +473,7 @@ export class UserService {
           pwStrength.feedback.warning) ||
         ''
       }`;
-      throw new Error(`Please choose a stronger password.
-${pwStrengthMsg}
-      `);
+      throw new Error(`Please choose a stronger password. ${pwStrengthMsg}`);
     }
 
     try {
@@ -484,6 +482,7 @@ ${pwStrengthMsg}
 
       return result;
     } catch (err) {
+      console.error(err);
       const message = err.message || 'Could not update password.';
       this.logger.logError(message);
       throw new Error(message);

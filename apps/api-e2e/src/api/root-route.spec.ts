@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 
-import { HealthzStatusType, STATUS_OK } from '@dx/healthz-api';
+import { STATUS_OK } from '@dx/healthz-api';
+import { HealthzStatusType } from '@dx/healthz-shared';
 import { AndroiodWellKnownData, AppleWellKnownData } from '@dx/config-mobile';
 
 describe('Root Routes', () => {

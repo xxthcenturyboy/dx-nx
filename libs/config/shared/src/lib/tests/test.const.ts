@@ -11,12 +11,13 @@ export const TEST_DEVICE: DeviceAuthType = {
   name: 'iPhone,16',
 };
 export const TEST_EMAIL = 'test@test.com';
-export const TEST_EXISTING_EMAIL = 'admin@danex.software';
+export const TEST_EXISTING_EMAIL = 'du.dx.software@gmail.com';
+// export const TEST_EXISTING_EMAIL = 'admin@danex.software';
 export const TEST_EXISTING_PASSWORD = 'advancedbasics1';
 export const TEST_EXISTING_PHONE = '8584846800';
+export const TEST_EXISTING_USERNAME = 'admin';
 export const TEST_EXISTING_USER_ID = '2cf4aebd-d30d-4c9e-9047-e52c10fe8d4d';
-export const TEST_EXISTING_USER_PRIVILEGE_ID =
-  'e5a96fa3-ab58-4d27-b607-3a32d4cf7270';
+export const TEST_EXISTING_USER_PRIVILEGE_ID = 'e5a96fa3-ab58-4d27-b607-3a32d4cf7270';
 export const TEST_FIRST_NAME = 'George';
 export const TEST_LAST_NAME = 'Washington';
 export const TEST_PASSWORD = 'password';

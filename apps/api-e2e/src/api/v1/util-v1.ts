@@ -10,7 +10,7 @@ import {
   LoginPayloadType
 } from '@dx/auth-shared';
 import {
-  TEST_EXISTING_EMAIL,
+  TEST_EXISTING_USERNAME,
   TEST_EXISTING_PASSWORD
 } from '@dx/config-shared';
 
@@ -38,7 +38,7 @@ export class AuthUtil {
     password?: string
   ): Promise<AuthSuccessResponseType> {
     const payload: LoginPayloadType = {
-      value: email || TEST_EXISTING_EMAIL,
+      value: email || TEST_EXISTING_USERNAME,
       // password: password || 'akjd0023kakdj_**_('
       password: password || TEST_EXISTING_PASSWORD,
     };

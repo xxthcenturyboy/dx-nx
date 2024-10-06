@@ -271,6 +271,7 @@ describe('v1 User Routes', () => {
   describe('PUT /api/v1/user/:id', () => {
     test('should update a user when called', async () => {
       const payload: UpdateUserPayloadType = {
+        id: workingUserId,
         firstName: 'John',
         lastName: 'Hancock',
       };
@@ -297,6 +298,7 @@ describe('v1 User Routes', () => {
   describe('PUT /api/v1/user/roles-restrictions/:id', () => {
     test('should update user role when called', async () => {
       const payload: UpdateUserPayloadType = {
+        id: workingUserId,
         roles: ['USER'],
       };
       const request: AxiosRequestConfig = {
@@ -422,6 +424,7 @@ describe('v1 User Routes', () => {
 
   describe('PUT /api/v1/user/update/password', () => {
     let authUtilUpdate: AuthUtilType;
+    let phoneId = '';
     let otpCode = '';
     const validPw1 = 'akjd0023kakdj_**_(';
 
@@ -434,10 +437,11 @@ describe('v1 User Routes', () => {
         },
       });
       authUtilUpdate = new AuthUtil();
-      await authUtilUpdate.loginEmalPasswordless(
+      const authResponse = await authUtilUpdate.loginEmalPasswordless(
         TEST_USER_CREATE.email,
         otpResponse.data.code
       );
+      phoneId = authResponse.profile.phones.find(phone => phone.default).id;
     });
 
     beforeEach(async () => {
@@ -460,7 +464,11 @@ describe('v1 User Routes', () => {
         id: workingUserId,
         password: validPw1,
         passwordConfirm: validPw1,
-        otpCode: otpCode,
+        otp: {
+          code: otpCode,
+          id: phoneId,
+          method: 'PHONE'
+        },
       };
       const request: AxiosRequestConfig = {
         url: `/api/v1/user/update/password`,
@@ -486,7 +494,11 @@ describe('v1 User Routes', () => {
         id: workingUserId,
         password: '',
         passwordConfirm: '',
-        otpCode: '',
+        otp: {
+          code: otpCode,
+          id: '',
+          method: 'EMAIL'
+        },
       };
       const request: AxiosRequestConfig = {
         url: `/api/v1/user/update/password`,
@@ -515,7 +527,11 @@ describe('v1 User Routes', () => {
         id: workingUserId,
         password: 'password',
         passwordConfirm: 'password',
-        otpCode: otpCode,
+        otp: {
+          code: otpCode,
+          id: phoneId,
+          method: 'PHONE'
+        },
       };
       const request: AxiosRequestConfig = {
         url: `/api/v1/user/update/password`,
