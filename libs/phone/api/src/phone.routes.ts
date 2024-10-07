@@ -7,15 +7,34 @@ export class PhoneRoutes {
   static configure() {
     const router = Router();
 
-    router.all('/*', [ensureLoggedIn]);
+    router.all(
+      '/*',
+      [ensureLoggedIn]
+    );
 
-    router.post('/validate', PhoneController.checkAvailability);
-    router.post('/', PhoneController.createPhone);
+    router.post(
+      '/validate',
+      PhoneController.checkAvailability
+    );
+    router.post(
+      '/',
+      PhoneController.createPhone
+    );
 
-    router.put('/:id', PhoneController.updatePhone);
+    router.put(
+      '/:id',
+      PhoneController.updatePhone
+    );
 
-    router.delete('/user-profile/:id', PhoneController.deletePhoneUserProfile);
-    router.delete('/:id', hasAdminRole, PhoneController.deletePhone);
+    router.delete(
+      '/user-profile/:id',
+      PhoneController.deletePhoneUserProfile
+    );
+    router.delete(
+      '/:id',
+      hasAdminRole,
+      PhoneController.deletePhone
+    );
     router.delete(
       '/test/:id',
       hasSuperAdminRole,

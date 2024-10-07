@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 import { CreatePhonePayloadType, UpdatePhonePayloadType } from '@dx/phone-shared';
 import {
+  PHONE_DEFAULT_REGION_CODE,
   TEST_COUNTRY_CODE,
   TEST_EXISTING_PHONE,
   TEST_PHONE,
@@ -28,6 +29,93 @@ describe('v1 Phone Routes', () => {
     if (login) {
       authRes = login;
     }
+  });
+
+  describe('POST /api/v1/phone/validate', () => {
+    test('should return an error when phone is not valid', async () => {
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/phone/validate',
+        method: 'POST',
+        headers: {
+          ...authUtil.getHeaders(),
+        },
+        withCredentials: true,
+        data: {
+          phone: 'not a phone number',
+          regionCode: 'x'
+        }
+      };
+
+      try {
+        expect(await axios.request(request)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // assert
+        expect(typedError.response.status).toBe(400);
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toEqual(
+          'This phone cannot be used (invalid).'
+        );
+      }
+    });
+
+    test('should return an error when missing data in request', async () => {
+      const payload = {
+        phone: TEST_EXISTING_PHONE,
+        regionCode: undefined
+      };
+
+      const request: AxiosRequestConfig = {
+        url: `/api/v1/phone/validate`,
+        method: 'POST',
+        headers: {
+          ...authUtil.getHeaders(),
+        },
+        withCredentials: true,
+        data: payload,
+      };
+
+      try {
+        expect(await axios.request(request)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // assert
+        expect(typedError.response.status).toBe(400);
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toEqual(
+          'Missing phone or region code.'
+        );
+      }
+    });
+
+    test('should return an error when phone exists', async () => {
+      const payload = {
+        phone: TEST_EXISTING_PHONE,
+        regionCode: PHONE_DEFAULT_REGION_CODE
+      };
+
+      const request: AxiosRequestConfig = {
+        url: `/api/v1/phone/validate`,
+        method: 'POST',
+        headers: {
+          ...authUtil.getHeaders(),
+        },
+        withCredentials: true,
+        data: payload,
+      };
+
+      try {
+        expect(await axios.request(request)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // assert
+        expect(typedError.response.status).toBe(400);
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toEqual(
+          '(858) 484-6800 is already in use.'
+        );
+      }
+    });
   });
 
   describe('POST /api/v1/phone', () => {
@@ -60,6 +148,7 @@ describe('v1 Phone Routes', () => {
         countryCode: TEST_COUNTRY_CODE,
         def: false,
         phone: TEST_EXISTING_PHONE,
+        regionCode: PHONE_DEFAULT_REGION_CODE,
         label: 'Work',
         userId: authRes.profile.id,
       };
@@ -82,7 +171,7 @@ describe('v1 Phone Routes', () => {
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
         expect(typedError.response.data.message).toEqual(
-          `${TEST_EXISTING_PHONE} already exists.`
+          '(858) 484-6800 is already in use.'
         );
       }
     });
@@ -91,7 +180,7 @@ describe('v1 Phone Routes', () => {
       const payload: CreatePhonePayloadType = {
         code: 'code',
         countryCode: TEST_COUNTRY_CODE,
-        regionCode: 'US',
+        regionCode: PHONE_DEFAULT_REGION_CODE,
         def: false,
         phone: TEST_PHONE,
         label: 'Work',
@@ -116,7 +205,7 @@ describe('v1 Phone Routes', () => {
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
         expect(typedError.response.data.message).toEqual(
-          `This phone cannot be used.`
+          `This phone cannot be used (invalid).`
         );
       }
     });
@@ -150,7 +239,7 @@ describe('v1 Phone Routes', () => {
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
         expect(typedError.response.data.message).toEqual(
-          `This phone cannot be used.`
+          `This phone cannot be used (invalid).`
         );
       }
     });
@@ -160,12 +249,16 @@ describe('v1 Phone Routes', () => {
         AxiosRequestConfig,
         AxiosResponse<OtpResponseType>
       >({
-        url: `/api/v1/user/send-otp-code`,
+        url: `/api/v1/auth/otp-code/send/phone`,
         method: 'POST',
         headers: {
           ...authUtil.getHeaders(),
         },
         withCredentials: true,
+        data: {
+          phone: TEST_PHONE_IT_VALID,
+          regionCode: 'IT'
+        }
       });
       const payload: CreatePhonePayloadType = {
         code: result.data.code,
@@ -201,12 +294,16 @@ describe('v1 Phone Routes', () => {
         AxiosRequestConfig,
         AxiosResponse<OtpResponseType>
       >({
-        url: `/api/v1/user/send-otp-code`,
+        url: `/api/v1/auth/otp-code/send/phone`,
         method: 'POST',
         headers: {
           ...authUtil.getHeaders(),
         },
         withCredentials: true,
+        data: {
+          phone: TEST_PHONE_VALID,
+          regionCode: 'US'
+        }
       });
       const payload: CreatePhonePayloadType = {
         code: result.data.code,
@@ -264,6 +361,7 @@ describe('v1 Phone Routes', () => {
 
     test('should return 200 when successfuly updates email', async () => {
       const payload: UpdatePhonePayloadType = {
+        id: idToUpdate,
         def: false,
         label: 'Test',
       };

@@ -1,5 +1,6 @@
 import { Express, Router } from 'express';
 
+import { HealthzRoutes } from '@dx/healthz-api';
 import { LivezRoutes } from '@dx/livez-api';
 import { WellKnownRoutes } from '@dx/devices-api';
 import { endpointNotFound } from '@dx/utils-api-http-response';
@@ -16,6 +17,10 @@ export class ApiRoutes {
   }
 
   public loadRoutes() {
+    this.router.use(
+      '/healthz',
+      HealthzRoutes.configure()
+    );
     this.router.use(
       '/livez',
       DxRateLimiters.strict(),

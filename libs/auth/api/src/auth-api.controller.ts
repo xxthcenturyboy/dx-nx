@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import {
   sendBadRequest,
   sendOK,
-  sendNoContent,
+  // sendNoContent,
   sendUnauthorized,
 } from '@dx/utils-api-http-response';
 import { DevicesService } from '@dx/devices-api';
@@ -192,9 +192,9 @@ export const AuthController = {
 
   sendOtpToEmail: async function (req: Request, res: Response) {
     try {
-      const { email } = req.body as { email: string };
+      const { email, strict } = req.body as { email: string, strict?: boolean };
       const service = new AuthService();
-      const result = await service.sendOtpToEmail(email);
+      const result = await service.sendOtpToEmail(email, strict);
 
       sendOK(req, res, result);
     } catch (err) {
@@ -204,9 +204,9 @@ export const AuthController = {
 
   sendOtpToPhone: async function (req: Request, res: Response) {
     try {
-      const { phone, regionCode } = req.body as { phone: string; regionCode?: string };
+      const { phone, regionCode, strict } = req.body as { phone: string; regionCode?: string, strict?: boolean };
       const service = new AuthService();
-      const result = await service.sendOtpToPhone(phone, regionCode);
+      const result = await service.sendOtpToPhone(phone, regionCode, strict);
 
       sendOK(req, res, result);
     } catch (err) {

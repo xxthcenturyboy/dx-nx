@@ -22,6 +22,19 @@ describe('Root Routes', () => {
     });
   });
 
+  describe('GET /api/livez', () => {
+    it('should return livez info when queried', async () => {
+      // arrange
+      let res: AxiosResponse<unknown>;
+      // act
+      res = await axios.get(`/api/livez`);
+      // assert
+      expect(res.status).toBe(200);
+      expect(res.data).toBeDefined();
+      expect(res.data).toEqual('OK');
+    });
+  });
+
   describe('GET /api/.well-known/assetlinks.json', () => {
     it('should return AndroiodWellKnownData info when queried', async () => {
       // arrange

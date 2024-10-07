@@ -6,7 +6,7 @@ export const statsWebHealthz = apiWebMain.injectEndpoints({
     getApiHealthz: build.query<HealthzStatusType, void>({
       query: () => (
         {
-          url: 'v1/healthz',
+          url: 'healthz',
           method: 'GET'
         }
       )

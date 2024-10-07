@@ -402,7 +402,7 @@ export class AuthService {
     return false;
   }
 
-  public async sendOtpToEmail(email: string): Promise<{ code: string }> {
+  public async sendOtpToEmail(email: string, strict?: boolean): Promise<{ code: string }> {
     if (!email) {
       throw new Error('No email sent.');
     }
@@ -411,11 +411,13 @@ export class AuthService {
     try {
       const emailUtil = new EmailUtil(email);
       if (emailUtil.validate()) {
-        const existingNonDeletedEmail = await EmailModel.findByEmail(
-          emailUtil.formattedEmail()
-        );
-        if (!existingNonDeletedEmail) {
-          return { code: '' };
+        if (strict) {
+          const existingNonDeletedEmail = await EmailModel.findByEmail(
+            emailUtil.formattedEmail()
+          );
+          if (!existingNonDeletedEmail) {
+            return { code: '' };
+          }
         }
 
         const otpCache = new OtpCodeCache();
@@ -445,7 +447,8 @@ export class AuthService {
 
   public async sendOtpToPhone(
     phone: string,
-    regionCode?: string
+    regionCode?: string,
+    strict?: boolean
   ): Promise<{ code: string }> {
     if (!phone) {
       throw new Error('No phone sent.');
@@ -459,13 +462,16 @@ export class AuthService {
         regionCode || PHONE_DEFAULT_REGION_CODE
       );
       if (phoneUtil.isValid) {
-        const existingNonDeletedPhone = await PhoneModel.findByPhoneAndCode(
-          phoneUtil.nationalNumber,
-          phoneUtil.countryCode
-        );
-        if (!existingNonDeletedPhone) {
-          return { code: '' };
+        if (strict) {
+          const existingNonDeletedPhone = await PhoneModel.findByPhoneAndCode(
+            phoneUtil.nationalNumber,
+            phoneUtil.countryCode
+          );
+          if (!existingNonDeletedPhone) {
+            return { code: '' };
+          }
         }
+
 
         const otpCache = new OtpCodeCache();
         otpCode = await otpCache.setPhoneOtp(

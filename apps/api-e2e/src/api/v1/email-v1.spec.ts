@@ -26,6 +26,90 @@ describe('v1 Email Routes', () => {
     }
   });
 
+  describe('POST /api/v1/email/validate', () => {
+    test('should return an error when email is not valid', async () => {
+      const request: AxiosRequestConfig = {
+        url: '/api/v1/email/validate',
+        method: 'POST',
+        headers: {
+          ...authUtil.getHeaders(),
+        },
+        withCredentials: true,
+        data: {
+          email: 'not an email'
+        }
+      };
+
+      try {
+        expect(await axios.request(request)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // assert
+        expect(typedError.response.status).toBe(400);
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toEqual(
+          'The email you provided is not valid.'
+        );
+      }
+    });
+
+    test('should return an error when missing data in request', async () => {
+      const payload = {
+        email: undefined
+      };
+
+      const request: AxiosRequestConfig = {
+        url: `/api/v1/email/validate`,
+        method: 'POST',
+        headers: {
+          ...authUtil.getHeaders(),
+        },
+        withCredentials: true,
+        data: payload,
+      };
+
+      try {
+        expect(await axios.request(request)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // assert
+        expect(typedError.response.status).toBe(400);
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toEqual(
+          'No email sent.'
+        );
+      }
+    });
+
+    test('should return an error when email exists', async () => {
+      const payload = {
+        email: TEST_EXISTING_EMAIL
+      };
+
+      const request: AxiosRequestConfig = {
+        url: `/api/v1/email/validate`,
+        method: 'POST',
+        headers: {
+          ...authUtil.getHeaders(),
+        },
+        withCredentials: true,
+        data: payload,
+      };
+
+      try {
+        expect(await axios.request(request)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // assert
+        expect(typedError.response.status).toBe(400);
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toEqual(
+          `${TEST_EXISTING_EMAIL} already exists.`
+        );
+      }
+    });
+  });
+
   describe('POST /api/v1/email', () => {
     test('should return an error when no payload sent', async () => {
       const request: AxiosRequestConfig = {
@@ -119,12 +203,15 @@ describe('v1 Email Routes', () => {
         AxiosRequestConfig,
         AxiosResponse<OtpResponseType>
       >({
-        url: `/api/v1/user/send-otp-code`,
+        url: `/api/v1/auth/otp-code/send/email`,
         method: 'POST',
         headers: {
           ...authUtil.getHeaders(),
         },
         withCredentials: true,
+        data: {
+          email: TEST_EMAIL
+        }
       });
       const payload: CreateEmailPayloadType = {
         code: result.data.code,
@@ -180,6 +267,7 @@ describe('v1 Email Routes', () => {
 
     test('should return 200 when successfuly updates email', async () => {
       const payload: UpdateEmailPayloadType = {
+        id: idToUpdate,
         def: false,
         label: 'Test',
       };

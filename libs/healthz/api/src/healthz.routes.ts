@@ -1,9 +1,5 @@
 import { Router } from 'express';
 
-import {
-  ensureLoggedIn,
-  hasSuperAdminRole
-} from '@dx/auth-api';
 import { HealthzController } from './healthz.controller';
 
 export class HealthzRoutes {
@@ -12,10 +8,6 @@ export class HealthzRoutes {
 
     router.get(
       '/',
-      [
-        ensureLoggedIn,
-        hasSuperAdminRole
-      ],
       HealthzController.getHealth
     );
 

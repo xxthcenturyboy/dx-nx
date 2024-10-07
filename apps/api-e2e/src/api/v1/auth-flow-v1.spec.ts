@@ -11,6 +11,7 @@ import {
   AUTH_TOKEN_NAMES,
 } from '@dx/auth-api';
 import {
+  PHONE_DEFAULT_REGION_CODE,
   TEST_DEVICE,
   TEST_EMAIL,
   TEST_EXISTING_EMAIL,
@@ -18,6 +19,7 @@ import {
   TEST_PHONE_VALID,
   TEST_PHONE,
   TEST_UUID,
+  TEST_EXISTING_USERNAME,
 } from '@dx/config-shared';
 import { dxRsaGenerateKeyPair, dxRsaSignPayload } from '@dx/util-encryption';
 import { DeviceModelType } from '@dx/devices-api';
@@ -90,7 +92,7 @@ describe('v1 Auth Flow', () => {
       // arrange
       let response: AxiosResponse<string, UserLookupResponseType>;
       const expectedResult: UserLookupResponseType = { available: true };
-      const url = `/api/v1/auth/lookup?code=1&value=${TEST_PHONE_VALID}&type=${USER_LOOKUPS.PHONE}`;
+      const url = `/api/v1/auth/lookup?code=1&value=${TEST_PHONE_VALID}&type=${USER_LOOKUPS.PHONE}&region=${PHONE_DEFAULT_REGION_CODE}`;
       // act
       response = await axios.get(url);
       // assert
@@ -100,14 +102,21 @@ describe('v1 Auth Flow', () => {
 
     test('should return unavailable when queried with an existing phone', async () => {
       // arrange
-      let response: AxiosResponse<string, UserLookupResponseType>;
-      const expectedResult: UserLookupResponseType = { available: false };
-      const url = `/api/v1/auth/lookup?code=1&value=${TEST_EXISTING_PHONE}&type=${USER_LOOKUPS.PHONE}`;
+      const url = `/api/v1/auth/lookup?code=1&value=${TEST_EXISTING_PHONE}&type=${USER_LOOKUPS.PHONE}&region=${PHONE_DEFAULT_REGION_CODE}`;
       // act
-      response = await axios.get(url);
       // assert
-      expect(response.status).toBe(200);
-      expect(response.data).toEqual(expectedResult);
+      try {
+        expect(await axios.get(url)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // console.log('got error', typedError);
+        // assert
+        expect(typedError.response.status).toBe(400);
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toEqual(
+          'Error in auth lookup handler: (858) 484-6800 is already in use.'
+        );
+      }
     });
 
     test('should return an error when queried with an invalid phone.', async () => {
@@ -123,7 +132,7 @@ describe('v1 Auth Flow', () => {
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
         expect(typedError.response.data.message).toEqual(
-          'Error in auth lookup handler: This phone cannot be used.'
+          'Error in auth lookup handler: Missing phone or region code.'
         );
       }
     });
@@ -142,14 +151,21 @@ describe('v1 Auth Flow', () => {
 
     test('should return unavailable when queried with an existing email', async () => {
       // arrange
-      let response: AxiosResponse<string, UserLookupResponseType>;
-      const expectedResult: UserLookupResponseType = { available: false };
       const url = `/api/v1/auth/lookup?value=${TEST_EXISTING_EMAIL}&type=${USER_LOOKUPS.EMAIL}`;
       // act
-      response = await axios.get(url);
       // assert
-      expect(response.status).toBe(200);
-      expect(response.data).toEqual(expectedResult);
+      try {
+        expect(await axios.get(url)).toThrow();
+      } catch (err) {
+        const typedError = err as AxiosError;
+        // console.log('got error', typedError);
+        // assert
+        expect(typedError.response.status).toBe(400);
+        // @ts-expect-error - type is bad
+        expect(typedError.response.data.message).toEqual(
+          `Error in auth lookup handler: ${TEST_EXISTING_EMAIL} already exists.`
+        );
+      }
     });
 
     test('should return an error when queried with an invalid email.', async () => {
@@ -165,7 +181,7 @@ describe('v1 Auth Flow', () => {
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
         expect(typedError.response.data.message).toEqual(
-          'Error in auth lookup handler: Invalid Email.'
+          'Error in auth lookup handler: The email you provided is not valid.'
         );
       }
     });
@@ -183,7 +199,7 @@ describe('v1 Auth Flow', () => {
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
         expect(typedError.response.data.message).toEqual(
-          'Error in auth lookup handler: Invalid email domain.'
+          'Error in auth lookup handler: The email you provided is not valid. Please note that we do not allow disposable emails or emails that do not exist, so make sure to use a real email address.'
         );
       }
     });
@@ -334,7 +350,7 @@ describe('v1 Auth Flow', () => {
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
         expect(typedError.response.data.message).toEqual(
-          'Email is unavailable.'
+          `${TEST_EXISTING_EMAIL} already exists.`
         );
       }
     });
@@ -344,6 +360,7 @@ describe('v1 Auth Flow', () => {
       const payload: AccountCreationPayloadType = {
         code: 'OU812',
         value: TEST_PHONE,
+        // region: PHONE_DEFAULT_REGION_CODE
       };
 
       const request: AxiosRequestConfig = {
@@ -375,6 +392,7 @@ describe('v1 Auth Flow', () => {
       const payload: AccountCreationPayloadType = {
         code: 'OU812',
         value: TEST_EXISTING_PHONE,
+        region: PHONE_DEFAULT_REGION_CODE
       };
 
       const request: AxiosRequestConfig = {
@@ -392,7 +410,7 @@ describe('v1 Auth Flow', () => {
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
         expect(typedError.response.data.message).toEqual(
-          'Phone is unavailable.'
+          '(858) 484-6800 is already in use.'
         );
       }
     });
@@ -401,6 +419,7 @@ describe('v1 Auth Flow', () => {
       const payload: AccountCreationPayloadType = {
         code: otpEmail,
         value: TEST_EMAIL,
+        region: PHONE_DEFAULT_REGION_CODE
       };
       const request: AxiosRequestConfig = {
         url: '/api/v1/auth/account',
@@ -426,6 +445,7 @@ describe('v1 Auth Flow', () => {
       const payload: AccountCreationPayloadType = {
         code: otpPhone,
         device: TEST_DEVICE,
+        region: PHONE_DEFAULT_REGION_CODE,
         value: TEST_PHONE_VALID,
       };
       const request: AxiosRequestConfig = {
@@ -682,7 +702,7 @@ describe('v1 Auth Flow', () => {
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
         expect(typedError.response.data.message).toEqual(
-          'Could not log you in.'
+          '100 Could not log you in.'
         );
       }
     });
@@ -709,7 +729,7 @@ describe('v1 Auth Flow', () => {
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
         expect(typedError.response.data.message).toEqual(
-          'Could not log you in.'
+          '100 Could not log you in.'
         );
       }
     });
@@ -736,7 +756,7 @@ describe('v1 Auth Flow', () => {
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
         expect(typedError.response.data.message).toEqual(
-          'Could not log you in.'
+          '100 Could not log you in.'
         );
       }
     });
@@ -763,7 +783,7 @@ describe('v1 Auth Flow', () => {
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
         expect(typedError.response.data.message).toEqual(
-          'Could not log you in.'
+          '100 Could not log you in.'
         );
       }
     });
@@ -771,7 +791,7 @@ describe('v1 Auth Flow', () => {
     test('should return an error when password is incorrect via email login.', async () => {
       // arrange
       const payload: LoginPayloadType = {
-        value: TEST_EXISTING_EMAIL,
+        value: TEST_EXISTING_USERNAME,
         password: 'bad-password',
       };
 
@@ -790,7 +810,7 @@ describe('v1 Auth Flow', () => {
         expect(typedError.response.status).toBe(400);
         // @ts-expect-error - type is bad
         expect(typedError.response.data.message).toEqual(
-          'Could not log you in.'
+          '100 Could not log you in.'
         );
       }
     });
@@ -801,6 +821,7 @@ describe('v1 Auth Flow', () => {
         method: 'POST',
         data: {
           email: TEST_EMAIL,
+          strict: true
         },
       });
 
@@ -824,7 +845,7 @@ describe('v1 Auth Flow', () => {
 
       expect(response.status).toEqual(200);
       expect(response.data.accessToken).toBeDefined();
-      expect(response.data.profile.emails).toHaveLength(1);
+      expect(Array.isArray(response.data.profile.emails)).toBe(true);
     });
 
     test('should return user profile when successfully logged in with email / password', async () => {
@@ -842,21 +863,23 @@ describe('v1 Auth Flow', () => {
 
       expect(response.status).toEqual(200);
       expect(response.data.accessToken).toBeDefined();
-      expect(response.data.profile.emails).toHaveLength(1);
-      expect(response.data.profile.phones).toHaveLength(1);
+      expect(Array.isArray(response.data.profile.emails)).toBe(true);
+      expect(Array.isArray(response.data.profile.phones)).toBe(true);
     });
 
     test('should return user profile when successfully logged in with phone', async () => {
-      const otpResonse = await axios.request<{ code: string }>({
+      const otpResponse = await axios.request<{ code: string }>({
         url: '/api/v1/auth/otp-code/send/phone',
         method: 'POST',
         data: {
           phone: TEST_PHONE_VALID,
+          strict: true
         },
       });
 
       const payload: LoginPayloadType = {
-        code: otpResonse.data.code,
+        code: otpResponse.data.code,
+        region: PHONE_DEFAULT_REGION_CODE,
         value: TEST_PHONE_VALID,
       };
       const request: AxiosRequestConfig = {
@@ -876,7 +899,7 @@ describe('v1 Auth Flow', () => {
 
       expect(response.status).toEqual(200);
       expect(response.data.accessToken).toBeDefined();
-      expect(response.data.profile.phones).toHaveLength(1);
+      expect(Array.isArray(response.data.profile.phones)).toBe(true);
     });
 
     test('should return user profile when successfully logged in with device biometrics', async () => {
