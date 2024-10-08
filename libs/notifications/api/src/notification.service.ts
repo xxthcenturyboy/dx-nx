@@ -53,7 +53,11 @@ export class NotificationService {
       const notifications = await this.getNotificationsByUserId(userId);
       const notificationsCount = notifications.system.length + notifications.user.length;
 
-      return notificationsCount;
+      return {
+        system: notifications.system.length,
+        user: notifications.user.length,
+        total: notificationsCount
+      };
     } catch (err) {
       this.logger.logError(err);
       return 0;
@@ -139,7 +143,7 @@ export class NotificationService {
       }
       return notification;
     } catch (err) {
-      this.logger.logError(err);
+      this.logger.logError(`Notifications: ${err}`);
       throw new Error(NOTIFICATION_ERRORS.SERVER_ERROR);
     }
   }
@@ -171,7 +175,7 @@ export class NotificationService {
       }
       return notification;
     } catch (err) {
-      this.logger.logError(err);
+      this.logger.logError(`Notifications: ${err}`);
       throw new Error(NOTIFICATION_ERRORS.SERVER_ERROR);
     }
   }

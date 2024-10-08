@@ -51,12 +51,12 @@ export class NotificationRoutes {
       NotificationController.markAllAsViewed
     );
     router.put(
-      '/dismiss/:id/:userId',
-      NotificationController.markAsDismissed
-    );
-    router.put(
       '/dismiss-all/:userId',
       NotificationController.markAllDismissed
+    );
+    router.put(
+      '/dismiss/:id/:userId',
+      NotificationController.markAsDismissed
     );
     router.put(
       '/read/:id',
