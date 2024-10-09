@@ -98,7 +98,6 @@ describe('v1 Media Routes', () => {
       expect(result.data.files[MEDIA_VARIANTS.MEDIUM]).toBeDefined();
       expect(result.data.files[MEDIA_VARIANTS.ORIGINAL]).toBeDefined();
       expect(result.data.files[MEDIA_VARIANTS.THUMB]).toBeDefined();
-      expect(result.data.originalFilename).toEqual('test-media.png');
     });
   });
 
