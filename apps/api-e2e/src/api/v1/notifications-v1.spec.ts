@@ -21,7 +21,7 @@ import {
   AuthUtilType
 } from './util-v1';
 
-describe('v1 Email Routes', () => {
+describe('v1 Notification Routes', () => {
   let authRes: AuthSuccessResponseType;
   let authUtil: AuthUtilType;
   let idsToUpdate: string[] = [];
