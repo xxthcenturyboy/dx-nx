@@ -40,7 +40,7 @@ import { AddPhoneForm } from './phone-web.ui';
 import {
   useCheckPhoneAvailabilityMutation,
   useAddPhoneMutation,
-} from './phone-web-api';
+} from './phone-web.api';
 import { AuthWebOtpEntry, useOtpRequestPhoneMutation } from '@dx/auth-web';
 import { OTP_LENGTH } from '@dx/auth-shared';
 

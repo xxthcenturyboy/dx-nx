@@ -23,7 +23,7 @@ import {
 } from '@dx/ui-web-dialogs';
 import { logger } from '@dx/logger-web';
 import { PhoneType } from '@dx/phone-shared';
-import { useDeletePhoneProfileMutation } from './phone-web-api';
+import { useDeletePhoneProfileMutation } from './phone-web.api';
 
 type DeletePhoneDialogProps = {
   phoneItem: PhoneType;

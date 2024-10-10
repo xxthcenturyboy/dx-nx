@@ -5,7 +5,7 @@ import { Fade, Grid2, Typography, useMediaQuery, useTheme } from '@mui/material'
 import { APP_NAME } from '@dx/config-shared';
 import { WebConfigService } from '@dx/config-web';
 import { FADE_TIMEOUT_DUR, MEDIA_BREAK } from '@dx/ui-web-system';
-import { useLazyGetShortlinkTargetQuery } from './shortlink-web-api';
+import { useLazyGetShortlinkTargetQuery } from './shortlink-web.api';
 
 export const ShortlinkComponent: React.FC = () => {
   const { token } = useParams() as { token: string };

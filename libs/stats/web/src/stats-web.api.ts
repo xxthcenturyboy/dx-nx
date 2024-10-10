@@ -1,7 +1,7 @@
 import { apiWebMain } from '@dx/rtk-query-web';
 import { HealthzStatusType } from '@dx/healthz-shared';
 
-export const statsWebHealthz = apiWebMain.injectEndpoints({
+export const apiStatsWebHealth = apiWebMain.injectEndpoints({
   endpoints: (build) => ({
     getApiHealthz: build.query<HealthzStatusType, void>({
       query: () => (
@@ -17,4 +17,4 @@ export const statsWebHealthz = apiWebMain.injectEndpoints({
 
 export const {
   useLazyGetApiHealthzQuery,
-} = statsWebHealthz;
+} = apiStatsWebHealth;

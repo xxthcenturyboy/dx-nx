@@ -36,7 +36,7 @@ import { AddEmailForm } from './email-web.ui';
 import {
   useAddEmailMutation,
   useCheckEmailAvailabilityMutation,
-} from './email-web-api';
+} from './email-web.api';
 import { AuthWebOtpEntry, useOtpRequestEmailMutation } from '@dx/auth-web';
 import { OTP_LENGTH } from '@dx/auth-shared';
 

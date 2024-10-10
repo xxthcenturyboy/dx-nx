@@ -23,7 +23,7 @@ import {
 } from '@dx/ui-web-dialogs';
 import { logger } from '@dx/logger-web';
 import { EmailType } from '@dx/email-shared';
-import { useDeleteEmailProfileMutation } from './email-web-api';
+import { useDeleteEmailProfileMutation } from './email-web.api';
 
 type DeleteEmailDialogProps = {
   emailItem: EmailType;

@@ -25,7 +25,7 @@ import {
 } from '@dx/ui-web-global-components';
 import { setDocumentTitle } from '@dx/utils-misc-web';
 import { statsActions } from './stats-web.reducer';
-import { useLazyGetApiHealthzQuery } from './stats-web-api';
+import { useLazyGetApiHealthzQuery } from './stats-web.api';
 
 export const StatsWebApiHealthComponent: React.FC = () => {
   const apiStats = useAppSelector((state: RootState) => state.stats.api);
