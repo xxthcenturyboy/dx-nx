@@ -19,6 +19,7 @@
     "baseUrl": ".",
     "paths": {
       "@dx/auth-api": ["libs/auth/api/src/index.ts"],
+      "@dx/auth-model-web": ["libs/auth/model/web/src/index.ts"],
       "@dx/auth-shared": ["libs/auth/shared/src/index.ts"],
       "@dx/auth-web": ["libs/auth/web/src/index.ts"],
       "@dx/config-api": ["libs/config/api/src/index.ts"],

@@ -1,7 +1,7 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 // import { useDispatch, useSelector, useStore } from 'react-redux';
 
-import { authReducer } from '@dx/auth-web';
+import { authReducer } from '@dx/auth-model-web';
 import { dashboardReducer } from '@dx/dashboard-web';
 import { homeReducer } from '@dx/home';
 import { mediaReducer } from '@dx/media-web';

@@ -4,14 +4,14 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
-import { useAppDispatch } from '@dx/store-web';
+import { useAppDispatch } from '@dx/utils-web-hooks';
 import { logger } from '@dx/logger-web';
 import { uiActions } from '@dx/ui-web-system';
 import { StyledAccountMenuListItem } from '@dx/ui-web-menus';
 import { ConfirmationDialog } from '@dx/ui-web-dialogs';
 import { WebConfigService } from '@dx/config-web';
 import { useLogoutMutation } from './auth-web.api';
-import { authActions } from './auth-web.reducer';
+import { authActions } from '@dx/auth-model-web';
 
 type LogoutButtonType = {
   context: 'APP_MENU' | 'APP_BAR';

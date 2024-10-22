@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 
-import { AuthStateType } from './auth-web.types';
+import { AuthStateType } from '@dx/auth-model-web';
 import { RootState } from '@dx/store-web';
 
 const selectAuthState = (state: RootState): AuthStateType => state.auth;

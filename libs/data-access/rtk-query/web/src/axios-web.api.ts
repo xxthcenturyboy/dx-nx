@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 // import { Navigate } from 'react-router-dom';
 
 import { store } from '@dx/store-web';
-import { authActions } from '@dx/auth-web';
+import { authActions } from '@dx/auth-model-web';
 import { uiActions } from '@dx/ui-web-system';
 import { WebConfigService } from '@dx/config-web';
 import { logger } from '@dx/logger-web';

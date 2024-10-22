@@ -13,11 +13,12 @@ import Zoom from '@mui/material/Zoom';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { BeatLoader } from 'react-spinners';
 
-import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
+import type { RootState } from '@dx/store-web';
+import { useAppDispatch, useAppSelector } from '@dx/utils-web-hooks';
 import { FADE_TIMEOUT_DUR, themeColors } from '@dx/ui-web-system';
 import { LoginPayloadType } from '@dx/auth-shared';
 import * as UI from './auth-web-login.ui';
-import { authActions } from './auth-web.reducer';
+import { authActions } from '@dx/auth-model-web';
 
 type WebLoginUserPassPropType = {
   changeLoginType: () => void;

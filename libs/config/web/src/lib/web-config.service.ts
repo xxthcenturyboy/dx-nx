@@ -1,6 +1,6 @@
 // import { propertiesToArray } from '@dx/utils-shared-misc';
 // import { RouteState } from '@dx/ui-web';
-import { AUTH_ROUTES } from '@dx/auth-web';
+import { AUTH_ROUTES } from '@dx/auth-model-web';
 import { DASHBOARD_ROUTES } from '@dx/dashboard-web';
 import { STATS_SUDO_ROUTES } from '@dx/stats-web';
 import { USER_ADMIN_ROUTES } from '@dx/user-admin-web';

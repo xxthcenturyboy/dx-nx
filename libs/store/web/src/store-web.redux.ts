@@ -11,7 +11,11 @@ import {
   REGISTER,
 } from 'reduxjs-toolkit-persist';
 
-import { AuthStateType, authReducer, authPersistConfig } from '@dx/auth-web';
+import {
+  AuthStateType,
+  authReducer,
+  authPersistConfig
+} from '@dx/auth-model-web';
 import { dashboardReducer } from '@dx/dashboard-web';
 import { homeReducer } from '@dx/home';
 import {
