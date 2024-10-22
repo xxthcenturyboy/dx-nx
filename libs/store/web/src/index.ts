@@ -1,9 +1,10 @@
-export {
+export type {
   AppDispatch,
+  AppStore,
   RootState,
+} from './store-web.redux';
+
+export {
   persistor,
-  store,
-  useAppDispatch,
-  useAppSelector,
-  useAppStore
+  store
 } from './store-web.redux';

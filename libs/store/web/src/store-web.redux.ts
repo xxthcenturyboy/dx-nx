@@ -107,9 +107,13 @@ const useAppDispatch = useDispatch.withTypes<AppDispatch>();
 const useAppSelector = useSelector.withTypes<RootState>();
 const useAppStore = useStore.withTypes<AppStore>();
 
-export {
+export type {
   AppDispatch,
-  RootState,
+  AppStore,
+  RootState
+};
+
+export {
   persistor,
   store,
   useAppDispatch,

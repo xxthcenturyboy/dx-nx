@@ -106,6 +106,7 @@
       "@dx/utils-web-error-boundary": [
         "libs/utils/web/error-boundary/src/index.ts"
       ],
+      "@dx/utils-web-hooks": ["libs/utils/web/hooks/src/index.ts"],
       "@dx/utils/api/emails": ["libs/utils/api/emails/src/index.ts"],
       "@dx/utils/api/profanity": ["libs/utils/api/profanity/src/index.ts"]
     }
