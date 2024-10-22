@@ -4,9 +4,8 @@ import { Grid2 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 import {
-  RootState,
   useAppSelector
-} from '@dx/store-web';
+} from '@dx/utils-web-hooks';
 import {
   MEDIA_BREAK,
   themeColors
@@ -29,7 +28,7 @@ type AccountMenuPropsType = {
 export const AccountMenu: React.FC<AccountMenuPropsType> = (props) => {
   const [mobileBreak, setMobileBreak] = React.useState(false);
   const windowWidth =
-    useAppSelector((state: RootState) => state.ui.windowWidth) || 0;
+    useAppSelector(state => state.ui.windowWidth) || 0;
   const ROUTES = WebConfigService.getWebRoutes();
   const navigate = useNavigate();
 

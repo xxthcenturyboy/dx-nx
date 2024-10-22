@@ -14,9 +14,9 @@ import {
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 import {
-  store,
-  useAppDispatch
-} from '@dx/store-web';
+  useAppDispatch,
+  useAppSelector
+} from '@dx/utils-web-hooks';
 import { logger } from '@dx/logger-web';
 import { UpdatePasswordPayloadType } from '@dx/user-shared';
 import {
@@ -51,7 +51,7 @@ export const UserProfileChangePasswordDialog: React.FC<
   const [password, setPassword] = React.useState('');
   const [passwordConfirm, setPasswordConfirm] = React.useState('');
   const [errorMessage, setErrorMessage] = React.useState('');
-  const isMobileWidth = selectIsMobileWidth(store.getState());
+  const isMobileWidth = useAppSelector(state => selectIsMobileWidth(state));
   const theme = useTheme();
   const SM_BREAK = useMediaQuery(theme.breakpoints.down('sm'));
   const dispatch = useAppDispatch();

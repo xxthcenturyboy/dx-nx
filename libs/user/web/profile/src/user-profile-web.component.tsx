@@ -12,10 +12,9 @@ import {
 } from '@mui/material';
 
 import {
-  RootState,
   useAppDispatch,
   useAppSelector
-} from '@dx/store-web';
+} from '@dx/utils-web-hooks';
 import { logger } from '@dx/logger-web';
 import { ContentWrapper } from '@dx/ui-web-global-components';
 import { uiActions } from '@dx/ui-web-system';
@@ -32,11 +31,11 @@ import { UserProfileAvatar } from './user-profile-web-avatar.component';
 import { UserProfileWebAvatarDialog } from './user-profile-web-avatar.dialog';
 
 export const UserProfile: React.FC = () => {
-  const profile = useAppSelector((state: RootState) =>
+  const profile = useAppSelector(state =>
     selectProfileFormatted(state)
   );
   const appMode = useAppSelector(
-    (state: RootState) => state.ui.theme.palette?.mode
+    state => state.ui.theme.palette?.mode
   );
   const dispatch = useAppDispatch();
   const theme = useTheme();

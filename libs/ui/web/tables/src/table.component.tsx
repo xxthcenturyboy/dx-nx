@@ -23,10 +23,6 @@ import {
 import { BeatLoader } from 'react-spinners';
 
 import {
-  RootState,
-  useAppSelector
-} from '@dx/store-web';
-import {
   FADE_TIMEOUT_DUR,
   selectCurrentThemeMode
 } from '@dx/ui-web-system';
@@ -71,12 +67,10 @@ export const TableComponent: React.FC<TableComponentProps> = React.forwardRef(
       orderBy,
       rows,
       sortDir,
-      tableName,
+      tableName
     } = props;
     const theme = useTheme();
-    const themeMode = useAppSelector((state: RootState) =>
-      selectCurrentThemeMode(state)
-    );
+    const themeMode = theme.palette.mode;
     const tableId = tableName?.toLowerCase().replace(' ', '-') || '';
     // const smBreak = useMediaQuery(theme.breakpoints.down('sm'));
     const [dummyData, setDummyData] = useState<TableDummyRow>([]);

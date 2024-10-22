@@ -11,10 +11,9 @@ import {
 import ClearIcon from '@mui/icons-material/Clear';
 
 import {
-  RootState,
   useAppDispatch,
   useAppSelector
-} from '@dx/store-web';
+} from '@dx/utils-web-hooks';
 import { LogoutButton } from '@dx/auth-web';
 import { uiActions } from '@dx/ui-web-system';
 import {
@@ -37,7 +36,7 @@ type AppMenuItemsProps = {
 export const AppMenu: React.FC<AppMenuItemsProps> = (props) => {
   const { mobileBreak } = props;
   const [shouldRenderMenus, setShouldRenderMenus] = useState(false);
-  const menus = useAppSelector((state: RootState) => state.ui.menus);
+  const menus = useAppSelector(state => state.ui.menus);
   const dispatch = useAppDispatch();
 
   useEffect(() => {

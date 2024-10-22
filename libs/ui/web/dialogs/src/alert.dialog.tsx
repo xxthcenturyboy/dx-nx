@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContentText from '@mui/material/DialogContentText';
 
-import { useAppDispatch } from '@dx/store-web';
+import { useAppDispatch } from '@dx/utils-web-hooks';
 import { uiActions } from '@dx/ui-web-system';
 import { AlertLottie } from '@dx/ui-web-lottie';
 import { CustomDialogContent } from './custom-content.dialog';

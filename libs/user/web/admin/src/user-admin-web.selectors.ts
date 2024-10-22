@@ -1,10 +1,10 @@
 import { createSelector } from 'reselect';
 import parsePhoneNumber from 'libphonenumber-js';
 
-import { RootState } from '@dx/store-web';
-import { PhoneType } from '@dx/phone-shared';
-import { UserType } from '@dx/user-shared';
-import { UserAdminStateType } from './user-admin-web.types';
+import type { RootState } from '@dx/store-web';
+import type { PhoneType } from '@dx/phone-shared';
+import type { UserType } from '@dx/user-shared';
+import type { UserAdminStateType } from './user-admin-web.types';
 import { UserAdminWebListService } from './user-admin-web-list.service';
 
 const getUser = (state: RootState): UserAdminStateType['user'] => state.userAdmin.user;

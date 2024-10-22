@@ -17,7 +17,7 @@ import {
 import { CountryData } from 'react-phone-input-2';
 import { CountryCode, isValidPhoneNumber } from 'libphonenumber-js';
 
-import { store, useAppDispatch } from '@dx/store-web';
+import { useAppDispatch, useAppSelector } from '@dx/utils-web-hooks';
 import { logger } from '@dx/logger-web';
 import {
   CreatePhonePayloadType,
@@ -64,7 +64,7 @@ export const AddPhoneDialog: React.FC<AddPhoneDialogProps> = (
   const [errorMessage, setErrorMessage] = React.useState('');
   const [otp, setOtp] = React.useState('');
   const [isDefault, setIsDefault] = React.useState(false);
-  const isMobileWidth = selectIsMobileWidth(store.getState());
+  const isMobileWidth = useAppSelector(state => selectIsMobileWidth(state));
   const theme = useTheme();
   const SM_BREAK = useMediaQuery(theme.breakpoints.down('sm'));
   const dispatch = useAppDispatch();

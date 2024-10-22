@@ -3,7 +3,6 @@ import {
   PrivilegeSetDataType
 } from '@dx/user-privilege-shared';
 
-
 export const apiWebPrivilegeSets = apiWebMain.injectEndpoints({
   endpoints: (build) => ({
     getPrivilegeSets: build.query<PrivilegeSetDataType[], void>({

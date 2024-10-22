@@ -3,9 +3,8 @@ import { Drawer } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 import {
-  RootState,
   useAppSelector
-} from '@dx/store-web';
+} from '@dx/utils-web-hooks';
 import { DRAWER_WIDTH } from '@dx/ui-web-system';
 import { AppMenu } from './app-menu.component';
 
@@ -18,7 +17,7 @@ const DrawerContent = styled('div')<{ component?: React.ElementType }>({
 });
 
 export const ResponsiveMenu: React.FC = () => {
-  const open = useAppSelector((state: RootState) => state.ui.menuOpen);
+  const open = useAppSelector(state => state.ui.menuOpen);
 
   return (
     <Drawer

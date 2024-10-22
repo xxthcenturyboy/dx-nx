@@ -5,11 +5,7 @@ import {
   useTheme
 } from '@mui/material';
 
-import {
-  RootState,
-  store,
-  useAppSelector
-} from '@dx/store-web';
+import { useAppSelector } from '@dx/utils-web-hooks';
 import { selectIsMobileWidth } from '@dx/ui-web-system';
 
 type CustomDialogContentType = {
@@ -24,8 +20,8 @@ export const CustomDialogContent: React.FC<CustomDialogContentType> = (
   const theme = useTheme();
   const smBreak = useMediaQuery(theme.breakpoints.down('sm'));
   const windowHeight =
-    useAppSelector((state: RootState) => state.ui.windowHeight) || 0;
-  const isMobileWidth = selectIsMobileWidth(store.getState());
+    useAppSelector(state => state.ui.windowHeight) || 0;
+  const isMobileWidth = useAppSelector(state => selectIsMobileWidth(state));
   const height = isMobileWidth ? windowHeight - 140 : undefined;
 
   return (

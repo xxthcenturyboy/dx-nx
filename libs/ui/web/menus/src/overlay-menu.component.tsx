@@ -3,10 +3,9 @@ import { Drawer } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 import {
-  RootState,
   useAppDispatch,
   useAppSelector
-} from '@dx/store-web';
+} from '@dx/utils-web-hooks';
 import {
   DRAWER_WIDTH,
   MEDIA_BREAK,
@@ -23,10 +22,10 @@ const DrawerContent = styled('div')<{ component?: React.ElementType }>({
 });
 
 export const OverlayMenu: React.FC = () => {
-  const open = useAppSelector((state: RootState) => state.ui.menuOpen);
+  const open = useAppSelector(state => state.ui.menuOpen);
   const [mobileBreak, setMobileBreak] = React.useState(false);
   const windowWidth =
-    useAppSelector((state: RootState) => state.ui.windowWidth) || 0;
+    useAppSelector(state => state.ui.windowWidth) || 0;
   const dispatch = useAppDispatch();
   // const topPixel = mobileBreak ? 60 : 64;
 

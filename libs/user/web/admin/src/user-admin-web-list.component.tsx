@@ -13,7 +13,7 @@ import {
 import { Cached } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 
-import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
+import { useAppDispatch, useAppSelector } from '@dx/utils-web-hooks';
 import {
   DEBOUNCE,
   uiActions,
@@ -49,24 +49,24 @@ import { UserAdminWebListService } from './user-admin-web-list.service';
 
 export const UserAdminList: React.FC = () => {
   const filterValue = useAppSelector(
-    (state: RootState) => state.userAdmin.filterValue
+    state => state.userAdmin.filterValue
   );
   const limit = useAppSelector(
-    (state: RootState) => state.userAdmin.limit || 10
+    state => state.userAdmin.limit || 10
   );
-  const offset = useAppSelector((state: RootState) => state.userAdmin.offset);
-  const orderBy = useAppSelector((state: RootState) => state.userAdmin.orderBy);
-  const sortDir = useAppSelector((state: RootState) => state.userAdmin.sortDir);
-  const users = useAppSelector((state: RootState) =>
+  const offset = useAppSelector(state => state.userAdmin.offset);
+  const orderBy = useAppSelector(state => state.userAdmin.orderBy);
+  const sortDir = useAppSelector(state => state.userAdmin.sortDir);
+  const users = useAppSelector(state =>
     selectUsersFormatted(state)
   );
-  const userRowData = useAppSelector((state: RootState) =>
+  const userRowData = useAppSelector(state =>
     selectUsersListData(state)
   );
   const usersCount = useAppSelector(
-    (state: RootState) => state.userAdmin.usersCount
+    state => state.userAdmin.usersCount
   );
-  const currentUser = useAppSelector((state: RootState) => state.userProfile);
+  const currentUser = useAppSelector(state => state.userProfile);
   const usersListHeaders = UserAdminWebListService.getListHeaders();
   const [isInitialized, setIsInitialized] = useState(false);
   const [isFetching, setIsFetching] = useState(true);

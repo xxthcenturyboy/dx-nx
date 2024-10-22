@@ -19,10 +19,9 @@ import {
 import { injectStyle as injectToastifyStyle } from 'react-toastify/dist/inject-style';
 
 import {
-  RootState,
   useAppDispatch,
   useAppSelector
-} from '@dx/store-web';
+} from '@dx/utils-web-hooks';
 import {
   appTheme,
   DRAWER_WIDTH,
@@ -65,17 +64,12 @@ export const Root: React.FC = () => {
   const [contentWrapperStyle, setContentWrapperStyle] =
     React.useState<React.CSSProperties>({});
   const dispatch = useAppDispatch();
-  const userProfile = useAppSelector((state: RootState) => state.userProfile);
-  const menuOpen = useAppSelector((state: RootState) => state.ui.menuOpen);
-  const themeOptions = useAppSelector((state: RootState) => state.ui.theme);
-  const isAuthenticated = useAppSelector((state: RootState) =>
-    selectIsAuthenticated(state)
-  );
-  const logoutResponse = useAppSelector(
-    (state: RootState) => state.auth.logoutResponse
-  );
-  const windowWidth =
-    useAppSelector((state: RootState) => state.ui.windowWidth) || 0;
+  const userProfile = useAppSelector(state => state.userProfile);
+  const menuOpen = useAppSelector(state => state.ui.menuOpen);
+  const themeOptions = useAppSelector(state => state.ui.theme);
+  const isAuthenticated = useAppSelector(state => selectIsAuthenticated(state));
+  const logoutResponse = useAppSelector(state => state.auth.logoutResponse);
+  const windowWidth = useAppSelector(state => state.ui.windowWidth) || 0;
   // const toastTheme: ToastifyTheme = useAppSelector((state: RootState) => state.ui.theme.palette?.mode || 'color');
   const { pathname } = useLocation();
   const navigate = useNavigate();

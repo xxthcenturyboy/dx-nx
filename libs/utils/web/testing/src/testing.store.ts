@@ -1,5 +1,4 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
-// import { useDispatch, useSelector, useStore } from 'react-redux';
 
 import { authReducer } from '@dx/auth-model-web';
 import { dashboardReducer } from '@dx/dashboard-web';
@@ -36,7 +35,3 @@ export const setupStore = (preloadedState: Partial<RootState>) => {
 export type AppStore = ReturnType<typeof setupStore>;
 export type RootState = ReturnType<typeof rootReducer>;
 export type AppDispatch = AppStore['dispatch'];
-
-// const useAppDispatch = useDispatch.withTypes<AppDispatch>();
-// const useAppSelector = useSelector.withTypes<RootState>();
-// const useAppStore = useStore.withTypes<AppStore>();

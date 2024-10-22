@@ -10,7 +10,7 @@ import WavingHandIcon from '@mui/icons-material/WavingHand';
 import { toast } from 'react-toastify';
 import { NIL as NIL_UUID } from 'uuid';
 
-import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
+import { useAppDispatch, useAppSelector } from '@dx/utils-web-hooks';
 import { themeColors } from '@dx/ui-web-system';
 import {
   NotificationType,
@@ -30,7 +30,7 @@ export const NotificationComponent: React.FC<NotificationMenuPropsType> = (
 ) => {
   const { notification } = props;
   const MAX_LEN = 100;
-  const isSuperAdmin = useAppSelector((state: RootState) =>
+  const isSuperAdmin = useAppSelector(state =>
     selectHasSuperAdminRole(state)
   );
   const dispatch = useAppDispatch();

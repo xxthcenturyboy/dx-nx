@@ -29,10 +29,9 @@ import {
 import { toast } from 'react-toastify';
 
 import {
-  RootState,
   useAppDispatch,
   useAppSelector
-} from '@dx/store-web';
+} from '@dx/utils-web-hooks';
 import { uiActions } from '@dx/ui-web-system';
 import { listSkeleton } from '@dx/ui-web-global-components';
 import { ContentWrapper } from '@dx/ui-web-global-components';
@@ -58,9 +57,9 @@ type UserRestriction = {
 };
 
 export const UserAdminEdit: React.FC = () => {
-  const user = useAppSelector((state: RootState) => selectUserFormatted(state));
-  const sets = useAppSelector((state: RootState) => state.privileges.sets);
-  const currentUser = useAppSelector((state: RootState) => state.userProfile);
+  const user = useAppSelector(state => selectUserFormatted(state));
+  const sets = useAppSelector(state => state.privileges.sets);
+  const currentUser = useAppSelector(state => state.userProfile);
   const [title, setTitle] = useState('User');
   const [restrictions, setRestrictions] = useState<UserRestriction[]>([]);
   const [roles, setRoles] = useState<UserRoleUi[]>([]);

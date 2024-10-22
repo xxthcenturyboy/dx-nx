@@ -2,7 +2,6 @@
 import { renderWithProviders } from '@dx/utils-testing-web';
 import { ShortlinkComponent } from './shortlink.component';
 
-
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),

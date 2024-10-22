@@ -5,7 +5,7 @@ import DialogActions from '@mui/material/DialogActions';
 import { Button } from '@mui/material';
 import DialogContentText from '@mui/material/DialogContentText';
 
-import { store, useAppDispatch } from '@dx/store-web';
+import { useAppDispatch, useAppSelector } from '@dx/utils-web-hooks';
 import {
   selectIsMobileWidth,
   themeColors,
@@ -43,7 +43,7 @@ export const DeleteEmailDialog: React.FC<DeleteEmailDialogProps> = (
       ? `Are you sure you want to delete the email: ${emailItem.email} (${emailItem.label})?`
       : ''
   );
-  const isMobileWidth = selectIsMobileWidth(store.getState());
+  const isMobileWidth = useAppSelector(state => selectIsMobileWidth(state));
   const dispatch = useAppDispatch();
   const [
     requestDeleteEmail,

@@ -3,20 +3,18 @@ import { Box } from '@mui/material';
 import Dialog, { DialogProps } from '@mui/material/Dialog';
 
 import {
-  RootState,
-  store,
   useAppDispatch,
   useAppSelector,
-} from '@dx/store-web';
+} from '@dx/utils-web-hooks';
 import {
   selectIsMobileWidth,
   uiActions
 } from '@dx/ui-web-system';
 
 export const CustomDialog: React.FC<Partial<DialogProps>> = (props) => {
-  const open = useAppSelector((state: RootState) => state.ui.dialogOpen);
-  const body = useAppSelector((state: RootState) => state.ui.dialogComponent);
-  const isMobileWidth = selectIsMobileWidth(store.getState());
+  const open = useAppSelector(state => state.ui.dialogOpen);
+  const body = useAppSelector(state => state.ui.dialogComponent);
+  const isMobileWidth = useAppSelector(state => selectIsMobileWidth(state));
   const dispatch = useAppDispatch();
 
   const closeDialog = (): void => {

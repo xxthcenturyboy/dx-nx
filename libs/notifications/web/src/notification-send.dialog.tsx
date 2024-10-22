@@ -14,7 +14,7 @@ import {
   SelectChangeEvent,
 } from '@mui/material';
 
-import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
+import { useAppDispatch, useAppSelector } from '@dx/utils-web-hooks';
 import { logger } from '@dx/logger-web';
 import {
   selectIsMobileWidth,
@@ -54,7 +54,7 @@ export const NotificationSendDialog: React.FC<NotificationSendPropsType> = (
   const [sendToMobile, setSendToMobile] = React.useState(
     !!props.user?.phones.find((phone) => phone.default && phone.isVerified)
   );
-  const isMobileWidth = useAppSelector((state: RootState) =>
+  const isMobileWidth = useAppSelector(state =>
     selectIsMobileWidth(state)
   );
   const dispatch = useAppDispatch();

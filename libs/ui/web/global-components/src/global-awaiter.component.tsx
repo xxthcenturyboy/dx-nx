@@ -7,15 +7,14 @@ import {
 import { BeatLoader } from 'react-spinners';
 
 import {
-  RootState,
   useAppSelector
-} from '@dx/store-web';
+} from '@dx/utils-web-hooks';
 import { themeColors } from '@dx/ui-web-system';
 
 export const GlobalAwaiter: React.FC = () => {
-  const open = useAppSelector((state: RootState) => state.ui.awaitDialogOpen);
+  const open = useAppSelector(state => state.ui.awaitDialogOpen);
   const message = useAppSelector(
-    (state: RootState) => state.ui.awaitDialogMessage
+    state => state.ui.awaitDialogMessage
   );
 
   return (

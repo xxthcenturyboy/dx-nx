@@ -1,5 +1,5 @@
 import { ThemeOptions } from '@mui/material/styles';
-import { AppMenuType } from './components/menu';
+import { AppMenuType } from '@dx/ui-web-menus';
 
 export type UiStateType = {
   apiDialogOpen: boolean;

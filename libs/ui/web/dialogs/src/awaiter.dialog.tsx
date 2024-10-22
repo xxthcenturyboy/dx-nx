@@ -11,20 +11,18 @@ import DialogContentText from '@mui/material/DialogContentText';
 // import DialogTitle from '@mui/material/DialogTitle';
 
 import {
-  RootState,
-  store,
   useAppSelector
-} from '@dx/store-web';
+} from '@dx/utils-web-hooks';
 import { selectIsMobileWidth } from '@dx/ui-web-system';
 import { AwaiterLottie } from '@dx/ui-web-lottie';
 import { DialogWrapper } from './ui-wrapper.dialog';
 
 export const DialogAwaiter: React.FC<Partial<DialogProps>> = (props) => {
-  const open = useAppSelector((state: RootState) => state.ui.awaitDialogOpen);
+  const open = useAppSelector(state => state.ui.awaitDialogOpen);
   const message = useAppSelector(
-    (state: RootState) => state.ui.awaitDialogMessage
+    state => state.ui.awaitDialogMessage
   );
-  const isMobileWidth = selectIsMobileWidth(store.getState());
+  const isMobileWidth = useAppSelector(state => selectIsMobileWidth(state));
 
   return (
     <Dialog

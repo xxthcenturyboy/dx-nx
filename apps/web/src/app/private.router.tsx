@@ -15,7 +15,13 @@ export const PrivateRouter = () => {
   const isAuthenticated = selectIsAuthenticated(store.getState());
   const ROUTES = WebConfigService.getWebRoutes();
   return (
-    <>{isAuthenticated ? <Outlet /> : <Navigate to={ROUTES.AUTH.LOGIN} />}</>
+    <>
+      {
+        isAuthenticated
+          ? <Outlet />
+          : <Navigate to={ROUTES.AUTH.LOGIN} />
+      }
+    </>
   );
 };
 

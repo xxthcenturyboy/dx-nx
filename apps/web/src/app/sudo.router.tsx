@@ -14,7 +14,15 @@ import { store } from '@dx/store-web';
 
 export const SudoRouter = () => {
   const hasSuperAdminRole = store.getState().userProfile.sa || false;
-  return <>{hasSuperAdminRole ? <Outlet /> : <UnauthorizedComponent />}</>;
+  return (
+    <>
+      {
+        hasSuperAdminRole
+          ? <Outlet />
+          : <UnauthorizedComponent />
+      }
+    </>
+  );
 };
 
 export class SudoWebRouterConfig {

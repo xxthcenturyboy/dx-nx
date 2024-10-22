@@ -14,10 +14,9 @@ import {
 } from 'react-router-dom';
 
 import {
-  RootState,
   useAppSelector,
   useAppDispatch
-} from '@dx/store-web';
+} from '@dx/utils-web-hooks';
 import {
   MEDIA_BREAK,
   uiActions
@@ -39,7 +38,7 @@ type AppMenuItemItemProps = {
 export const AppMenuItem: React.FC<AppMenuItemItemProps> = (props) => {
   const { isFirst, isSubItem, menuItem } = props;
   const windowWidth =
-    useAppSelector((state: RootState) => state.ui.windowWidth) || 0;
+    useAppSelector(state => state.ui.windowWidth) || 0;
   const location = useLocation();
   const { pathname } = location;
   const [route, _] = useState(menuItem.routeKey);

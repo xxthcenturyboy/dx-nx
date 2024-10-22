@@ -15,9 +15,8 @@ import { ExpandMore } from '@mui/icons-material';
 import { BeatLoader } from 'react-spinners';
 
 import {
-  RootState,
   useAppSelector
-} from '@dx/store-web';
+} from '@dx/utils-web-hooks';
 import {
   APP_COLOR_PALETTE,
   BORDER_RADIUS,
@@ -41,7 +40,7 @@ export const CollapsiblePanel: React.FC<CollapsiblePanelPropsType> =
     );
     const theme = useTheme();
     const SM_BREAK = useMediaQuery(theme.breakpoints.down('sm'));
-    const themeMode = useAppSelector((state: RootState) =>
+    const themeMode = useAppSelector(state =>
       selectCurrentThemeMode(state)
     );
 

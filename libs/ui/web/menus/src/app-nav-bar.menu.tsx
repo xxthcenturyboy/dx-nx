@@ -23,10 +23,9 @@ import {
 import styled from 'styled-components';
 
 import {
-  RootState,
   useAppDispatch,
   useAppSelector
-} from '@dx/store-web';
+} from '@dx/utils-web-hooks';
 import { selectIsAuthenticated } from '@dx/auth-web';
 import { APP_NAME } from '@dx/config-shared';
 import {
@@ -57,19 +56,19 @@ export const AppNavBar: React.FC = () => {
   const dispatch = useAppDispatch();
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const isAuthenticated = useAppSelector((state: RootState) =>
+  const isAuthenticated = useAppSelector(state =>
     selectIsAuthenticated(state)
   );
-  const userProfile = useAppSelector((state: RootState) => state.userProfile);
-  // const userId = useAppSelector((state: RootState) => state.userProfile.id);
+  const userProfile = useAppSelector(state => state.userProfile);
+  // const userId = useAppSelector(state => state.userProfile.id);
   const windowWidth =
-    useAppSelector((state: RootState) => state.ui.windowWidth) || 0;
-  const logoUrl = useAppSelector((state: RootState) => state.ui.logoUrlSmall);
-  const menuOpen = useAppSelector((state: RootState) => state.ui.menuOpen);
+    useAppSelector(state => state.ui.windowWidth) || 0;
+  const logoUrl = useAppSelector(state => state.ui.logoUrlSmall);
+  const menuOpen = useAppSelector(state => state.ui.menuOpen);
   const themeMode = useAppSelector(
-    (state: RootState) => state.ui.theme.palette?.mode
+    state => state.ui.theme.palette?.mode
   );
-  const notificationCount = useAppSelector((state: RootState) =>
+  const notificationCount = useAppSelector(state =>
     selectNotificationCount(state)
   );
   const ROUTES = WebConfigService.getWebRoutes();

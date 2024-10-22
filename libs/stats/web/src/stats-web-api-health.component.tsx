@@ -17,7 +17,7 @@ import { styled } from '@mui/material/styles';
 import { red, green, grey } from '@mui/material/colors';
 import { toast } from 'react-toastify';
 
-import { RootState, useAppDispatch, useAppSelector } from '@dx/store-web';
+import { useAppDispatch, useAppSelector } from '@dx/utils-web-hooks';
 import { selectCurrentThemeMode } from '@dx/ui-web-system';
 import {
   CollapsiblePanel,
@@ -28,8 +28,8 @@ import { statsActions } from './stats-web.reducer';
 import { useLazyGetApiHealthzQuery } from './stats-web.api';
 
 export const StatsWebApiHealthComponent: React.FC = () => {
-  const apiStats = useAppSelector((state: RootState) => state.stats.api);
-  const themeMode = useAppSelector((state: RootState) =>
+  const apiStats = useAppSelector(state => state.stats.api);
+  const themeMode = useAppSelector(state =>
     selectCurrentThemeMode(state)
   );
   const theme = useTheme();

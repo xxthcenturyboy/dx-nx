@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Fade, Grid2, Paper } from '@mui/material';
 import { toast } from 'react-toastify';
 
-import type { RootState } from '@dx/store-web';
 import { useAppDispatch, useAppSelector } from '@dx/utils-web-hooks';
 import { loginBootstrap, WebConfigService } from '@dx/config-web';
 import { FADE_TIMEOUT_DUR, MEDIA_BREAK } from '@dx/ui-web-system';
@@ -24,17 +23,12 @@ export const WebLogin: React.FC = () => {
   const [loginType, setLoginType] = React.useState<'USER_PASS' | 'OTP'>(
     'USER_PASS'
   );
-  const user = useAppSelector((state: RootState) => state.userProfile);
-  const isProfileValid = useAppSelector((state: RootState) =>
-    selectIsUserProfileValid(state)
-  );
-  const logo = useAppSelector((state: RootState) => state.ui.logoUrl);
-  // const windowHeight = useAppSelector((state: RootState) => state.ui.windowHeight) || 0;
-  const windowWidth =
-    useAppSelector((state: RootState) => state.ui.windowWidth) || 0;
-  const stringLogin = useAppSelector(
-    (state: RootState) => state.ui.strings['LOGIN']
-  );
+  const user = useAppSelector(state => state.userProfile);
+  const isProfileValid = useAppSelector(state => selectIsUserProfileValid(state));
+  const logo = useAppSelector(state => state.ui.logoUrl);
+  // const windowHeight = useAppSelector(state => state.ui.windowHeight) || 0;
+  const windowWidth = useAppSelector(state => state.ui.windowWidth) || 0;
+  const stringLogin = useAppSelector(state => state.ui.strings['LOGIN']);
   const location = useLocation();
   const navigate = useNavigate();
   const lastPath = location.pathname;

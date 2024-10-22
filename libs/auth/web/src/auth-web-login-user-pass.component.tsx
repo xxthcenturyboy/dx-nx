@@ -13,7 +13,6 @@ import Zoom from '@mui/material/Zoom';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { BeatLoader } from 'react-spinners';
 
-import type { RootState } from '@dx/store-web';
 import { useAppDispatch, useAppSelector } from '@dx/utils-web-hooks';
 import { FADE_TIMEOUT_DUR, themeColors } from '@dx/ui-web-system';
 import { LoginPayloadType } from '@dx/auth-shared';
@@ -31,20 +30,12 @@ export const WebLoginUserPass: React.FC<WebLoginUserPassPropType> =
     const { isFetchingLogin } = props;
     const [showPassword, setShowPassword] = React.useState(false);
     const [loginAttempts, setLoginAttempts] = React.useState(0);
-    const username = useAppSelector((state: RootState) => state.auth.username);
-    const password = useAppSelector((state: RootState) => state.auth.password);
-    const S_LOGIN = useAppSelector(
-      (state: RootState) => state.ui.strings['LOGIN']
-    );
-    const S_PASSWORD = useAppSelector(
-      (state: RootState) => state.ui.strings['PASSWORD']
-    );
-    const S_USERNAME = useAppSelector(
-      (state: RootState) => state.ui.strings['USERNAME']
-    );
-    const S_TRY_ANOTHER_METHOD = useAppSelector(
-      (state: RootState) => state.ui.strings['TRY_ANOTHER_WAY']
-    );
+    const username = useAppSelector(state => state.auth.username);
+    const password = useAppSelector(state => state.auth.password);
+    const S_LOGIN = useAppSelector(state => state.ui.strings['LOGIN']);
+    const S_PASSWORD = useAppSelector(state => state.ui.strings['PASSWORD']);
+    const S_USERNAME = useAppSelector(state => state.ui.strings['USERNAME']);
+    const S_TRY_ANOTHER_METHOD = useAppSelector(state => state.ui.strings['TRY_ANOTHER_WAY']);
     const dispatch = useAppDispatch();
 
     React.useEffect(() => {

@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 
-import { RootState } from '@dx/store-web';
+import type { RootState } from '@dx/store-web';
 import { NotificationType } from '@dx/notifications-shared';
 
 const getSystemNotifications = (state: RootState): NotificationType[] => state.notification.system;

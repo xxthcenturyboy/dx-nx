@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 
-import { useAppDispatch } from '@dx/store-web';
+import { useAppDispatch } from '@dx/utils-web-hooks';
 import { uiActions } from '@dx/ui-web-system';
 import { EmailType } from '@dx/email-shared';
 import { AddEmailDialog } from './email-web-create.dialog';

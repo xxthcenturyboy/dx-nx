@@ -1,9 +1,9 @@
 import { createSelector } from 'reselect';
 import parsePhoneNumber from 'libphonenumber-js';
 
-import { RootState } from '@dx/store-web';
-import { UserProfileStateType } from '@dx/user-shared';
-import { PhoneType } from '@dx/phone-shared';
+import type { RootState } from '@dx/store-web';
+import type { UserProfileStateType } from '@dx/user-shared';
+import type { PhoneType } from '@dx/phone-shared';
 import { WebConfigService } from '@dx/config-web';
 import { MEDIA_VARIANTS } from '@dx/media-shared';
 

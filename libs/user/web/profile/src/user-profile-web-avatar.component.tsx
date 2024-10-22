@@ -3,7 +3,7 @@ import { Avatar, Badge, IconButton, Grid2 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { PhotoCamera } from '@mui/icons-material';
 
-import { RootState, useAppSelector } from '@dx/store-web';
+import { useAppSelector } from '@dx/utils-web-hooks';
 import { APP_COLOR_PALETTE } from '@dx/ui-web-system';
 import { setDocumentTitle } from '@dx/utils-misc-web';
 import { selectProfileFormatted } from './user-profile-web.selectors';
@@ -53,7 +53,7 @@ export const UserProfileAvatar: React.FC<UserProfileAvatarPropTypes> = (
   props
 ) => {
   const { fontSize, handleChangeImage, justifyContent, size } = props;
-  const profile = useAppSelector((state: RootState) =>
+  const profile = useAppSelector(state =>
     selectProfileFormatted(state)
   );
 

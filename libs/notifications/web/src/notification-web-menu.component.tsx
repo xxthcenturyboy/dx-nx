@@ -12,10 +12,9 @@ import { toast } from 'react-toastify';
 import { NIL as NIL_UUID } from 'uuid';
 
 import {
-  RootState,
   useAppDispatch,
   useAppSelector
-} from '@dx/store-web';
+} from '@dx/utils-web-hooks';
 import {
   MEDIA_BREAK,
   themeColors
@@ -42,18 +41,18 @@ export const NotificationMenu: React.FC<NotificationMenuPropsType> = (
 ) => {
   const [mobileBreak, setMobileBreak] = React.useState(false);
   const windowWidth =
-    useAppSelector((state: RootState) => state.ui.windowWidth) || 0;
+    useAppSelector(state => state.ui.windowWidth) || 0;
   const systemNotifications = useAppSelector(
-    (state: RootState) => state.notification.system
+    state => state.notification.system
   );
   const userNotifications = useAppSelector(
-    (state: RootState) => state.notification.user
+    state => state.notification.user
   );
-  const notificationCount = useAppSelector((state: RootState) =>
+  const notificationCount = useAppSelector(state =>
     selectNotificationCount(state)
   );
-  const userId = useAppSelector((state: RootState) => state.userProfile.id);
-  const isSuperAdmin = useAppSelector((state: RootState) =>
+  const userId = useAppSelector(state => state.userProfile.id);
+  const isSuperAdmin = useAppSelector(state =>
     selectHasSuperAdminRole(state)
   );
   const dispatch = useAppDispatch();

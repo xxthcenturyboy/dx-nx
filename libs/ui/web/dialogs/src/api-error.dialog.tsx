@@ -8,11 +8,9 @@ import DialogContentText from '@mui/material/DialogContentText';
 // import DialogTitle from '@mui/material/DialogTitle';
 
 import {
-  RootState,
-  store,
   useAppDispatch,
   useAppSelector,
-} from '@dx/store-web';
+} from '@dx/utils-web-hooks';
 import {
   selectIsMobileWidth,
   uiActions
@@ -21,11 +19,11 @@ import { ErrorLottie } from '@dx/ui-web-lottie';
 import { DialogWrapper } from './ui-wrapper.dialog';
 
 export const DialogApiError: React.FC<Partial<DialogProps>> = (props) => {
-  const open = useAppSelector((state: RootState) => state.ui.apiDialogOpen);
-  const message = useAppSelector((state: RootState) => state.ui.apiDialogError);
+  const open = useAppSelector(state => state.ui.apiDialogOpen);
+  const message = useAppSelector(state => state.ui.apiDialogError);
   const windowHeight =
-    useAppSelector((state: RootState) => state.ui.windowHeight) || 0;
-  const isMobileWidth = selectIsMobileWidth(store.getState());
+    useAppSelector(state => state.ui.windowHeight) || 0;
+  const isMobileWidth = useAppSelector(state => selectIsMobileWidth(state));
   const height = isMobileWidth ? windowHeight - 140 : undefined;
   const dispatch = useAppDispatch();
 

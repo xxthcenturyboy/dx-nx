@@ -14,7 +14,7 @@ import {
 import AvatarEditor from 'react-avatar-editor';
 import { AxiosProgressEvent } from 'axios';
 
-import { store, useAppDispatch } from '@dx/store-web';
+import { useAppDispatch, useAppSelector } from '@dx/utils-web-hooks';
 import { logger } from '@dx/logger-web';
 import {
   APP_COLOR_PALETTE,
@@ -53,7 +53,7 @@ export const UserProfileWebAvatarDialog: React.FC<
     name: string;
     type: string;
   } | null>(null);
-  const isMobileWidth = selectIsMobileWidth(store.getState());
+  const isMobileWidth = useAppSelector(state => selectIsMobileWidth(state));
   const avatarEditorRef = React.useRef<null | AvatarEditor>(null);
   const dispatch = useAppDispatch();
   const theme = useTheme();

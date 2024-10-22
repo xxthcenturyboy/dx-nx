@@ -21,7 +21,7 @@ import {
   themeColors
 } from '@dx/ui-web-system';
 import { DialogError } from '@dx/ui-web-dialogs';
-import { RootState, useAppSelector } from '@dx/store-web';
+import { useAppSelector } from '@dx/utils-web-hooks';
 import { logger } from '@dx/logger-web';
 import {
   selectIsUserProfileValid,
@@ -48,23 +48,19 @@ export const AuthWebRequestOtpEntry: React.FC<AuthWebRequestOtpPropsType> =
   React.forwardRef((props, ref) => {
     const [email, setEmail] = React.useState('');
     const [phone, setPhone] = React.useState('');
-    const [countryData, setCountryData] = React.useState<CountryData | null>(
-      null
-    );
+    const [countryData, setCountryData] = React.useState<CountryData | null>(null);
     const [hasSentOtp, setHasSentOtp] = React.useState(false);
     const [hasFiredCallback, setHasFiredCallback] = React.useState(false);
     const [otp, setOtp] = React.useState('');
     const [errorMessage, setErrorMessage] = React.useState('');
-    const [selectedMethod, setSelectedMethod] = React.useState<
-      'EMAIL' | 'PHONE' | ''
-    >('');
-    const isProfileValid = useAppSelector((state: RootState) =>
+    const [selectedMethod, setSelectedMethod] = React.useState<'EMAIL' | 'PHONE' | ''>('');
+    const isProfileValid = useAppSelector(state =>
       selectIsUserProfileValid(state)
     );
-    const userEmails = useAppSelector((state: RootState) =>
+    const userEmails = useAppSelector(state =>
       selectUserEmails(state)
     );
-    const userPhones = useAppSelector((state: RootState) =>
+    const userPhones = useAppSelector(state =>
       selectUserPhones(state)
     );
     const [

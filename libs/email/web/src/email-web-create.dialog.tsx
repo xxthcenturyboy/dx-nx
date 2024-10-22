@@ -16,7 +16,7 @@ import {
   useTheme
 } from '@mui/material';
 
-import { store, useAppDispatch } from '@dx/store-web';
+import { useAppDispatch, useAppSelector } from '@dx/utils-web-hooks';
 import { logger } from '@dx/logger-web';
 import { CreateEmailPayloadType, EMAIL_LABEL } from '@dx/email-shared';
 import {
@@ -57,7 +57,7 @@ export const AddEmailDialog: React.FC<AddEmailPropsType> = (
   const [errorMessage, setErrorMessage] = React.useState('');
   const [otp, setOtp] = React.useState('');
   const [isDefault, setIsDefault] = React.useState(false);
-  const isMobileWidth = selectIsMobileWidth(store.getState());
+  const isMobileWidth = useAppSelector(state => selectIsMobileWidth(state));
   const theme = useTheme();
   const SM_BREAK = useMediaQuery(theme.breakpoints.down('sm'));
   const dispatch = useAppDispatch();
