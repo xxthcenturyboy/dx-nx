@@ -120,6 +120,15 @@ export const TableComponent: React.FC<TableComponentProps> = React.forwardRef(
       setDummyData(rowData);
     };
 
+    const getRowsPerPageValue = () => {
+      const lastLegaValue = rowsPerPageOptions
+        ? rowsPerPageOptions[rowsPerPageOptions?.length - 1 || 0]
+        : 10;
+      return limit >= lastLegaValue
+        ? lastLegaValue
+        : limit;
+    };
+
     const renderIcon = (iconName: IconNames, color?: string) => {
       const Icon = getIcon(iconName, color);
       return Icon;
@@ -334,7 +343,7 @@ export const TableComponent: React.FC<TableComponentProps> = React.forwardRef(
                     }
                     colSpan={header.length + 1}
                     count={count}
-                    rowsPerPage={limit}
+                    rowsPerPage={getRowsPerPageValue()}
                     page={offset}
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
